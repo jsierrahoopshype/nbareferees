@@ -1,0 +1,18 @@
+# Raw nbadb SQLite is multi-GB and must never enter the repo (GitHub 100MB limit).
+# Only the slim gzipped extracts under source-data/ are committed.
+*.sqlite
+*.sqlite3
+*.db
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
