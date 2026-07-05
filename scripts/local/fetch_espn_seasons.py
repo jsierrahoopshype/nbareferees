@@ -9,7 +9,7 @@ geo-blocked from Jorge's location (VPN exits blocked too), so nba_api is
 unusable. ESPN's public JSON API is NOT geo-blocked, so we source the missing
 seasons from ESPN instead:
 
-    * 2023-24, 2024-25, 2025-26  (regular season + playoffs)
+    * 2023-24, 2024-25, 2025-26  (regular season + play-in + playoffs)
     * 2012-13  (regular season + playoffs -- the whole season in the ESPN scheme)
 
 For each configured season we walk the ESPN scoreboard day by day to enumerate
@@ -49,7 +49,12 @@ Behavior:
 * 1s polite delay between calls. Resume-safe by date (a completed past date is
   recorded in source-data/_espn_progress.json and skipped on re-run).
 * Before bulk-fetching, ONE probe summary call is made and the discovered
-  officials field location + a sample entry are printed for verification.
+  officials field location + a sample entry are printed for verification. During
+  the walk, the first 4-official playoff array is also dumped once so the
+  alternate-official distinguisher can be confirmed.
+* Exhibition games (All-Star etc., whose "teams" are not one of the 30 NBA
+  tricodes) are dropped on fetch. Purge any that an earlier run wrote with:
+      python scripts\\local\\fetch_espn_seasons.py --clean
 * Outputs utf-8-sig gzip, merged additively into the existing extracts.
 * Uses only the Python standard library + pandas (no nba_api, no requests).
 """
@@ -57,9 +62,11 @@ Behavior:
 import os
 import re
 import sys
+import glob
 import gzip
 import json
 import time
+import argparse
 import datetime
 import urllib.parse
 import urllib.request
@@ -92,15 +99,35 @@ USER_AGENT = (
 
 # Seasons to pull. Dates are generous outer bounds (empty dates just return no
 # games); the walk is also capped at today so we never scan the future.
-# ESPN season.type: 2 = regular season, 3 = postseason (playoffs / play-in).
+# ESPN season.type: 1 = preseason, 2 = regular season, 3 = postseason,
+# 4 = all-star, 5 = play-in tournament. The play-in is a SEPARATE type from the
+# playoffs (that is why the play-in dates returned nothing under {2, 3}); we
+# include 5 for seasons that have a play-in (2020-21+), and also detect play-in
+# by name/notes as a fallback in case ESPN files it under a different id.
+PLAYIN_TYPE = 5
+
 SEASONS = [
     {"label": "2012-13", "start": "2012-10-30", "end": "2013-06-25", "types": {2, 3}},
-    {"label": "2023-24", "start": "2023-10-24", "end": "2024-06-25", "types": {2, 3}},
-    {"label": "2024-25", "start": "2024-10-22", "end": "2025-06-25", "types": {2, 3}},
-    {"label": "2025-26", "start": "2025-10-21", "end": "2026-06-25", "types": {2, 3}},
+    {"label": "2023-24", "start": "2023-10-24", "end": "2024-06-25", "types": {2, 3, 5}},
+    {"label": "2024-25", "start": "2024-10-22", "end": "2025-06-25", "types": {2, 3, 5}},
+    {"label": "2025-26", "start": "2025-10-21", "end": "2026-06-25", "types": {2, 3, 5}},
 ]
 
-SEASON_TYPE_LABELS = {2: ("Regular Season", "RS"), 3: ("Playoffs", "PO")}
+SEASON_TYPE_LABELS = {
+    2: ("Regular Season", "RS"),
+    3: ("Playoffs", "PO"),
+    5: ("Play-In", "PI"),
+}
+
+# The 30 current NBA franchises' tricodes (after ESPN->NBA normalization). Any
+# game whose home or away abbreviation is NOT one of these is an exhibition
+# (All-Star, Rising Stars, celebrity game, etc.) that leaked in as a normal
+# game -- drop it on fetch and purge it with --clean.
+VALID_TRICODES = {
+    "ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
+    "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK",
+    "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
+}
 
 # Output column sets (must match the existing extracts exactly).
 GAMES_COLUMNS = [
@@ -181,6 +208,30 @@ def daterange(start, end):
     while d <= end:
         yield d
         d += step
+
+
+def is_nba_game_id(gid):
+    """NBA game_ids are 10-digit strings starting '00'; ESPN event ids are not.
+    Used to keep --clean and any ESPN-era logic away from pre-2023 NBA rows."""
+    return len(gid) == 10 and gid.isdigit() and gid.startswith("00")
+
+
+def is_play_in(event):
+    """True if this ESPN event is a play-in tournament game: either ESPN season
+    type 5, or identifiable by name / competition notes (fallback)."""
+    stype = int((event.get("season") or {}).get("type", 0) or 0)
+    if stype == PLAYIN_TYPE:
+        return True
+    blob = "{} {} {}".format(
+        event.get("name", ""), event.get("shortName", ""),
+        (event.get("season") or {}).get("slug", ""))
+    try:
+        comp = event["competitions"][0]
+        blob += " " + " ".join(str(n.get("headline", "")) for n in comp.get("notes", []))
+    except (KeyError, IndexError, TypeError):
+        pass
+    blob = blob.lower()
+    return "play-in" in blob or "play in tournament" in blob
 
 
 def get_json(url, params=None, retries=4):
@@ -286,6 +337,31 @@ def probe_officials(sample_summary):
     oid, nm, jr = official_fields(lst[0])
     print("  Parsed -> official_id={!r}  official_name={!r}  jersey_num={!r}".format(oid, nm, jr))
     print("===============================================================\n")
+
+
+# One-time dump of a real playoff officials array so the alternate (4th official)
+# distinguisher can be confirmed empirically. Playoff crews list 4 officials;
+# the 4th is an alternate who did not officiate (see _freshness_espn.txt).
+_po_officials_probed = [False]
+
+
+def probe_playoff_officials(summary):
+    """Print a full playoff officials array once (only when 4+ officials, i.e.
+    an alternate is present) so the order/position distinguisher is visible."""
+    if _po_officials_probed[0]:
+        return
+    path, lst = pick_officials_list(summary)
+    if not lst or len(lst) < 4:
+        return
+    _po_officials_probed[0] = True
+    print("\n=========== PLAYOFF OFFICIALS PROBE (alternate check) ===========")
+    print("  officials path: {}  count: {}".format(path, len(lst)))
+    for i, entry in enumerate(lst):
+        print("   [{}] {}".format(i, json.dumps(entry, ensure_ascii=False)))
+    print("  -> The alternate is the LAST entry (highest 'order'); confirm via the")
+    print("     'order'/'position' fields above. Extraction keeps all rows; build.py")
+    print("     must NOT credit the alternate (see _freshness_espn.txt).")
+    print("=================================================================\n")
 
 
 # --------------------------------------------------------------------------- #
@@ -510,6 +586,65 @@ def merge_player_logs(new_rows_by_file):
 
 
 # --------------------------------------------------------------------------- #
+# --clean : purge exhibition (non-NBA-team) games from already-written extracts
+# --------------------------------------------------------------------------- #
+def clean_exhibitions():
+    """Remove All-Star / exhibition games that leaked into the extracts. A game
+    is an exhibition if its home or away abbreviation is not one of the 30 NBA
+    tricodes. Scoped to ESPN-era ids so historical NBA tricodes (SEA, NJN, NOH,
+    VAN, CHH, ...) on pre-2023 rows are NEVER touched. Purges matching rows from
+    games, officials, and every player_logs file, printing what it removes."""
+    print("=== --clean: purging exhibition (non-NBA-team) games ===")
+    if not os.path.exists(GAMES_PATH):
+        print("  no games.csv.gz found; nothing to clean.")
+        return
+
+    games = pd.read_csv(GAMES_PATH, compression="gzip", dtype=str, keep_default_na=False)
+
+    def is_exhibition(row):
+        gid = row["game_id"]
+        if is_nba_game_id(gid):
+            return False  # pre-2023 NBA row -- never touch (protects SEA/NJN/etc.)
+        return (row["home_team_abbr"] not in VALID_TRICODES
+                or row["away_team_abbr"] not in VALID_TRICODES)
+
+    mask = games.apply(is_exhibition, axis=1) if len(games) else pd.Series([], dtype=bool)
+    exhibition_ids = set(games.loc[mask, "game_id"]) if len(games) else set()
+
+    if not exhibition_ids:
+        print("  no exhibition games found. Extracts are clean.")
+        return
+
+    print("  found {} exhibition game(s) to purge:".format(len(exhibition_ids)))
+    for _, r in games[mask].iterrows():
+        print("    {}  {}  {} vs {}".format(
+            r["game_id"], r.get("game_date", ""),
+            r["away_team_abbr"], r["home_team_abbr"]))
+
+    # games.csv.gz
+    kept = games[~mask]
+    write_gz(kept, GAMES_PATH, GAMES_COLUMNS)
+    print("  games.csv.gz:      {} -> {} rows".format(len(games), len(kept)))
+
+    # officials.csv.gz
+    if os.path.exists(OFFICIALS_PATH):
+        off = pd.read_csv(OFFICIALS_PATH, compression="gzip", dtype=str, keep_default_na=False)
+        keep_off = off[~off["game_id"].isin(exhibition_ids)]
+        if len(keep_off) != len(off):
+            write_gz(keep_off, OFFICIALS_PATH, OFFICIALS_COLUMNS)
+        print("  officials.csv.gz:  {} -> {} rows".format(len(off), len(keep_off)))
+
+    # player_logs/*.csv.gz
+    for path in sorted(glob.glob(os.path.join(PLAYER_LOGS_DIR, "*.csv.gz"))):
+        pl = pd.read_csv(path, compression="gzip", dtype=str, keep_default_na=False)
+        keep_pl = pl[~pl["game_id"].isin(exhibition_ids)]
+        if len(keep_pl) != len(pl):
+            write_gz(keep_pl, path, PLAYER_COLUMNS)
+            print("  {}: {} -> {} rows".format(os.path.basename(path), len(pl), len(keep_pl)))
+    print("  purge complete.")
+
+
+# --------------------------------------------------------------------------- #
 # Freshness note (append, don't clobber the nbadb freshness report)
 # --------------------------------------------------------------------------- #
 def write_espn_freshness(summary_counts):
@@ -540,6 +675,33 @@ def write_espn_freshness(summary_counts):
         "    use these ESPN 2012-13 rows instead -- otherwise the 2012-13 postseason is",
         "    double-counted across two id schemes. (Run ingest_kaggle_player_logs.py with",
         "    --exclude-seasons 2012-13 so the Kaggle side never emits 2012-13 either.)",
+        "",
+        "PLAY-IN GAMES:",
+        "  * The play-in tournament is a SEPARATE ESPN season type (5), not part of",
+        "    the playoffs (type 3) -- that is why play-in dates initially returned no",
+        "    games. Play-in games are now captured and labeled season_type 'Play-In'",
+        "    (file suffix PI), consistent with the NBA-era play-in convention. build.py",
+        "    should treat play-in as its own label (playoffs=False), per the spec.",
+        "",
+        "EXHIBITION FILTER:",
+        "  * All-Star weekend exhibitions (teams like WEST/EAST/CHK/KEN/SHQ/CAN/STARS/",
+        "    WORLD/STRIPES) leaked in as type-2 games. Any game whose home OR away",
+        "    abbreviation is not one of the 30 current NBA tricodes is dropped on fetch.",
+        "  * Already-written exhibition rows were purged with:  fetch_espn_seasons.py --clean",
+        "    (scoped to ESPN-era ids, so historical NBA tricodes such as SEA/NJN/NOH/VAN",
+        "    on pre-2023 rows are never touched).",
+        "",
+        "ALTERNATE OFFICIAL (build.py REQUIREMENT):",
+        "  * ESPN lists 4 officials for many PLAYOFF games; the 4th is an ALTERNATE who",
+        "    did not actually officiate. Extraction keeps ALL officials rows unchanged.",
+        "  * In the ESPN payload the alternate is the LAST entry of the officials array",
+        "    (highest 'order'); the fetch prints a one-time PLAYOFF OFFICIALS PROBE of a",
+        "    real 4-official array so this can be confirmed against the 'order'/'position'",
+        "    fields. Regular crews are 3 (crew chief / referee / umpire).",
+        "  * Because officials.csv.gz preserves ESPN's ordering, for an ESPN playoff",
+        "    game_id with >3 officials rows, the row(s) beyond the first 3 (by row order",
+        "    within that game_id) are alternates. build.py MUST NOT credit alternates as",
+        "    having officiated -- count only the first 3 officials per game.",
         "",
         "Per season+type rows written this run:",
     ]
@@ -587,6 +749,7 @@ def main():
 
     # ---- Bulk walk ----
     summary_counts = {}  # "season TYPE" -> [games, officials, player_rows]
+    exhibition_skipped = []  # (game_id, away_abbr, home_abbr) dropped as exhibitions
 
     def bump(season, suffix, g=0, o=0, p=0):
         key = "{} {}".format(season, suffix)
@@ -624,10 +787,25 @@ def main():
 
             for ev in events:
                 stype = int((ev.get("season") or {}).get("type", 0))
-                if stype not in types:
+                playin = is_play_in(ev)
+                # Keep games of the wanted types, plus any play-in game (separate
+                # ESPN season type). Preseason/all-star types are excluded here;
+                # exhibition leaks are then dropped by the tricode check below.
+                if stype not in types and not playin:
                     continue
                 row, suffix = parse_game_row(ev, label)
                 if row is None:
+                    continue
+                # Force the Play-In label regardless of how ESPN typed the event.
+                if playin:
+                    row["season_type"], suffix = ("Play-In", "PI")
+
+                # Drop exhibition games (All-Star / Rising Stars / celebrity, etc.)
+                # whose "teams" are not real NBA franchises.
+                if (row["home_team_abbr"] not in VALID_TRICODES
+                        or row["away_team_abbr"] not in VALID_TRICODES):
+                    exhibition_skipped.append(
+                        (row["game_id"], row["away_team_abbr"], row["home_team_abbr"]))
                     continue
                 game_rows.append(row)
 
@@ -646,6 +824,8 @@ def main():
                     continue
                 time.sleep(DELAY_SECONDS)
 
+                if suffix == "PO":
+                    probe_playoff_officials(summ)
                 orows = parse_officials_rows(summ, row["game_id"])
                 prows = parse_player_rows(summ, row["game_id"])
                 official_rows.extend(orows)
@@ -676,8 +856,21 @@ def main():
     for key in sorted(summary_counts):
         print("  {:<16} games={:<5} officials={:<6} player_rows={}".format(
             key, *summary_counts[key]))
+    if exhibition_skipped:
+        print("\nDropped {} exhibition (non-NBA-team) game(s) on fetch:".format(
+            len(exhibition_skipped)))
+        for gid, away, home in exhibition_skipped:
+            print("  {}  {} vs {}".format(gid, away, home))
     print("\nExtracts updated additively; pre-2023 NBA rows untouched.")
 
 
 if __name__ == "__main__":
-    main()
+    ap = argparse.ArgumentParser(
+        description="Fetch missing NBA seasons from ESPN into source-data/ extracts.")
+    ap.add_argument("--clean", action="store_true",
+                    help="Purge already-written exhibition (non-NBA-team) games and exit.")
+    cli = ap.parse_args()
+    if cli.clean:
+        clean_exhibitions()
+    else:
+        main()
