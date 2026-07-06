@@ -45,6 +45,11 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 PLAYER_LOGS_DIR = os.path.join(REPO_ROOT, "source-data", "player_logs")
 
+# Shared tricode normalization (single source of truth across the local scripts),
+# so nbadb, ESPN, and this Kaggle set all converge on one tricode scheme.
+sys.path.insert(0, SCRIPT_DIR)
+from nba_tricodes import VALID_TRICODES, to_nba_tricode  # noqa: E402
+
 MIN_START_YEAR = 2000   # 2000-01
 MAX_START_YEAR = 2022   # 2022-23
 KEEP_TYPES = {"RS", "PO", "PI"}
@@ -57,13 +62,13 @@ PLAYER_COLUMNS = [
 ]
 
 # target column -> candidate normalized source-name patterns (exact-first, then
-# substring). Order within a list is preference order.
+# substring). A ('pat', 'exact') tuple means exact-match ONLY.
 COLUMN_PATTERNS = {
     "game_id": ["gameid", "gamekey", "gid"],
     "player_id": ["playerid", "personid"],
     "player_name": ["playername", "player", "displayname", "name"],
     "team_id": ["teamid"],
-    "team_abbr": ["teamabbreviation", "teamabbr", "tricode", "teamcode"],
+    "team_abbr": ["teamabbreviation", "teamabbr", "tricode", "teamcode", ("team", "exact")],
     "min": ["min", "minutes"],
     "pts": ["pts", "points"],
     "reb": ["reb", "totreb", "treb", "rebounds"],
@@ -73,8 +78,8 @@ COLUMN_PATTERNS = {
     "tov": ["tov", "to", "turnovers"],
     "fga": ["fga", "fieldgoalsattempted"],
     "fgm": ["fgm", "fieldgoalsmade"],
-    "fg3a": ["fg3a", "fg3pa", "tpa", "threepa", "threepointersattempted"],
-    "fg3m": ["fg3m", "fg3pm", "tpm", "threepm", "threepointersmade"],
+    "fg3a": ["fg3a", "fg3pa", "tpa", "threepa", "threepointersattempted", ("3pa", "exact")],
+    "fg3m": ["fg3m", "fg3pm", "tpm", "threepm", "threepointersmade", ("3pm", "exact")],
     "fta": ["fta", "freethrowsattempted"],
     "ftm": ["ftm", "freethrowsmade"],
     "pf": ["pf", "personalfouls", "fouls"],
@@ -92,17 +97,34 @@ NUMERIC_TARGETS = {
 # Helpers
 # --------------------------------------------------------------------------- #
 def norm(name):
-    return re.sub(r"[^a-z0-9]", "", str(name).lower())
+    """Normalize a column name for matching. '+' and '-' are spelled out FIRST so
+    a column like '+/-' becomes 'plusminus' (and matches the 'plusminus' pattern)
+    instead of collapsing to an empty string once non-alphanumerics are stripped."""
+    s = str(name).lower().replace("+", "plus").replace("-", "minus")
+    return re.sub(r"[^a-z0-9]", "", s)
 
 
 def find_col(columns, patterns):
-    """First column matching a pattern (exact normalized, then substring)."""
+    """First column matching a pattern. Two passes: exact normalized match, then
+    substring. A pattern may be given as a plain string, or as a ('pat', 'exact')
+    tuple to mean exact-match ONLY (used for short/generic tokens like 'team' or
+    '3pa' that would over-match as substrings, e.g. 'team' inside 'teamId')."""
     ncols = {c: norm(c) for c in columns}
-    for pat in patterns:
+    parsed = []  # (pattern, exact_only)
+    for p in patterns:
+        if isinstance(p, tuple):
+            parsed.append((p[0], len(p) > 1 and p[1] == "exact"))
+        else:
+            parsed.append((p, False))
+    # Exact-match pass (all patterns).
+    for pat, _ in parsed:
         for c, nc in ncols.items():
             if nc == pat:
                 return c
-    for pat in patterns:
+    # Substring pass (skip exact-only patterns).
+    for pat, exact_only in parsed:
+        if exact_only:
+            continue
         for c, nc in ncols.items():
             if pat in nc:
                 return c
@@ -156,8 +178,39 @@ def type_suffix_from_gid(gid):
 # --------------------------------------------------------------------------- #
 # Load
 # --------------------------------------------------------------------------- #
+# Tokens that mark a column as belonging to an individual PLAYER (never present in
+# a team-level box score, which only carries team/opponent identity).
+_PLAYER_ID_HINTS = ("playerid", "personid", "athleteid")
+_PLAYER_NAME_HINTS = ("playername", "personname", "athletename",
+                      "firstname", "familyname", "lastname")
+
+
+def player_column_signal(columns):
+    """Return the source column that identifies this as a PER-PLAYER file, or None.
+
+    A player file has a player-id-shaped column (personId/playerId/athleteId) or a
+    player-name-shaped column (personName/playerName/firstName/familyName/...). A
+    team-level box score has team-scoped names only (teamName/teamCity/teamTricode)
+    and no player identity -- those normalize with a 'team' token, so a bare
+    name/displayName is only accepted when it is NOT team-scoped. General: driven by
+    column shape, not filenames."""
+    for c in columns:
+        nc = norm(c)
+        if any(h in nc for h in _PLAYER_ID_HINTS):
+            return c
+        if any(h in nc for h in _PLAYER_NAME_HINTS):
+            return c
+        if ("player" in nc or "athlete" in nc) and "team" not in nc:
+            return c
+        if nc in ("name", "displayname", "fullname") and "team" not in nc:
+            return c
+    return None
+
+
 def load_frames(path):
-    """Return a single concatenated DataFrame (all-strings) from a file or dir."""
+    """Return a single concatenated DataFrame (all-strings) of the PLAYER-level
+    files. Each file's own columns are inspected first; files with no player-id /
+    player-name column (i.e. team-level box scores) are excluded and reported."""
     if os.path.isdir(path):
         files = sorted(glob.glob(os.path.join(path, "*.csv"))
                        + glob.glob(os.path.join(path, "*.csv.gz")))
@@ -171,11 +224,38 @@ def load_frames(path):
         sys.exit(1)
 
     frames = []
+    skipped = []
     for f in files:
         comp = "gzip" if f.endswith(".gz") else "infer"
+        try:
+            header = pd.read_csv(f, nrows=0, compression=comp)
+        except Exception as e:  # noqa: BLE001
+            print("  ! could not read header of {}: {} -- skipping".format(
+                os.path.basename(f), e))
+            continue
+        cols = list(header.columns)
+        signal = player_column_signal(cols)
+        if signal is None:
+            skipped.append((os.path.basename(f), cols))
+            continue
         df = pd.read_csv(f, dtype=str, keep_default_na=False, compression=comp)
-        print("  read {} ({} rows, {} cols)".format(os.path.basename(f), len(df), len(df.columns)))
+        print("  read {} ({} rows, {} cols) [player file: matched '{}']".format(
+            os.path.basename(f), len(df), len(df.columns), signal))
         frames.append(df)
+
+    if skipped:
+        print("\n  Skipped {} non-player (team-level) file(s) -- "
+              "no player-id/player-name column:".format(len(skipped)))
+        for name, cols in skipped:
+            preview = ", ".join(cols[:12]) + (" ..." if len(cols) > 12 else "")
+            print("    - {}  (cols: {})".format(name, preview))
+        print("")
+
+    if not frames:
+        print("ERROR: no player-level files found (every input looks team-level). "
+              "Nothing to ingest.")
+        sys.exit(1)
+
     combined = pd.concat(frames, ignore_index=True, sort=False).fillna("")
     return combined
 
@@ -197,6 +277,35 @@ def propose_mapping(columns):
         len(unmapped), ", ".join(unmapped) if unmapped else "(none)"))
     print("================================================================\n")
     return mapping
+
+
+def report_team_abbr_values(df, mapping):
+    """Print the distinct raw values in the resolved team_abbr column so we can
+    tell whether the source uses standard tricodes (GSW) or an alternate scheme
+    (GS). Lists all values if <= 40, else prints a value_counts table."""
+    src = mapping.get("team_abbr")
+    if not src:
+        print("  team_abbr did not resolve -- cannot report raw values.\n")
+        return
+    vals = df[src].astype(str).str.strip()
+    distinct = sorted(v for v in vals.unique() if v != "")
+    print("  team_abbr source column '{}' -- {} distinct raw value(s):".format(src, len(distinct)))
+    if len(distinct) <= 40:
+        print("    " + (", ".join(distinct) if distinct else "(none)"))
+    else:
+        for val, cnt in vals[vals != ""].value_counts().items():
+            print("    {:<10} {}".format(val, cnt))
+    nonstd = [v for v in distinct if to_nba_tricode(v) not in VALID_TRICODES]
+    if nonstd:
+        print("  -> {} value(s) not resolving to a current NBA tricode (likely "
+              "historical teams or a new alias): {}".format(
+                  len(nonstd), ", ".join(nonstd[:15]) + (" ..." if len(nonstd) > 15 else "")))
+    remapped = sorted({v for v in distinct if to_nba_tricode(v) != v.upper()})
+    if remapped:
+        print("  -> normalized via shared map: {}".format(
+            ", ".join("{}->{}".format(v, to_nba_tricode(v)) for v in remapped[:15])
+            + (" ..." if len(remapped) > 15 else "")))
+    print("")
 
 
 # --------------------------------------------------------------------------- #
@@ -222,7 +331,11 @@ def convert(df, mapping, exclude_seasons):
             out[tgt] = df[src].map(clean_id_str)
         elif tgt in NUMERIC_TARGETS:
             out[tgt] = df[src].map(clean_num_str)
-        else:  # player_name, team_abbr, min -> trimmed strings
+        elif tgt == "team_abbr":
+            # Converge on the shared tricode scheme (e.g. GS->GSW, SA->SAS);
+            # genuinely historical tricodes (SEA/NJN/...) pass through unchanged.
+            out[tgt] = df[src].map(lambda v: to_nba_tricode(v, warn=False))
+        else:  # player_name, min -> trimmed strings
             out[tgt] = df[src].astype(str).str.strip()
 
     # Derive season + type from the (zero-padded) NBA game_id.
@@ -286,6 +399,7 @@ def main():
     print("Combined: {} rows, {} columns".format(len(df), len(df.columns)))
 
     mapping = propose_mapping(list(df.columns))
+    report_team_abbr_values(df, mapping)
 
     if args.dry_run:
         print("--dry-run: stopping after the mapping proposal. No files written.")

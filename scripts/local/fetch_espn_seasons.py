@@ -84,6 +84,10 @@ GAMES_PATH = os.path.join(SOURCE_DIR, "games.csv.gz")
 OFFICIALS_PATH = os.path.join(SOURCE_DIR, "officials.csv.gz")
 PROGRESS_PATH = os.path.join(SOURCE_DIR, "_espn_progress.json")
 
+# Shared tricode normalization (single source of truth across the local scripts).
+sys.path.insert(0, SCRIPT_DIR)
+from nba_tricodes import ESPN_TO_NBA_ABBR, VALID_TRICODES  # noqa: E402
+
 # --------------------------------------------------------------------------- #
 # Config
 # --------------------------------------------------------------------------- #
@@ -119,15 +123,10 @@ SEASON_TYPE_LABELS = {
     5: ("Play-In", "PI"),
 }
 
-# The 30 current NBA franchises' tricodes (after ESPN->NBA normalization). Any
-# game whose home or away abbreviation is NOT one of these is an exhibition
-# (All-Star, Rising Stars, celebrity game, etc.) that leaked in as a normal
-# game -- drop it on fetch and purge it with --clean.
-VALID_TRICODES = {
-    "ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
-    "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK",
-    "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
-}
+# VALID_TRICODES (30 current franchises) and ESPN_TO_NBA_ABBR (alias map) come
+# from the shared nba_tricodes module imported above, so nbadb / ESPN / Kaggle
+# converge on one tricode scheme. A game whose home or away abbreviation is not
+# in VALID_TRICODES is an exhibition (dropped on fetch / purged by --clean).
 
 # Output column sets (must match the existing extracts exactly).
 GAMES_COLUMNS = [
@@ -142,18 +141,8 @@ PLAYER_COLUMNS = [
     "fta", "ftm", "pf", "plus_minus",
 ]
 
-# ESPN abbreviation -> NBA-standard tricode (cross-era join key). Unknown
-# abbreviations pass through unchanged with a printed warning.
-ESPN_TO_NBA_ABBR = {
-    "ATL": "ATL", "BOS": "BOS", "BKN": "BKN", "BRK": "BKN", "CHA": "CHA",
-    "CHI": "CHI", "CLE": "CLE", "DAL": "DAL", "DEN": "DEN", "DET": "DET",
-    "GS": "GSW", "GSW": "GSW", "HOU": "HOU", "IND": "IND", "LAC": "LAC",
-    "LAL": "LAL", "MEM": "MEM", "MIA": "MIA", "MIL": "MIL", "MIN": "MIN",
-    "NO": "NOP", "NOP": "NOP", "NY": "NYK", "NYK": "NYK", "OKC": "OKC",
-    "ORL": "ORL", "PHI": "PHI", "PHX": "PHX", "PHO": "PHX", "POR": "POR",
-    "SAC": "SAC", "SA": "SAS", "SAS": "SAS", "TOR": "TOR", "UTAH": "UTA",
-    "UTA": "UTA", "WSH": "WAS", "WAS": "WAS",
-}
+# ESPN_TO_NBA_ABBR (the alias table) is imported from nba_tricodes above. nba_abbr()
+# below keeps the ESPN-era warning message while reusing that shared table.
 _warned_abbr = set()
 
 
