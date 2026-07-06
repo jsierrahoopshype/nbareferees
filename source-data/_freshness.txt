@@ -1,0 +1,59 @@
+nbadb freshness report
+============================================================
+
+Max game_date overall: 2023-06-12
+
+Per-season: games count and officials coverage (% with 3 officials)
+season      games   %3-officials
+1996-97      1261      2.7%
+1997-98      1260      1.7%
+1998-99       791      2.4%
+1999-00      1189      1.3%
+2000-01      1260      2.9%
+2001-02      1189      2.6%
+2002-03      1277      1.6%
+2003-04      1271     88.0%
+2004-05      1314     89.1%
+2005-06      1230     89.1%
+2006-07      1309     88.1%
+2007-08      1316     89.9%
+2008-09      1315     88.8%
+2009-10      1312     89.1%
+2010-11      1311     92.0%
+2011-12      1074     89.9%
+2012-13        85     92.9%
+2013-14      1319     91.0%
+2014-15      1311     90.8%
+2015-16      1316     90.7%
+2016-17      1309     90.5%
+2017-18      1312     87.3%
+2018-19      1312     87.9%
+2019-20      1142     90.4%
+2020-21      1165     89.9%
+2021-22      1317     88.8%
+2022-23      1314     87.7%
+
+WARNINGS:
+  * LOW OFFICIALS COVERAGE: 2000-01 at 2.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2001-02 at 2.6% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2002-03 at 1.6% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2003-04 at 88.0% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2004-05 at 89.1% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2005-06 at 89.1% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2006-07 at 88.1% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2007-08 at 89.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2008-09 at 88.8% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2009-10 at 89.1% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2010-11 at 92.0% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2011-12 at 89.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2012-13 at 92.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2013-14 at 91.0% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2014-15 at 90.8% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2015-16 at 90.7% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2016-17 at 90.5% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2017-18 at 87.3% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2018-19 at 87.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2019-20 at 90.4% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2020-21 at 89.9% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2021-22 at 88.8% (<95%) -- consider backfill_officials.py
+  * LOW OFFICIALS COVERAGE: 2022-23 at 87.7% (<95%) -- consider backfill_officials.py

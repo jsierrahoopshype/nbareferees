@@ -1,0 +1,66 @@
+nbadb schema report
+============================================================
+
+TABLE common_player_info  (3632 rows, 33 cols)
+----------------------------------------------
+  person_id, first_name, last_name, display_first_last, display_last_comma_first, display_fi_last, player_slug, birthdate, school, country, last_affiliation, height, weight, season_exp, jersey, position, rosterstatus, games_played_current_season_flag, team_id, team_name, team_abbreviation, team_code, team_city, playercode, from_year, to_year, dleague_flag, nba_flag, games_played_flag, draft_year, draft_round, draft_number, greatest_75_flag
+
+TABLE draft_combine_stats  (1633 rows, 47 cols)
+-----------------------------------------------
+  season, player_id, first_name, last_name, player_name, position, height_wo_shoes, height_wo_shoes_ft_in, height_w_shoes, height_w_shoes_ft_in, weight, wingspan, wingspan_ft_in, standing_reach, standing_reach_ft_in, body_fat_pct, hand_length, hand_width, standing_vertical_leap, max_vertical_leap, lane_agility_time, modified_lane_agility_time, three_quarter_sprint, bench_press, spot_fifteen_corner_left, spot_fifteen_break_left, spot_fifteen_top_key, spot_fifteen_break_right, spot_fifteen_corner_right, spot_college_corner_left, spot_college_break_left, spot_college_top_key, spot_college_break_right, spot_college_corner_right, spot_nba_corner_left, spot_nba_break_left, spot_nba_top_key, spot_nba_break_right, spot_nba_corner_right, off_drib_fifteen_break_left, off_drib_fifteen_top_key, off_drib_fifteen_break_right, off_drib_college_break_left, off_drib_college_top_key, off_drib_college_break_right, on_move_fifteen, on_move_college
+
+TABLE draft_history  (8257 rows, 14 cols)
+-----------------------------------------
+  person_id, player_name, season, round_number, round_pick, overall_pick, draft_type, team_id, team_city, team_name, team_abbreviation, organization, organization_type, player_profile_flag
+
+TABLE game  (65698 rows, 55 cols)
+---------------------------------
+  season_id, team_id_home, team_abbreviation_home, team_name_home, game_id, game_date, matchup_home, wl_home, min, fgm_home, fga_home, fg_pct_home, fg3m_home, fg3a_home, fg3_pct_home, ftm_home, fta_home, ft_pct_home, oreb_home, dreb_home, reb_home, ast_home, stl_home, blk_home, tov_home, pf_home, pts_home, plus_minus_home, video_available_home, team_id_away, team_abbreviation_away, team_name_away, matchup_away, wl_away, fgm_away, fga_away, fg_pct_away, fg3m_away, fg3a_away, fg3_pct_away, ftm_away, fta_away, ft_pct_away, oreb_away, dreb_away, reb_away, ast_away, stl_away, blk_away, tov_away, pf_away, pts_away, plus_minus_away, video_available_away, season_type
+
+TABLE game_info  (58053 rows, 4 cols)
+-------------------------------------
+  game_id, game_date, attendance, game_time
+
+TABLE game_summary  (58110 rows, 14 cols)
+-----------------------------------------
+  game_date_est, game_sequence, game_id, game_status_id, game_status_text, gamecode, home_team_id, visitor_team_id, season, live_period, live_pc_time, natl_tv_broadcaster_abbreviation, live_period_time_bcast, wh_status
+
+TABLE inactive_players  (110191 rows, 9 cols)
+---------------------------------------------
+  game_id, player_id, first_name, last_name, jersey_num, team_id, team_city, team_name, team_abbreviation
+
+TABLE line_score  (58053 rows, 43 cols)
+---------------------------------------
+  game_date_est, game_sequence, game_id, team_id_home, team_abbreviation_home, team_city_name_home, team_nickname_home, team_wins_losses_home, pts_qtr1_home, pts_qtr2_home, pts_qtr3_home, pts_qtr4_home, pts_ot1_home, pts_ot2_home, pts_ot3_home, pts_ot4_home, pts_ot5_home, pts_ot6_home, pts_ot7_home, pts_ot8_home, pts_ot9_home, pts_ot10_home, pts_home, team_id_away, team_abbreviation_away, team_city_name_away, team_nickname_away, team_wins_losses_away, pts_qtr1_away, pts_qtr2_away, pts_qtr3_away, pts_qtr4_away, pts_ot1_away, pts_ot2_away, pts_ot3_away, pts_ot4_away, pts_ot5_away, pts_ot6_away, pts_ot7_away, pts_ot8_away, pts_ot9_away, pts_ot10_away, pts_away
+
+TABLE officials  (70971 rows, 5 cols)
+-------------------------------------
+  game_id, official_id, first_name, last_name, jersey_num
+
+TABLE other_stats  (28271 rows, 26 cols)
+----------------------------------------
+  game_id, league_id, team_id_home, team_abbreviation_home, team_city_home, pts_paint_home, pts_2nd_chance_home, pts_fb_home, largest_lead_home, lead_changes, times_tied, team_turnovers_home, total_turnovers_home, team_rebounds_home, pts_off_to_home, team_id_away, team_abbreviation_away, team_city_away, pts_paint_away, pts_2nd_chance_away, pts_fb_away, largest_lead_away, team_turnovers_away, total_turnovers_away, team_rebounds_away, pts_off_to_away
+
+TABLE play_by_play  (13592899 rows, 34 cols)
+--------------------------------------------
+  game_id, eventnum, eventmsgtype, eventmsgactiontype, period, wctimestring, pctimestring, homedescription, neutraldescription, visitordescription, score, scoremargin, person1type, player1_id, player1_name, player1_team_id, player1_team_city, player1_team_nickname, player1_team_abbreviation, person2type, player2_id, player2_name, player2_team_id, player2_team_city, player2_team_nickname, player2_team_abbreviation, person3type, player3_id, player3_name, player3_team_id, player3_team_city, player3_team_nickname, player3_team_abbreviation, video_available_flag
+
+TABLE player  (4815 rows, 5 cols)
+---------------------------------
+  id, full_name, first_name, last_name, is_active
+
+TABLE team  (30 rows, 7 cols)
+-----------------------------
+  id, full_name, abbreviation, nickname, city, state, year_founded
+
+TABLE team_details  (27 rows, 14 cols)
+--------------------------------------
+  team_id, abbreviation, nickname, yearfounded, city, arena, arenacapacity, owner, generalmanager, headcoach, dleagueaffiliation, facebook, instagram, twitter
+
+TABLE team_history  (50 rows, 5 cols)
+-------------------------------------
+  team_id, city, nickname, year_founded, year_active_till
+
+TABLE team_info_common  (0 rows, 26 cols)
+-----------------------------------------
+  team_id, season_year, team_city, team_name, team_abbreviation, team_conference, team_division, team_code, team_slug, w, l, pct, conf_rank, div_rank, min_year, max_year, league_id, season_id, pts_rank, pts_pg, reb_rank, reb_pg, ast_rank, ast_pg, opp_pts_rank, opp_pts_pg

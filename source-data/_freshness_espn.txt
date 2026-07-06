@@ -1,0 +1,57 @@
+ESPN-era ingestion report (fetch_espn_seasons.py)
+============================================================
+
+Seasons pulled from ESPN (public JSON API), replacing the missing
+post-2023-06-12 window plus all of 2012-13 (regular season + playoffs).
+
+JOIN-KEY / IDENTITY NOTES for build.py (session 2):
+  * game_id column holds the ESPN EVENT ID for these rows (not an NBA
+    game_id). ESPN ids start with a non-zero digit and are ~9 digits;
+    NBA ids are 10 digits starting '00'. The eras never collide.
+  * team_id holds the ESPN team id (1..30), NOT the NBA team id. Join
+    teams across eras on the abbreviation (normalized to NBA tricodes).
+  * official_id is 'espn:firstname-lastname' (or 'espn-athlete:<id>')
+    for ESPN-era rows -- these DO NOT match NBA official_ids. build.py
+    must reconcile referees across eras by normalized name.
+  * Playoff round / Game 7 labeling is intentionally skipped here.
+
+2012-13 DOUBLE-COUNT WARNING for build.py (session 2):
+  * ALL of 2012-13 (regular season AND playoffs) is now sourced from ESPN,
+    so the whole 2012-13 season lives in the ESPN event-id scheme end to end.
+  * nbadb contains only a PARTIAL 2012-13 playoff fragment (~85 games) under
+    NBA game_ids. build.py MUST IGNORE that nbadb 2012-13 playoff fragment and
+    use these ESPN 2012-13 rows instead -- otherwise the 2012-13 postseason is
+    double-counted across two id schemes. (Run ingest_kaggle_player_logs.py with
+    --exclude-seasons 2012-13 so the Kaggle side never emits 2012-13 either.)
+
+PLAY-IN GAMES:
+  * The play-in tournament is a SEPARATE ESPN season type (5), not part of
+    the playoffs (type 3) -- that is why play-in dates initially returned no
+    games. Play-in games are now captured and labeled season_type 'Play-In'
+    (file suffix PI), consistent with the NBA-era play-in convention. build.py
+    should treat play-in as its own label (playoffs=False), per the spec.
+
+EXHIBITION FILTER:
+  * All-Star weekend exhibitions (teams like WEST/EAST/CHK/KEN/SHQ/CAN/STARS/
+    WORLD/STRIPES) leaked in as type-2 games. Any game whose home OR away
+    abbreviation is not one of the 30 current NBA tricodes is dropped on fetch.
+  * Already-written exhibition rows were purged with:  fetch_espn_seasons.py --clean
+    (scoped to ESPN-era ids, so historical NBA tricodes such as SEA/NJN/NOH/VAN
+    on pre-2023 rows are never touched).
+
+ALTERNATE OFFICIAL (build.py REQUIREMENT):
+  * ESPN lists 4 officials for many PLAYOFF games; the 4th is an ALTERNATE who
+    did not actually officiate. Extraction keeps ALL officials rows unchanged.
+  * In the ESPN payload the alternate is the LAST entry of the officials array
+    (highest 'order'); the fetch prints a one-time PLAYOFF OFFICIALS PROBE of a
+    real 4-official array so this can be confirmed against the 'order'/'position'
+    fields. Regular crews are 3 (crew chief / referee / umpire).
+  * Because officials.csv.gz preserves ESPN's ordering, for an ESPN playoff
+    game_id with >3 officials rows, the row(s) beyond the first 3 (by row order
+    within that game_id) are alternates. build.py MUST NOT credit alternates as
+    having officiated -- count only the first 3 officials per game.
+
+Per season+type rows written this run:
+  2023-24 PI       games=6     officials=22     player_rows=120
+  2024-25 PI       games=6     officials=22     player_rows=130
+  2025-26 PI       games=6     officials=23     player_rows=127
