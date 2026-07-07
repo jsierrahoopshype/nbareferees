@@ -387,7 +387,9 @@ def main():
     ap.add_argument("--yes", action="store_true", help="Skip the confirmation prompt.")
     ap.add_argument("--dry-run", action="store_true", help="Print the mapping proposal and exit.")
     ap.add_argument("--exclude-seasons", default="",
-                    help="Comma-separated season labels to skip, e.g. '2012-13' (ESPN covers it).")
+                    help="Comma-separated season labels to skip, e.g. '2012-13' (ESPN covers it). "
+                         "Also exclude 2000-01,2001-02,2002-03 if this is ever re-run -- their "
+                         "player logs now come from ESPN too.")
     args = ap.parse_args()
 
     exclude = {s.strip() for s in args.exclude_seasons.split(",") if s.strip()}

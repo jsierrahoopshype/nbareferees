@@ -10,7 +10,8 @@ unusable. ESPN's public JSON API is NOT geo-blocked, so we source the missing
 seasons from ESPN instead:
 
     * 2023-24, 2024-25, 2025-26  (regular season + play-in + playoffs)
-    * 2012-13  (regular season + playoffs -- the whole season in the ESPN scheme)
+    * 2000-01, 2001-02, 2002-03, 2012-13  (regular season + playoffs -- no play-in
+      existed yet; the whole season in the ESPN scheme)
 
 For each configured season we walk the ESPN scoreboard day by day to enumerate
 games, then hit the summary endpoint per completed game to pull three things
@@ -86,7 +87,7 @@ PROGRESS_PATH = os.path.join(SOURCE_DIR, "_espn_progress.json")
 
 # Shared tricode normalization (single source of truth across the local scripts).
 sys.path.insert(0, SCRIPT_DIR)
-from nba_tricodes import ESPN_TO_NBA_ABBR, VALID_TRICODES  # noqa: E402
+from nba_tricodes import ESPN_TO_NBA_ABBR, VALID_TRICODES, HISTORICAL_TRICODES  # noqa: E402
 
 # --------------------------------------------------------------------------- #
 # Config
@@ -111,6 +112,9 @@ USER_AGENT = (
 PLAYIN_TYPE = 5
 
 SEASONS = [
+    {"label": "2000-01", "start": "2000-10-25", "end": "2001-06-20", "types": {2, 3}},
+    {"label": "2001-02", "start": "2001-10-25", "end": "2002-06-20", "types": {2, 3}},
+    {"label": "2002-03", "start": "2002-10-25", "end": "2003-06-20", "types": {2, 3}},
     {"label": "2012-13", "start": "2012-10-30", "end": "2013-06-25", "types": {2, 3}},
     {"label": "2023-24", "start": "2023-10-24", "end": "2024-06-25", "types": {2, 3, 5}},
     {"label": "2024-25", "start": "2024-10-22", "end": "2025-06-25", "types": {2, 3, 5}},
@@ -123,10 +127,14 @@ SEASON_TYPE_LABELS = {
     5: ("Play-In", "PI"),
 }
 
-# VALID_TRICODES (30 current franchises) and ESPN_TO_NBA_ABBR (alias map) come
+# VALID_TRICODES (30 current franchises), HISTORICAL_TRICODES (frozen defunct /
+# relocated teams like SEA/NJN/VAN/CHH/NOH), and ESPN_TO_NBA_ABBR (alias map) come
 # from the shared nba_tricodes module imported above, so nbadb / ESPN / Kaggle
-# converge on one tricode scheme. A game whose home or away abbreviation is not
-# in VALID_TRICODES is an exhibition (dropped on fetch / purged by --clean).
+# converge on one tricode scheme. A game whose home or away abbreviation is not a
+# real NBA franchise -- current OR historical -- is an exhibition (All-Star, etc.)
+# and is dropped on fetch / purged by --clean. Both filters use ALLOWED_TRICODES
+# so legitimate defunct-team games (e.g. the 2000-03 Nets/Sonics) are NOT dropped.
+ALLOWED_TRICODES = VALID_TRICODES | HISTORICAL_TRICODES
 
 # Output column sets (must match the existing extracts exactly).
 GAMES_COLUMNS = [
@@ -579,10 +587,13 @@ def merge_player_logs(new_rows_by_file):
 # --------------------------------------------------------------------------- #
 def clean_exhibitions():
     """Remove All-Star / exhibition games that leaked into the extracts. A game
-    is an exhibition if its home or away abbreviation is not one of the 30 NBA
-    tricodes. Scoped to ESPN-era ids so historical NBA tricodes (SEA, NJN, NOH,
-    VAN, CHH, ...) on pre-2023 rows are NEVER touched. Purges matching rows from
-    games, officials, and every player_logs file, printing what it removes."""
+    is an exhibition if its home or away abbreviation is not a real NBA franchise
+    -- neither a current tricode (VALID_TRICODES) nor a frozen historical one
+    (HISTORICAL_TRICODES: SEA/NJN/VAN/CHH/NOH/NOK). Scoped to ESPN-era ids so
+    pre-2023 NBA rows are NEVER touched; the HISTORICAL_TRICODES allow-list further
+    protects legitimate ESPN-era defunct-team games (e.g. 2000-03 Nets/Sonics) that
+    is_nba_game_id() does not, since those carry ESPN-scheme ids. Purges matching
+    rows from games, officials, and every player_logs file, printing what it removes."""
     print("=== --clean: purging exhibition (non-NBA-team) games ===")
     if not os.path.exists(GAMES_PATH):
         print("  no games.csv.gz found; nothing to clean.")
@@ -594,8 +605,8 @@ def clean_exhibitions():
         gid = row["game_id"]
         if is_nba_game_id(gid):
             return False  # pre-2023 NBA row -- never touch (protects SEA/NJN/etc.)
-        return (row["home_team_abbr"] not in VALID_TRICODES
-                or row["away_team_abbr"] not in VALID_TRICODES)
+        return (row["home_team_abbr"] not in ALLOWED_TRICODES
+                or row["away_team_abbr"] not in ALLOWED_TRICODES)
 
     mask = games.apply(is_exhibition, axis=1) if len(games) else pd.Series([], dtype=bool)
     exhibition_ids = set(games.loc[mask, "game_id"]) if len(games) else set()
@@ -636,6 +647,44 @@ def clean_exhibitions():
 # --------------------------------------------------------------------------- #
 # Freshness note (append, don't clobber the nbadb freshness report)
 # --------------------------------------------------------------------------- #
+def _officials_coverage_lines():
+    """Per season+type officials coverage over ALL ESPN-era games currently in the
+    extract (reads the just-written files, so it reflects real coverage, not the
+    20-game probe sample). Mirrors extract_from_nbadb.py's '3-officials=X%' metric
+    (share of games with exactly 3 officials) and adds the count + % of games with
+    FEWER than 3 officials rows -- the actual coverage gap (e.g. the 2001 Finals
+    game whose ESPN summary carried no officials array)."""
+    lines = ["",
+             "Officials coverage per season+type (all ESPN-era games in the extract;",
+             "3-officials=X% mirrors extract_from_nbadb.py so it is comparable to the",
+             "nbadb baseline; '<3' is the real gap):"]
+    if not os.path.exists(GAMES_PATH):
+        lines.append("  (no games.csv.gz yet)")
+        return lines
+    games = pd.read_csv(GAMES_PATH, compression="gzip", dtype=str, keep_default_na=False)
+    # ESPN-era games only (ESPN event ids; never NBA-format '00...' ids).
+    games = games[~games["game_id"].map(is_nba_game_id)].copy()
+    if games.empty:
+        lines.append("  (no ESPN-era games in the extract)")
+        return lines
+    if os.path.exists(OFFICIALS_PATH):
+        off = pd.read_csv(OFFICIALS_PATH, compression="gzip", dtype=str, keep_default_na=False)
+        per_game = off.groupby("game_id")["official_id"].nunique()
+    else:
+        per_game = pd.Series(dtype=int)
+    games["_n_officials"] = games["game_id"].map(per_game).fillna(0).astype(int)
+    for (season, stype), grp in sorted(games.groupby(["season", "season_type"]),
+                                       key=lambda kv: (str(kv[0][0]), str(kv[0][1]))):
+        n = len(grp)
+        n3 = int((grp["_n_officials"] == 3).sum())
+        n_lt = int((grp["_n_officials"] < 3).sum())
+        pct3 = 100.0 * n3 / n if n else 0.0
+        pct_lt = 100.0 * n_lt / n if n else 0.0
+        lines.append("  {:<8} {:<16} games={:<5} 3-officials={:.1f}%  (<3: {} games, {:.1f}%)"
+                     .format(str(season), str(stype), n, pct3, n_lt, pct_lt))
+    return lines
+
+
 def write_espn_freshness(summary_counts):
     path = os.path.join(SOURCE_DIR, "_freshness_espn.txt")
     lines = [
@@ -675,10 +724,11 @@ def write_espn_freshness(summary_counts):
         "EXHIBITION FILTER:",
         "  * All-Star weekend exhibitions (teams like WEST/EAST/CHK/KEN/SHQ/CAN/STARS/",
         "    WORLD/STRIPES) leaked in as type-2 games. Any game whose home OR away",
-        "    abbreviation is not one of the 30 current NBA tricodes is dropped on fetch.",
+        "    abbreviation is not a real NBA franchise -- current OR historical -- is",
+        "    dropped on fetch.",
         "  * Already-written exhibition rows were purged with:  fetch_espn_seasons.py --clean",
-        "    (scoped to ESPN-era ids, so historical NBA tricodes such as SEA/NJN/NOH/VAN",
-        "    on pre-2023 rows are never touched).",
+        "    (frozen historical tricodes SEA/NJN/VAN/CHH/NOH/NOK are allow-listed, so",
+        "    legitimate defunct-team games -- including ESPN-era 2000-03 -- are kept).",
         "",
         "ALTERNATE OFFICIAL (build.py REQUIREMENT):",
         "  * ESPN lists 4 officials for many PLAYOFF games; the 4th is an ALTERNATE who",
@@ -697,6 +747,7 @@ def write_espn_freshness(summary_counts):
     for key in sorted(summary_counts):
         lines.append("  {:<16} games={:<5} officials={:<6} player_rows={}".format(
             key, *summary_counts[key]))
+    lines.extend(_officials_coverage_lines())
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     print("-> wrote source-data/_freshness_espn.txt")
@@ -790,9 +841,9 @@ def main():
                     row["season_type"], suffix = ("Play-In", "PI")
 
                 # Drop exhibition games (All-Star / Rising Stars / celebrity, etc.)
-                # whose "teams" are not real NBA franchises.
-                if (row["home_team_abbr"] not in VALID_TRICODES
-                        or row["away_team_abbr"] not in VALID_TRICODES):
+                # whose "teams" are not real NBA franchises (current OR historical).
+                if (row["home_team_abbr"] not in ALLOWED_TRICODES
+                        or row["away_team_abbr"] not in ALLOWED_TRICODES):
                     exhibition_skipped.append(
                         (row["game_id"], row["away_team_abbr"], row["home_team_abbr"]))
                     continue

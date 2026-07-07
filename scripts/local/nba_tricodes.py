@@ -21,6 +21,13 @@ VALID_TRICODES = {
     "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
 }
 
+# Real, distinct HISTORICAL / relocated franchises' tricodes (frozen identities,
+# per the docstring) that existed in the fetched eras but are NOT among the 30
+# current tricodes. Any caller that filters on VALID_TRICODES to drop exhibitions
+# (All-Star, etc.) MUST also allow these, or it will silently discard legitimate
+# defunct-team games (e.g. the 2000-03 Nets / Sonics / Grizzlies / Hornets).
+HISTORICAL_TRICODES = {"SEA", "NJN", "NOH", "NOK", "VAN", "CHH"}
+
 # Alternate abbreviation -> canonical NBA tricode. Identity entries are kept so a
 # value that is already canonical resolves to itself. Anything NOT present here is
 # passed through unchanged (see to_nba_tricode) -- that is how historical tricodes
@@ -34,6 +41,11 @@ ESPN_TO_NBA_ABBR = {
     "ORL": "ORL", "PHI": "PHI", "PHX": "PHX", "PHO": "PHX", "POR": "POR",
     "SAC": "SAC", "SA": "SAS", "SAS": "SAS", "TOR": "TOR", "UTAH": "UTA",
     "UTA": "UTA", "WSH": "WAS", "WAS": "WAS",
+    # Historical alias (frozen identity, NOT a modern team): ESPN's early-2000s
+    # payloads abbreviate the New Jersey Nets as 'NJ'; the already-ingested Kaggle
+    # set uses 'NJN' for the same franchise. Converge both on 'NJN' -- same
+    # frozen-identity treatment as SEA/VAN/CHH (do NOT remap to modern BKN).
+    "NJ": "NJN",
 }
 
 # Readable alias for generic (non-ESPN-specific) use.
