@@ -5,17 +5,19 @@ Why this exists
 ---------------
 source-data/officials.csv.gz (and games.csv.gz) still carry a few NBA-scheme
 game_id rows -- 10-digit, '00'-prefixed ids from nbadb's original sparse
-coverage -- for 2000-01, 2001-02, and 2002-03. Those three seasons are now
+coverage -- for 2000-01, 2001-02, 2002-03, and 2012-13. Those seasons are now
 sourced ENTIRELY from ESPN (fetch_espn_seasons.py), which stores ESPN event ids
 in game_id. So the old NBA-scheme rows duplicate real games under a second,
-NON-JOINABLE id scheme and must be removed.
+NON-JOINABLE id scheme and must be removed. (2012-13 is the ~85-game playoff
+fragment flagged in _freshness_espn.txt's "2012-13 DOUBLE-COUNT WARNING" -- it
+was documented for build.py to ignore but never actually removed until now.)
 
 What it does
 ------------
 Removes EXACTLY the rows whose game_id is NBA-scheme (10 digits, starts '00')
 AND whose season -- decoded with the SAME logic as extract_from_nbadb.py (reused
-here by import, not reinvented) -- is one of {2000-01, 2001-02, 2002-03}, from
-BOTH games.csv.gz and officials.csv.gz. It touches:
+here by import, not reinvented) -- is one of {2000-01, 2001-02, 2002-03, 2012-13},
+from BOTH games.csv.gz and officials.csv.gz. It touches:
   * no ESPN-scheme rows (their ids are not NBA-scheme),
   * no other season,
   * no player_logs files (nbadb never had player box scores).
@@ -45,7 +47,7 @@ from extract_from_nbadb import (  # noqa: E402
     season_type_from_gid,
 )
 
-TARGET_SEASONS = {"2000-01", "2001-02", "2002-03"}
+TARGET_SEASONS = {"2000-01", "2001-02", "2002-03", "2012-13"}
 
 
 def is_nba_scheme(gid):
