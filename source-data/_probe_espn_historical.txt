@@ -1,0 +1,253 @@
+ESPN historical officiating probe (probe_espn_historical.py)
+================================================================
+Read-only. Checks whether ESPN has usable officials data for
+2000-01 .. 2002-03. Writes nothing to the extracts.
+Dates checked (12): 2000-11-01, 2001-01-15, 2001-04-15, 2001-05-10, 2001-06-15, 2001-11-01, 2002-01-15, 2002-05-10, 2002-06-10, 2002-11-01, 2003-01-15, 2003-04-20
+
+=== 2000-11-01  (scoreboard dates=20001101) ===
+  events: 7
+    event id='201101002'  DET @ BOS  season.type=2  completed=True
+    event id='201101020'  TOR @ PHI  season.type=2  completed=True
+    event id='201101025'  DEN @ SEA  season.type=2  completed=True
+    event id='201101003'  WAS @ CHA  season.type=2  completed=True
+    event id='201101005'  SAC @ CLE  season.type=2  completed=True
+    event id='201101013'  UTA @ LAL  season.type=2  completed=True
+    event id='201101014'  ORL @ MIA  season.type=2  completed=True
+  -- summary for event 201101002 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Terry Durham", "displayName": "Terry Durham", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Bill Spooner", "displayName": "Bill Spooner", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Courtney Kirkland", "displayName": "Courtney Kirkland", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:terry-durham'  name='Terry Durham'  jersey=''
+         parsed -> id='espn:bill-spooner'  name='Bill Spooner'  jersey=''
+         parsed -> id='espn:courtney-kirkland'  name='Courtney Kirkland'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 201101020 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Nolan Fine", "displayName": "Nolan Fine", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Joe Crawford", "displayName": "Joe Crawford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Rashan Michel", "displayName": "Rashan Michel", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:nolan-fine'  name='Nolan Fine'  jersey=''
+         parsed -> id='espn:joe-crawford'  name='Joe Crawford'  jersey=''
+         parsed -> id='espn:rashan-michel'  name='Rashan Michel'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2001-01-15  (scoreboard dates=20010115) ===
+  events: 12
+    event id='210115009'  CLE @ GSW  season.type=2  completed=True
+    event id='210115018'  SAS @ NYK  season.type=2  completed=True
+    event id='210115027'  MIL @ WAS  season.type=2  completed=True
+    event id='210115006'  SAC @ DAL  season.type=2  completed=True
+    event id='210115020'  CHA @ PHI  season.type=2  completed=True
+    event id='210115001'  NJ @ ATL  season.type=2  completed=True
+    event id='210115016'  BOS @ MIN  season.type=2  completed=True
+    event id='210115013'  VAN @ LAL  season.type=2  completed=True
+    event id='210115007'  SEA @ DEN  season.type=2  completed=True
+    event id='210115011'  LAC @ IND  season.type=2  completed=True
+    event id='210115026'  HOU @ UTA  season.type=2  completed=True
+    event id='210115019'  CHI @ ORL  season.type=2  completed=True
+  -- summary for event 210115009 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bernie Fryer", "displayName": "Bernie Fryer", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "James Capers", "displayName": "James Capers", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Phil Robinson", "displayName": "Phil Robinson", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bernie-fryer'  name='Bernie Fryer'  jersey=''
+         parsed -> id='espn:james-capers'  name='James Capers'  jersey=''
+         parsed -> id='espn:phil-robinson'  name='Phil Robinson'  jersey=''
+     boxscore.players: yes (athlete rows: 26)
+  -- summary for event 210115018 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bob Delaney", "displayName": "Bob Delaney", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Derrick Stafford", "displayName": "Derrick Stafford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Courtney Kirkland", "displayName": "Courtney Kirkland", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bob-delaney'  name='Bob Delaney'  jersey=''
+         parsed -> id='espn:derrick-stafford'  name='Derrick Stafford'  jersey=''
+         parsed -> id='espn:courtney-kirkland'  name='Courtney Kirkland'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2001-04-15  (scoreboard dates=20010415) ===
+  events: 10
+    event id='210415002'  NJ @ BOS  season.type=2  completed=True
+    event id='210415020'  NYK @ PHI  season.type=2  completed=True
+    event id='210415027'  CLE @ WAS  season.type=2  completed=True
+    event id='210415004'  IND @ CHI  season.type=2  completed=True
+    event id='210415014'  ORL @ MIA  season.type=2  completed=True
+    event id='210415016'  UTA @ MIN  season.type=2  completed=True
+    event id='210415013'  POR @ LAL  season.type=2  completed=True
+    event id='210415025'  DAL @ SEA  season.type=2  completed=True
+    event id='210415021'  SAC @ PHX  season.type=2  completed=True
+    event id='210415008'  CHA @ DET  season.type=2  completed=True
+  -- summary for event 210415002 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "George Toliver", "displayName": "George Toliver", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Bob Delaney", "displayName": "Bob Delaney", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Rashan Michel", "displayName": "Rashan Michel", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:george-toliver'  name='George Toliver'  jersey=''
+         parsed -> id='espn:bob-delaney'  name='Bob Delaney'  jersey=''
+         parsed -> id='espn:rashan-michel'  name='Rashan Michel'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 210415020 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Hugh Evans", "displayName": "Hugh Evans", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Mike Callahan", "displayName": "Mike Callahan", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Scott Wall", "displayName": "Scott Wall", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:hugh-evans'  name='Hugh Evans'  jersey=''
+         parsed -> id='espn:mike-callahan'  name='Mike Callahan'  jersey=''
+         parsed -> id='espn:scott-wall'  name='Scott Wall'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2001-05-10  (scoreboard dates=20010510) ===
+  events: 1
+    event id='210510003'  MIL @ CHA  season.type=3  completed=True
+  -- summary for event 210510003 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Steve Javie", "displayName": "Steve Javie", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Eddie F. Rush", "displayName": "Eddie F. Rush", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Mike Callahan", "displayName": "Mike Callahan", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:steve-javie'  name='Steve Javie'  jersey=''
+         parsed -> id='espn:eddie-f-rush'  name='Eddie F. Rush'  jersey=''
+         parsed -> id='espn:mike-callahan'  name='Mike Callahan'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2001-06-15  (scoreboard dates=20010615) ===
+  events: 1
+    event id='210615020'  LAL @ PHI  season.type=3  completed=True
+  -- summary for event 210615020 --
+     OFFICIALS: NOT FOUND
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2001-11-01  (scoreboard dates=20011101) ===
+  events: 8
+    event id='211101007'  MIL @ DEN  season.type=2  completed=True
+    event id='211101020'  DAL @ PHI  season.type=2  completed=True
+    event id='211101025'  SAS @ SEA  season.type=2  completed=True
+    event id='211101026'  LAL @ UTA  season.type=2  completed=True
+    event id='211101029'  DET @ MEM  season.type=2  completed=True
+    event id='211101009'  PHX @ GSW  season.type=2  completed=True
+    event id='211101010'  LAC @ HOU  season.type=2  completed=True
+    event id='211101001'  WAS @ ATL  season.type=2  completed=True
+  -- summary for event 211101007 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Joe DeRosa", "displayName": "Joe DeRosa", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Don Vaden", "displayName": "Don Vaden", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Courtney Kirkland", "displayName": "Courtney Kirkland", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:joe-derosa'  name='Joe DeRosa'  jersey=''
+         parsed -> id='espn:don-vaden'  name='Don Vaden'  jersey=''
+         parsed -> id='espn:courtney-kirkland'  name='Courtney Kirkland'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 211101020 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Hue Hollins", "displayName": "Hue Hollins", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Leon Wood", "displayName": "Leon Wood", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Monty McCutchen", "displayName": "Monty McCutchen", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:hue-hollins'  name='Hue Hollins'  jersey=''
+         parsed -> id='espn:leon-wood'  name='Leon Wood'  jersey=''
+         parsed -> id='espn:monty-mccutchen'  name='Monty McCutchen'  jersey=''
+     boxscore.players: yes (athlete rows: 23)
+
+=== 2002-01-15  (scoreboard dates=20020115) ===
+  events: 8
+    event id='220115011'  MIL @ IND  season.type=2  completed=True
+    event id='220115016'  LAC @ MIN  season.type=2  completed=True
+    event id='220115020'  HOU @ PHI  season.type=2  completed=True
+    event id='220115023'  CLE @ SAC  season.type=2  completed=True
+    event id='220115001'  DAL @ ATL  season.type=2  completed=True
+    event id='220115004'  CHA @ CHI  season.type=2  completed=True
+    event id='220115008'  TOR @ DET  season.type=2  completed=True
+    event id='220115027'  SAS @ WAS  season.type=2  completed=True
+  -- summary for event 220115011 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bill Spooner", "displayName": "Bill Spooner", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Bill Kennedy", "displayName": "Bill Kennedy", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Tony Brothers", "displayName": "Tony Brothers", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bill-spooner'  name='Bill Spooner'  jersey=''
+         parsed -> id='espn:bill-kennedy'  name='Bill Kennedy'  jersey=''
+         parsed -> id='espn:tony-brothers'  name='Tony Brothers'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 220115016 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Joe Crawford", "displayName": "Joe Crawford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Blane Reichelt", "displayName": "Blane Reichelt", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Kevin Fehr", "displayName": "Kevin Fehr", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:joe-crawford'  name='Joe Crawford'  jersey=''
+         parsed -> id='espn:blane-reichelt'  name='Blane Reichelt'  jersey=''
+         parsed -> id='espn:kevin-fehr'  name='Kevin Fehr'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2002-05-10  (scoreboard dates=20020510) ===
+  events: 2
+    event id='220510002'  DET @ BOS  season.type=3  completed=True
+    event id='220510024'  LAL @ SAS  season.type=3  completed=True
+  -- summary for event 220510002 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Joe DeRosa", "displayName": "Joe DeRosa", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Dan Crawford", "displayName": "Dan Crawford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Scott Foster", "displayName": "Scott Foster", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:joe-derosa'  name='Joe DeRosa'  jersey=''
+         parsed -> id='espn:dan-crawford'  name='Dan Crawford'  jersey=''
+         parsed -> id='espn:scott-foster'  name='Scott Foster'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 220510024 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bennett Salvatore", "displayName": "Bennett Salvatore", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Eddie F. Rush", "displayName": "Eddie F. Rush", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Ken Mauer", "displayName": "Ken Mauer", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bennett-salvatore'  name='Bennett Salvatore'  jersey=''
+         parsed -> id='espn:eddie-f-rush'  name='Eddie F. Rush'  jersey=''
+         parsed -> id='espn:ken-mauer'  name='Ken Mauer'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2002-06-10  (scoreboard dates=20020610) ===
+  events: 0
+
+=== 2002-11-01  (scoreboard dates=20021101) ===
+  events: 10
+    event id='221101007'  HOU @ DEN  season.type=2  completed=True
+    event id='221101016'  ORL @ MIN  season.type=2  completed=True
+    event id='221101021'  CLE @ PHX  season.type=2  completed=True
+    event id='221101004'  NOP @ CHI  season.type=2  completed=True
+    event id='221101009'  SEA @ GSW  season.type=2  completed=True
+    event id='221101012'  LAL @ LAC  season.type=2  completed=True
+    event id='221101017'  IND @ NJ  season.type=2  completed=True
+    event id='221101024'  TOR @ SAS  season.type=2  completed=True
+    event id='221101008'  MEM @ DET  season.type=2  completed=True
+    event id='221101020'  NYK @ PHI  season.type=2  completed=True
+  -- summary for event 221101007 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Joe Crawford", "displayName": "Joe Crawford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Derrick Stafford", "displayName": "Derrick Stafford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Jason Phillips", "displayName": "Jason Phillips", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:joe-crawford'  name='Joe Crawford'  jersey=''
+         parsed -> id='espn:derrick-stafford'  name='Derrick Stafford'  jersey=''
+         parsed -> id='espn:jason-phillips'  name='Jason Phillips'  jersey=''
+     boxscore.players: yes (athlete rows: 25)
+  -- summary for event 221101016 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Mike Callahan", "displayName": "Mike Callahan", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Greg Willard", "displayName": "Greg Willard", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Anthony Jordan", "displayName": "Anthony Jordan", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:mike-callahan'  name='Mike Callahan'  jersey=''
+         parsed -> id='espn:greg-willard'  name='Greg Willard'  jersey=''
+         parsed -> id='espn:anthony-jordan'  name='Anthony Jordan'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2003-01-15  (scoreboard dates=20030115) ===
+  events: 11
+    event id='230115023'  DAL @ SAC  season.type=2  completed=True
+    event id='230115002'  ATL @ BOS  season.type=2  completed=True
+    event id='230115007'  UTA @ DEN  season.type=2  completed=True
+    event id='230115011'  MIA @ IND  season.type=2  completed=True
+    event id='230115020'  NJ @ PHI  season.type=2  completed=True
+    event id='230115022'  MEM @ POR  season.type=2  completed=True
+    event id='230115028'  MIL @ TOR  season.type=2  completed=True
+    event id='230115003'  LAL @ NOP  season.type=2  completed=True
+    event id='230115009'  CLE @ GSW  season.type=2  completed=True
+    event id='230115010'  PHX @ HOU  season.type=2  completed=True
+    event id='230115012'  MIN @ LAC  season.type=2  completed=True
+  -- summary for event 230115023 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bennett Salvatore", "displayName": "Bennett Salvatore", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Jim Clark", "displayName": "Jim Clark", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Phil Robinson", "displayName": "Phil Robinson", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bennett-salvatore'  name='Bennett Salvatore'  jersey=''
+         parsed -> id='espn:jim-clark'  name='Jim Clark'  jersey=''
+         parsed -> id='espn:phil-robinson'  name='Phil Robinson'  jersey=''
+     boxscore.players: yes (athlete rows: 23)
+  -- summary for event 230115002 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Ron Garretson", "displayName": "Ron Garretson", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Ron Olesiak", "displayName": "Ron Olesiak", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Bill Kennedy", "displayName": "Bill Kennedy", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:ron-garretson'  name='Ron Garretson'  jersey=''
+         parsed -> id='espn:ron-olesiak'  name='Ron Olesiak'  jersey=''
+         parsed -> id='espn:bill-kennedy'  name='Bill Kennedy'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 2003-04-20  (scoreboard dates=20030420) ===
+  events: 3
+    event id='230420008'  ORL @ DET  season.type=3  completed=True
+    event id='230420016'  LAL @ MIN  season.type=3  completed=True
+    event id='230420020'  NOP @ PHI  season.type=3  completed=True
+  -- summary for event 230420008 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Bennett Salvatore", "displayName": "Bennett Salvatore", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Derrick Stafford", "displayName": "Derrick Stafford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Tim Donaghy", "displayName": "Tim Donaghy", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:bennett-salvatore'  name='Bennett Salvatore'  jersey=''
+         parsed -> id='espn:derrick-stafford'  name='Derrick Stafford'  jersey=''
+         parsed -> id='espn:tim-donaghy'  name='Tim Donaghy'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+  -- summary for event 230420016 --
+     OFFICIALS FOUND at root.gameInfo.officials  (3 entries)
+       raw: [{"fullName": "Dan Crawford", "displayName": "Dan Crawford", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 1}, {"fullName": "Jess Kersey", "displayName": "Jess Kersey", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 2}, {"fullName": "Joe DeRosa", "displayName": "Joe DeRosa", "position": {"name": "Referee", "displayName": "Referee", "id": "40"}, "order": 3}]
+         parsed -> id='espn:dan-crawford'  name='Dan Crawford'  jersey=''
+         parsed -> id='espn:jess-kersey'  name='Jess Kersey'  jersey=''
+         parsed -> id='espn:joe-derosa'  name='Joe DeRosa'  jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+================================================================
+Officials found in 19 of 20 checked games.

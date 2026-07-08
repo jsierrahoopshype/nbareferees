@@ -34,10 +34,11 @@ PLAY-IN GAMES:
 EXHIBITION FILTER:
   * All-Star weekend exhibitions (teams like WEST/EAST/CHK/KEN/SHQ/CAN/STARS/
     WORLD/STRIPES) leaked in as type-2 games. Any game whose home OR away
-    abbreviation is not one of the 30 current NBA tricodes is dropped on fetch.
+    abbreviation is not a real NBA franchise -- current OR historical -- is
+    dropped on fetch.
   * Already-written exhibition rows were purged with:  fetch_espn_seasons.py --clean
-    (scoped to ESPN-era ids, so historical NBA tricodes such as SEA/NJN/NOH/VAN
-    on pre-2023 rows are never touched).
+    (frozen historical tricodes SEA/NJN/VAN/CHH/NOH/NOK are allow-listed, so
+    legitimate defunct-team games -- including ESPN-era 2000-03 -- are kept).
 
 ALTERNATE OFFICIAL (build.py REQUIREMENT):
   * ESPN lists 4 officials for many PLAYOFF games; the 4th is an ALTERNATE who
@@ -52,6 +53,30 @@ ALTERNATE OFFICIAL (build.py REQUIREMENT):
     having officiated -- count only the first 3 officials per game.
 
 Per season+type rows written this run:
-  2023-24 PI       games=6     officials=22     player_rows=120
-  2024-25 PI       games=6     officials=22     player_rows=130
-  2025-26 PI       games=6     officials=23     player_rows=127
+  2000-01 PO       games=61    officials=180    player_rows=1198
+  2000-01 RS       games=1190  officials=3542   player_rows=23972
+  2001-02 PO       games=71    officials=213    player_rows=1371
+  2001-02 RS       games=1190  officials=3565   player_rows=24047
+  2002-03 PO       games=88    officials=264    player_rows=1765
+  2002-03 RS       games=1190  officials=3567   player_rows=24133
+
+Officials coverage per season+type (all ESPN-era games in the extract;
+3-officials=X% mirrors extract_from_nbadb.py so it is comparable to the
+nbadb baseline; '<3' is the real gap):
+  2000-01  Playoffs         games=61    3-officials=98.4%  (<3: 1 games, 1.6%)
+  2000-01  Regular Season   games=1190  3-officials=97.8%  (<3: 26 games, 2.2%)
+  2001-02  Playoffs         games=71    3-officials=100.0%  (<3: 0 games, 0.0%)
+  2001-02  Regular Season   games=1190  3-officials=99.7%  (<3: 3 games, 0.3%)
+  2002-03  Playoffs         games=88    3-officials=100.0%  (<3: 0 games, 0.0%)
+  2002-03  Regular Season   games=1190  3-officials=99.9%  (<3: 1 games, 0.1%)
+  2012-13  Playoffs         games=85    3-officials=100.0%  (<3: 0 games, 0.0%)
+  2012-13  Regular Season   games=1232  3-officials=99.7%  (<3: 3 games, 0.2%)
+  2023-24  Play-In          games=6     3-officials=33.3%  (<3: 0 games, 0.0%)
+  2023-24  Playoffs         games=82    3-officials=39.0%  (<3: 0 games, 0.0%)
+  2023-24  Regular Season   games=1233  3-officials=98.4%  (<3: 20 games, 1.6%)
+  2024-25  Play-In          games=6     3-officials=33.3%  (<3: 0 games, 0.0%)
+  2024-25  Playoffs         games=84    3-officials=21.4%  (<3: 0 games, 0.0%)
+  2024-25  Regular Season   games=1236  3-officials=99.6%  (<3: 5 games, 0.4%)
+  2025-26  Play-In          games=6     3-officials=16.7%  (<3: 0 games, 0.0%)
+  2025-26  Playoffs         games=85    3-officials=14.1%  (<3: 0 games, 0.0%)
+  2025-26  Regular Season   games=1235  3-officials=99.8%  (<3: 3 games, 0.2%)
