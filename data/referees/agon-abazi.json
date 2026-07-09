@@ -1,0 +1,336 @@
+{
+  "summary": {
+    "official_id": "agon-abazi",
+    "name": "Agon Abazi",
+    "slug": "agon-abazi",
+    "raw_ids": [
+      "espn:agon-abazi"
+    ],
+    "eras": [
+      "espn"
+    ],
+    "first_season": "2024-25",
+    "last_season": "2025-26",
+    "games_total": 4,
+    "games_rs": 4,
+    "games_po": 0,
+    "games_pi": 0,
+    "finals_games": 0,
+    "game7s": 0,
+    "active": true,
+    "per_season": {
+      "2024-25": {
+        "rs": 2,
+        "po": 0,
+        "pi": 0,
+        "total": 2
+      },
+      "2025-26": {
+        "rs": 2,
+        "po": 0,
+        "pi": 0,
+        "total": 2
+      }
+    }
+  },
+  "team_records": [
+    {
+      "team_abbr": "LAC",
+      "games": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_pct": 0.5,
+      "home_games": 1,
+      "home_wins": 0,
+      "avg_margin_for_team": -4.0
+    },
+    {
+      "team_abbr": "DEN",
+      "games": 1,
+      "wins": 0,
+      "losses": 1,
+      "win_pct": 0.0,
+      "home_games": 1,
+      "home_wins": 0,
+      "avg_margin_for_team": -5.0
+    },
+    {
+      "team_abbr": "OKC",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": 13.0
+    },
+    {
+      "team_abbr": "NYK",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 1,
+      "home_wins": 1,
+      "avg_margin_for_team": 17.0
+    },
+    {
+      "team_abbr": "WAS",
+      "games": 1,
+      "wins": 0,
+      "losses": 1,
+      "win_pct": 0.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": -17.0
+    },
+    {
+      "team_abbr": "CLE",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 1,
+      "home_wins": 1,
+      "avg_margin_for_team": 11.0
+    },
+    {
+      "team_abbr": "PHI",
+      "games": 1,
+      "wins": 0,
+      "losses": 1,
+      "win_pct": 0.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": -11.0
+    }
+  ],
+  "whistle_profile": {
+    "rs": {
+      "n": 4,
+      "n_boxscore": 4,
+      "avg_total_points": 221.0,
+      "avg_total_fta": 44.0,
+      "avg_total_pf": 41.75,
+      "home_win_pct": 0.5,
+      "avg_abs_margin": 11.5,
+      "ot_games": 0,
+      "ot_rate": 0.0
+    },
+    "po": {
+      "n": 0,
+      "n_boxscore": 0,
+      "avg_total_points": null,
+      "avg_total_fta": null,
+      "avg_total_pf": null,
+      "home_win_pct": null,
+      "avg_abs_margin": null,
+      "ot_games": null,
+      "ot_rate": null
+    }
+  },
+  "top_performances": [
+    {
+      "player_name": "Donovan Mitchell",
+      "pts": 46,
+      "team_abbr": "CLE",
+      "opp_abbr": "PHI",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Nikola Jokic",
+      "pts": 41,
+      "team_abbr": "DEN",
+      "opp_abbr": "LAC",
+      "game_date": "2024-10-26",
+      "game_id": "401704653"
+    },
+    {
+      "player_name": "Norman Powell",
+      "pts": 37,
+      "team_abbr": "LAC",
+      "opp_abbr": "DEN",
+      "game_date": "2024-10-26",
+      "game_id": "401704653"
+    },
+    {
+      "player_name": "Karl-Anthony Towns",
+      "pts": 33,
+      "team_abbr": "NYK",
+      "opp_abbr": "WAS",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Tyrese Maxey",
+      "pts": 27,
+      "team_abbr": "PHI",
+      "opp_abbr": "CLE",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Quentin Grimes",
+      "pts": 27,
+      "team_abbr": "PHI",
+      "opp_abbr": "CLE",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Shai Gilgeous-Alexander",
+      "pts": 25,
+      "team_abbr": "OKC",
+      "opp_abbr": "LAC",
+      "game_date": "2024-11-03",
+      "game_id": "401704716"
+    },
+    {
+      "player_name": "Ivica Zubac",
+      "pts": 24,
+      "team_abbr": "LAC",
+      "opp_abbr": "DEN",
+      "game_date": "2024-10-26",
+      "game_id": "401704653"
+    },
+    {
+      "player_name": "Norman Powell",
+      "pts": 24,
+      "team_abbr": "LAC",
+      "opp_abbr": "OKC",
+      "game_date": "2024-11-03",
+      "game_id": "401704716"
+    },
+    {
+      "player_name": "Jarrett Allen",
+      "pts": 24,
+      "team_abbr": "CLE",
+      "opp_abbr": "PHI",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "James Harden",
+      "pts": 23,
+      "team_abbr": "LAC",
+      "opp_abbr": "DEN",
+      "game_date": "2024-10-26",
+      "game_id": "401704653"
+    },
+    {
+      "player_name": "Evan Mobley",
+      "pts": 23,
+      "team_abbr": "CLE",
+      "opp_abbr": "PHI",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Jamal Murray",
+      "pts": 22,
+      "team_abbr": "DEN",
+      "opp_abbr": "LAC",
+      "game_date": "2024-10-26",
+      "game_id": "401704653"
+    },
+    {
+      "player_name": "Alex Sarr",
+      "pts": 19,
+      "team_abbr": "WAS",
+      "opp_abbr": "NYK",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Kelly Oubre Jr.",
+      "pts": 19,
+      "team_abbr": "PHI",
+      "opp_abbr": "CLE",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Luguentz Dort",
+      "pts": 16,
+      "team_abbr": "OKC",
+      "opp_abbr": "LAC",
+      "game_date": "2024-11-03",
+      "game_id": "401704716"
+    },
+    {
+      "player_name": "OG Anunoby",
+      "pts": 16,
+      "team_abbr": "NYK",
+      "opp_abbr": "WAS",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Jalen Brunson",
+      "pts": 16,
+      "team_abbr": "NYK",
+      "opp_abbr": "WAS",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Trendon Watford",
+      "pts": 16,
+      "team_abbr": "PHI",
+      "opp_abbr": "CLE",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    },
+    {
+      "player_name": "Jalen Williams",
+      "pts": 15,
+      "team_abbr": "OKC",
+      "opp_abbr": "LAC",
+      "game_date": "2024-11-03",
+      "game_id": "401704716"
+    },
+    {
+      "player_name": "Kyshawn George",
+      "pts": 15,
+      "team_abbr": "WAS",
+      "opp_abbr": "NYK",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Bilal Coulibaly",
+      "pts": 15,
+      "team_abbr": "WAS",
+      "opp_abbr": "NYK",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Corey Kispert",
+      "pts": 15,
+      "team_abbr": "WAS",
+      "opp_abbr": "NYK",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Jordan Clarkson",
+      "pts": 15,
+      "team_abbr": "NYK",
+      "opp_abbr": "WAS",
+      "game_date": "2025-11-04",
+      "game_id": "401810014"
+    },
+    {
+      "player_name": "Sam Merrill",
+      "pts": 14,
+      "team_abbr": "CLE",
+      "opp_abbr": "PHI",
+      "game_date": "2025-11-06",
+      "game_id": "401810026"
+    }
+  ],
+  "player_swings": [],
+  "notable_games": []
+}

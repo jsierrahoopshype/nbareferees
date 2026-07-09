@@ -1,0 +1,598 @@
+{
+  "summary": {
+    "official_id": "john-conley",
+    "name": "John Conley",
+    "slug": "john-conley",
+    "raw_ids": [
+      "1627519",
+      "espn:john-conley"
+    ],
+    "eras": [
+      "espn",
+      "nba"
+    ],
+    "first_season": "2019-20",
+    "last_season": "2025-26",
+    "games_total": 208,
+    "games_rs": 208,
+    "games_po": 0,
+    "games_pi": 0,
+    "finals_games": 0,
+    "game7s": 0,
+    "active": true,
+    "per_season": {
+      "2019-20": {
+        "rs": 8,
+        "po": 0,
+        "pi": 0,
+        "total": 8
+      },
+      "2020-21": {
+        "rs": 24,
+        "po": 0,
+        "pi": 0,
+        "total": 24
+      },
+      "2021-22": {
+        "rs": 26,
+        "po": 0,
+        "pi": 0,
+        "total": 26
+      },
+      "2022-23": {
+        "rs": 35,
+        "po": 0,
+        "pi": 0,
+        "total": 35
+      },
+      "2023-24": {
+        "rs": 36,
+        "po": 0,
+        "pi": 0,
+        "total": 36
+      },
+      "2024-25": {
+        "rs": 40,
+        "po": 0,
+        "pi": 0,
+        "total": 40
+      },
+      "2025-26": {
+        "rs": 39,
+        "po": 0,
+        "pi": 0,
+        "total": 39
+      }
+    }
+  },
+  "team_records": [
+    {
+      "team_abbr": "CHA",
+      "games": 26,
+      "wins": 10,
+      "losses": 16,
+      "win_pct": 0.38,
+      "home_games": 13,
+      "home_wins": 5,
+      "avg_margin_for_team": -2.62
+    },
+    {
+      "team_abbr": "DET",
+      "games": 25,
+      "wins": 13,
+      "losses": 12,
+      "win_pct": 0.52,
+      "home_games": 14,
+      "home_wins": 7,
+      "avg_margin_for_team": 0.16
+    },
+    {
+      "team_abbr": "ORL",
+      "games": 24,
+      "wins": 14,
+      "losses": 10,
+      "win_pct": 0.58,
+      "home_games": 13,
+      "home_wins": 7,
+      "avg_margin_for_team": 0.71
+    },
+    {
+      "team_abbr": "WAS",
+      "games": 20,
+      "wins": 10,
+      "losses": 10,
+      "win_pct": 0.5,
+      "home_games": 12,
+      "home_wins": 7,
+      "avg_margin_for_team": -0.6
+    },
+    {
+      "team_abbr": "TOR",
+      "games": 19,
+      "wins": 11,
+      "losses": 8,
+      "win_pct": 0.58,
+      "home_games": 13,
+      "home_wins": 6,
+      "avg_margin_for_team": 2.0
+    },
+    {
+      "team_abbr": "IND",
+      "games": 17,
+      "wins": 6,
+      "losses": 11,
+      "win_pct": 0.35,
+      "home_games": 10,
+      "home_wins": 4,
+      "avg_margin_for_team": -4.59
+    },
+    {
+      "team_abbr": "MEM",
+      "games": 17,
+      "wins": 13,
+      "losses": 4,
+      "win_pct": 0.76,
+      "home_games": 8,
+      "home_wins": 7,
+      "avg_margin_for_team": 4.88
+    },
+    {
+      "team_abbr": "HOU",
+      "games": 17,
+      "wins": 6,
+      "losses": 11,
+      "win_pct": 0.35,
+      "home_games": 7,
+      "home_wins": 0,
+      "avg_margin_for_team": -5.18
+    },
+    {
+      "team_abbr": "POR",
+      "games": 17,
+      "wins": 8,
+      "losses": 9,
+      "win_pct": 0.47,
+      "home_games": 6,
+      "home_wins": 3,
+      "avg_margin_for_team": -4.12
+    },
+    {
+      "team_abbr": "NYK",
+      "games": 15,
+      "wins": 9,
+      "losses": 6,
+      "win_pct": 0.6,
+      "home_games": 5,
+      "home_wins": 4,
+      "avg_margin_for_team": 3.67
+    },
+    {
+      "team_abbr": "MIA",
+      "games": 15,
+      "wins": 7,
+      "losses": 8,
+      "win_pct": 0.47,
+      "home_games": 9,
+      "home_wins": 5,
+      "avg_margin_for_team": -0.47
+    },
+    {
+      "team_abbr": "MIN",
+      "games": 14,
+      "wins": 5,
+      "losses": 9,
+      "win_pct": 0.36,
+      "home_games": 7,
+      "home_wins": 5,
+      "avg_margin_for_team": -3.29
+    },
+    {
+      "team_abbr": "PHI",
+      "games": 14,
+      "wins": 6,
+      "losses": 8,
+      "win_pct": 0.43,
+      "home_games": 7,
+      "home_wins": 4,
+      "avg_margin_for_team": 2.07
+    },
+    {
+      "team_abbr": "ATL",
+      "games": 14,
+      "wins": 5,
+      "losses": 9,
+      "win_pct": 0.36,
+      "home_games": 7,
+      "home_wins": 3,
+      "avg_margin_for_team": -1.07
+    },
+    {
+      "team_abbr": "NOP",
+      "games": 14,
+      "wins": 5,
+      "losses": 9,
+      "win_pct": 0.36,
+      "home_games": 8,
+      "home_wins": 2,
+      "avg_margin_for_team": -4.79
+    },
+    {
+      "team_abbr": "CLE",
+      "games": 13,
+      "wins": 9,
+      "losses": 4,
+      "win_pct": 0.69,
+      "home_games": 6,
+      "home_wins": 5,
+      "avg_margin_for_team": 2.62
+    },
+    {
+      "team_abbr": "CHI",
+      "games": 12,
+      "wins": 8,
+      "losses": 4,
+      "win_pct": 0.67,
+      "home_games": 7,
+      "home_wins": 5,
+      "avg_margin_for_team": 2.58
+    },
+    {
+      "team_abbr": "SAS",
+      "games": 12,
+      "wins": 7,
+      "losses": 5,
+      "win_pct": 0.58,
+      "home_games": 10,
+      "home_wins": 6,
+      "avg_margin_for_team": 3.0
+    },
+    {
+      "team_abbr": "BOS",
+      "games": 12,
+      "wins": 7,
+      "losses": 5,
+      "win_pct": 0.58,
+      "home_games": 5,
+      "home_wins": 4,
+      "avg_margin_for_team": 5.75
+    },
+    {
+      "team_abbr": "UTA",
+      "games": 12,
+      "wins": 3,
+      "losses": 9,
+      "win_pct": 0.25,
+      "home_games": 7,
+      "home_wins": 2,
+      "avg_margin_for_team": -3.42
+    },
+    {
+      "team_abbr": "OKC",
+      "games": 11,
+      "wins": 8,
+      "losses": 3,
+      "win_pct": 0.73,
+      "home_games": 7,
+      "home_wins": 5,
+      "avg_margin_for_team": 3.27
+    },
+    {
+      "team_abbr": "BKN",
+      "games": 10,
+      "wins": 2,
+      "losses": 8,
+      "win_pct": 0.2,
+      "home_games": 3,
+      "home_wins": 0,
+      "avg_margin_for_team": -6.4
+    },
+    {
+      "team_abbr": "LAC",
+      "games": 10,
+      "wins": 5,
+      "losses": 5,
+      "win_pct": 0.5,
+      "home_games": 4,
+      "home_wins": 2,
+      "avg_margin_for_team": 4.6
+    },
+    {
+      "team_abbr": "SAC",
+      "games": 9,
+      "wins": 4,
+      "losses": 5,
+      "win_pct": 0.44,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": -4.33
+    },
+    {
+      "team_abbr": "PHX",
+      "games": 9,
+      "wins": 6,
+      "losses": 3,
+      "win_pct": 0.67,
+      "home_games": 3,
+      "home_wins": 3,
+      "avg_margin_for_team": 2.11
+    },
+    {
+      "team_abbr": "MIL",
+      "games": 8,
+      "wins": 4,
+      "losses": 4,
+      "win_pct": 0.5,
+      "home_games": 3,
+      "home_wins": 2,
+      "avg_margin_for_team": 1.0
+    },
+    {
+      "team_abbr": "LAL",
+      "games": 8,
+      "wins": 7,
+      "losses": 1,
+      "win_pct": 0.88,
+      "home_games": 3,
+      "home_wins": 3,
+      "avg_margin_for_team": 9.62
+    },
+    {
+      "team_abbr": "DEN",
+      "games": 8,
+      "wins": 5,
+      "losses": 3,
+      "win_pct": 0.62,
+      "home_games": 5,
+      "home_wins": 3,
+      "avg_margin_for_team": 5.75
+    },
+    {
+      "team_abbr": "DAL",
+      "games": 7,
+      "wins": 3,
+      "losses": 4,
+      "win_pct": 0.43,
+      "home_games": 3,
+      "home_wins": 2,
+      "avg_margin_for_team": -1.71
+    },
+    {
+      "team_abbr": "GSW",
+      "games": 7,
+      "wins": 2,
+      "losses": 5,
+      "win_pct": 0.29,
+      "home_games": 1,
+      "home_wins": 1,
+      "avg_margin_for_team": -3.0
+    }
+  ],
+  "whistle_profile": {
+    "rs": {
+      "n": 208,
+      "n_boxscore": 208,
+      "avg_total_points": 226.45,
+      "avg_total_fta": 44.95,
+      "avg_total_pf": 39.27,
+      "home_win_pct": 0.54,
+      "avg_abs_margin": 11.42,
+      "ot_games": 16,
+      "ot_rate": 0.08
+    },
+    "po": {
+      "n": 0,
+      "n_boxscore": 0,
+      "avg_total_points": null,
+      "avg_total_fta": null,
+      "avg_total_pf": null,
+      "home_win_pct": null,
+      "avg_abs_margin": null,
+      "ot_games": null,
+      "ot_rate": null
+    }
+  },
+  "top_performances": [
+    {
+      "player_name": "Jalen Brunson",
+      "pts": 61,
+      "team_abbr": "NYK",
+      "opp_abbr": "SAS",
+      "game_date": "2024-03-30",
+      "game_id": "401585698"
+    },
+    {
+      "player_name": "Kyrie Irving",
+      "pts": 48,
+      "team_abbr": "BKN",
+      "opp_abbr": "UTA",
+      "game_date": "2023-01-20",
+      "game_id": "0022200689"
+    },
+    {
+      "player_name": "Bradley Beal",
+      "pts": 45,
+      "team_abbr": "WAS",
+      "opp_abbr": "SAS",
+      "game_date": "2021-04-26",
+      "game_id": "0022000919"
+    },
+    {
+      "player_name": "Kevin Durant",
+      "pts": 44,
+      "team_abbr": "BKN",
+      "opp_abbr": "CHI",
+      "game_date": "2023-01-04",
+      "game_id": "0022200570"
+    },
+    {
+      "player_name": "Donovan Mitchell",
+      "pts": 43,
+      "team_abbr": "CLE",
+      "opp_abbr": "ORL",
+      "game_date": "2023-04-04",
+      "game_id": "0022201178"
+    },
+    {
+      "player_name": "Cam Thomas",
+      "pts": 43,
+      "team_abbr": "BKN",
+      "opp_abbr": "NYK",
+      "game_date": "2024-11-16",
+      "game_id": "401703383"
+    },
+    {
+      "player_name": "Damian Lillard",
+      "pts": 43,
+      "team_abbr": "MIL",
+      "opp_abbr": "PHI",
+      "game_date": "2025-02-09",
+      "game_id": "401705320"
+    },
+    {
+      "player_name": "Luka Doncic",
+      "pts": 43,
+      "team_abbr": "LAL",
+      "opp_abbr": "LAC",
+      "game_date": "2025-11-26",
+      "game_id": "401809801"
+    },
+    {
+      "player_name": "Joel Embiid",
+      "pts": 42,
+      "team_abbr": "PHI",
+      "opp_abbr": "CLE",
+      "game_date": "2021-02-27",
+      "game_id": "0022000513"
+    },
+    {
+      "player_name": "Giannis Antetokounmpo",
+      "pts": 42,
+      "team_abbr": "MIL",
+      "opp_abbr": "NOP",
+      "game_date": "2022-12-19",
+      "game_id": "0022200457"
+    },
+    {
+      "player_name": "Joel Embiid",
+      "pts": 42,
+      "team_abbr": "PHI",
+      "opp_abbr": "NOP",
+      "game_date": "2023-01-02",
+      "game_id": "0022200554"
+    },
+    {
+      "player_name": "Julius Randle",
+      "pts": 42,
+      "team_abbr": "NYK",
+      "opp_abbr": "DET",
+      "game_date": "2023-01-15",
+      "game_id": "0022200648"
+    },
+    {
+      "player_name": "Mikal Bridges",
+      "pts": 42,
+      "team_abbr": "BKN",
+      "opp_abbr": "POR",
+      "game_date": "2024-01-07",
+      "game_id": "401585126"
+    },
+    {
+      "player_name": "Kevin Durant",
+      "pts": 42,
+      "team_abbr": "PHX",
+      "opp_abbr": "CLE",
+      "game_date": "2025-03-22",
+      "game_id": "401705587"
+    },
+    {
+      "player_name": "Jaylen Brown",
+      "pts": 42,
+      "team_abbr": "BOS",
+      "opp_abbr": "NYK",
+      "game_date": "2025-12-03",
+      "game_id": "401810175"
+    },
+    {
+      "player_name": "Gordon Hayward",
+      "pts": 41,
+      "team_abbr": "CHA",
+      "opp_abbr": "SAS",
+      "game_date": "2021-12-15",
+      "game_id": "0022100423"
+    },
+    {
+      "player_name": "Caris LeVert",
+      "pts": 41,
+      "team_abbr": "CLE",
+      "opp_abbr": "BOS",
+      "game_date": "2022-10-28",
+      "game_id": "0022200072"
+    },
+    {
+      "player_name": "Donovan Mitchell",
+      "pts": 41,
+      "team_abbr": "CLE",
+      "opp_abbr": "BOS",
+      "game_date": "2022-10-28",
+      "game_id": "0022200072"
+    },
+    {
+      "player_name": "Julius Randle",
+      "pts": 41,
+      "team_abbr": "NYK",
+      "opp_abbr": "SAS",
+      "game_date": "2022-12-29",
+      "game_id": "0022200527"
+    },
+    {
+      "player_name": "Jalen Green",
+      "pts": 41,
+      "team_abbr": "HOU",
+      "opp_abbr": "SAC",
+      "game_date": "2023-02-08",
+      "game_id": "0022200827"
+    },
+    {
+      "player_name": "Paolo Banchero",
+      "pts": 41,
+      "team_abbr": "ORL",
+      "opp_abbr": "TOR",
+      "game_date": "2025-03-05",
+      "game_id": "401705449"
+    },
+    {
+      "player_name": "Victor Wembanyama",
+      "pts": 40,
+      "team_abbr": "SAS",
+      "opp_abbr": "NYK",
+      "game_date": "2024-03-30",
+      "game_id": "401585698"
+    },
+    {
+      "player_name": "De'Aaron Fox",
+      "pts": 40,
+      "team_abbr": "SAC",
+      "opp_abbr": "BOS",
+      "game_date": "2024-04-05",
+      "game_id": "401585746"
+    },
+    {
+      "player_name": "Shai Gilgeous-Alexander",
+      "pts": 40,
+      "team_abbr": "OKC",
+      "opp_abbr": "MIN",
+      "game_date": "2025-01-01",
+      "game_id": "401705018"
+    },
+    {
+      "player_name": "Jarrett Allen",
+      "pts": 40,
+      "team_abbr": "CLE",
+      "opp_abbr": "POR",
+      "game_date": "2026-02-02",
+      "game_id": "401810565"
+    }
+  ],
+  "player_swings": [],
+  "notable_games": []
+}
