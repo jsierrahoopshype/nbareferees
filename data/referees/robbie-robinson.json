@@ -1,0 +1,593 @@
+{
+  "summary": {
+    "official_id": "robbie-robinson",
+    "name": "Robbie Robinson",
+    "slug": "robbie-robinson",
+    "raw_ids": [
+      "2883"
+    ],
+    "eras": [
+      "nba"
+    ],
+    "first_season": "2004-05",
+    "last_season": "2006-07",
+    "games_total": 139,
+    "games_rs": 139,
+    "games_po": 0,
+    "games_pi": 0,
+    "finals_games": 0,
+    "game7s": 0,
+    "active": false,
+    "per_season": {
+      "2004-05": {
+        "rs": 47,
+        "po": 0,
+        "pi": 0,
+        "total": 47
+      },
+      "2005-06": {
+        "rs": 41,
+        "po": 0,
+        "pi": 0,
+        "total": 41
+      },
+      "2006-07": {
+        "rs": 51,
+        "po": 0,
+        "pi": 0,
+        "total": 51
+      }
+    }
+  },
+  "team_records": [
+    {
+      "team_abbr": "NYK",
+      "games": 14,
+      "wins": 5,
+      "losses": 9,
+      "win_pct": 0.36,
+      "home_games": 3,
+      "home_wins": 1,
+      "avg_margin_for_team": -5.57
+    },
+    {
+      "team_abbr": "MIA",
+      "games": 14,
+      "wins": 10,
+      "losses": 4,
+      "win_pct": 0.71,
+      "home_games": 9,
+      "home_wins": 7,
+      "avg_margin_for_team": 9.21
+    },
+    {
+      "team_abbr": "SEA",
+      "games": 13,
+      "wins": 5,
+      "losses": 8,
+      "win_pct": 0.38,
+      "home_games": 6,
+      "home_wins": 3,
+      "avg_margin_for_team": 0.46
+    },
+    {
+      "team_abbr": "IND",
+      "games": 12,
+      "wins": 8,
+      "losses": 4,
+      "win_pct": 0.67,
+      "home_games": 6,
+      "home_wins": 5,
+      "avg_margin_for_team": 4.75
+    },
+    {
+      "team_abbr": "PHI",
+      "games": 12,
+      "wins": 9,
+      "losses": 3,
+      "win_pct": 0.75,
+      "home_games": 9,
+      "home_wins": 7,
+      "avg_margin_for_team": 3.33
+    },
+    {
+      "team_abbr": "BOS",
+      "games": 12,
+      "wins": 8,
+      "losses": 4,
+      "win_pct": 0.67,
+      "home_games": 7,
+      "home_wins": 5,
+      "avg_margin_for_team": 0.42
+    },
+    {
+      "team_abbr": "TOR",
+      "games": 12,
+      "wins": 4,
+      "losses": 8,
+      "win_pct": 0.33,
+      "home_games": 6,
+      "home_wins": 3,
+      "avg_margin_for_team": -2.25
+    },
+    {
+      "team_abbr": "WAS",
+      "games": 12,
+      "wins": 6,
+      "losses": 6,
+      "win_pct": 0.5,
+      "home_games": 9,
+      "home_wins": 5,
+      "avg_margin_for_team": 0.33
+    },
+    {
+      "team_abbr": "ORL",
+      "games": 11,
+      "wins": 7,
+      "losses": 4,
+      "win_pct": 0.64,
+      "home_games": 7,
+      "home_wins": 6,
+      "avg_margin_for_team": 2.73
+    },
+    {
+      "team_abbr": "ATL",
+      "games": 11,
+      "wins": 3,
+      "losses": 8,
+      "win_pct": 0.27,
+      "home_games": 5,
+      "home_wins": 1,
+      "avg_margin_for_team": -7.45
+    },
+    {
+      "team_abbr": "CHA",
+      "games": 11,
+      "wins": 3,
+      "losses": 8,
+      "win_pct": 0.27,
+      "home_games": 8,
+      "home_wins": 3,
+      "avg_margin_for_team": -2.36
+    },
+    {
+      "team_abbr": "LAC",
+      "games": 10,
+      "wins": 7,
+      "losses": 3,
+      "win_pct": 0.7,
+      "home_games": 7,
+      "home_wins": 6,
+      "avg_margin_for_team": 7.4
+    },
+    {
+      "team_abbr": "POR",
+      "games": 10,
+      "wins": 3,
+      "losses": 7,
+      "win_pct": 0.3,
+      "home_games": 4,
+      "home_wins": 1,
+      "avg_margin_for_team": -8.2
+    },
+    {
+      "team_abbr": "CHI",
+      "games": 9,
+      "wins": 5,
+      "losses": 4,
+      "win_pct": 0.56,
+      "home_games": 3,
+      "home_wins": 1,
+      "avg_margin_for_team": -1.0
+    },
+    {
+      "team_abbr": "SAC",
+      "games": 9,
+      "wins": 3,
+      "losses": 6,
+      "win_pct": 0.33,
+      "home_games": 6,
+      "home_wins": 3,
+      "avg_margin_for_team": 0.44
+    },
+    {
+      "team_abbr": "MEM",
+      "games": 9,
+      "wins": 5,
+      "losses": 4,
+      "win_pct": 0.56,
+      "home_games": 8,
+      "home_wins": 5,
+      "avg_margin_for_team": 1.33
+    },
+    {
+      "team_abbr": "GSW",
+      "games": 8,
+      "wins": 1,
+      "losses": 7,
+      "win_pct": 0.12,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": -7.25
+    },
+    {
+      "team_abbr": "NJN",
+      "games": 8,
+      "wins": 4,
+      "losses": 4,
+      "win_pct": 0.5,
+      "home_games": 2,
+      "home_wins": 2,
+      "avg_margin_for_team": -4.62
+    },
+    {
+      "team_abbr": "MIL",
+      "games": 8,
+      "wins": 3,
+      "losses": 5,
+      "win_pct": 0.38,
+      "home_games": 3,
+      "home_wins": 1,
+      "avg_margin_for_team": -3.12
+    },
+    {
+      "team_abbr": "UTA",
+      "games": 7,
+      "wins": 4,
+      "losses": 3,
+      "win_pct": 0.57,
+      "home_games": 1,
+      "home_wins": 1,
+      "avg_margin_for_team": -0.43
+    },
+    {
+      "team_abbr": "LAL",
+      "games": 7,
+      "wins": 3,
+      "losses": 4,
+      "win_pct": 0.43,
+      "home_games": 4,
+      "home_wins": 2,
+      "avg_margin_for_team": -5.0
+    },
+    {
+      "team_abbr": "HOU",
+      "games": 7,
+      "wins": 3,
+      "losses": 4,
+      "win_pct": 0.43,
+      "home_games": 4,
+      "home_wins": 1,
+      "avg_margin_for_team": 6.0
+    },
+    {
+      "team_abbr": "NOK",
+      "games": 7,
+      "wins": 4,
+      "losses": 3,
+      "win_pct": 0.57,
+      "home_games": 2,
+      "home_wins": 2,
+      "avg_margin_for_team": 5.14
+    },
+    {
+      "team_abbr": "MIN",
+      "games": 7,
+      "wins": 4,
+      "losses": 3,
+      "win_pct": 0.57,
+      "home_games": 3,
+      "home_wins": 2,
+      "avg_margin_for_team": -4.14
+    },
+    {
+      "team_abbr": "NOH",
+      "games": 6,
+      "wins": 1,
+      "losses": 5,
+      "win_pct": 0.17,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": -9.33
+    },
+    {
+      "team_abbr": "PHX",
+      "games": 6,
+      "wins": 2,
+      "losses": 4,
+      "win_pct": 0.33,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": -3.33
+    },
+    {
+      "team_abbr": "DEN",
+      "games": 6,
+      "wins": 2,
+      "losses": 4,
+      "win_pct": 0.33,
+      "home_games": 2,
+      "home_wins": 0,
+      "avg_margin_for_team": -0.83
+    },
+    {
+      "team_abbr": "SAS",
+      "games": 6,
+      "wins": 6,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 3,
+      "home_wins": 3,
+      "avg_margin_for_team": 4.83
+    },
+    {
+      "team_abbr": "DAL",
+      "games": 5,
+      "wins": 5,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 4,
+      "home_wins": 4,
+      "avg_margin_for_team": 11.2
+    },
+    {
+      "team_abbr": "DET",
+      "games": 5,
+      "wins": 4,
+      "losses": 1,
+      "win_pct": 0.8,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": 4.8
+    },
+    {
+      "team_abbr": "CLE",
+      "games": 4,
+      "wins": 2,
+      "losses": 2,
+      "win_pct": 0.5,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": 6.0
+    }
+  ],
+  "whistle_profile": {
+    "rs": {
+      "n": 139,
+      "n_boxscore": 139,
+      "avg_total_points": 197.34,
+      "avg_total_fta": 56.04,
+      "avg_total_pf": 47.33,
+      "home_win_pct": 0.6,
+      "avg_abs_margin": 10.63,
+      "ot_games": 10,
+      "ot_rate": 0.07
+    },
+    "po": {
+      "n": 0,
+      "n_boxscore": 0,
+      "avg_total_points": null,
+      "avg_total_fta": null,
+      "avg_total_pf": null,
+      "home_win_pct": null,
+      "avg_abs_margin": null,
+      "ot_games": null,
+      "ot_rate": null
+    }
+  },
+  "top_performances": [
+    {
+      "player_name": "Dwyane Wade",
+      "pts": 48,
+      "team_abbr": "MIA",
+      "opp_abbr": "PHI",
+      "game_date": "2005-04-14",
+      "game_id": "0020401170"
+    },
+    {
+      "player_name": "Gilbert Arenas",
+      "pts": 47,
+      "team_abbr": "WAS",
+      "opp_abbr": "MIA",
+      "game_date": "2005-12-30",
+      "game_id": "0020500417"
+    },
+    {
+      "player_name": "Allen Iverson",
+      "pts": 47,
+      "team_abbr": "PHI",
+      "opp_abbr": "NYK",
+      "game_date": "2006-03-31",
+      "game_id": "0020501070"
+    },
+    {
+      "player_name": "Mike Bibby",
+      "pts": 44,
+      "team_abbr": "SAC",
+      "opp_abbr": "PHI",
+      "game_date": "2006-01-24",
+      "game_id": "0020500598"
+    },
+    {
+      "player_name": "Kevin Garnett",
+      "pts": 44,
+      "team_abbr": "MIN",
+      "opp_abbr": "PHX",
+      "game_date": "2007-01-29",
+      "game_id": "0020600664"
+    },
+    {
+      "player_name": "Gilbert Arenas",
+      "pts": 43,
+      "team_abbr": "WAS",
+      "opp_abbr": "DAL",
+      "game_date": "2005-01-18",
+      "game_id": "0020400557"
+    },
+    {
+      "player_name": "Kobe Bryant",
+      "pts": 42,
+      "team_abbr": "LAL",
+      "opp_abbr": "SAC",
+      "game_date": "2007-01-04",
+      "game_id": "0020600478"
+    },
+    {
+      "player_name": "Allen Iverson",
+      "pts": 41,
+      "team_abbr": "PHI",
+      "opp_abbr": "SEA",
+      "game_date": "2006-01-09",
+      "game_id": "0020500486"
+    },
+    {
+      "player_name": "Allen Iverson",
+      "pts": 41,
+      "team_abbr": "PHI",
+      "opp_abbr": "SAC",
+      "game_date": "2006-01-24",
+      "game_id": "0020500598"
+    },
+    {
+      "player_name": "Ray Allen",
+      "pts": 40,
+      "team_abbr": "SEA",
+      "opp_abbr": "NYK",
+      "game_date": "2005-03-25",
+      "game_id": "0020401021"
+    },
+    {
+      "player_name": "Manu Ginobili",
+      "pts": 40,
+      "team_abbr": "SAS",
+      "opp_abbr": "LAC",
+      "game_date": "2005-04-09",
+      "game_id": "0020401139"
+    },
+    {
+      "player_name": "Vince Carter",
+      "pts": 40,
+      "team_abbr": "NJN",
+      "opp_abbr": "DEN",
+      "game_date": "2007-01-27",
+      "game_id": "0020600652"
+    },
+    {
+      "player_name": "Dwyane Wade",
+      "pts": 39,
+      "team_abbr": "MIA",
+      "opp_abbr": "UTA",
+      "game_date": "2004-11-19",
+      "game_id": "0020400122"
+    },
+    {
+      "player_name": "Shawn Marion",
+      "pts": 39,
+      "team_abbr": "PHX",
+      "opp_abbr": "NYK",
+      "game_date": "2006-01-02",
+      "game_id": "0020500438"
+    },
+    {
+      "player_name": "Pau Gasol",
+      "pts": 39,
+      "team_abbr": "MEM",
+      "opp_abbr": "WAS",
+      "game_date": "2006-02-27",
+      "game_id": "0020500831"
+    },
+    {
+      "player_name": "Allen Iverson",
+      "pts": 38,
+      "team_abbr": "PHI",
+      "opp_abbr": "MIA",
+      "game_date": "2005-04-14",
+      "game_id": "0020401170"
+    },
+    {
+      "player_name": "LeBron James",
+      "pts": 38,
+      "team_abbr": "CLE",
+      "opp_abbr": "MIN",
+      "game_date": "2005-11-26",
+      "game_id": "0020500185"
+    },
+    {
+      "player_name": "Mike Bibby",
+      "pts": 38,
+      "team_abbr": "SAC",
+      "opp_abbr": "LAL",
+      "game_date": "2007-01-04",
+      "game_id": "0020600478"
+    },
+    {
+      "player_name": "Ray Allen",
+      "pts": 38,
+      "team_abbr": "SEA",
+      "opp_abbr": "GSW",
+      "game_date": "2007-01-06",
+      "game_id": "0020600497"
+    },
+    {
+      "player_name": "Stephon Marbury",
+      "pts": 37,
+      "team_abbr": "NYK",
+      "opp_abbr": "IND",
+      "game_date": "2004-11-13",
+      "game_id": "0020400084"
+    },
+    {
+      "player_name": "Gilbert Arenas",
+      "pts": 37,
+      "team_abbr": "WAS",
+      "opp_abbr": "MEM",
+      "game_date": "2006-02-27",
+      "game_id": "0020500831"
+    },
+    {
+      "player_name": "Baron Davis",
+      "pts": 36,
+      "team_abbr": "NOH",
+      "opp_abbr": "ORL",
+      "game_date": "2004-11-05",
+      "game_id": "0020400024"
+    },
+    {
+      "player_name": "Reggie Miller",
+      "pts": 36,
+      "team_abbr": "IND",
+      "opp_abbr": "POR",
+      "game_date": "2005-02-16",
+      "game_id": "0020400774"
+    },
+    {
+      "player_name": "Ricky Davis",
+      "pts": 36,
+      "team_abbr": "BOS",
+      "opp_abbr": "ATL",
+      "game_date": "2005-04-01",
+      "game_id": "0020401069"
+    },
+    {
+      "player_name": "Richard Jefferson",
+      "pts": 36,
+      "team_abbr": "NJN",
+      "opp_abbr": "SEA",
+      "game_date": "2006-01-28",
+      "game_id": "0020500638"
+    }
+  ],
+  "player_swings": [
+    {
+      "player_id": "2407",
+      "name": "Jared Jeffries",
+      "n_games": 15,
+      "pts_with_ref": 5.47,
+      "pts_baseline": 5.89,
+      "pts_swing": -0.42,
+      "fta_swing": -0.35,
+      "pf_swing": 0.29
+    }
+  ],
+  "notable_games": []
+}

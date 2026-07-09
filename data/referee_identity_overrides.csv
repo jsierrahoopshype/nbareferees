@@ -1,0 +1,26 @@
+# Referee identity overrides (BUILD_SPEC section 3, escape hatch).
+#
+# Auto-matching (normalized-name ref_key) is the default. Add a row here ONLY
+# when the referee-identity audit printed by build.py surfaces a real problem
+# that name-normalization can't solve on its own -- e.g. a middle initial or a
+# spelling typo that splits one real person into two entities, or (rarer) two
+# different people who normalize to the same key.
+#
+# Columns:
+#   raw_name_or_id        exact raw official_name OR official_id to reassign
+#                         (matched case-insensitively against either field)
+#   canonical_ref_key     the ref_key this row should belong to (lowercase,
+#                         hyphenated: e.g. "eddie-rush")
+#   canonical_display_name  display name for that canonical referee
+#
+# Lines beginning with '#' are ignored.
+#
+# --- Seeded from the section-3 audit: cross-era name-format splits of ONE real
+# --- person (ESPN vs nbadb render the same referee differently). Each was
+# --- confirmed by contiguous/overlapping season spans in both eras.
+raw_name_or_id,canonical_ref_key,canonical_display_name
+Eddie F. Rush,eddie-rush,Eddie Rush
+J.B. DeRosa,jb-derosa,JB DeRosa
+J.D. Ralls,jd-ralls,JD Ralls
+Sir Allen Connor,sir-allen-conner,Sir Allen Conner
+SirAllen Connor,sir-allen-conner,Sir Allen Conner
