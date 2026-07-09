@@ -4,21 +4,29 @@
     "name": "Clare Simmons",
     "slug": "clare-simmons",
     "raw_ids": [
+      "1629422",
       "espn:clare-simmons"
     ],
     "eras": [
-      "espn"
+      "espn",
+      "nba"
     ],
-    "first_season": "2023-24",
+    "first_season": "2021-22",
     "last_season": "2023-24",
-    "games_total": 3,
-    "games_rs": 3,
+    "games_total": 6,
+    "games_rs": 6,
     "games_po": 0,
     "games_pi": 0,
     "finals_games": 0,
     "game7s": 0,
     "active": false,
     "per_season": {
+      "2021-22": {
+        "rs": 3,
+        "po": 0,
+        "pi": 0,
+        "total": 3
+      },
       "2023-24": {
         "rs": 3,
         "po": 0,
@@ -28,6 +36,66 @@
     }
   },
   "team_records": [
+    {
+      "team_abbr": "CLE",
+      "games": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_pct": 0.5,
+      "home_games": 2,
+      "home_wins": 1,
+      "avg_margin_for_team": 7.5
+    },
+    {
+      "team_abbr": "ORL",
+      "games": 2,
+      "wins": 0,
+      "losses": 2,
+      "win_pct": 0.0,
+      "home_games": 1,
+      "home_wins": 0,
+      "avg_margin_for_team": -6.5
+    },
+    {
+      "team_abbr": "ATL",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": 3.0
+    },
+    {
+      "team_abbr": "PHI",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": 10.0
+    },
+    {
+      "team_abbr": "OKC",
+      "games": 1,
+      "wins": 0,
+      "losses": 1,
+      "win_pct": 0.0,
+      "home_games": 1,
+      "home_wins": 0,
+      "avg_margin_for_team": -30.0
+    },
+    {
+      "team_abbr": "MIN",
+      "games": 1,
+      "wins": 1,
+      "losses": 0,
+      "win_pct": 1.0,
+      "home_games": 0,
+      "home_wins": 0,
+      "avg_margin_for_team": 30.0
+    },
     {
       "team_abbr": "BKN",
       "games": 1,
@@ -59,26 +127,6 @@
       "avg_margin_for_team": 3.0
     },
     {
-      "team_abbr": "ORL",
-      "games": 1,
-      "wins": 0,
-      "losses": 1,
-      "win_pct": 0.0,
-      "home_games": 0,
-      "home_wins": 0,
-      "avg_margin_for_team": -3.0
-    },
-    {
-      "team_abbr": "CLE",
-      "games": 1,
-      "wins": 1,
-      "losses": 0,
-      "win_pct": 1.0,
-      "home_games": 1,
-      "home_wins": 1,
-      "avg_margin_for_team": 18.0
-    },
-    {
       "team_abbr": "CHI",
       "games": 1,
       "wins": 0,
@@ -91,15 +139,15 @@
   ],
   "whistle_profile": {
     "rs": {
-      "n": 3,
-      "n_boxscore": 3,
-      "avg_total_points": 222.0,
-      "avg_total_fta": 37.0,
-      "avg_total_pf": 37.0,
-      "home_win_pct": 1.0,
-      "avg_abs_margin": 9.33,
+      "n": 6,
+      "n_boxscore": 6,
+      "avg_total_points": 227.83,
+      "avg_total_fta": 41.33,
+      "avg_total_pf": 39.83,
+      "home_win_pct": 0.5,
+      "avg_abs_margin": 11.83,
       "ot_games": 1,
-      "ot_rate": 0.33
+      "ot_rate": 0.17
     },
     "po": {
       "n": 0,
@@ -131,6 +179,22 @@
       "game_id": "401585104"
     },
     {
+      "player_name": "Trae Young",
+      "pts": 35,
+      "team_abbr": "ATL",
+      "opp_abbr": "CLE",
+      "game_date": "2021-12-31",
+      "game_id": "0022100533"
+    },
+    {
+      "player_name": "Kevin Love",
+      "pts": 35,
+      "team_abbr": "CLE",
+      "opp_abbr": "ATL",
+      "game_date": "2021-12-31",
+      "game_id": "0022100533"
+    },
+    {
       "player_name": "Donovan Mitchell",
       "pts": 34,
       "team_abbr": "CLE",
@@ -139,12 +203,44 @@
       "game_id": "401585189"
     },
     {
+      "player_name": "Joel Embiid",
+      "pts": 31,
+      "team_abbr": "PHI",
+      "opp_abbr": "ORL",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
       "player_name": "Keegan Murray",
       "pts": 28,
       "team_abbr": "SAC",
       "opp_abbr": "ORL",
       "game_date": "2024-01-04",
       "game_id": "401585104"
+    },
+    {
+      "player_name": "D'Angelo Russell",
+      "pts": 27,
+      "team_abbr": "MIN",
+      "opp_abbr": "OKC",
+      "game_date": "2022-01-07",
+      "game_id": "0022100587"
+    },
+    {
+      "player_name": "Cole Anthony",
+      "pts": 26,
+      "team_abbr": "ORL",
+      "opp_abbr": "PHI",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
+      "player_name": "Anthony Edwards",
+      "pts": 24,
+      "team_abbr": "MIN",
+      "opp_abbr": "OKC",
+      "game_date": "2022-01-07",
+      "game_id": "0022100587"
     },
     {
       "player_name": "Paul George",
@@ -163,12 +259,28 @@
       "game_id": "401585104"
     },
     {
+      "player_name": "Tobias Harris",
+      "pts": 22,
+      "team_abbr": "PHI",
+      "opp_abbr": "ORL",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
       "player_name": "Domantas Sabonis",
       "pts": 22,
       "team_abbr": "SAC",
       "opp_abbr": "ORL",
       "game_date": "2024-01-04",
       "game_id": "401585104"
+    },
+    {
+      "player_name": "Jarrett Allen",
+      "pts": 21,
+      "team_abbr": "CLE",
+      "opp_abbr": "ATL",
+      "game_date": "2021-12-31",
+      "game_id": "0022100533"
     },
     {
       "player_name": "Lonnie Walker IV",
@@ -179,140 +291,76 @@
       "game_id": "401584788"
     },
     {
+      "player_name": "Furkan Korkmaz",
+      "pts": 20,
+      "team_abbr": "PHI",
+      "opp_abbr": "ORL",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
+      "player_name": "Seth Curry",
+      "pts": 20,
+      "team_abbr": "PHI",
+      "opp_abbr": "ORL",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
+      "player_name": "Skylar Mays",
+      "pts": 19,
+      "team_abbr": "ATL",
+      "opp_abbr": "CLE",
+      "game_date": "2021-12-31",
+      "game_id": "0022100533"
+    },
+    {
+      "player_name": "Mo Bamba",
+      "pts": 19,
+      "team_abbr": "ORL",
+      "opp_abbr": "PHI",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
+      "player_name": "Karl-Anthony Towns",
+      "pts": 19,
+      "team_abbr": "MIN",
+      "opp_abbr": "OKC",
+      "game_date": "2022-01-07",
+      "game_id": "0022100587"
+    },
+    {
+      "player_name": "Clint Capela",
+      "pts": 18,
+      "team_abbr": "ATL",
+      "opp_abbr": "CLE",
+      "game_date": "2021-12-31",
+      "game_id": "0022100533"
+    },
+    {
+      "player_name": "Terrence Ross",
+      "pts": 18,
+      "team_abbr": "ORL",
+      "opp_abbr": "PHI",
+      "game_date": "2022-01-05",
+      "game_id": "0022100568"
+    },
+    {
+      "player_name": "Luguentz Dort",
+      "pts": 18,
+      "team_abbr": "OKC",
+      "opp_abbr": "MIN",
+      "game_date": "2022-01-07",
+      "game_id": "0022100587"
+    },
+    {
       "player_name": "Coby White",
       "pts": 18,
       "team_abbr": "CHI",
       "opp_abbr": "CLE",
       "game_date": "2024-01-16",
       "game_id": "401585189"
-    },
-    {
-      "player_name": "Kawhi Leonard",
-      "pts": 17,
-      "team_abbr": "LAC",
-      "opp_abbr": "BKN",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Harrison Barnes",
-      "pts": 17,
-      "team_abbr": "SAC",
-      "opp_abbr": "ORL",
-      "game_date": "2024-01-04",
-      "game_id": "401585104"
-    },
-    {
-      "player_name": "Nikola Vucevic",
-      "pts": 17,
-      "team_abbr": "CHI",
-      "opp_abbr": "CLE",
-      "game_date": "2024-01-16",
-      "game_id": "401585189"
-    },
-    {
-      "player_name": "Zach LaVine",
-      "pts": 17,
-      "team_abbr": "CHI",
-      "opp_abbr": "CLE",
-      "game_date": "2024-01-16",
-      "game_id": "401585189"
-    },
-    {
-      "player_name": "Caris LeVert",
-      "pts": 16,
-      "team_abbr": "CLE",
-      "opp_abbr": "CHI",
-      "game_date": "2024-01-16",
-      "game_id": "401585189"
-    },
-    {
-      "player_name": "Caleb Houstan",
-      "pts": 15,
-      "team_abbr": "ORL",
-      "opp_abbr": "SAC",
-      "game_date": "2024-01-04",
-      "game_id": "401585104"
-    },
-    {
-      "player_name": "De'Aaron Fox",
-      "pts": 15,
-      "team_abbr": "SAC",
-      "opp_abbr": "ORL",
-      "game_date": "2024-01-04",
-      "game_id": "401585104"
-    },
-    {
-      "player_name": "Sam Merrill",
-      "pts": 15,
-      "team_abbr": "CLE",
-      "opp_abbr": "CHI",
-      "game_date": "2024-01-16",
-      "game_id": "401585189"
-    },
-    {
-      "player_name": "Cam Thomas",
-      "pts": 14,
-      "team_abbr": "BKN",
-      "opp_abbr": "LAC",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Russell Westbrook",
-      "pts": 13,
-      "team_abbr": "LAC",
-      "opp_abbr": "BKN",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "James Harden",
-      "pts": 12,
-      "team_abbr": "LAC",
-      "opp_abbr": "BKN",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Dorian Finney-Smith",
-      "pts": 12,
-      "team_abbr": "BKN",
-      "opp_abbr": "LAC",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Royce O'Neale",
-      "pts": 12,
-      "team_abbr": "BKN",
-      "opp_abbr": "LAC",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Dean Wade",
-      "pts": 12,
-      "team_abbr": "CLE",
-      "opp_abbr": "CHI",
-      "game_date": "2024-01-16",
-      "game_id": "401585189"
-    },
-    {
-      "player_name": "Day'Ron Sharpe",
-      "pts": 11,
-      "team_abbr": "BKN",
-      "opp_abbr": "LAC",
-      "game_date": "2023-11-09",
-      "game_id": "401584788"
-    },
-    {
-      "player_name": "Chuma Okeke",
-      "pts": 11,
-      "team_abbr": "ORL",
-      "opp_abbr": "SAC",
-      "game_date": "2024-01-04",
-      "game_id": "401585104"
     }
   ],
   "player_swings": [],
