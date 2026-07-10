@@ -83,8 +83,13 @@ def signed(x, places=1):
     return "{:+.{p}f}".format(float(x), p=places)
 
 
-def season_range(first, last):
-    return first if first == last else "%s–%s" % (first, last)
+def career_span(first, last):
+    """Career span as calendar years: '2015-16'..'2025-26' -> '2015-2026'
+    (first-season start year to last-season end year). A single season such as
+    '2021-22' renders '2021-2022'."""
+    start = int(str(first)[:4])
+    end = int(str(last)[:4]) + 1
+    return "%d-%d" % (start, end)
 
 
 def gap_phrase(per_season):
@@ -129,25 +134,47 @@ def head(title, description, depth):
                            cur=CURRENT_SEASON)
 
 
-def footer():
-    links = " &middot; ".join(
-        '<a href="%s" rel="noopener">%s</a> <span class="foot-note">(%s)</span>'
-        % (esc(u), esc(name), esc(note)) for name, u, note in ATTRIBUTION)
+def footer(depth):
+    root = "../" * depth
     return """</main>
 <footer class="site-foot">
-  <p class="foot-sources">Data: {links}.</p>
   <p class="foot-editorial">Every figure here is a descriptive record of games
   as they were officiated. Nothing on this site implies a referee causes a
   result or favors a team.</p>
+  <p class="foot-links"><a href="{root}sources/index.html">Data sources</a></p>
 </footer>
-<script src="{js}"></script>
+<script src="{root}assets/app.js"></script>
 </body>
-</html>""".format(links=links, js="__JS__")
+</html>""".format(root=root)
 
 
 def page(title, description, depth, body):
-    f = footer().replace("__JS__", "../" * depth + "assets/app.js")
-    return head(title, description, depth) + body + f
+    return head(title, description, depth) + body + footer(depth)
+
+
+def ref_search(depth, position):
+    """Client-side navigate-search: fetches data/referees.json (path relative to
+    page depth) and links each match to referee/{slug}/index.html."""
+    root = "../" * depth
+    return ('<div class="refsearch-wrap" data-json="{root}data/referees.json" '
+            'data-refbase="{root}referee/" data-pos="{pos}">'
+            '<input type="search" class="refsearch" autocomplete="off" '
+            'placeholder="Search referees…" aria-label="Search referees">'
+            '<div class="refsearch-results" role="listbox" hidden></div>'
+            '</div>').format(root=root, pos=position)
+
+
+def swing_class(v):
+    """Diverging heat bucket for a swing / margin value, on the Polymarket
+    palette: green positive, red negative, bucketed by magnitude
+    (~ +/- 0.5 / 1.5 / 3 / 5+). The number and n stay visible; color supplements."""
+    if v is None:
+        return "sw s-zero"
+    a = abs(v)
+    lvl = 4 if a >= 5 else 3 if a >= 3 else 2 if a >= 1.5 else 1 if a >= 0.5 else 0
+    if lvl == 0:
+        return "sw s-zero"
+    return "sw s-%s-%d" % ("pos" if v > 0 else "neg", lvl)
 
 
 # ---------------------------------------------------------------------------
@@ -214,7 +241,7 @@ def team_records_table(records):
                 hg=r["home_games"], hgi=i(r["home_games"]),
                 hw=r["home_wins"], hwi=i(r["home_wins"]),
                 m=(margin if margin is not None else 0),
-                mc="pos" if (margin or 0) > 0 else ("neg" if (margin or 0) < 0 else ""),
+                mc=swing_class(margin),
                 ms=signed(margin)))
     return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
@@ -235,16 +262,15 @@ def swings_table(swings):
             '<td data-label="PTS with" data-sort="{pw}">{pwf}</td>'
             '<td data-label="PTS baseline" data-sort="{pb}">{pbf}</td>'
             '<td data-label="PTS swing" data-sort="{ps}"><span class="{psc}">{pss}</span></td>'
-            '<td data-label="FTA swing" data-sort="{fs}">{fss}</td>'
-            '<td data-label="PF swing" data-sort="{ff}">{ffs}</td>'
+            '<td data-label="FTA swing" data-sort="{fs}"><span class="{fsc}">{fss}</span></td>'
+            '<td data-label="PF swing" data-sort="{ff}"><span class="{ffc}">{ffs}</span></td>'
             "</tr>".format(
                 nm=esc(s["name"]), n=s["n_games"], ni=i(s["n_games"]),
                 pw=s["pts_with_ref"], pwf=dec(s["pts_with_ref"]),
                 pb=s["pts_baseline"], pbf=dec(s["pts_baseline"]),
-                ps=s["pts_swing"], pss=signed(s["pts_swing"]),
-                psc="pos" if (s["pts_swing"] or 0) > 0 else ("neg" if (s["pts_swing"] or 0) < 0 else ""),
-                fs=s["fta_swing"], fss=signed(s["fta_swing"]),
-                ff=s["pf_swing"], ffs=signed(s["pf_swing"])))
+                ps=s["pts_swing"], pss=signed(s["pts_swing"]), psc=swing_class(s["pts_swing"]),
+                fs=s["fta_swing"], fss=signed(s["fta_swing"]), fsc=swing_class(s["fta_swing"]),
+                ff=s["pf_swing"], ffs=signed(s["pf_swing"]), ffc=swing_class(s["pf_swing"])))
     return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
 
@@ -300,7 +326,7 @@ def section(num, title, inner, extra_head=""):
 def render_ref(doc):
     s = doc["summary"]
     name = s["name"]
-    seasons = season_range(s["first_season"], s["last_season"])
+    seasons = career_span(s["first_season"], s["last_season"])
     title = "%s NBA referee stats: career games, team records, player splits" % name
     desc = ("%s NBA referee profile — %s career games across %s (regular season "
             "%s, playoffs %s). Team records, whistle profile, notable games." % (
@@ -329,7 +355,7 @@ def render_ref(doc):
   </div>
 </section>""".format(name=esc(name), active=active, chips="".join(chips))
 
-    blocks = [hero]
+    blocks = [hero, ref_search(2, "top")]
 
     # whistle profile
     cols = whistle_column("Regular season", doc["whistle_profile"]["rs"]) + \
@@ -386,6 +412,7 @@ def render_ref(doc):
     else:
         inner = '<p class="empty-note">No playoff games on record for this official.</p>'
     blocks.append(section(next_num, "Notable games", inner, finals_line + disclosure))
+    blocks.append(ref_search(2, "bottom"))
 
     return page(title, desc, 2, "".join(blocks))
 
@@ -454,7 +481,7 @@ def render_index(refs, lb):
             "</tr>".format(
                 nm=esc(r["name"].lower()), slug=esc(r["slug"]), name=esc(r["name"]),
                 badge=' <span class="dot-active" title="Active this season">●</span>' if r["active"] else "",
-                seasons=esc(season_range(r["first_season"], r["last_season"])),
+                seasons=esc(career_span(r["first_season"], r["last_season"])),
                 g=r["games_total"], gi=i(r["games_total"]),
                 rs=r["games_rs"], rsi=i(r["games_rs"]),
                 po=r["games_po"], poi=i(r["games_po"])))
@@ -524,11 +551,36 @@ def render_index(refs, lb):
   officials with at least {min_n} qualifying games.</p>
 </section>""".format(tabs="".join(tabs_btns), panels="".join(panels), min_n=min_n)
 
-    body = hero + leaderboards + directory
+    body = hero + leaderboards + directory + ref_search(0, "bottom")
     title = "NBA Referee Database — career stats for every on-court official since 2000-01"
     desc = ("Searchable career profiles for %d NBA referees since 2000-01: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
     return page(title, desc, 0, body)
+
+
+# ---------------------------------------------------------------------------
+# data-sources page (carries the attribution moved out of the footer)
+# ---------------------------------------------------------------------------
+def render_sources():
+    items = "".join(
+        '<li class="src-item"><a href="{u}" rel="noopener">{name}</a>'
+        '<span class="src-note">{note}</span></li>'.format(
+            u=esc(u), name=esc(name), note=esc(note))
+        for name, u, note in ATTRIBUTION)
+    body = """<section class="block">
+  <div class="block-head"><span class="eyebrow">Attribution</span>
+  <h2>Data sources</h2></div>
+  <p class="caption">The NBA Referee Database is built from three public datasets,
+  combined across eras. Credit and licensing for each:</p>
+  <ul class="src-list">{items}</ul>
+  <p class="caption">The historical NBA database is published under the Creative
+  Commons Attribution-ShareAlike 4.0 licence (CC BY-SA 4.0); the derived
+  statistics on this site are shared under the same terms.</p>
+</section>""".format(items=items)
+    title = "Data sources — NBA Referee Database"
+    desc = ("Attribution and licensing for the NBA Referee Database: Wyatt Walsh's "
+            "NBA Database (CC BY-SA 4.0), ESPN's public API, and szymonjwiak's box scores.")
+    return page(title, desc, 1, body)
 
 
 # ---------------------------------------------------------------------------
@@ -669,6 +721,19 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .pos{color:var(--green);font-weight:600}
 .neg{color:var(--red);font-weight:600}
 
+/* diverging heat scale for swing / margin values (bucketed by magnitude) */
+.sw{display:inline-block;min-width:2.9rem;text-align:right;padding:.06rem .4rem;
+  border-radius:5px;font-weight:600;font-variant-numeric:tabular-nums}
+.s-zero{color:var(--text-secondary)}
+.s-pos-1{color:var(--green);background:rgba(52,199,89,.10)}
+.s-pos-2{color:var(--green);background:rgba(52,199,89,.18)}
+.s-pos-3{color:#136b31;background:rgba(52,199,89,.30)}
+.s-pos-4{color:#0e5325;background:rgba(52,199,89,.44);font-weight:700}
+.s-neg-1{color:var(--red);background:rgba(239,68,68,.09)}
+.s-neg-2{color:var(--red);background:rgba(239,68,68,.17)}
+.s-neg-3{color:#a52218;background:rgba(239,68,68,.28)}
+.s-neg-4{color:#851a12;background:rgba(239,68,68,.42);font-weight:700}
+
 /* ---- notable counts + gap disclosure ---- */
 .notable-counts{font-family:var(--mono);font-size:.8rem;color:var(--text-secondary);margin:.3rem 0 0}
 .notable-counts b{color:var(--text)}
@@ -687,6 +752,30 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .search-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
 .search-empty{color:var(--text-secondary);font-size:.82rem;margin:.7rem .2rem 0}
 .dot-active{color:var(--green);font-size:.55rem;vertical-align:middle;margin-left:.4rem}
+
+/* navigate-search (top + bottom of ref pages, bottom of index) */
+.refsearch-wrap{position:relative;max-width:32rem;margin:1.1rem 0}
+.refsearch-wrap[data-pos="top"]{margin:1.3rem 0 .3rem}
+.refsearch{width:100%;padding:.6rem .9rem;font-size:16px;font-family:inherit;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text)}
+.refsearch:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.refsearch-results{position:absolute;top:100%;left:0;right:0;margin-top:.25rem;z-index:200;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:20rem;overflow-y:auto}
+.refsearch-results[hidden]{display:none}
+.rs-item{display:flex;align-items:baseline;gap:.6rem;padding:.5rem .8rem;
+  border-bottom:1px solid var(--border);color:var(--text);text-decoration:none}
+.rs-item:last-child{border-bottom:none}
+.rs-item:hover,.rs-item.active{background:var(--surface-hover);text-decoration:none}
+.rs-name{flex:1;font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rs-meta{font-family:var(--mono);font-size:.66rem;color:var(--text-secondary);flex:none}
+.rs-empty{padding:.6rem .8rem;color:var(--text-secondary);font-size:.82rem}
+
+/* data-sources page list */
+.src-list{list-style:none;margin:.4rem 0 1.2rem;display:flex;flex-direction:column;gap:.7rem}
+.src-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem}
+.src-item a{font-weight:600}
+.src-note{display:block;font-family:var(--mono);font-size:.72rem;color:var(--text-secondary);margin-top:.25rem}
 
 /* ---- leaderboards ---- */
 .lb-tabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1.1rem}
@@ -714,9 +803,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
   border-top:1px solid var(--border);color:var(--text-secondary);
   font-family:var(--mono);font-size:.7rem;line-height:1.7;text-align:center}
-.foot-sources a{font-weight:600}
-.foot-note{color:var(--text-secondary);opacity:.8}
-.foot-editorial{max-width:74ch;margin:.7rem auto 0;opacity:.85}
+.foot-editorial{max-width:74ch;margin:0 auto;opacity:.85}
+.foot-links{margin-top:.7rem}
+.foot-links a{font-weight:600}
 
 /* ---- responsive: tables collapse to labeled cards ---- */
 @media(max-width:860px){
@@ -761,6 +850,53 @@ JS = r"""(function(){
       if(empty)empty.hidden=shown!==0;
     });
   }
+  // --- navigate-search (top/bottom of ref pages, bottom of index) ---
+  var _refCache={};
+  function loadRefs(url){
+    if(!_refCache[url]){
+      _refCache[url]=fetch(url).then(function(r){return r.json();}).catch(function(){return [];});
+    }
+    return _refCache[url];
+  }
+  function calYears(r){
+    var a=String(r.first_season).slice(0,4), b=parseInt(String(r.last_season).slice(0,4),10)+1;
+    return a+"-"+b;
+  }
+  [].slice.call(document.querySelectorAll(".refsearch-wrap")).forEach(function(wrap){
+    var input=wrap.querySelector(".refsearch");
+    var out=wrap.querySelector(".refsearch-results");
+    var base=wrap.getAttribute("data-refbase");
+    var url=wrap.getAttribute("data-json");
+    var refs=null, active=-1;
+    function href(r){return base+r.slug+"/index.html";}
+    function close(){out.hidden=true;out.innerHTML="";active=-1;}
+    function render(q){
+      if(!q){close();return;}
+      var hits=(refs||[]).filter(function(r){return r.name.toLowerCase().indexOf(q)!==-1;}).slice(0,12);
+      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee matches that name.</div>';out.hidden=false;active=-1;return;}
+      out.innerHTML=hits.map(function(r){
+        return '<a class="rs-item" href="'+href(r)+'"><span class="rs-name">'+
+          r.name.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+
+          '</span><span class="rs-meta">'+r.games_total.toLocaleString()+' g · '+calYears(r)+'</span></a>';
+      }).join("");
+      out.hidden=false;active=-1;
+    }
+    function items(){return [].slice.call(out.querySelectorAll(".rs-item"));}
+    function setActive(i){var el=items();el.forEach(function(x){x.classList.remove("active");});
+      if(i>=0&&i<el.length){active=i;el[i].classList.add("active");el[i].scrollIntoView({block:"nearest"});}}
+    input.addEventListener("input",function(){
+      var q=input.value.trim().toLowerCase();
+      loadRefs(url).then(function(data){refs=data;if(input.value.trim().toLowerCase()===q)render(q);});
+    });
+    input.addEventListener("keydown",function(e){
+      var el=items();
+      if(e.key==="ArrowDown"){e.preventDefault();setActive(Math.min(active+1,el.length-1));}
+      else if(e.key==="ArrowUp"){e.preventDefault();setActive(Math.max(active-1,0));}
+      else if(e.key==="Enter"){var t=active>=0?el[active]:el[0];if(t){e.preventDefault();window.location.href=t.getAttribute("href");}}
+      else if(e.key==="Escape"){close();}
+    });
+    document.addEventListener("click",function(e){if(!wrap.contains(e.target))close();});
+  });
   // --- sortable tables ---
   function cellVal(td){
     var s=td.getAttribute("data-sort");
@@ -820,6 +956,11 @@ def main():
     with open(os.path.join(REPO, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(refs, lb))
 
+    # data-sources page (attribution moved out of the footer)
+    os.makedirs(os.path.join(REPO, "sources"), exist_ok=True)
+    with open(os.path.join(REPO, "sources", "index.html"), "w", encoding="utf-8") as f:
+        f.write(render_sources())
+
     # referee pages
     docs = [json.load(open(p, encoding="utf-8"))
             for p in sorted(glob.glob(os.path.join(DATA, "referees", "*.json")))]
@@ -853,6 +994,7 @@ def main():
         n += 1
 
     print("wrote index.html")
+    print("wrote sources/index.html")
     print("wrote assets/style.css, assets/app.js")
     if removed:
         print("removed %d stale referee page(s)" % removed)
