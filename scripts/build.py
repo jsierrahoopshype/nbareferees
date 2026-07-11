@@ -977,6 +977,38 @@ def build_game_crew(off_ref, ref_lookup):
     return crew
 
 
+def build_crewmates(off_ref, referees_index):
+    """For each canonical referee, count games officiated together with every
+    other referee (crew-of-3 only, alternates already excluded by the first-3
+    rule) and inject a top-5 top_partners array into that ref's JSON."""
+    hr("SECTION 8  Crewmates")
+    from itertools import combinations
+    name_of = {r["official_id"]: r["name"] for r in referees_index}
+    slug_of = {r["official_id"]: r["slug"] for r in referees_index}
+    pair = defaultdict(int)
+    for _gid, grp in off_ref.groupby("game_id"):
+        crew = sorted(set(grp["ref_key"]))       # distinct keys in the trimmed crew
+        for a, b in combinations(crew, 2):
+            pair[(a, b)] += 1
+    partners = defaultdict(list)
+    for (a, b), c in pair.items():
+        partners[a].append((b, c))
+        partners[b].append((a, c))
+    for r in referees_index:
+        rk = r["official_id"]
+        ranked = sorted(partners.get(rk, []),
+                        key=lambda x: (-x[1], name_of.get(x[0], x[0])))[:5]
+        top = [{"name": name_of[o], "slug": slug_of[o], "games": c}
+               for o, c in ranked if o in name_of]
+        path = os.path.join(DATA, "referees", "%s.json" % rk)
+        doc = json.load(open(path, encoding="utf-8"))
+        doc["top_partners"] = top
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=2)
+    print("added top_partners to %d referee JSONs (%d distinct ref pairs counted)"
+          % (len(referees_index), len(pair)))
+
+
 def _clean_dir(path):
     os.makedirs(path, exist_ok=True)
     for old in glob.glob(os.path.join(path, "*.json")):
@@ -1380,6 +1412,7 @@ def main():
     referees_index, all_swings, all_team_records = aggregate(
         off_ref, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity)
 
+    build_crewmates(off_ref, referees_index)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
     game_crew = build_game_crew(off_ref, ref_lookup)
     team_index = build_team_pages(all_team_records, gm)

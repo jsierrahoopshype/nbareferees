@@ -18,33 +18,39 @@
     });
   }
   // --- navigate-search (top/bottom of ref pages, bottom of index) ---
-  var _refCache={};
-  function loadRefs(url){
-    if(!_refCache[url]){
-      _refCache[url]=fetch(url).then(function(r){return r.json();}).catch(function(){return [];});
+  var _idxCache={};
+  function loadIndex(url){
+    if(!_idxCache[url]){
+      _idxCache[url]=fetch(url).then(function(r){return r.json();}).catch(function(){return [];});
     }
-    return _refCache[url];
+    return _idxCache[url];
   }
-  function calYears(r){
-    var a=String(r.first_season).slice(0,4), b=parseInt(String(r.last_season).slice(0,4),10)+1;
-    return a+"-"+b;
-  }
+  var TYPE_DIR={ref:"referee",team:"team",player:"player"};
+  var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
+  function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
   [].slice.call(document.querySelectorAll(".refsearch-wrap")).forEach(function(wrap){
     var input=wrap.querySelector(".refsearch");
     var out=wrap.querySelector(".refsearch-results");
-    var base=wrap.getAttribute("data-refbase");
+    var root=wrap.getAttribute("data-root")||"";
     var url=wrap.getAttribute("data-json");
-    var refs=null, active=-1;
-    function href(r){return base+r.slug+"/index.html";}
+    var idx=null, active=-1;
+    function href(e){return root+TYPE_DIR[e.t]+"/"+e.s+"/index.html";}
     function close(){out.hidden=true;out.innerHTML="";active=-1;}
     function render(q){
       if(!q){close();return;}
-      var hits=(refs||[]).filter(function(r){return r.name.toLowerCase().indexOf(q)!==-1;}).slice(0,12);
-      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee matches that name.</div>';out.hidden=false;active=-1;return;}
-      out.innerHTML=hits.map(function(r){
-        return '<a class="rs-item" href="'+href(r)+'"><span class="rs-name">'+
-          r.name.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+
-          '</span><span class="rs-meta">'+r.games_total.toLocaleString()+' g · '+calYears(r)+'</span></a>';
+      var hits=(idx||[]).filter(function(e){return e.n.toLowerCase().indexOf(q)!==-1;});
+      hits.sort(function(a,b){
+        var ap=a.n.toLowerCase().indexOf(q)===0?0:1, bp=b.n.toLowerCase().indexOf(q)===0?0:1;
+        if(ap!==bp)return ap-bp;
+        return a.n.length-b.n.length;
+      });
+      hits=hits.slice(0,12);
+      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee, team or player matches.</div>';out.hidden=false;active=-1;return;}
+      out.innerHTML=hits.map(function(e){
+        return '<a class="rs-item" href="'+href(e)+'">'+
+          '<span class="rs-badge rs-'+e.t+'">'+TYPE_LABEL[e.t]+'</span>'+
+          '<span class="rs-name">'+escHtml(e.n)+'</span>'+
+          '<span class="rs-meta">'+escHtml(e.u||"")+'</span></a>';
       }).join("");
       out.hidden=false;active=-1;
     }
@@ -53,7 +59,7 @@
       if(i>=0&&i<el.length){active=i;el[i].classList.add("active");el[i].scrollIntoView({block:"nearest"});}}
     input.addEventListener("input",function(){
       var q=input.value.trim().toLowerCase();
-      loadRefs(url).then(function(data){refs=data;if(input.value.trim().toLowerCase()===q)render(q);});
+      loadIndex(url).then(function(data){idx=data;if(input.value.trim().toLowerCase()===q)render(q);});
     });
     input.addEventListener("keydown",function(e){
       var el=items();
