@@ -64,9 +64,14 @@ SWING_TOP_N = 50
 PO_BASELINE_MIN = 5               # min playoff games in a season to trust a PO baseline
 TOP_PERF_N = 25
 LEADERBOARD_MIN_GAMES = 200
+TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on team pages
+PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
 
 ALLOWED_TRICODES = nba_tricodes.VALID_TRICODES | nba_tricodes.HISTORICAL_TRICODES
 NAME_SUFFIXES = {"jr", "sr", "ii", "iii", "iv", "v"}
+
+OVERRIDE_CSV_PLAYER = os.path.join(DATA, "player_identity_overrides.csv")
+PLAYER_AUDIT_TXT = os.path.join(SRC, "_player_identity_audit.txt")
 
 
 # ----------------------------------------------------------------------------
@@ -169,7 +174,7 @@ def load_player_logs(valid_game_ids):
     pl = pd.concat(frames, ignore_index=True)
     pl = pl[pl["game_id"].isin(valid_game_ids)].copy()
     pl["team_abbr"] = pl["team_abbr"].map(nba_tricodes.to_nba_tricode)
-    for c in ["min", "pts", "fta", "pf"]:
+    for c in ["min", "pts", "fta", "pf", "reb", "ast"]:
         pl[c] = pd.to_numeric(pl[c], errors="coerce").fillna(0)
     # player_id arrives as float in the CSVs (e.g. 1018.0); coerce to a clean
     # integer string so ids don't leak a spurious ".0" into the output JSON.
@@ -448,16 +453,208 @@ def season_type_label(row):
 
 
 def build_player_baselines(pl, games_meta):
-    """(player_id, season, kind) -> dict of per-game means, where kind in {RS, PO}."""
+    """(player_id, season, kind) -> per-game means, kind in {RS, PO}. Keyed on
+    (player_id, season): a season is single-era, so this is already era-safe even
+    though numeric player_ids are reused across eras for different people."""
     m = pl.merge(games_meta[["game_id", "season", "kind"]], on="game_id", how="inner")
     m = m[m["kind"].isin(["RS", "PO"])]
     grp = m.groupby(["player_id", "season", "kind"]).agg(
-        pts=("pts", "mean"), fta=("fta", "mean"), pf=("pf", "mean"), n=("game_id", "size"),
+        pts=("pts", "mean"), fta=("fta", "mean"), pf=("pf", "mean"),
+        reb=("reb", "mean"), ast=("ast", "mean"), n=("game_id", "size"),
     )
     base = {}
     for (pid, season, kind), r in grp.iterrows():
-        base[(pid, season, kind)] = (r["pts"], r["fta"], r["pf"], int(r["n"]))
+        base[(pid, season, kind)] = (r["pts"], r["fta"], r["pf"], int(r["n"]),
+                                     r["reb"], r["ast"])
     return base
+
+
+# ----------------------------------------------------------------------------
+# player identity reconciliation (teams/players round -- TEAMS_PLAYERS_SPEC §1)
+# ----------------------------------------------------------------------------
+def norm_player_key(name):
+    """
+    Canonical PLAYER key. Unlike norm_ref_key it deliberately KEEPS Jr/Sr/II/III
+    suffixes: Tim Hardaway Sr./Jr., Gary Payton / Payton II, Larry Nance / Nance
+    Jr. are different people whose careers both touch this dataset.
+    """
+    s = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode()
+    s = s.lower().replace(".", " ").replace("'", "")
+    s = re.sub(r"[^a-z0-9\s-]", " ", s).replace("-", " ")
+    return "-".join(t for t in s.split() if t)
+
+
+def load_player_overrides():
+    """data/player_identity_overrides.csv -- same columns/semantics as the ref
+    overrides (raw_name_or_id, canonical_ref_key, canonical_display_name).
+    Shipped empty; auto-matching is the default."""
+    if not os.path.exists(OVERRIDE_CSV_PLAYER):
+        print("no player override file -- auto-matching only")
+        return {}
+    ov = pd.read_csv(OVERRIDE_CSV_PLAYER, dtype=str, comment="#").fillna("")
+    ov = ov[ov["raw_name_or_id"].str.strip() != ""]
+    mp = {}
+    for _, r in ov.iterrows():
+        mp[r["raw_name_or_id"].strip().lower()] = (
+            r["canonical_ref_key"].strip(), r["canonical_display_name"].strip())
+    print("loaded %d player identity override(s)" % len(mp))
+    return mp
+
+
+def reconcile_players(pl, gm, overrides):
+    """Reconcile players across id schemes by name, suffix-preserving key, with
+    adjacency-gated cross-era merging (gap <= 1 season). Returns:
+      seg_to_entity: "{era}:{player_id}" -> {slug, display, key, entity}
+      entities:      slug -> {display, key, seg_ids, eras, seasons, teams}
+    Writes the full merge/no-merge audit to source-data/_player_identity_audit.txt.
+    """
+    hr("PLAYER identity reconciliation")
+    m = pl.merge(gm[["game_id", "season", "era"]], on="game_id", how="inner")
+    m["seg_id"] = m["era"] + ":" + m["player_id"]
+
+    segs = {}
+    for seg_id, grp in m.groupby("seg_id"):
+        era, pid = seg_id.split(":", 1)
+        disp = grp["player_name"].value_counts().index[0]
+        starts = {int(str(s)[:4]) for s in grp["season"].unique()}
+        segs[seg_id] = {
+            "seg_id": seg_id, "era": era, "player_id": pid, "display": disp,
+            "key": norm_player_key(disp), "override_display": None,
+            "smin": min(starts), "smax": max(starts),
+            "seasons": sorted(grp["season"].unique()),
+            "teams": sorted(set(grp["team_abbr"])), "games": int(grp["game_id"].nunique()),
+        }
+
+    # overrides: force a segment onto a canonical key (matched by name or id)
+    for s in segs.values():
+        for probe in (s["display"].strip().lower(), s["player_id"].strip().lower()):
+            if probe in overrides:
+                s["key"] = overrides[probe][0]
+                s["override_display"] = overrides[probe][1]
+                break
+
+    # union different-era segments sharing a key when season ranges are adjacent
+    # or overlapping (gap <= 1 season => hi.smin <= lo.smax + 2). Same-era
+    # same-key segments never auto-merge (two different people would overlap).
+    parent = {sid: sid for sid in segs}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+
+    by_key = defaultdict(list)
+    for sid, s in segs.items():
+        by_key[s["key"]].append(sid)
+    for sids in by_key.values():
+        for a in range(len(sids)):
+            for b in range(a + 1, len(sids)):
+                sa, sb = segs[sids[a]], segs[sids[b]]
+                if sa["era"] == sb["era"]:
+                    continue
+                lo, hi = (sa, sb) if sa["smin"] <= sb["smin"] else (sb, sa)
+                if hi["smin"] <= lo["smax"] + 2:
+                    union(sids[a], sids[b])
+
+    comps = defaultdict(list)
+    for sid in segs:
+        comps[find(sid)].append(sid)
+
+    # build entity records, ordered by first appearance for stable slug suffixes
+    order = sorted(comps.values(),
+                   key=lambda ss: (min(segs[x]["smin"] for x in ss),
+                                   segs[ss[0]]["key"], segs[ss[0]]["display"]))
+    seg_to_entity, entities = {}, {}
+    used_slugs = defaultdict(int)
+    slug_collisions = []
+    for ss in order:
+        members = [segs[x] for x in ss]
+        key = members[0]["key"]
+        ov_disp = next((mm["override_display"] for mm in members if mm["override_display"]), None)
+        # canonical display: override, else the name with the most games
+        disp = ov_disp or max(members, key=lambda mm: mm["games"])["display"]
+        base = key
+        used_slugs[base] += 1
+        slug = base if used_slugs[base] == 1 else "%s-%d" % (base, used_slugs[base])
+        if used_slugs[base] > 1:
+            slug_collisions.append((slug, disp, [mm["seg_id"] for mm in members]))
+        ent = {
+            "slug": slug, "display": disp, "key": key,
+            "seg_ids": [mm["seg_id"] for mm in members],
+            "eras": sorted({mm["era"] for mm in members}),
+            "seasons": sorted(set().union(*[mm["seasons"] for mm in members])),
+            "teams": sorted(set().union(*[mm["teams"] for mm in members])),
+        }
+        entities[slug] = ent
+        for mm in members:
+            seg_to_entity[mm["seg_id"]] = {"slug": slug, "display": disp, "key": key}
+
+    # ---- audit --------------------------------------------------------------
+    merges = [ss for ss in order if len({segs[x]["era"] for x in ss}) > 1]
+    unmerged = {k: v for k, v in by_key.items()
+                if len({find(x) for x in v}) > 1}
+    lines = ["Player identity audit (teams/players round)",
+             "=" * 60, "",
+             "Segments: %d | entities: %d | cross-era merges: %d | "
+             "same-key splits kept: %d | slug collisions: %d"
+             % (len(segs), len(entities), len(merges), len(unmerged), len(slug_collisions)),
+             ""]
+    lines.append("CROSS-ERA MERGES (segments joined into one player):")
+    lines.append("-" * 60)
+    for ss in sorted(merges, key=lambda s: segs[s[0]]["key"]):
+        head = seg_to_entity[ss[0]]
+        lines.append("%s  [%s]" % (head["display"], head["slug"]))
+        for x in sorted(ss, key=lambda z: segs[z]["smin"]):
+            s = segs[x]
+            lines.append("    %-5s id=%-8s %s..%s  (%d games)  \"%s\""
+                         % (s["era"], s["player_id"], s["seasons"][0], s["seasons"][-1],
+                            s["games"], s["display"]))
+    lines += ["", "SAME-KEY PAIRS LEFT UNMERGED (gap > 1 season or same-era):",
+              "-" * 60]
+    for k in sorted(unmerged):
+        lines.append("key=%s" % k)
+        for x in sorted(unmerged[k], key=lambda z: segs[z]["smin"]):
+            s = segs[x]
+            lines.append("    %-5s id=%-8s %s..%s  -> entity [%s]"
+                         % (s["era"], s["player_id"], s["seasons"][0], s["seasons"][-1],
+                            seg_to_entity[x]["slug"]))
+    if slug_collisions:
+        lines += ["", "SLUG COLLISIONS (distinct players sharing a base slug):", "-" * 60]
+        for slug, disp, segids in slug_collisions:
+            lines.append("    %s  \"%s\"  segs=%s" % (slug, disp, segids))
+    with open(PLAYER_AUDIT_TXT, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+
+    print("players: %d segments -> %d entities (%d cross-era merges, "
+          "%d same-key splits kept, %d slug collisions)"
+          % (len(segs), len(entities), len(merges), len(unmerged), len(slug_collisions)))
+    print("full audit -> %s" % os.path.relpath(PLAYER_AUDIT_TXT, REPO))
+    print("\nSample cross-era merges:")
+    for ss in sorted(merges, key=lambda s: -sum(segs[x]["games"] for x in s))[:8]:
+        h = seg_to_entity[ss[0]]
+        rng = "/".join("%s:%s..%s" % (segs[x]["era"], segs[x]["seasons"][0], segs[x]["seasons"][-1])
+                       for x in sorted(ss, key=lambda z: segs[z]["smin"]))
+        print("  %-26s %s" % (h["display"], rng))
+    print("\nSample same-key pairs kept SEPARATE (the gap rule at work):")
+    shown = 0
+    for k in sorted(unmerged, key=lambda k: -len(unmerged[k])):
+        segids = unmerged[k]
+        if len({find(x) for x in segids}) < 2:
+            continue
+        rng = " | ".join("%s %s..%s [%s]" % (segs[x]["era"], segs[x]["seasons"][0],
+                         segs[x]["seasons"][-1], seg_to_entity[x]["slug"])
+                         for x in sorted(segids, key=lambda z: segs[z]["smin"]))
+        print("  %-22s %s" % (k, rng))
+        shown += 1
+        if shown >= 8:
+            break
+    return seg_to_entity, entities
 
 
 def slugify_unique(display, ref_key, used):
@@ -468,7 +665,7 @@ def slugify_unique(display, ref_key, used):
     return slug
 
 
-def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
+def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
     hr("SECTION 6  Per-referee aggregation")
 
     games_meta = gm.copy()
@@ -487,6 +684,8 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
     pl_by_game = {g: d for g, d in pl.groupby("game_id")}
 
     referees_index = []
+    all_swings = []          # master (ref, player-segment) swing rows for player pages
+    all_team_records = []    # master (ref, team) rows for team pages
     used_slugs = {}
     # Clean the output dir first so referees dropped by an override merge don't
     # linger as stale/orphaned files from a previous build.
@@ -546,7 +745,7 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
                     tr["margin_sum"] += float(margin)
         team_records = []
         for team, tr in team_rows.items():
-            team_records.append({
+            rec = {
                 "team_abbr": team,
                 "games": tr["games"],
                 "wins": tr["wins"],
@@ -555,7 +754,14 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
                 "home_games": tr["home_games"],
                 "home_wins": tr["home_wins"],
                 "avg_margin_for_team": clean_num(tr["margin_sum"] / tr["games"]) if tr["games"] else None,
-            })
+            }
+            team_records.append(rec)
+            # master row for the team pages (same numbers, tagged with this ref)
+            m = dict(rec)
+            m.update({"ref_key": ref_key, "ref_name": display[ref_key], "ref_slug": slug,
+                      "away_games": tr["games"] - tr["home_games"],
+                      "away_wins": tr["wins"] - tr["home_wins"]})
+            all_team_records.append(m)
         team_records.sort(key=lambda r: -r["games"])
 
         # ---- whistle profile (RS and PO separately) -------------------------
@@ -582,59 +788,111 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
             whistle[kind.lower()] = entry
 
         # ---- top performances + player swings -------------------------------
+        # Swings accumulate at the CANONICAL ENTITY level (seg_to_entity slug):
+        # a player's games with a referee combine across eras into one row and
+        # one >=15 threshold. Baselines stay keyed on (player_id, season), which
+        # is era-safe (seasons are single-era) and correctly compares each game
+        # to that player's own same-era same-season average. The (era, player_id)
+        # -> entity mapping keeps the 120 cross-era numeric-id collisions apart
+        # (e.g. "JR Smith" and "Andrew Bogut" never merge).
         top_perf = []
-        # swing accumulators: player_id -> lists
-        sw = defaultdict(lambda: {"name": None, "pts": [], "fta": [], "pf": [],
-                                  "base_pts": [], "base_fta": [], "base_pf": []})
+        sw = defaultdict(lambda: {"name": None, "slug": None, "pids": defaultdict(int),
+                                  "seasons": set(), "pts": [], "fta": [], "pf": [],
+                                  "reb": [], "ast": [], "base_pts": [], "base_fta": [],
+                                  "base_pf": [], "base_reb": [], "base_ast": []})
         for gid, g in gsub.iterrows():
             rows = pl_by_game.get(gid)
             if rows is None:
                 continue
             home, away = g["home_team_abbr"], g["away_team_abbr"]
             season, kind = g["season"], g["kind"]
+            era = "espn" if is_espn_scheme(gid) else "nba"
             for _, p in rows.iterrows():
                 team = p["team_abbr"]
                 opp = away if team == home else home
+                seg_id = "%s:%s" % (era, p["player_id"])
+                ent = seg_to_entity.get(seg_id)
                 top_perf.append((float(p["pts"]), p["player_name"], team, opp,
-                                 g["game_date"], gid))
+                                 g["game_date"], gid, seg_id))
                 if kind == "PI":
                     continue  # play-in has no baseline bucket
                 base = baselines.get((p["player_id"], season, kind))
-                if base is None:
+                if base is None or ent is None:
                     continue
                 if kind == "PO" and base[3] < PO_BASELINE_MIN:
                     continue
-                acc = sw[p["player_id"]]
-                acc["name"] = p["player_name"]
+                acc = sw[ent["slug"]]
+                acc["name"] = ent["display"]
+                acc["slug"] = ent["slug"]
+                acc["pids"][p["player_id"]] += 1
+                acc["seasons"].add(season)
                 acc["pts"].append(float(p["pts"]))
                 acc["fta"].append(float(p["fta"]))
                 acc["pf"].append(float(p["pf"]))
+                acc["reb"].append(float(p["reb"]))
+                acc["ast"].append(float(p["ast"]))
                 acc["base_pts"].append(base[0])
                 acc["base_fta"].append(base[1])
                 acc["base_pf"].append(base[2])
+                acc["base_reb"].append(base[4])
+                acc["base_ast"].append(base[5])
 
         top_perf.sort(key=lambda r: -r[0])
         top_performances = [{
             "player_name": r[1], "pts": int(r[0]), "team_abbr": r[2], "opp_abbr": r[3],
             "game_date": r[4], "game_id": r[5],
+            "player_slug": (seg_to_entity.get(r[6]) or {}).get("slug"),
         } for r in top_perf[:TOP_PERF_N]]
 
-        player_swings = []
-        for pid, acc in sw.items():
+        def _mean(a):
+            return sum(a) / len(a)
+
+        # Full swing rows for every (ref, player-ENTITY) with n>=15 combined
+        # games. The ref page renders the top-50 subset (pts/fta/pf); the master
+        # list feeds the player pages so both views share one computation and are
+        # numerically identical. player_id is the entity's most-played segment id
+        # (representative only; the slug is the canonical key).
+        full_swings = []
+        for ent_slug, acc in sw.items():
             n = len(acc["pts"])
             if n < SWING_MIN_GAMES:
                 continue
-            def mean(a):
-                return sum(a) / len(a)
-            pts_with = mean(acc["pts"])
-            pts_base = mean(acc["base_pts"])
-            player_swings.append({
-                "player_id": pid, "name": acc["name"], "n_games": n,
+            rep_pid = max(acc["pids"].items(), key=lambda kv: kv[1])[0]
+            pts_with, pts_base = _mean(acc["pts"]), _mean(acc["base_pts"])
+            reb_with, reb_base = _mean(acc["reb"]), _mean(acc["base_reb"])
+            ast_with, ast_base = _mean(acc["ast"]), _mean(acc["base_ast"])
+            full_swings.append({
+                "player_id": rep_pid, "name": acc["name"], "n_games": n,
+                "slug": ent_slug,
                 "pts_with_ref": clean_num(pts_with),
                 "pts_baseline": clean_num(pts_base),
                 "pts_swing": clean_num(pts_with - pts_base),
-                "fta_swing": clean_num(mean(acc["fta"]) - mean(acc["base_fta"])),
-                "pf_swing": clean_num(mean(acc["pf"]) - mean(acc["base_pf"])),
+                "reb_with_ref": clean_num(reb_with), "reb_baseline": clean_num(reb_base),
+                "reb_swing": clean_num(reb_with - reb_base),
+                "ast_with_ref": clean_num(ast_with), "ast_baseline": clean_num(ast_base),
+                "ast_swing": clean_num(ast_with - ast_base),
+                "fta_swing": clean_num(_mean(acc["fta"]) - _mean(acc["base_fta"])),
+                "pf_swing": clean_num(_mean(acc["pf"]) - _mean(acc["base_pf"])),
+                "seasons": sorted(acc["seasons"]),
+            })
+        # master record for player pages (all rows, tagged with this ref)
+        for r in full_swings:
+            rec = dict(r)
+            rec["ref_key"] = ref_key
+            rec["ref_name"] = display[ref_key]
+            rec["ref_slug"] = slug
+            all_swings.append(rec)
+
+        # ref-page player_swings: the same entity-level rows, top 50 by |pts
+        # swing|, projected to the fields the ref page renders.
+        player_swings = []
+        for r in full_swings:
+            player_swings.append({
+                "player_id": r["player_id"], "name": r["name"], "n_games": r["n_games"],
+                "slug": r["slug"],
+                "pts_with_ref": r["pts_with_ref"], "pts_baseline": r["pts_baseline"],
+                "pts_swing": r["pts_swing"],
+                "fta_swing": r["fta_swing"], "pf_swing": r["pf_swing"],
             })
         player_swings.sort(key=lambda r: -abs(r["pts_swing"] or 0))
         player_swings = player_swings[:SWING_TOP_N]
@@ -697,7 +955,231 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras):
     with open(os.path.join(DATA, "referees.json"), "w", encoding="utf-8") as fh:
         json.dump(referees_index, fh, ensure_ascii=False, indent=2)
 
-    return referees_index
+    print("collected %d (ref, player-segment) swing rows and %d (ref, team) rows"
+          % (len(all_swings), len(all_team_records)))
+    return referees_index, all_swings, all_team_records
+
+
+# ----------------------------------------------------------------------------
+# team & player pages (TEAMS_PLAYERS_SPEC §1)
+# ----------------------------------------------------------------------------
+def build_game_crew(off_ref, ref_lookup):
+    """game_id -> [{name, slug}] for the (trimmed) officiating crew."""
+    crew = {}
+    for gid, grp in off_ref.groupby("game_id"):
+        seen, out = set(), []
+        for rk in grp["ref_key"]:
+            if rk in ref_lookup and rk not in seen:
+                seen.add(rk)
+                nm, sl = ref_lookup[rk]
+                out.append({"name": nm, "slug": sl})
+        crew[gid] = out
+    return crew
+
+
+def _clean_dir(path):
+    os.makedirs(path, exist_ok=True)
+    for old in glob.glob(os.path.join(path, "*.json")):
+        os.remove(old)
+
+
+def build_team_pages(all_team_records, gm):
+    hr("SECTION 8  Team pages")
+    team_dir = os.path.join(DATA, "teams")
+    _clean_dir(team_dir)
+
+    by_team = defaultdict(list)
+    for r in all_team_records:
+        by_team[r["team_abbr"]].append(r)
+
+    # per-team seasons + dataset game totals from the games table
+    seasons_for, total_for = {}, {}
+    long = pd.concat([
+        gm[["game_id", "season"]].assign(t=gm["home_team_abbr"]),
+        gm[["game_id", "season"]].assign(t=gm["away_team_abbr"]),
+    ])
+    for tri, grp in long.groupby("t"):
+        seasons_for[tri] = sorted(grp["season"].unique())
+        total_for[tri] = int(grp["game_id"].nunique())
+
+    index = []
+    for tri in sorted(by_team):
+        if tri not in ALLOWED_TRICODES:
+            continue
+        recs = [r for r in by_team[tri] if r["games"] >= TEAM_REF_MIN_GAMES]
+        recs.sort(key=lambda r: -r["games"])
+        ref_records = [{
+            "ref_name": r["ref_name"], "ref_slug": r["ref_slug"], "games": r["games"],
+            "wins": r["wins"], "losses": r["losses"], "win_pct": r["win_pct"],
+            "home_games": r["home_games"], "home_wins": r["home_wins"],
+            "away_games": r["away_games"], "away_wins": r["away_wins"],
+            "avg_margin_for_team": r["avg_margin_for_team"],
+        } for r in recs]
+        seasons = seasons_for.get(tri, [])
+        doc = {
+            "summary": {
+                "tricode": tri, "name": nba_tricodes.display_name(tri), "slug": tri.lower(),
+                "first_season": seasons[0] if seasons else None,
+                "last_season": seasons[-1] if seasons else None,
+                "games_total": total_for.get(tri, 0),
+                "historical": tri in nba_tricodes.HISTORICAL_TRICODES,
+            },
+            "ref_records": ref_records,
+        }
+        assert_no_nan(doc, "team[%s]" % tri)
+        with open(os.path.join(team_dir, "%s.json" % tri.lower()), "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=2)
+        index.append({"tricode": tri, "name": doc["summary"]["name"], "slug": tri.lower()})
+
+    with open(os.path.join(DATA, "teams.json"), "w", encoding="utf-8") as fh:
+        json.dump(index, fh, ensure_ascii=False, indent=2)
+    print("wrote %d team pages" % len(index))
+    return index
+
+
+def build_player_pages(all_swings, entities, seg_to_entity, pl, gm, game_crew):
+    hr("SECTION 8  Player pages")
+    player_dir = os.path.join(DATA, "players")
+    _clean_dir(player_dir)
+
+    # ref_splits grouped by entity slug (each all_swings row is one (ref, seg))
+    by_slug = defaultdict(list)
+    for r in all_swings:
+        if r.get("slug"):
+            by_slug[r["slug"]].append(r)
+    qualifying = set(by_slug)
+
+    # per-game rows for every qualifying player's segments (for top_games + summary)
+    m = pl.merge(gm[["game_id", "season", "home_team_abbr", "away_team_abbr",
+                     "game_date", "era"]], on="game_id", how="inner")
+    m["seg_id"] = m["era"] + ":" + m["player_id"]
+    m["slug"] = m["seg_id"].map(lambda s: (seg_to_entity.get(s) or {}).get("slug"))
+    m = m[m["slug"].isin(qualifying)].copy()
+    m["opp"] = m["away_team_abbr"].where(m["team_abbr"] == m["home_team_abbr"],
+                                         m["home_team_abbr"])
+
+    games_by_slug = {slug: grp for slug, grp in m.groupby("slug")}
+
+    index = []
+    for slug in sorted(qualifying):
+        ent = entities[slug]
+        grp = games_by_slug.get(slug)
+        seasons = sorted(grp["season"].unique()) if grp is not None else ent["seasons"]
+        teams = sorted(set(grp["team_abbr"])) if grp is not None else ent["teams"]
+        games_total = int(grp["game_id"].nunique()) if grp is not None else 0
+
+        splits = sorted(by_slug[slug], key=lambda r: -r["n_games"])
+        ref_splits = [{
+            "ref_name": r["ref_name"], "ref_slug": r["ref_slug"], "player_id": r["player_id"],
+            "n_games": r["n_games"],
+            "pts_with_ref": r["pts_with_ref"], "pts_baseline": r["pts_baseline"],
+            "pts_swing": r["pts_swing"],
+            "reb_with_ref": r["reb_with_ref"], "reb_baseline": r["reb_baseline"],
+            "reb_swing": r["reb_swing"],
+            "ast_with_ref": r["ast_with_ref"], "ast_baseline": r["ast_baseline"],
+            "ast_swing": r["ast_swing"], "seasons": r["seasons"],
+        } for r in splits]
+
+        top_games = []
+        if grp is not None:
+            for _, row in grp.sort_values("pts", ascending=False).head(PLAYER_TOP_GAMES).iterrows():
+                top_games.append({
+                    "pts": int(row["pts"]), "reb": int(row["reb"]), "ast": int(row["ast"]),
+                    "team_abbr": row["team_abbr"], "opp_abbr": row["opp"],
+                    "game_date": row["game_date"], "game_id": row["game_id"],
+                    "crew": game_crew.get(row["game_id"], []),
+                })
+
+        doc = {
+            "summary": {
+                "name": ent["display"], "slug": slug,
+                "first_season": seasons[0] if seasons else None,
+                "last_season": seasons[-1] if seasons else None,
+                "teams": teams, "games_total": games_total, "eras": ent["eras"],
+            },
+            "ref_splits": ref_splits,
+            "top_games": top_games,
+        }
+        assert_no_nan(doc, "player[%s]" % slug)
+        with open(os.path.join(player_dir, "%s.json" % slug), "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=2)
+        index.append({"slug": slug, "name": ent["display"]})
+
+    with open(os.path.join(DATA, "players.json"), "w", encoding="utf-8") as fh:
+        json.dump(index, fh, ensure_ascii=False, indent=2)
+    print("wrote %d player pages" % len(index))
+    return index
+
+
+def qa_teams_players(referees_index, team_index, player_index):
+    hr("SECTION 8  QA gate (teams & players)")
+    import random
+    random.seed(0)
+    failures = []
+
+    def load(path):
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    ref_docs = {r["official_id"]: load(os.path.join(DATA, "referees", "%s.json" % r["official_id"]))
+                for r in referees_index}
+
+    # (hard) every player page has >=1 ref split
+    empty = [p["slug"] for p in player_index
+             if not load(os.path.join(DATA, "players", "%s.json" % p["slug"]))["ref_splits"]]
+    print("[hard] player pages with zero ref splits: %d" % len(empty))
+    if empty:
+        failures.append("empty player pages: %s" % empty[:5])
+
+    # (hard) spot-check 20 random ref-JSON player_swings rows reconcile identically
+    pairs = []
+    for r in referees_index:
+        for row in ref_docs[r["official_id"]]["player_swings"]:
+            if row.get("slug"):
+                pairs.append((r["official_id"], row))
+    random.shuffle(pairs)
+    checked = mismatch = 0
+    for off_id, row in pairs[:20]:
+        pdoc = load(os.path.join(DATA, "players", "%s.json" % row["slug"]))
+        # entity-level: exactly one ref_split per (player, referee)
+        match = next((s for s in pdoc["ref_splits"]
+                      if s["ref_slug"] == ref_docs[off_id]["summary"]["slug"]), None)
+        checked += 1
+        if match is None or match["n_games"] != row["n_games"] \
+                or match["pts_swing"] != row["pts_swing"] \
+                or match["pts_with_ref"] != row["pts_with_ref"] \
+                or match["pts_baseline"] != row["pts_baseline"]:
+            mismatch += 1
+            failures.append("player-split mismatch: ref=%s player=%s" % (off_id, row["slug"]))
+    print("[hard] player-split spot-check: %d checked, %d mismatched" % (checked, mismatch))
+
+    # (hard) spot-check 20 random team ref_records reconcile with the ref JSON
+    tpairs = []
+    for t in team_index:
+        tdoc = load(os.path.join(DATA, "teams", "%s.json" % t["slug"]))
+        for rr in tdoc["ref_records"]:
+            tpairs.append((t["tricode"], rr))
+    random.shuffle(tpairs)
+    tchecked = tmis = 0
+    slug_to_off = {ref_docs[r["official_id"]]["summary"]["slug"]: r["official_id"]
+                   for r in referees_index}
+    for tri, rr in tpairs[:20]:
+        off_id = slug_to_off.get(rr["ref_slug"])
+        tchecked += 1
+        trow = next((x for x in ref_docs[off_id]["team_records"] if x["team_abbr"] == tri), None) \
+            if off_id else None
+        if trow is None or trow["games"] != rr["games"] or trow["wins"] != rr["wins"] \
+                or trow["avg_margin_for_team"] != rr["avg_margin_for_team"]:
+            tmis += 1
+            failures.append("team-record mismatch: team=%s ref=%s" % (tri, rr["ref_slug"]))
+    print("[hard] team-record spot-check: %d checked, %d mismatched" % (tchecked, tmis))
+
+    if failures:
+        hr("TEAMS/PLAYERS QA GATE: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[teams/players QA checks all passed]")
 
 
 # ----------------------------------------------------------------------------
@@ -893,15 +1375,24 @@ def main():
     gm = label_rounds(gm)
 
     tg, game_tot = build_team_game(pl)
-    referees_index = aggregate(off_ref, gm, pl, tg, game_tot, display, raw_ids, eras)
+
+    seg_to_entity, entities = reconcile_players(pl, gm, load_player_overrides())
+    referees_index, all_swings, all_team_records = aggregate(
+        off_ref, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity)
+
+    ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
+    game_crew = build_game_crew(off_ref, ref_lookup)
+    team_index = build_team_pages(all_team_records, gm)
+    player_index = build_player_pages(all_swings, entities, seg_to_entity, pl, gm, game_crew)
 
     leaderboards, details = build_leaderboards(referees_index)
     qa_gate(off_raw, gm, off_trimmed, referees_index, details)
+    qa_teams_players(referees_index, team_index, player_index)
     spot_checks(referees_index, details)
 
     hr("BUILD COMPLETE")
-    print("referees: %d | data/referees.json | data/leaderboards.json | data/referees/*.json"
-          % len(referees_index))
+    print("referees: %d | teams: %d | players: %d"
+          % (len(referees_index), len(team_index), len(player_index)))
 
 
 if __name__ == "__main__":
