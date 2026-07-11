@@ -1,0 +1,905 @@
+{
+  "summary": {
+    "name": "Darvin Ham",
+    "slug": "darvin-ham",
+    "first_season": "2000-01",
+    "last_season": "2004-05",
+    "teams": [
+      "ATL",
+      "DET",
+      "MIL"
+    ],
+    "games_total": 320,
+    "eras": [
+      "espn",
+      "nba"
+    ]
+  },
+  "ref_splits": [
+    {
+      "ref_name": "Dick Bavetta",
+      "ref_slug": "dick-bavetta",
+      "player_id": "291",
+      "n_games": 30,
+      "pts_with_ref": 2.07,
+      "pts_baseline": 2.39,
+      "pts_swing": -0.33,
+      "reb_with_ref": 1.6,
+      "reb_baseline": 2.01,
+      "reb_swing": -0.41,
+      "ast_with_ref": 0.43,
+      "ast_baseline": 0.49,
+      "ast_swing": -0.06,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bob Delaney",
+      "ref_slug": "bob-delaney",
+      "player_id": "1032",
+      "n_games": 26,
+      "pts_with_ref": 1.96,
+      "pts_baseline": 2.1,
+      "pts_swing": -0.14,
+      "reb_with_ref": 1.77,
+      "reb_baseline": 1.74,
+      "reb_swing": 0.03,
+      "ast_with_ref": 0.27,
+      "ast_baseline": 0.4,
+      "ast_swing": -0.13,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Jack Nies",
+      "ref_slug": "jack-nies",
+      "player_id": "1032",
+      "n_games": 26,
+      "pts_with_ref": 2.5,
+      "pts_baseline": 2.16,
+      "pts_swing": 0.34,
+      "reb_with_ref": 1.81,
+      "reb_baseline": 1.78,
+      "reb_swing": 0.03,
+      "ast_with_ref": 0.5,
+      "ast_baseline": 0.43,
+      "ast_swing": 0.07,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Eddie Rush",
+      "ref_slug": "eddie-rush",
+      "player_id": "1032",
+      "n_games": 24,
+      "pts_with_ref": 1.67,
+      "pts_baseline": 2.24,
+      "pts_swing": -0.58,
+      "reb_with_ref": 1.54,
+      "reb_baseline": 1.78,
+      "reb_swing": -0.24,
+      "ast_with_ref": 0.42,
+      "ast_baseline": 0.45,
+      "ast_swing": -0.04,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Dan Crawford",
+      "ref_slug": "dan-crawford",
+      "player_id": "1032",
+      "n_games": 22,
+      "pts_with_ref": 2.73,
+      "pts_baseline": 2.15,
+      "pts_swing": 0.58,
+      "reb_with_ref": 2.14,
+      "reb_baseline": 1.67,
+      "reb_swing": 0.47,
+      "ast_with_ref": 0.41,
+      "ast_baseline": 0.44,
+      "ast_swing": -0.03,
+      "seasons": [
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Joe Crawford",
+      "ref_slug": "joe-crawford",
+      "player_id": "291",
+      "n_games": 21,
+      "pts_with_ref": 2.19,
+      "pts_baseline": 2.13,
+      "pts_swing": 0.06,
+      "reb_with_ref": 1.95,
+      "reb_baseline": 1.63,
+      "reb_swing": 0.33,
+      "ast_with_ref": 0.57,
+      "ast_baseline": 0.39,
+      "ast_swing": 0.18,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bennett Salvatore",
+      "ref_slug": "bennett-salvatore",
+      "player_id": "291",
+      "n_games": 20,
+      "pts_with_ref": 2.6,
+      "pts_baseline": 2.25,
+      "pts_swing": 0.35,
+      "reb_with_ref": 2.15,
+      "reb_baseline": 1.73,
+      "reb_swing": 0.42,
+      "ast_with_ref": 0.5,
+      "ast_baseline": 0.45,
+      "ast_swing": 0.05,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Greg Willard",
+      "ref_slug": "greg-willard",
+      "player_id": "291",
+      "n_games": 20,
+      "pts_with_ref": 2.0,
+      "pts_baseline": 2.5,
+      "pts_swing": -0.5,
+      "reb_with_ref": 1.3,
+      "reb_baseline": 2.01,
+      "reb_swing": -0.71,
+      "ast_with_ref": 0.5,
+      "ast_baseline": 0.51,
+      "ast_swing": -0.01,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Ron Garretson",
+      "ref_slug": "ron-garretson",
+      "player_id": "1032",
+      "n_games": 20,
+      "pts_with_ref": 2.05,
+      "pts_baseline": 1.78,
+      "pts_swing": 0.27,
+      "reb_with_ref": 1.8,
+      "reb_baseline": 1.43,
+      "reb_swing": 0.37,
+      "ast_with_ref": 0.35,
+      "ast_baseline": 0.3,
+      "ast_swing": 0.05,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Ron Olesiak",
+      "ref_slug": "ron-olesiak",
+      "player_id": "291",
+      "n_games": 20,
+      "pts_with_ref": 2.85,
+      "pts_baseline": 2.98,
+      "pts_swing": -0.13,
+      "reb_with_ref": 2.5,
+      "reb_baseline": 2.45,
+      "reb_swing": 0.05,
+      "ast_with_ref": 0.65,
+      "ast_baseline": 0.66,
+      "ast_swing": -0.01,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Steve Javie",
+      "ref_slug": "steve-javie",
+      "player_id": "1032",
+      "n_games": 20,
+      "pts_with_ref": 1.8,
+      "pts_baseline": 2.03,
+      "pts_swing": -0.23,
+      "reb_with_ref": 1.7,
+      "reb_baseline": 1.5,
+      "reb_swing": 0.2,
+      "ast_with_ref": 0.3,
+      "ast_baseline": 0.38,
+      "ast_swing": -0.08,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bernie Fryer",
+      "ref_slug": "bernie-fryer",
+      "player_id": "1032",
+      "n_games": 19,
+      "pts_with_ref": 1.05,
+      "pts_baseline": 2.05,
+      "pts_swing": -1.0,
+      "reb_with_ref": 1.53,
+      "reb_baseline": 1.64,
+      "reb_swing": -0.12,
+      "ast_with_ref": 0.47,
+      "ast_baseline": 0.42,
+      "ast_swing": 0.06,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Mike Callahan",
+      "ref_slug": "mike-callahan",
+      "player_id": "1032",
+      "n_games": 19,
+      "pts_with_ref": 1.53,
+      "pts_baseline": 1.83,
+      "pts_swing": -0.31,
+      "reb_with_ref": 1.05,
+      "reb_baseline": 1.56,
+      "reb_swing": -0.51,
+      "ast_with_ref": 0.11,
+      "ast_baseline": 0.33,
+      "ast_swing": -0.23,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bill Spooner",
+      "ref_slug": "bill-spooner",
+      "player_id": "291",
+      "n_games": 18,
+      "pts_with_ref": 1.89,
+      "pts_baseline": 2.54,
+      "pts_swing": -0.65,
+      "reb_with_ref": 1.67,
+      "reb_baseline": 2.03,
+      "reb_swing": -0.36,
+      "ast_with_ref": 0.33,
+      "ast_baseline": 0.54,
+      "ast_swing": -0.2,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "David Jones",
+      "ref_slug": "david-jones",
+      "player_id": "291",
+      "n_games": 18,
+      "pts_with_ref": 4.28,
+      "pts_baseline": 2.71,
+      "pts_swing": 1.57,
+      "reb_with_ref": 2.44,
+      "reb_baseline": 2.01,
+      "reb_swing": 0.43,
+      "ast_with_ref": 0.72,
+      "ast_baseline": 0.59,
+      "ast_swing": 0.13,
+      "seasons": [
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Derrick Stafford",
+      "ref_slug": "derrick-stafford",
+      "player_id": "291",
+      "n_games": 18,
+      "pts_with_ref": 1.83,
+      "pts_baseline": 2.46,
+      "pts_swing": -0.62,
+      "reb_with_ref": 2.72,
+      "reb_baseline": 2.02,
+      "reb_swing": 0.7,
+      "ast_with_ref": 0.67,
+      "ast_baseline": 0.5,
+      "ast_swing": 0.17,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Scott Foster",
+      "ref_slug": "scott-foster",
+      "player_id": "291",
+      "n_games": 18,
+      "pts_with_ref": 2.44,
+      "pts_baseline": 2.57,
+      "pts_swing": -0.13,
+      "reb_with_ref": 2.89,
+      "reb_baseline": 2.17,
+      "reb_swing": 0.72,
+      "ast_with_ref": 0.44,
+      "ast_baseline": 0.55,
+      "ast_swing": -0.11,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "James Capers",
+      "ref_slug": "james-capers",
+      "player_id": "291",
+      "n_games": 17,
+      "pts_with_ref": 2.24,
+      "pts_baseline": 2.54,
+      "pts_swing": -0.3,
+      "reb_with_ref": 1.76,
+      "reb_baseline": 2.14,
+      "reb_swing": -0.37,
+      "ast_with_ref": 0.41,
+      "ast_baseline": 0.54,
+      "ast_swing": -0.12,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Kevin Fehr",
+      "ref_slug": "kevin-fehr",
+      "player_id": "291",
+      "n_games": 17,
+      "pts_with_ref": 2.94,
+      "pts_baseline": 2.69,
+      "pts_swing": 0.25,
+      "reb_with_ref": 2.47,
+      "reb_baseline": 2.22,
+      "reb_swing": 0.25,
+      "ast_with_ref": 0.59,
+      "ast_baseline": 0.58,
+      "ast_swing": 0.01,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Sean Corbin",
+      "ref_slug": "sean-corbin",
+      "player_id": "1032",
+      "n_games": 17,
+      "pts_with_ref": 2.47,
+      "pts_baseline": 2.3,
+      "pts_swing": 0.17,
+      "reb_with_ref": 1.65,
+      "reb_baseline": 2.01,
+      "reb_swing": -0.36,
+      "ast_with_ref": 0.41,
+      "ast_baseline": 0.47,
+      "ast_swing": -0.06,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bill Kennedy",
+      "ref_slug": "bill-kennedy",
+      "player_id": "291",
+      "n_games": 16,
+      "pts_with_ref": 2.5,
+      "pts_baseline": 2.74,
+      "pts_swing": -0.24,
+      "reb_with_ref": 2.69,
+      "reb_baseline": 2.05,
+      "reb_swing": 0.63,
+      "ast_with_ref": 0.69,
+      "ast_baseline": 0.59,
+      "ast_swing": 0.09,
+      "seasons": [
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Joe Forte",
+      "ref_slug": "joe-forte",
+      "player_id": "291",
+      "n_games": 16,
+      "pts_with_ref": 4.0,
+      "pts_baseline": 3.06,
+      "pts_swing": 0.94,
+      "reb_with_ref": 2.75,
+      "reb_baseline": 2.42,
+      "reb_swing": 0.33,
+      "ast_with_ref": 0.62,
+      "ast_baseline": 0.64,
+      "ast_swing": -0.02,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04"
+      ]
+    },
+    {
+      "ref_name": "Leon Wood",
+      "ref_slug": "leon-wood",
+      "player_id": "1032",
+      "n_games": 16,
+      "pts_with_ref": 1.62,
+      "pts_baseline": 2.3,
+      "pts_swing": -0.67,
+      "reb_with_ref": 1.31,
+      "reb_baseline": 1.91,
+      "reb_swing": -0.6,
+      "ast_with_ref": 0.69,
+      "ast_baseline": 0.46,
+      "ast_swing": 0.22,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Phil Robinson",
+      "ref_slug": "phil-robinson",
+      "player_id": "291",
+      "n_games": 16,
+      "pts_with_ref": 2.94,
+      "pts_baseline": 2.84,
+      "pts_swing": 0.09,
+      "reb_with_ref": 2.12,
+      "reb_baseline": 2.28,
+      "reb_swing": -0.15,
+      "ast_with_ref": 0.44,
+      "ast_baseline": 0.62,
+      "ast_swing": -0.18,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Tim Donaghy",
+      "ref_slug": "tim-donaghy",
+      "player_id": "291",
+      "n_games": 16,
+      "pts_with_ref": 3.81,
+      "pts_baseline": 2.6,
+      "pts_swing": 1.21,
+      "reb_with_ref": 1.38,
+      "reb_baseline": 2.15,
+      "reb_swing": -0.77,
+      "ast_with_ref": 0.44,
+      "ast_baseline": 0.55,
+      "ast_swing": -0.12,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Bennie Adams",
+      "ref_slug": "bennie-adams",
+      "player_id": "291",
+      "n_games": 15,
+      "pts_with_ref": 2.73,
+      "pts_baseline": 3.0,
+      "pts_swing": -0.27,
+      "reb_with_ref": 2.47,
+      "reb_baseline": 2.51,
+      "reb_swing": -0.05,
+      "ast_with_ref": 0.8,
+      "ast_baseline": 0.66,
+      "ast_swing": 0.14,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Joe DeRosa",
+      "ref_slug": "joe-derosa",
+      "player_id": "291",
+      "n_games": 15,
+      "pts_with_ref": 3.33,
+      "pts_baseline": 3.04,
+      "pts_swing": 0.3,
+      "reb_with_ref": 2.73,
+      "reb_baseline": 2.36,
+      "reb_swing": 0.37,
+      "ast_with_ref": 0.53,
+      "ast_baseline": 0.62,
+      "ast_swing": -0.08,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03"
+      ]
+    },
+    {
+      "ref_name": "Ken Mauer",
+      "ref_slug": "ken-mauer",
+      "player_id": "1032",
+      "n_games": 15,
+      "pts_with_ref": 2.93,
+      "pts_baseline": 2.45,
+      "pts_swing": 0.49,
+      "reb_with_ref": 1.87,
+      "reb_baseline": 1.87,
+      "reb_swing": -0.0,
+      "ast_with_ref": 0.47,
+      "ast_baseline": 0.51,
+      "ast_swing": -0.04,
+      "seasons": [
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Mark Wunderlich",
+      "ref_slug": "mark-wunderlich",
+      "player_id": "291",
+      "n_games": 15,
+      "pts_with_ref": 2.73,
+      "pts_baseline": 2.5,
+      "pts_swing": 0.23,
+      "reb_with_ref": 1.33,
+      "reb_baseline": 2.03,
+      "reb_swing": -0.7,
+      "ast_with_ref": 0.6,
+      "ast_baseline": 0.5,
+      "ast_swing": 0.1,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    },
+    {
+      "ref_name": "Tony Brothers",
+      "ref_slug": "tony-brothers",
+      "player_id": "291",
+      "n_games": 15,
+      "pts_with_ref": 2.47,
+      "pts_baseline": 2.39,
+      "pts_swing": 0.08,
+      "reb_with_ref": 2.13,
+      "reb_baseline": 1.89,
+      "reb_swing": 0.24,
+      "ast_with_ref": 0.67,
+      "ast_baseline": 0.5,
+      "ast_swing": 0.17,
+      "seasons": [
+        "2000-01",
+        "2001-02",
+        "2002-03",
+        "2003-04",
+        "2004-05"
+      ]
+    }
+  ],
+  "top_games": [
+    {
+      "pts": 14,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "MIL",
+      "opp_abbr": "GSW",
+      "game_date": "2002-01-09",
+      "game_id": "220108009",
+      "crew": [
+        {
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        },
+        {
+          "name": "David Jones",
+          "slug": "david-jones"
+        },
+        {
+          "name": "Dee Kantner",
+          "slug": "dee-kantner"
+        }
+      ]
+    },
+    {
+      "pts": 14,
+      "reb": 4,
+      "ast": 2,
+      "team_abbr": "MIL",
+      "opp_abbr": "ATL",
+      "game_date": "2001-12-27",
+      "game_id": "211226015",
+      "crew": [
+        {
+          "name": "Ted Bernhardt",
+          "slug": "ted-bernhardt"
+        },
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        },
+        {
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
+        }
+      ]
+    },
+    {
+      "pts": 13,
+      "reb": 3,
+      "ast": 0,
+      "team_abbr": "MIL",
+      "opp_abbr": "ORL",
+      "game_date": "2002-01-19",
+      "game_id": "220118015",
+      "crew": [
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
+        },
+        {
+          "name": "Ron Olesiak",
+          "slug": "ron-olesiak"
+        },
+        {
+          "name": "Dee Kantner",
+          "slug": "dee-kantner"
+        }
+      ]
+    },
+    {
+      "pts": 12,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "MIL",
+      "opp_abbr": "CHA",
+      "game_date": "2001-12-29",
+      "game_id": "211228003",
+      "crew": [
+        {
+          "name": "Mark Wunderlich",
+          "slug": "mark-wunderlich"
+        },
+        {
+          "name": "Bill Spooner",
+          "slug": "bill-spooner"
+        },
+        {
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
+        }
+      ]
+    },
+    {
+      "pts": 12,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "ATL",
+      "opp_abbr": "NOP",
+      "game_date": "2002-11-28",
+      "game_id": "221127003",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "David Jones",
+          "slug": "david-jones"
+        },
+        {
+          "name": "Kevin Fehr",
+          "slug": "kevin-fehr"
+        }
+      ]
+    },
+    {
+      "pts": 12,
+      "reb": 2,
+      "ast": 0,
+      "team_abbr": "ATL",
+      "opp_abbr": "WAS",
+      "game_date": "2003-04-12",
+      "game_id": "230412027",
+      "crew": [
+        {
+          "name": "Joe DeRosa",
+          "slug": "joe-derosa"
+        },
+        {
+          "name": "Tim Donaghy",
+          "slug": "tim-donaghy"
+        },
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        }
+      ]
+    },
+    {
+      "pts": 11,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "DET",
+      "opp_abbr": "ORL",
+      "game_date": "2004-04-06",
+      "game_id": "0020301118",
+      "crew": [
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        },
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        }
+      ]
+    },
+    {
+      "pts": 11,
+      "reb": 6,
+      "ast": 3,
+      "team_abbr": "MIL",
+      "opp_abbr": "DEN",
+      "game_date": "2002-03-29",
+      "game_id": "220328015",
+      "crew": [
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        },
+        {
+          "name": "Scott Wall",
+          "slug": "scott-wall"
+        },
+        {
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
+        }
+      ]
+    },
+    {
+      "pts": 11,
+      "reb": 2,
+      "ast": 0,
+      "team_abbr": "MIL",
+      "opp_abbr": "CLE",
+      "game_date": "2002-03-09",
+      "game_id": "220308015",
+      "crew": [
+        {
+          "name": "Ted Bernhardt",
+          "slug": "ted-bernhardt"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        },
+        {
+          "name": "Pat Fraher",
+          "slug": "pat-fraher"
+        }
+      ]
+    },
+    {
+      "pts": 10,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "MIL",
+      "opp_abbr": "SAC",
+      "game_date": "2002-03-10",
+      "game_id": "220310015",
+      "crew": [
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        },
+        {
+          "name": "Gary Benson",
+          "slug": "gary-benson"
+        },
+        {
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
+        }
+      ]
+    }
+  ]
+}

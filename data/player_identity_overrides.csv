@@ -1,0 +1,18 @@
+# Player identity overrides (TEAMS_PLAYERS_SPEC §1, escape hatch).
+#
+# Auto-matching (suffix-preserving name key + adjacency-gated cross-era merging)
+# is the default. Add a row here ONLY when the player-identity audit
+# (source-data/_player_identity_audit.txt) surfaces a real problem the automatic
+# rules can't solve — e.g. a spelling variant that splits one person, or two
+# different people the rules merged.
+#
+# Columns (same semantics as the referee override file):
+#   raw_name_or_id          exact raw player_name OR player_id to reassign
+#                           (matched case-insensitively against either field)
+#   canonical_ref_key       the player key this row should belong to (here it is
+#                           the canonical PLAYER key: lowercase, hyphenated,
+#                           SUFFIX-PRESERVING, e.g. "gary-payton-ii")
+#   canonical_display_name  display name for that canonical player
+#
+# Lines beginning with '#' are ignored. Ship empty; auto-matching is the norm.
+raw_name_or_id,canonical_ref_key,canonical_display_name

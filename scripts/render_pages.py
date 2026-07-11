@@ -214,14 +214,42 @@ def whistle_column(kind_label, w):
         k=esc(kind_label), n=i(n), c=cells)
 
 
+# Existence sets for cross-linking (populated in main). A name is linkified only
+# when its target page exists; otherwise it renders as plain text (no dead links).
+TEAM_EXISTS = set()      # tricodes (upper) with a /team/ page
+PLAYER_EXISTS = set()    # player slugs with a /player/ page
+# All table helpers run on depth-2 pages (referee/, team/, player/), so links
+# from within them reach the repo root via "../../".
+ROOT2 = "../../"
+
+
 def team_cell(abbr):
-    """Full franchise name with the tricode kept as a small secondary chip."""
+    """Full franchise name with the tricode as a small secondary chip; the name
+    links to the team page when one exists."""
     full = nba_tricodes.display_name(abbr)
     tag = '<span class="team-tag">%s</span>' % esc(abbr)
     if full == abbr:                      # unrecognized code: chip only, no dupe
         return '<span class="team-cell">%s</span>' % tag
-    return ('<span class="team-cell"><span class="team-name">%s</span>%s</span>'
-            % (esc(full), tag))
+    name = esc(full)
+    if abbr in TEAM_EXISTS:
+        name = '<a href="%steam/%s/index.html">%s</a>' % (ROOT2, esc(abbr.lower()), name)
+    return '<span class="team-cell"><span class="team-name">%s</span>%s</span>' % (name, tag)
+
+
+def player_link(name, slug):
+    """Player name linked to its page when one exists, else plain text."""
+    if slug and slug in PLAYER_EXISTS:
+        return '<a href="%splayer/%s/index.html">%s</a>' % (ROOT2, esc(slug), esc(name))
+    return esc(name)
+
+
+def ref_link(name, slug):
+    """Referee name linked back to the ref page (always exists)."""
+    return '<a href="%sreferee/%s/index.html">%s</a>' % (ROOT2, esc(slug), esc(name))
+
+
+def back_home(label="All referees"):
+    return '<a class="backlink" href="%sindex.html">&larr; %s</a>' % (ROOT2, esc(label))
 
 
 def team_records_table(records):
@@ -273,7 +301,7 @@ def swings_table(swings):
     for s in swings:
         body.append(
             "<tr>"
-            '<td data-label="Player" data-sort="{nm}">{nm}</td>'
+            '<td data-label="Player" data-sort="{nm}">{cell}</td>'
             '<td data-label="Games" data-sort="{n}">{ni}</td>'
             '<td data-label="PTS with" data-sort="{pw}">{pwf}</td>'
             '<td data-label="PTS baseline" data-sort="{pb}">{pbf}</td>'
@@ -281,7 +309,8 @@ def swings_table(swings):
             '<td data-label="FTA swing" data-sort="{fs}"><span class="{fsc}">{fss}</span></td>'
             '<td data-label="PF swing" data-sort="{ff}"><span class="{ffc}">{ffs}</span></td>'
             "</tr>".format(
-                nm=esc(s["name"]), n=s["n_games"], ni=i(s["n_games"]),
+                nm=esc(s["name"].lower()), cell=player_link(s["name"], s.get("slug")),
+                n=s["n_games"], ni=i(s["n_games"]),
                 pw=s["pts_with_ref"], pwf=dec(s["pts_with_ref"]),
                 pb=s["pts_baseline"], pbf=dec(s["pts_baseline"]),
                 ps=s["pts_swing"], pss=signed(s["pts_swing"]), psc=swing_class(s["pts_swing"]),
@@ -301,7 +330,8 @@ def top_perf_table(perfs):
             '<td data-label="PTS"><span class="big-num">{pt}</span></td>'
             '<td data-label="Matchup" class="matchup">{tm} <span class="vs">vs</span> {op}</td>'
             '<td data-label="Date">{dt}</td>'
-            "</tr>".format(r=rank, pl=esc(p["player_name"]), pt=i(p["pts"]),
+            "</tr>".format(r=rank, pl=player_link(p["player_name"], p.get("player_slug")),
+                           pt=i(p["pts"]),
                            tm=team_cell(p["team_abbr"]), op=team_cell(p["opp_abbr"]),
                            dt=esc(p["game_date"])))
     return ('<table class="data-table"><thead><tr>'
@@ -370,8 +400,7 @@ def render_ref(doc):
   </div>
 </section>""".format(name=esc(name), active=active, chips="".join(chips))
 
-    backlink = '<a class="backlink" href="../../index.html">&larr; All referees</a>'
-    blocks = [backlink, hero, ref_search(2, "top")]
+    blocks = [back_home(), hero, ref_search(2, "top")]
 
     # whistle profile
     cols = whistle_column("Regular season", doc["whistle_profile"]["rs"]) + \
@@ -430,6 +459,159 @@ def render_ref(doc):
     blocks.append(section(next_num, "Notable games", inner, finals_line + disclosure))
     blocks.append(ref_search(2, "bottom"))
 
+    return page(title, desc, 2, "".join(blocks))
+
+
+# ---------------------------------------------------------------------------
+# team & player pages (TEAMS_PLAYERS_SPEC §2)
+# ---------------------------------------------------------------------------
+def hero_block(kicker, name, badges, chips):
+    return """<section class="ref-hero"><div class="ref-hero-body">
+    <p class="ref-kicker">{kicker}</p>
+    <h1 class="ref-name">{name}</h1>
+    <div class="ref-badges">{badges}</div>
+    <div class="chip-row">{chips}</div>
+  </div></section>""".format(kicker=esc(kicker), name=esc(name),
+                             badges=badges, chips="".join(chips))
+
+
+def team_ref_table(records):
+    cols = [("Referee", "text"), ("G", "num"), ("W", "num"), ("L", "num"),
+            ("Win%", "num"), ("Home", "num"), ("Away", "num"), ("Avg margin", "num")]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    body = []
+    for r in records:
+        m = r["avg_margin_for_team"]
+        body.append(
+            "<tr>"
+            '<td data-label="Referee" data-sort="{rs}">{ref}</td>'
+            '<td data-label="G" data-sort="{g}">{gi}</td>'
+            '<td data-label="W" data-sort="{w}">{wi}</td>'
+            '<td data-label="L" data-sort="{l}">{li}</td>'
+            '<td data-label="Win%" data-sort="{wp}">{wpf}</td>'
+            '<td data-label="Home" data-sort="{hg}">{hw}-{hl}</td>'
+            '<td data-label="Away" data-sort="{ag}">{aw}-{al}</td>'
+            '<td data-label="Avg margin" data-sort="{m}"><span class="{mc}">{ms}</span></td>'
+            "</tr>".format(
+                rs=esc(r["ref_name"].lower()), ref=ref_link(r["ref_name"], r["ref_slug"]),
+                g=r["games"], gi=i(r["games"]), w=r["wins"], wi=i(r["wins"]),
+                l=r["losses"], li=i(r["losses"]),
+                wp=(r["win_pct"] if r["win_pct"] is not None else -1), wpf=pct(r["win_pct"]),
+                hg=r["home_games"], hw=i(r["home_wins"]), hl=i(r["home_games"] - r["home_wins"]),
+                ag=r["away_games"], aw=i(r["away_wins"]), al=i(r["away_games"] - r["away_wins"]),
+                m=(m if m is not None else 0), mc=swing_class(m), ms=signed(m)))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def render_team(doc):
+    s = doc["summary"]
+    name, tri = s["name"], s["tricode"]
+    span = career_span(s["first_season"], s["last_season"]) if s["first_season"] else "—"
+    title = "How the %s perform with every NBA referee" % name
+    desc = ("%s (%s) record with every NBA referee since %s: games, win rate, "
+            "home/away split, and average margin under each official." % (
+                name, tri, s["first_season"] or "2000-01"))
+    badges = ('<span class="badge badge-past">Historical franchise</span>'
+              if s.get("historical") else "")
+    chips = [
+        stat_chip("Games in dataset", i(s["games_total"]), accent=True),
+        stat_chip("Tricode", esc(tri)),
+        stat_chip("Seasons", span),
+        stat_chip("Referees", i(len(doc["ref_records"]))),
+    ]
+    blocks = [back_home(), hero_block("NBA franchise", name, badges, chips),
+              ref_search(2, "top")]
+    methods = ('<p class="caption">A team’s record in games each official worked — '
+               'a descriptive split, not a causal claim. Referees with at least 10 '
+               'games of this team are listed; tap a column to sort.</p>')
+    blocks.append(section("01", "Record by referee",
+                          '<div class="table-wrap">%s</div>' % team_ref_table(doc["ref_records"]),
+                          methods))
+    blocks.append(ref_search(2, "bottom"))
+    return page(title, desc, 2, "".join(blocks))
+
+
+def player_ref_table(splits):
+    cols = [("Referee", "text"), ("G", "num"), ("PTS", "num"), ("PTS base", "num"),
+            ("PTS Δ", "num"), ("REB Δ", "num"), ("AST Δ", "num")]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    body = []
+    for r in splits:
+        body.append(
+            "<tr>"
+            '<td data-label="Referee" data-sort="{rs}">{ref}</td>'
+            '<td data-label="G" data-sort="{n}">{ni}</td>'
+            '<td data-label="PTS" data-sort="{pw}">{pwf}</td>'
+            '<td data-label="PTS base" data-sort="{pb}">{pbf}</td>'
+            '<td data-label="PTS Δ" data-sort="{ps}"><span class="{psc}">{pss}</span></td>'
+            '<td data-label="REB Δ" data-sort="{rd}"><span class="{rdc}">{rds}</span></td>'
+            '<td data-label="AST Δ" data-sort="{ad}"><span class="{adc}">{ads}</span></td>'
+            "</tr>".format(
+                rs=esc(r["ref_name"].lower()), ref=ref_link(r["ref_name"], r["ref_slug"]),
+                n=r["n_games"], ni=i(r["n_games"]),
+                pw=r["pts_with_ref"], pwf=dec(r["pts_with_ref"]),
+                pb=r["pts_baseline"], pbf=dec(r["pts_baseline"]),
+                ps=r["pts_swing"], pss=signed(r["pts_swing"]), psc=swing_class(r["pts_swing"]),
+                rd=r["reb_swing"], rds=signed(r["reb_swing"]), rdc=swing_class(r["reb_swing"]),
+                ad=r["ast_swing"], ads=signed(r["ast_swing"]), adc=swing_class(r["ast_swing"])))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def player_top_games_table(games):
+    body = []
+    for rank, g in enumerate(games, 1):
+        crew = " &middot; ".join(ref_link(c["name"], c["slug"]) for c in g.get("crew", [])) or "—"
+        body.append(
+            "<tr>"
+            '<td data-label="#" class="rank">{r}</td>'
+            '<td data-label="PTS"><span class="big-num">{pt}</span></td>'
+            '<td data-label="REB">{rb}</td><td data-label="AST">{as_}</td>'
+            '<td data-label="Matchup" class="matchup">{tm} <span class="vs">vs</span> {op}</td>'
+            '<td data-label="Date">{dt}</td>'
+            '<td data-label="Crew" class="crew">{crew}</td>'
+            "</tr>".format(r=rank, pt=i(g["pts"]), rb=i(g["reb"]), as_=i(g["ast"]),
+                           tm=team_cell(g["team_abbr"]), op=team_cell(g["opp_abbr"]),
+                           dt=esc(g["game_date"]), crew=crew))
+    return ('<table class="data-table"><thead><tr>'
+            '<th scope="col">#</th><th scope="col">PTS</th><th scope="col">REB</th>'
+            '<th scope="col">AST</th><th scope="col">Matchup</th><th scope="col">Date</th>'
+            '<th scope="col">Crew</th></tr></thead><tbody>{body}</tbody></table>'
+            ).format(body="".join(body))
+
+
+def render_player(doc):
+    s = doc["summary"]
+    name = s["name"]
+    span = career_span(s["first_season"], s["last_season"]) if s["first_season"] else "—"
+    title = "%s stats by referee" % name
+    desc = ("%s career stats by NBA referee: points, rebounds and assists with each "
+            "official versus %s’s own season averages, plus top scoring games." % (name, name))
+    teamtags = " ".join('<span class="team-tag">%s</span>' % esc(t) for t in s["teams"])
+    chips = [
+        stat_chip("Games in dataset", i(s["games_total"]), accent=True),
+        stat_chip("Seasons", span),
+        stat_chip("Referees", i(len(doc["ref_splits"]))),
+    ]
+    badges = '<div class="ref-badges team-list">%s</div>' % teamtags if teamtags else ""
+    blocks = [back_home(), hero_block("NBA player", name, badges, chips),
+              ref_search(2, "top")]
+    methods = ('<p class="caption">“Swing” (Δ) is the average difference between '
+               '%s’s output in games each official worked and %s’s own same-season '
+               'average — a descriptive split, not a causal claim. Referees with at '
+               'least 15 games are listed.</p>' % (esc(name), esc(name)))
+    blocks.append(section("01", "Splits by referee",
+                          '<div class="table-wrap">%s</div>' % player_ref_table(doc["ref_splits"]),
+                          methods))
+    if doc["top_games"]:
+        blocks.append(section("02", "Top scoring games",
+                              '<div class="table-wrap">%s</div>' % player_top_games_table(doc["top_games"]),
+                              '<p class="caption">%s’s highest-scoring games in the dataset, '
+                              'with the crew that worked each.</p>' % esc(name)))
+    blocks.append(ref_search(2, "bottom"))
     return page(title, desc, 2, "".join(blocks))
 
 
@@ -734,6 +916,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   letter-spacing:.03em;color:var(--text-secondary);background:var(--surface-hover);
   border-radius:4px;padding:.05rem .3rem}
 .matchup .vs{color:var(--text-secondary);font-size:.72rem;margin:0 .1rem}
+.data-table td[data-label="Crew"]{text-align:left;white-space:normal}
+.crew{font-family:var(--sans);font-size:.76rem;color:var(--text-secondary);
+  line-height:1.5;min-width:12rem}
+.team-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
 .backlink{display:inline-block;margin:1.2rem 0 .2rem;font-family:var(--mono);font-size:.72rem;
   font-weight:600;color:var(--text-secondary)}
 .round-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;font-weight:700;
@@ -965,9 +1151,37 @@ JS = r"""(function(){
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
+def _render_dir(out_root, docs_by_slug, render_fn):
+    """Write one index.html per slug under out_root/{slug}/, removing any stale
+    directories whose slug is no longer produced."""
+    os.makedirs(out_root, exist_ok=True)
+    keep = set(docs_by_slug)
+    for entry in os.listdir(out_root):
+        d = os.path.join(out_root, entry)
+        if os.path.isdir(d) and entry not in keep:
+            f = os.path.join(d, "index.html")
+            if os.path.exists(f):
+                os.remove(f)
+            if not os.listdir(d):
+                os.rmdir(d)
+    for slug, doc in docs_by_slug.items():
+        d = os.path.join(out_root, slug)
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
+            f.write(render_fn(doc))
+    return len(docs_by_slug)
+
+
 def main():
     refs = json.load(open(os.path.join(DATA, "referees.json"), encoding="utf-8"))
     lb = json.load(open(os.path.join(DATA, "leaderboards.json"), encoding="utf-8"))
+    team_index = json.load(open(os.path.join(DATA, "teams.json"), encoding="utf-8"))
+    player_index = json.load(open(os.path.join(DATA, "players.json"), encoding="utf-8"))
+
+    # populate the cross-link existence sets BEFORE rendering anything, so ref
+    # pages linkify only teams/players that actually have a page.
+    TEAM_EXISTS.update(t["tricode"] for t in team_index)
+    PLAYER_EXISTS.update(p["slug"] for p in player_index)
 
     os.makedirs(ASSETS, exist_ok=True)
     with open(os.path.join(ASSETS, "style.css"), "w", encoding="utf-8") as f:
@@ -1016,15 +1230,26 @@ def main():
             disclosed += 1
         n += 1
 
+    # team pages
+    team_docs = {t["slug"]: json.load(open(os.path.join(DATA, "teams", "%s.json" % t["slug"]),
+                                           encoding="utf-8")) for t in team_index}
+    n_teams = _render_dir(os.path.join(REPO, "team"), team_docs, render_team)
+
+    # player pages
+    player_docs = {p["slug"]: json.load(open(os.path.join(DATA, "players", "%s.json" % p["slug"]),
+                                             encoding="utf-8")) for p in player_index}
+    n_players = _render_dir(os.path.join(REPO, "player"), player_docs, render_player)
+
     print("wrote index.html")
     print("wrote sources/index.html")
     print("wrote assets/style.css, assets/app.js")
     if removed:
         print("removed %d stale referee page(s)" % removed)
     print("wrote %d referee pages (%d carry the gap-season disclosure)" % (n, disclosed))
+    print("wrote %d team pages, %d player pages" % (n_teams, n_players))
     print("sample URLs:")
-    for s in ["scott-foster", "joe-derosa", "jimmy-clark"]:
-        print("  referee/%s/index.html" % s)
+    for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/"]:
+        print("  %sindex.html" % u)
 
 
 if __name__ == "__main__":
