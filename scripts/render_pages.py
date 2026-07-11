@@ -28,9 +28,14 @@ Run from repo root:  python scripts/render_pages.py
 
 import os
 import re
+import sys
 import json
 import glob
 import html
+
+# Shared tricode → full-team-name map lives with the local scripts.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "local"))
+import nba_tricodes  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(REPO, "data")
@@ -195,7 +200,7 @@ def whistle_column(kind_label, w):
         ("Combined points", dec(w["avg_total_points"]), n),
         ("Combined free-throw attempts", dec(w["avg_total_fta"]), nb),
         ("Combined personal fouls", dec(w["avg_total_pf"]), nb),
-        ("Final margin", dec(w["avg_abs_margin"]), n),
+        ("Avg. margin of victory", dec(w["avg_abs_margin"]), n),
         ("Home team win rate", pct(w["home_win_pct"]), n),
         ("Games to overtime", pct(w["ot_rate"]) if w["ot_rate"] is not None else "—", nb),
     ]
@@ -207,6 +212,16 @@ def whistle_column(kind_label, w):
             '<span class="whistle-n">{n} games</span></h3>'
             '<div class="whistle-grid">{c}</div></div>').format(
         k=esc(kind_label), n=i(n), c=cells)
+
+
+def team_cell(abbr):
+    """Full franchise name with the tricode kept as a small secondary chip."""
+    full = nba_tricodes.display_name(abbr)
+    tag = '<span class="team-tag">%s</span>' % esc(abbr)
+    if full == abbr:                      # unrecognized code: chip only, no dupe
+        return '<span class="team-cell">%s</span>' % tag
+    return ('<span class="team-cell"><span class="team-name">%s</span>%s</span>'
+            % (esc(full), tag))
 
 
 def team_records_table(records):
@@ -225,7 +240,7 @@ def team_records_table(records):
         margin = r["avg_margin_for_team"]
         body.append(
             "<tr>"
-            '<td data-label="Team" data-sort="{team}"><span class="team-tag">{team}</span></td>'
+            '<td data-label="Team" data-sort="{teamsort}">{teamcell}</td>'
             '<td data-label="G" data-sort="{g}">{gi}</td>'
             '<td data-label="W" data-sort="{w}">{wi}</td>'
             '<td data-label="L" data-sort="{l}">{li}</td>'
@@ -234,7 +249,8 @@ def team_records_table(records):
             '<td data-label="Home W" data-sort="{hw}">{hwi}</td>'
             '<td data-label="Avg margin" data-sort="{m}"><span class="{mc}">{ms}</span></td>'
             "</tr>".format(
-                team=esc(r["team_abbr"]),
+                teamcell=team_cell(r["team_abbr"]),
+                teamsort=esc(nba_tricodes.display_name(r["team_abbr"]).lower()),
                 g=r["games"], gi=i(r["games"]), w=r["wins"], wi=i(r["wins"]),
                 l=r["losses"], li=i(r["losses"]),
                 wp=(r["win_pct"] if r["win_pct"] is not None else -1), wpf=pct(r["win_pct"]),
@@ -283,11 +299,10 @@ def top_perf_table(perfs):
             '<td data-label="#" class="rank">{r}</td>'
             '<td data-label="Player">{pl}</td>'
             '<td data-label="PTS"><span class="big-num">{pt}</span></td>'
-            '<td data-label="Team"><span class="team-tag">{tm}</span> vs '
-            '<span class="team-tag">{op}</span></td>'
+            '<td data-label="Matchup" class="matchup">{tm} <span class="vs">vs</span> {op}</td>'
             '<td data-label="Date">{dt}</td>'
             "</tr>".format(r=rank, pl=esc(p["player_name"]), pt=i(p["pts"]),
-                           tm=esc(p["team_abbr"]), op=esc(p["opp_abbr"]),
+                           tm=team_cell(p["team_abbr"]), op=team_cell(p["opp_abbr"]),
                            dt=esc(p["game_date"])))
     return ('<table class="data-table"><thead><tr>'
             '<th scope="col">#</th><th scope="col">Player</th><th scope="col">PTS</th>'
@@ -355,7 +370,8 @@ def render_ref(doc):
   </div>
 </section>""".format(name=esc(name), active=active, chips="".join(chips))
 
-    blocks = [hero, ref_search(2, "top")]
+    backlink = '<a class="backlink" href="../../index.html">&larr; All referees</a>'
+    blocks = [backlink, hero, ref_search(2, "top")]
 
     # whistle profile
     cols = whistle_column("Regular season", doc["whistle_profile"]["rs"]) + \
@@ -616,8 +632,8 @@ html{font-size:115%;-webkit-text-size-adjust:100%}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);
   line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased;
   font-feature-settings:"tnum" 1;}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
+a{color:var(--text);text-decoration:none}
+a:hover,a:focus,a:active{color:var(--accent);text-decoration:underline}
 h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .mono,.chip-val,.wm-val,.hstat-num,.lb-val,.big-num,.rank,
 .data-table td,.team-tag,.round-tag{font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -712,7 +728,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .sortable::after{content:"\2195";opacity:.5;margin-left:.25rem;font-size:.8em}
 .sortable.sort-asc::after{content:"\2191";opacity:1;color:var(--accent)}
 .sortable.sort-desc::after{content:"\2193";opacity:1;color:var(--accent)}
-.team-tag{font-family:var(--mono);font-size:.76rem;font-weight:600;letter-spacing:.02em}
+.team-cell{display:inline-flex;align-items:baseline;gap:.4rem}
+.team-name{font-family:var(--sans);font-weight:600;font-size:.86rem}
+.team-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;font-weight:600;
+  letter-spacing:.03em;color:var(--text-secondary);background:var(--surface-hover);
+  border-radius:4px;padding:.05rem .3rem}
+.matchup .vs{color:var(--text-secondary);font-size:.72rem;margin:0 .1rem}
+.backlink{display:inline-block;margin:1.2rem 0 .2rem;font-family:var(--mono);font-size:.72rem;
+  font-weight:600;color:var(--text-secondary)}
 .round-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;font-weight:700;
   text-transform:uppercase;letter-spacing:.04em;padding:.1rem .4rem;border-radius:4px;
   background:var(--accent-dim);color:var(--accent)}

@@ -28,6 +28,35 @@ VALID_TRICODES = {
 # defunct-team games (e.g. the 2000-03 Nets / Sonics / Grizzlies / Hornets).
 HISTORICAL_TRICODES = {"SEA", "NJN", "NOH", "NOK", "VAN", "CHH"}
 
+# Full franchise display names for the 30 current tricodes plus the frozen
+# historical ones in HISTORICAL_TRICODES. Used for display only (the tricode
+# stays the canonical join key). CHH is disambiguated from the current CHA
+# ("Charlotte Hornets") by its era, per the frozen-identity convention.
+TEAM_DISPLAY_NAMES = {
+    "ATL": "Atlanta Hawks", "BOS": "Boston Celtics", "BKN": "Brooklyn Nets",
+    "CHA": "Charlotte Hornets", "CHI": "Chicago Bulls", "CLE": "Cleveland Cavaliers",
+    "DAL": "Dallas Mavericks", "DEN": "Denver Nuggets", "DET": "Detroit Pistons",
+    "GSW": "Golden State Warriors", "HOU": "Houston Rockets", "IND": "Indiana Pacers",
+    "LAC": "LA Clippers", "LAL": "Los Angeles Lakers", "MEM": "Memphis Grizzlies",
+    "MIA": "Miami Heat", "MIL": "Milwaukee Bucks", "MIN": "Minnesota Timberwolves",
+    "NOP": "New Orleans Pelicans", "NYK": "New York Knicks", "OKC": "Oklahoma City Thunder",
+    "ORL": "Orlando Magic", "PHI": "Philadelphia 76ers", "PHX": "Phoenix Suns",
+    "POR": "Portland Trail Blazers", "SAC": "Sacramento Kings", "SAS": "San Antonio Spurs",
+    "TOR": "Toronto Raptors", "UTA": "Utah Jazz", "WAS": "Washington Wizards",
+    # Frozen historical / relocated identities (HISTORICAL_TRICODES).
+    "SEA": "Seattle SuperSonics", "VAN": "Vancouver Grizzlies", "NJN": "New Jersey Nets",
+    "CHH": "Charlotte Hornets (1988-2002)", "NOH": "New Orleans Hornets",
+    "NOK": "New Orleans/Oklahoma City Hornets",
+}
+
+
+def display_name(abbr):
+    """Full franchise name for a tricode; falls back to the tricode itself if
+    the code isn't recognized (so nothing ever renders blank)."""
+    if abbr is None:
+        return ""
+    return TEAM_DISPLAY_NAMES.get(str(abbr).strip().upper(), str(abbr))
+
 # Alternate abbreviation -> canonical NBA tricode. Identity entries are kept so a
 # value that is already canonical resolves to itself. Anything NOT present here is
 # passed through unchanged (see to_nba_tricode) -- that is how historical tricodes
