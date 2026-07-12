@@ -193,6 +193,18 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .rs-name{flex:1;font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rs-meta{font-family:var(--mono);font-size:.66rem;color:var(--text-secondary);flex:none}
 .rs-empty{padding:.6rem .8rem;color:var(--text-secondary);font-size:.82rem}
+.rs-badge{flex:none;font-family:var(--mono);font-size:.52rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;padding:.1rem .3rem;border-radius:4px;color:#fff;width:3.1em;text-align:center}
+.rs-ref{background:var(--accent)}
+.rs-team{background:var(--green)}
+.rs-player{background:var(--orange)}
+
+/* most-frequent-crewmates card (ref pages) */
+.partners{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.5rem}
+.partner{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem .75rem}
+.partner-name{font-weight:600;font-size:.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.partner-n{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary);flex:none}
 
 /* data-sources page list */
 .src-list{list-style:none;margin:.4rem 0 1.2rem;display:flex;flex-direction:column;gap:.7rem}

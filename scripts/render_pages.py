@@ -158,13 +158,15 @@ def page(title, description, depth, body):
 
 
 def ref_search(depth, position):
-    """Client-side navigate-search: fetches data/referees.json (path relative to
-    page depth) and links each match to referee/{slug}/index.html."""
+    """Client-side navigate-search over data/search-index.json (referees, teams
+    and players). data-root is the page's path back to the repo root, so the JS
+    can build the correct depth for referee/, team/ and player/ targets."""
     root = "../" * depth
-    return ('<div class="refsearch-wrap" data-json="{root}data/referees.json" '
-            'data-refbase="{root}referee/" data-pos="{pos}">'
+    return ('<div class="refsearch-wrap" data-json="{root}data/search-index.json" '
+            'data-root="{root}" data-pos="{pos}">'
             '<input type="search" class="refsearch" autocomplete="off" '
-            'placeholder="Search referees…" aria-label="Search referees">'
+            'placeholder="Search referees, teams, players…" '
+            'aria-label="Search referees, teams and players">'
             '<div class="refsearch-results" role="listbox" hidden></div>'
             '</div>').format(root=root, pos=position)
 
@@ -250,6 +252,21 @@ def ref_link(name, slug):
 
 def back_home(label="All referees"):
     return '<a class="backlink" href="%sindex.html">&larr; %s</a>' % (ROOT2, esc(label))
+
+
+def partners_card(partners):
+    """Compact 'Most frequent crewmates' card for a ref page; names linked."""
+    if not partners:
+        return ""
+    items = "".join(
+        '<li class="partner"><a class="partner-name" href="%sreferee/%s/index.html">%s</a>'
+        '<span class="partner-n">%s g</span></li>'
+        % (ROOT2, esc(p["slug"]), esc(p["name"]), i(p["games"])) for p in partners)
+    return ('<section class="block"><div class="block-head">'
+            '<span class="eyebrow">Crew</span><h2>Most frequent crewmates</h2></div>'
+            '<ul class="partners">%s</ul>'
+            '<p class="caption">Officials this referee has shared a three-person '
+            'crew with most often.</p></section>' % items)
 
 
 def team_records_table(records):
@@ -401,6 +418,7 @@ def render_ref(doc):
 </section>""".format(name=esc(name), active=active, chips="".join(chips))
 
     blocks = [back_home(), hero, ref_search(2, "top")]
+    blocks.append(partners_card(doc.get("top_partners")))
 
     # whistle profile
     cols = whistle_column("Regular season", doc["whistle_profile"]["rs"]) + \
@@ -979,6 +997,18 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .rs-name{flex:1;font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rs-meta{font-family:var(--mono);font-size:.66rem;color:var(--text-secondary);flex:none}
 .rs-empty{padding:.6rem .8rem;color:var(--text-secondary);font-size:.82rem}
+.rs-badge{flex:none;font-family:var(--mono);font-size:.52rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.04em;padding:.1rem .3rem;border-radius:4px;color:#fff;width:3.1em;text-align:center}
+.rs-ref{background:var(--accent)}
+.rs-team{background:var(--green)}
+.rs-player{background:var(--orange)}
+
+/* most-frequent-crewmates card (ref pages) */
+.partners{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:.5rem}
+.partner{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem .75rem}
+.partner-name{font-weight:600;font-size:.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.partner-n{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary);flex:none}
 
 /* data-sources page list */
 .src-list{list-style:none;margin:.4rem 0 1.2rem;display:flex;flex-direction:column;gap:.7rem}
@@ -1060,33 +1090,39 @@ JS = r"""(function(){
     });
   }
   // --- navigate-search (top/bottom of ref pages, bottom of index) ---
-  var _refCache={};
-  function loadRefs(url){
-    if(!_refCache[url]){
-      _refCache[url]=fetch(url).then(function(r){return r.json();}).catch(function(){return [];});
+  var _idxCache={};
+  function loadIndex(url){
+    if(!_idxCache[url]){
+      _idxCache[url]=fetch(url).then(function(r){return r.json();}).catch(function(){return [];});
     }
-    return _refCache[url];
+    return _idxCache[url];
   }
-  function calYears(r){
-    var a=String(r.first_season).slice(0,4), b=parseInt(String(r.last_season).slice(0,4),10)+1;
-    return a+"-"+b;
-  }
+  var TYPE_DIR={ref:"referee",team:"team",player:"player"};
+  var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
+  function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
   [].slice.call(document.querySelectorAll(".refsearch-wrap")).forEach(function(wrap){
     var input=wrap.querySelector(".refsearch");
     var out=wrap.querySelector(".refsearch-results");
-    var base=wrap.getAttribute("data-refbase");
+    var root=wrap.getAttribute("data-root")||"";
     var url=wrap.getAttribute("data-json");
-    var refs=null, active=-1;
-    function href(r){return base+r.slug+"/index.html";}
+    var idx=null, active=-1;
+    function href(e){return root+TYPE_DIR[e.t]+"/"+e.s+"/index.html";}
     function close(){out.hidden=true;out.innerHTML="";active=-1;}
     function render(q){
       if(!q){close();return;}
-      var hits=(refs||[]).filter(function(r){return r.name.toLowerCase().indexOf(q)!==-1;}).slice(0,12);
-      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee matches that name.</div>';out.hidden=false;active=-1;return;}
-      out.innerHTML=hits.map(function(r){
-        return '<a class="rs-item" href="'+href(r)+'"><span class="rs-name">'+
-          r.name.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+
-          '</span><span class="rs-meta">'+r.games_total.toLocaleString()+' g · '+calYears(r)+'</span></a>';
+      var hits=(idx||[]).filter(function(e){return e.n.toLowerCase().indexOf(q)!==-1;});
+      hits.sort(function(a,b){
+        var ap=a.n.toLowerCase().indexOf(q)===0?0:1, bp=b.n.toLowerCase().indexOf(q)===0?0:1;
+        if(ap!==bp)return ap-bp;
+        return a.n.length-b.n.length;
+      });
+      hits=hits.slice(0,12);
+      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee, team or player matches.</div>';out.hidden=false;active=-1;return;}
+      out.innerHTML=hits.map(function(e){
+        return '<a class="rs-item" href="'+href(e)+'">'+
+          '<span class="rs-badge rs-'+e.t+'">'+TYPE_LABEL[e.t]+'</span>'+
+          '<span class="rs-name">'+escHtml(e.n)+'</span>'+
+          '<span class="rs-meta">'+escHtml(e.u||"")+'</span></a>';
       }).join("");
       out.hidden=false;active=-1;
     }
@@ -1095,7 +1131,7 @@ JS = r"""(function(){
       if(i>=0&&i<el.length){active=i;el[i].classList.add("active");el[i].scrollIntoView({block:"nearest"});}}
     input.addEventListener("input",function(){
       var q=input.value.trim().toLowerCase();
-      loadRefs(url).then(function(data){refs=data;if(input.value.trim().toLowerCase()===q)render(q);});
+      loadIndex(url).then(function(data){idx=data;if(input.value.trim().toLowerCase()===q)render(q);});
     });
     input.addEventListener("keydown",function(e){
       var el=items();
@@ -1172,6 +1208,27 @@ def _render_dir(out_root, docs_by_slug, render_fn):
     return len(docs_by_slug)
 
 
+def build_search_index(refs, team_docs, player_docs):
+    """Slim global index for the navigate-search: {n:name, s:slug, t:type,
+    u:one-line subtitle}. type in {ref, team, player}."""
+    def sub(games, first, last):
+        span = career_span(first, last) if first else "—"
+        return "%s g · %s" % (i(games), span)
+    out = []
+    for r in refs:
+        out.append({"n": r["name"], "s": r["slug"], "t": "ref",
+                    "u": sub(r["games_total"], r["first_season"], r["last_season"])})
+    for slug in sorted(team_docs):
+        s = team_docs[slug]["summary"]
+        out.append({"n": s["name"], "s": s["slug"], "t": "team",
+                    "u": sub(s["games_total"], s["first_season"], s["last_season"])})
+    for slug in sorted(player_docs):
+        s = player_docs[slug]["summary"]
+        out.append({"n": s["name"], "s": s["slug"], "t": "player",
+                    "u": sub(s["games_total"], s["first_season"], s["last_season"])})
+    return out
+
+
 def main():
     refs = json.load(open(os.path.join(DATA, "referees.json"), encoding="utf-8"))
     lb = json.load(open(os.path.join(DATA, "leaderboards.json"), encoding="utf-8"))
@@ -1239,6 +1296,11 @@ def main():
     player_docs = {p["slug"]: json.load(open(os.path.join(DATA, "players", "%s.json" % p["slug"]),
                                              encoding="utf-8")) for p in player_index}
     n_players = _render_dir(os.path.join(REPO, "player"), player_docs, render_player)
+
+    # global search index (referees + teams + players) for the navigate-search
+    search_index = build_search_index(refs, team_docs, player_docs)
+    with open(os.path.join(DATA, "search-index.json"), "w", encoding="utf-8") as f:
+        json.dump(search_index, f, ensure_ascii=False, separators=(",", ":"))
 
     print("wrote index.html")
     print("wrote sources/index.html")
