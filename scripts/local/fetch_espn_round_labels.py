@@ -81,19 +81,45 @@ def is_espn_scheme(game_id):
     return not (len(g) == 10 and g.startswith("00"))
 
 
+def series_format(rnd, season_start_year):
+    """(clinch_wins, max_games, label) for a series in `rnd` that postseason.
+    First rounds were best-of-5 (3 wins to advance, <=5 games) only in the
+    2000-01 and 2001-02 postseasons; the NBA moved the first round to best-of-7
+    starting with the 2002-03 playoffs. Every other series is best-of-7."""
+    if rnd == 1 and season_start_year <= 2001:
+        return 3, 5, "best-of-5"
+    return 4, 7, "best-of-7"
+
+
+def game_winner(row):
+    """Winning tricode for a game row (home_win '1' -> home won, else away)."""
+    return row["home_team_abbr"] if str(row["home_win"]) == "1" else row["away_team_abbr"]
+
+
 def derive_structural(games):
     """Return a DataFrame [game_id, season, round, game_num] for every
     ESPN-scheme playoff game, derived purely from series structure. Also prints
-    a per-season validation report and returns (df, ok) where ok is False if any
-    season fails the bracket sanity checks."""
+    a per-season validation report + a completeness audit (below), and returns
+    (df, ok) where ok is False if any season fails a check.
+
+    Completeness audit: for every derived series we count each team's wins from
+    the games present and compare against the format's clinch number (4 for
+    best-of-7, 3 for best-of-5 pre-2003 first rounds). A series where NEITHER
+    team reached the clinch number is INCOMPLETE -- the signature of missing
+    games, not a real short series -- and is flagged. (A missing game also
+    silently corrupts game_num for that series, since the chronological rank of
+    the games we do have no longer matches the true game numbers.) Series with
+    more games than the format allows are flagged OVER-LONG."""
     po = games[games["season_type"] == "Playoffs"].copy()
     po = po[po["game_id"].map(is_espn_scheme)].copy()
     po["_date"] = pd.to_datetime(po["game_date"])
 
     rows = []
     all_ok = True
-    print("Structural derivation (per season):")
+    flagged_total = 0
+    print("Structural derivation + completeness audit (per season):")
     for season, sd in po.groupby("season"):
+        start_year = int(str(season)[:4])
         sd = sd.sort_values("_date")
         sd["_series"] = sd.apply(
             lambda r: frozenset({r["home_team_abbr"], r["away_team_abbr"]}), axis=1)
@@ -115,38 +141,56 @@ def derive_structural(games):
         disagree = {ser: rs for ser, rs in series_rounds.items() if len(rs) != 1}
         series_round = {ser: min(rs) for ser, rs in series_rounds.items()}
         sd["_round"] = sd["_series"].map(series_round)
+        sd["_winner"] = sd.apply(game_winner, axis=1)
 
-        # ---- validation --------------------------------------------------- #
+        # ---- bracket validation ------------------------------------------- #
         n_series = sd["_series"].nunique()
         r1 = sum(1 for r in series_round.values() if r == 1)
         r4 = sum(1 for r in series_round.values() if r == 4)
-        pre2003 = int(str(season)[:4]) <= 2002
-        # best-of-5 first rounds are allowed pre-2003, so cap game_num at 5 then, 7 otherwise
-        max_games = sd.groupby("_series")["_gnum"].max()
-        cap = 7
-        long_series = max_games[max_games > cap]
 
-        ok = (r4 == 1) and (r1 == 8) and (len(disagree) == 0) and long_series.empty
+        # ---- completeness audit (win-based) ------------------------------- #
+        flags = []  # (round, teams, n_games, "w1-w2", clinch, kind)
+        over_long = []
+        for ser, ssd in sd.groupby("_series", sort=False):
+            rnd = series_round[ser]
+            clinch, cap, label = series_format(rnd, start_year)
+            wins = ssd["_winner"].value_counts().to_dict()
+            wvals = sorted(wins.values(), reverse=True)
+            top = wvals[0] if wvals else 0
+            n_games = len(ssd)
+            teams = "/".join(sorted(ser))
+            win_str = "-".join(str(wins.get(t, 0)) for t in sorted(ser))
+            if top < clinch:
+                flags.append((rnd, teams, n_games, win_str, clinch, label, "INCOMPLETE"))
+            if n_games > cap:
+                over_long.append((rnd, teams, n_games, cap, label))
+
+        ok = (r4 == 1) and (r1 == 8) and (len(disagree) == 0) \
+            and not flags and not over_long
         all_ok = all_ok and ok
-        note = ""
-        if pre2003:
-            r1_max = max_games[[s for s in max_games.index if series_round[s] == 1]].max()
-            note = " (pre-2003: best-of-5 R1 allowed; R1 longest=%s)" % r1_max
-        print("  %s: series=%d  R1=%d  R4=%d  round-disagreements=%d  longest-series=%d  ->  %s%s"
-              % (season, n_series, r1, r4, len(disagree), int(max_games.max()),
-                 "OK" if ok else "FAIL", note))
+        flagged_total += len(flags) + len(over_long)
+        print("  %s: %d games  series=%d  R1=%d  R4=%d  round-disagreements=%d  "
+              "flagged=%d  ->  %s"
+              % (season, len(sd), n_series, r1, r4, len(disagree),
+                 len(flags) + len(over_long), "OK" if ok else "FLAGS"))
         for ser, rs in disagree.items():
             print("     ROUND DISAGREEMENT %s teams claim rounds %s" % (set(ser), sorted(rs)))
-        for ser, mx in long_series.items():
-            print("     OVER-LONG SERIES %s has %d games (> %d)" % (set(ser), int(mx), cap))
+        for rnd, teams, n_games, win_str, clinch, label, kind in sorted(flags):
+            print("     %s  R%d %s (%s): %d games present, series score %s, "
+                  "no team reached %d wins -> games MISSING"
+                  % (kind, rnd, teams, label, n_games, win_str, clinch))
+        for rnd, teams, n_games, cap, label in sorted(over_long):
+            print("     OVER-LONG  R%d %s (%s): %d games present (> %d)"
+                  % (rnd, teams, label, n_games, cap))
 
         for _, r in sd.iterrows():
             rows.append({"game_id": r["game_id"], "season": season,
                          "round": int(r["_round"]), "game_num": int(r["_gnum"])})
 
     df = pd.DataFrame(rows, columns=["game_id", "season", "round", "game_num"])
-    print("  derived %d ESPN-scheme playoff labels; all seasons %s"
-          % (len(df), "PASSED" if all_ok else "had FAILURES (see above)"))
+    print("  derived %d ESPN-scheme playoff labels; %d flagged series across all "
+          "seasons; overall %s"
+          % (len(df), flagged_total, "PASSED" if all_ok else "has FLAGS (see above)"))
     return df, all_ok
 
 
