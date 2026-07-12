@@ -30,8 +30,12 @@ Additive and idempotent (merge is keyed on game_id); safe to re-run.
 
 import os
 import sys
+import json
 import time
 import datetime
+import urllib.error
+import urllib.parse
+import urllib.request
 
 import pandas as pd
 
@@ -43,6 +47,7 @@ REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 sys.path.insert(0, SCRIPT_DIR)
 from fetch_espn_seasons import (  # noqa: E402
     get_json,
+    USER_AGENT,
     SCOREBOARD_URL,
     SUMMARY_URL,
     DELAY_SECONDS,
@@ -134,51 +139,128 @@ def teams_label(ser):
 # --------------------------------------------------------------------------- #
 # scoreboard walk with a zero-event date-1/date+1 fallback
 # --------------------------------------------------------------------------- #
+def raw_scoreboard(date, retries=4):
+    """Diagnostic scoreboard fetch. Builds the request EXACTLY as
+    fetch_espn_seasons.get_json does -- same URL (SCOREBOARD_URL + '?dates=YYYYMMDD'
+    via urlencode), same User-Agent + Accept headers, same 60s timeout, same 4x
+    exponential backoff (2/4/8s) -- but instead of get_json's behavior of hiding
+    everything behind a raised RuntimeError, it returns (events, diag):
+
+      events : the parsed events list, or [] when non-populated
+      diag   : None on a clean populated HTTP 200; otherwise a human-readable
+               string carrying the HTTP status code and the first 200 chars of
+               the RAW response body (or the exception).
+
+    This is the whole point of the recovery re-run: a swallowed 403 / redirect /
+    HTML bot-block page / error-JSON / genuinely-empty off-day all previously
+    collapsed to the same silent 'zero events'. Now each is distinguishable, so
+    a uniform failure across known-good dates (e.g. 2001-05-23, which is in our
+    extract) is visibly NOT an archive gap."""
+    ymd = date.strftime("%Y%m%d")
+    url = SCOREBOARD_URL + "?" + urllib.parse.urlencode({"dates": ymd})
+    delay = 2.0
+    diag = None
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(
+                url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                status = resp.getcode()
+                raw = resp.read()
+            body = raw.decode("utf-8", "replace")
+            try:
+                data = json.loads(body)
+            except ValueError:
+                return [], "HTTP %s but body is not JSON: %r" % (status, body[:200])
+            events = data.get("events", []) or []
+            if events:
+                return events, None
+            # A clean 200 with no events is either a genuine off-day or an error
+            # payload dressed as success -- show the body so we can tell which.
+            return [], "HTTP %s, no 'events': %r" % (status, body[:200])
+        except urllib.error.HTTPError as e:
+            try:
+                ebody = e.read().decode("utf-8", "replace")[:200]
+            except Exception:  # noqa: BLE001
+                ebody = "<unreadable>"
+            diag = "HTTPError %s %s: %r" % (e.code, e.reason, ebody)
+        except Exception as e:  # noqa: BLE001
+            diag = "%s: %s" % (type(e).__name__, e)
+        if attempt < retries - 1:
+            time.sleep(delay)
+            delay *= 2
+    return [], diag
+
+
 def scoreboard_events(date, cache):
-    """Memoized scoreboard fetch for a single date -> list of events (never
-    raises; a failed/empty date yields [])."""
+    """Memoized scoreboard fetch for a single date -> list of events. Logs the
+    diagnostic (HTTP status + raw body snippet) for every non-populated date so
+    nothing is silently treated as empty."""
     key = date.isoformat()
     if key in cache:
         return cache[key]
-    try:
-        sb = get_json(SCOREBOARD_URL, {"dates": date.strftime("%Y%m%d")})
-        evs = sb.get("events", []) or []
-    except Exception as e:  # noqa: BLE001
-        print("     scoreboard %s FAILED: %s" % (key, e))
-        evs = []
+    events, diag = raw_scoreboard(date)
+    if diag:
+        print("     scoreboard %s -> %s" % (key, diag))
     time.sleep(DELAY_SECONDS)
-    cache[key] = evs
-    return evs
+    cache[key] = events
+    return events
 
 
-def find_candidates(incomplete, cache):
+def find_candidates(incomplete, present_dates, cache):
     """Walk each incomplete series' padded date window; return
     {game_id: (event, row)} for completed playoff games that match one of the
     incomplete series' team pairs and are NOT already in the extract.
 
-    On any queried date that returns zero events, also probe date-1 and date+1
-    (the boundary-artifact fallback) and scan those events too."""
+    Only GENUINE GAP dates are walked: any date that already carries a present
+    playoff game (present_dates) is skipped, because the original fetch demonstrably
+    reached it and processed every event on it -- a missing game can only live on
+    a date that returned nothing. This stops the walk from re-querying known-good
+    dates (e.g. MIL/PHI's 05-23/25/26/28) and muddying the diagnosis.
+
+    On any gap date that still returns zero events, also probe date-1 and date+1
+    (the boundary-artifact fallback) and scan those events too. The +-1 probes are
+    NOT gap-filtered -- a boundary-shifted game may sit under a present neighbor."""
     pairs = {s["teams"]: s for s in incomplete}
     have = set().union(*[s["game_ids"] for s in incomplete]) if incomplete else set()
 
-    # union of padded, clipped windows
-    walk_dates = set()
+    # union of padded, clipped windows, MINUS dates already confirmed present
+    window_dates = set()
     for s in incomplete:
         lo = max(min(s["dates"]) - datetime.timedelta(WINDOW_PAD), BOUND_LO)
         hi = min(max(s["dates"]) + datetime.timedelta(WINDOW_PAD), BOUND_HI)
         d = lo
         while d <= hi:
-            walk_dates.add(d)
+            window_dates.add(d)
             d += ONE_DAY
+    walk_dates = {d for d in window_dates if d not in present_dates}
+    print("  walking %d genuine-gap date(s); skipped %d already-present date(s)"
+          % (len(walk_dates), len(window_dates) - len(walk_dates)))
+
+    # POSITIVE CONTROL: probe one date we KNOW carries a present game. If the
+    # fetch mechanism is healthy this returns events; if it returns a diagnostic
+    # (403 / HTML block / non-JSON) then the uniform 'zero events' across gap
+    # dates is a fetch failure, not an archive gap. This is the only present-date
+    # query -- the recovery walk itself stays gap-only.
+    control_date = min(min(s["dates"]) for s in incomplete)
+    cev, cdiag = raw_scoreboard(control_date)
+    time.sleep(DELAY_SECONDS)
+    print("  CONTROL probe of known-present %s -> %s"
+          % (control_date.isoformat(),
+             cdiag if cdiag else "%d events (fetch mechanism OK)" % len(cev)))
 
     candidates = {}  # game_id -> (event, row)
     for d in sorted(walk_dates):
         evs = scoreboard_events(d, cache)
         scan = list(evs)
         if not evs:
-            probes = [d - ONE_DAY, d + ONE_DAY]
+            # +-1 boundary probe, gap-filtered: a missing game can't hide under a
+            # present neighbor (the original fetch would have captured it there).
+            probes = [p for p in (d - ONE_DAY, d + ONE_DAY) if p not in present_dates]
             print("  %s: scoreboard returned 0 events -> probing %s"
-                  % (d.isoformat(), " and ".join(p.isoformat() for p in probes)))
+                  % (d.isoformat(),
+                     " and ".join(p.isoformat() for p in probes) if probes
+                     else "(both neighbors already present -- nothing to probe)"))
             for p in probes:
                 scan.extend(scoreboard_events(p, cache))
 
@@ -294,9 +376,15 @@ def main():
         print("  nothing to recover; 2000-01 is already complete.")
         return
 
-    print("\nWalking scoreboard windows (with zero-event date+-1 fallback):")
+    # Dates already carrying a present 2000-01 playoff game -- the walk skips
+    # these (the original fetch reached them and processed every event), so we
+    # only probe genuine gaps.
+    po_all = games[(games["season"] == SEASON) & (games["season_type"] == "Playoffs")]
+    present_dates = set(pd.to_datetime(po_all["game_date"]).dt.date)
+
+    print("\nWalking genuine-gap dates (with zero-event date+-1 fallback):")
     cache = {}
-    candidates = find_candidates(incomplete, cache)
+    candidates = find_candidates(incomplete, present_dates, cache)
 
     print("\nFetching summaries for %d candidate game(s) and merging additively:"
           % len(candidates))
