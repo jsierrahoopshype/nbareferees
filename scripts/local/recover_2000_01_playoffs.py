@@ -171,16 +171,17 @@ def raw_scoreboard(date, retries=4):
             try:
                 data = json.loads(body)
             except ValueError:
-                return [], "HTTP %s but body is not JSON: %r" % (status, body[:200])
+                return [], "HTTP %s but body is not JSON: %r" % (status, body[:1200])
             events = data.get("events", []) or []
             if events:
                 return events, None
             # A clean 200 with no events is either a genuine off-day or an error
-            # payload dressed as success -- show the body so we can tell which.
-            return [], "HTTP %s, no 'events': %r" % (status, body[:200])
+            # payload dressed as success -- show the body (1200 chars: 200 cut off
+            # right before the events key) so we can tell which.
+            return [], "HTTP %s, no 'events': %r" % (status, body[:1200])
         except urllib.error.HTTPError as e:
             try:
-                ebody = e.read().decode("utf-8", "replace")[:200]
+                ebody = e.read().decode("utf-8", "replace")[:1200]
             except Exception:  # noqa: BLE001
                 ebody = "<unreadable>"
             diag = "HTTPError %s %s: %r" % (e.code, e.reason, ebody)
@@ -237,17 +238,23 @@ def find_candidates(incomplete, present_dates, cache):
     print("  walking %d genuine-gap date(s); skipped %d already-present date(s)"
           % (len(walk_dates), len(window_dates) - len(walk_dates)))
 
-    # POSITIVE CONTROL: probe one date we KNOW carries a present game. If the
-    # fetch mechanism is healthy this returns events; if it returns a diagnostic
+    # POSITIVE CONTROLS: probe dates we KNOW carry a present game. If the fetch
+    # mechanism is healthy these return events; if they return a diagnostic
     # (403 / HTML block / non-JSON) then the uniform 'zero events' across gap
-    # dates is a fetch failure, not an archive gap. This is the only present-date
-    # query -- the recovery walk itself stays gap-only.
-    control_date = min(min(s["dates"]) for s in incomplete)
-    cev, cdiag = raw_scoreboard(control_date)
-    time.sleep(DELAY_SECONDS)
-    print("  CONTROL probe of known-present %s -> %s"
-          % (control_date.isoformat(),
-             cdiag if cdiag else "%d events (fetch mechanism OK)" % len(cev)))
+    # dates is a fetch failure, not an archive gap. These are the only present-date
+    # queries -- the recovery walk itself stays gap-only.
+    #   - the earliest present date of the incomplete series, and
+    #   - 2001-06-15 specifically (Finals G5, in our extract from the original bulk
+    #     fetch): a fresh success narrows the problem to this ~26-day window and
+    #     clears everything else already fetched; a fresh failure means something
+    #     changed archive-side since the original run.
+    control_dates = [min(min(s["dates"]) for s in incomplete), datetime.date(2001, 6, 15)]
+    for cdate in control_dates:
+        cev, cdiag = raw_scoreboard(cdate)
+        time.sleep(DELAY_SECONDS)
+        print("  CONTROL probe of known-present %s -> %s"
+              % (cdate.isoformat(),
+                 cdiag if cdiag else "%d events (fetch mechanism OK)" % len(cev)))
 
     candidates = {}  # game_id -> (event, row)
     for d in sorted(walk_dates):
