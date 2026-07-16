@@ -157,15 +157,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .s-neg-3{color:#a52218;background:rgba(239,68,68,.28)}
 .s-neg-4{color:#851a12;background:rgba(239,68,68,.42);font-weight:700}
 
-/* ---- notable counts + gap disclosure ---- */
+/* ---- notable counts ---- */
 .notable-counts{font-family:var(--mono);font-size:.8rem;color:var(--text-secondary);margin:.3rem 0 0}
 .notable-counts b{color:var(--text)}
-.disclosure{display:flex;gap:.6rem;align-items:flex-start;margin:.9rem 0 0;
-  padding:.7rem .85rem;background:var(--surface);border:1px solid var(--border);
-  border-left:3px solid var(--orange);border-radius:10px;
-  font-size:.8rem;color:var(--text-secondary);max-width:74ch}
-.disclosure-mark{flex:none;width:.5rem;height:.5rem;border-radius:50%;
-  background:var(--orange);margin-top:.4rem}
 .empty-note{color:var(--text-secondary);font-size:.85rem;padding:.4rem 0}
 
 /* ---- search + directory ---- */
@@ -232,7 +226,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-name{flex:1;color:var(--text);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-name:hover{color:var(--accent)}
 .lb-val{font-family:var(--mono);font-weight:700;font-size:.86rem}
-.lb-foot{grid-column:1/-1}
 
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;

@@ -385,6 +385,32 @@ def reconcile_referees(off):
 # ----------------------------------------------------------------------------
 # playoff round / Game-7 labeling (BUILD_SPEC section 5)
 # ----------------------------------------------------------------------------
+# 2000-01 games belonging to the four playoff series that scripts/local/
+# fetch_espn_round_labels.py's win-based completeness audit found genuinely
+# missing games for, after a real recovery attempt (scripts/local/
+# recover_2000_01_playoffs.py + recover_final_two_dates.py both came back
+# empty for every remaining gap date). Round is still correct for these games
+# (derived from each team's series-sequence order, independent of how many
+# games are present in any one series), but game_num is NOT -- it's the
+# chronological rank among the games we have, which is wrong when games are
+# missing from the middle or end of a series. Honest fallback: game_num is
+# nulled for exactly these 13 games; round is kept.
+#   R2 CHA/MIL (5 present, series score 3-2, needed 4):
+#     210510003 210513003 210515015 210517003 210520015
+#   R3 LAL/SAS West Finals (3 present, series score 3-0, needed 4):
+#     210519024 210521024 210525013
+#   R3 MIL/PHI East Finals (4 present, series score 2-2, needed 4):
+#     210522020 210524020 210526015 210528015
+#   R4 LAL/PHI Finals (1 present, series score 1-0, needed 4):
+#     210615020
+ESPN_GAME_NUM_UNRECOVERABLE = {
+    "210510003", "210513003", "210515015", "210517003", "210520015",
+    "210519024", "210521024", "210525013",
+    "210522020", "210524020", "210526015", "210528015",
+    "210615020",
+}
+
+
 def label_rounds(gm):
     hr("SECTION 5  Playoff round / Game-7 labeling")
     gm = gm.copy()
@@ -411,11 +437,38 @@ def label_rounds(gm):
             print("verification FAILED -> skipping round labeling rather than guessing")
 
     espn_po = gm[(gm["season_type"] == "Playoffs") & (gm["era"] == "espn")]
-    espn_seasons = sorted(espn_po["season"].unique())
-    print("ESPN-scheme playoff games: %d (round/Game-7 NOT derivable from id -- "
-          "intentionally skipped)" % len(espn_po))
-    print("KNOWN PHASE-1 GAP: Finals/Game-7 counts incomplete for ESPN seasons: %s"
-          % espn_seasons)
+    labels_path = os.path.join(SRC, "round_labels.csv.gz")
+    if len(espn_po) and os.path.exists(labels_path):
+        labels = pd.read_csv(labels_path, dtype={"game_id": str})
+        labels["round"] = pd.to_numeric(labels["round"], errors="coerce")
+        labels["game_num"] = pd.to_numeric(labels["game_num"], errors="coerce")
+        # Verify before trusting: same shape checks as the NBA-scheme branch,
+        # applied to the labels that actually match in-scope ESPN playoff games.
+        matched = espn_po.merge(labels, on="game_id", how="inner")
+        ok_ranges = matched["round"].between(1, 4).all() and matched["game_num"].between(1, 7).all()
+        finals = matched[matched["round"] == 4].groupby("season").size()
+        ok_finals = finals.between(1, 7).all() and len(finals) > 0
+        by_source = labels.set_index("game_id").loc[matched["game_id"], "source"].value_counts().to_dict()
+        print("ESPN-scheme playoff games: %d ; labels matched: %d (%s) ; "
+              "rounds in 1-4: %s ; games in 1-7: %s ; one Finals series/season: %s"
+              % (len(espn_po), len(matched), by_source,
+                 matched["round"].between(1, 4).all(), matched["game_num"].between(1, 7).all(),
+                 ok_finals))
+        if ok_ranges and ok_finals:
+            idx = espn_po.set_index("game_id").index
+            lab = labels.set_index("game_id").reindex(idx)
+            gm.loc[espn_po.index, "po_round"] = lab["round"].values
+            gm.loc[espn_po.index, "po_game_num"] = lab["game_num"].values
+            n_nulled = gm["game_id"].isin(ESPN_GAME_NUM_UNRECOVERABLE).sum()
+            gm.loc[gm["game_id"].isin(ESPN_GAME_NUM_UNRECOVERABLE), "po_game_num"] = None
+            print("verification PASSED -> round/Game-7 labels trusted for ESPN scheme")
+            print("game_num nulled for %d games in 4 known-incomplete 2000-01 series "
+                  "(round kept -- see ESPN_GAME_NUM_UNRECOVERABLE)" % n_nulled)
+        else:
+            print("verification FAILED -> skipping round labeling rather than guessing")
+    elif len(espn_po):
+        print("ESPN-scheme playoff games: %d (source-data/round_labels.csv.gz not found -- "
+              "skipping round labeling rather than guessing)" % len(espn_po))
     return gm
 
 
