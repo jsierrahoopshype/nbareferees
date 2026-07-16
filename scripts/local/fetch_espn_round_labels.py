@@ -197,11 +197,22 @@ def derive_structural(games):
 # --------------------------------------------------------------------------- #
 # (2) ESPN gameNote fetch + parse
 # --------------------------------------------------------------------------- #
+_CONF_FINALS_RE = re.compile(r"\b(west|east)(ern)?\s+final")
+
+
 def parse_gamenote(text):
-    """Parse an ESPN playoff note like 'Western Conference First Round - Game 3'
-    or 'NBA Finals - Game 7' into (round, game_num). Returns (None, None) on no
-    match. Order matters: the specific round words are tested before the generic
-    'final' so 'NBA Finals' resolves to round 4 only after the others are ruled out."""
+    """Parse an ESPN playoff note like 'Western Conference First Round - Game 3',
+    'West Finals - Game 5', or 'NBA Finals - Game 7' into (round, game_num).
+    Returns (None, None) on no match. Order matters: the specific round words
+    are tested before the generic 'final' so 'NBA Finals' resolves to round 4
+    only after the others are ruled out.
+
+    Round 3 (conference finals) shows up in at least two ESPN phrasings --
+    'Western Conference Finals' (caught by the 'conference final' substring)
+    and the shorter 'West Finals' / 'East Finals' actually used in 2012-13,
+    2023-24+ -- so both are matched. The bug this fixes: 'West Finals' /
+    'East Finals' contains no 'conference' substring, so it used to fall
+    through to the generic 'final' check and get mislabeled round 4."""
     if not text:
         return None, None
     t = str(text).lower()
@@ -211,7 +222,7 @@ def parse_gamenote(text):
         rnd = 1
     elif "semifinal" in t:
         rnd = 2
-    elif "conference final" in t:
+    elif "conference final" in t or _CONF_FINALS_RE.search(t):
         rnd = 3
     elif "final" in t:  # 'NBA Finals'
         rnd = 4
@@ -255,9 +266,17 @@ def save_cache(cache):
 
 
 def fetch_gamenotes(derived, cache):
-    """For playoff games in GAMENOTE_SEASONS, fetch+parse the ESPN note (using and
-    updating `cache`). Returns dict game_id -> {'round','game_num','note'} for
-    every game that produced a parseable note."""
+    """For playoff games in GAMENOTE_SEASONS, fetch the ESPN note text (using
+    and updating `cache`) and parse it FRESH on every call -- the cache stores
+    only the raw `note` string, never the parsed round/game_num. This matters:
+    if parsing were frozen into the cache at fetch time, a parser bugfix would
+    silently NOT apply to already-cached games (they'd keep serving the stale
+    parse) unless the cache were deleted or the games re-fetched over the
+    network. Re-parsing from the cached raw text every run means a parser fix
+    self-heals immediately from an existing cache with zero network calls.
+
+    Returns dict game_id -> {'round','game_num','note'} for every game that
+    produced a parseable note."""
     targets = derived[derived["season"].isin(GAMENOTE_SEASONS)]["game_id"].tolist()
     targets = [g for g in targets if not is_nba_game_id(g)]
     todo = [g for g in targets if g not in cache]
@@ -272,20 +291,26 @@ def fetch_gamenotes(derived, cache):
             time.sleep(DELAY_SECONDS)
             continue
         time.sleep(DELAY_SECONDS)
-        note = extract_note_text(summ)
-        rnd, gnum = parse_gamenote(note)
-        cache[gid] = {"note": note, "round": rnd, "game_num": gnum}
+        cache[gid] = {"note": extract_note_text(summ)}
         if n % 20 == 0 or n == len(todo):
             save_cache(cache)
-        if rnd is None or gnum is None:
-            print("  [%d/%d] %s  UNPARSED note=%r" % (n, len(todo), gid, note))
     save_cache(cache)
 
     parsed = {}
+    unparsed = 0
     for gid in targets:
         c = cache.get(gid)
-        if c and c.get("round") is not None and c.get("game_num") is not None:
-            parsed[gid] = c
+        if not c:
+            continue
+        note = c.get("note")
+        rnd, gnum = parse_gamenote(note)
+        if rnd is not None and gnum is not None:
+            parsed[gid] = {"note": note, "round": rnd, "game_num": gnum}
+        elif note:
+            unparsed += 1
+            print("  [cache] %s  UNPARSED note=%r" % (gid, note))
+    if unparsed:
+        print("  %d cached note(s) failed to parse (see above)" % unparsed)
     return parsed
 
 
