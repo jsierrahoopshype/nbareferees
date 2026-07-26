@@ -63,12 +63,19 @@ SWING_MIN_GAMES = 15              # min games under a ref to report a player swi
 SWING_TOP_N = 50
 PO_BASELINE_MIN = 5               # min playoff games in a season to trust a PO baseline
 TOP_PERF_N = 25
-LEADERBOARD_MIN_GAMES = 200
+LEADERBOARD_MIN_GAMES = 200       # RS + career-total leaderboards (unchanged)
+# Playoff games are inherently scarcer than regular-season games per ref
+# career -- reusing LEADERBOARD_MIN_GAMES (200) for PO whistle-profile
+# qualification left only 3 of 96 playoff-experienced refs colored/ranked.
+# Empirically, 75 clears about a third of the playoff-experienced pool
+# (~32 refs) without reaching into single-digit-game noise. RS keeps 200.
+PO_LEADERBOARD_MIN_GAMES = 75
 # Whistle-profile stats eligible for percentile ranking + a dedicated
 # /leaderboard/{slug}/ page. n_column is which whistle_profile[kind] count a
-# ref must clear LEADERBOARD_MIN_GAMES on to qualify -- "n" for stats derived
-# straight from the game row, "n_boxscore" for stats that need box-score data
-# (FTA/PF/OT), matching how each stat is actually computed above.
+# ref must clear the min-games threshold on to qualify -- "n" for stats
+# derived straight from the game row, "n_boxscore" for stats that need
+# box-score data (FTA/PF/OT), matching how each stat is actually computed
+# above. RS uses LEADERBOARD_MIN_GAMES; PO uses PO_LEADERBOARD_MIN_GAMES.
 WHISTLE_STATS = [
     # (key, n_column, label, slug)
     ("avg_total_points", "n", "Combined points", "combined-points"),
@@ -1088,9 +1095,11 @@ def build_crewmates(off_ref, referees_index):
 
 def build_whistle_leaderboards(referees_index):
     """For each whistle-profile stat (RS and PO separately): gather qualifying
-    refs -- same LEADERBOARD_MIN_GAMES gate already used for the site's other
-    rate leaderboards, applied to whichever n-column that stat is computed
-    from -- rank them, and:
+    refs -- LEADERBOARD_MIN_GAMES for RS (same gate the site's other rate
+    leaderboards use), PO_LEADERBOARD_MIN_GAMES for PO (playoff games are
+    scarcer per career, so reusing the RS threshold left almost the entire
+    playoff-experienced pool gray/unranked) -- applied to whichever n-column
+    that stat is computed from -- rank them, and:
       (a) write data/whistle_leaderboards.json, one sorted list per (stat,
           kind), for the dedicated /leaderboard/{slug}/ pages;
       (b) inject each qualifying ref's percentile rank back into their own
@@ -1102,17 +1111,19 @@ def build_whistle_leaderboards(referees_index):
     docs = {r["official_id"]: json.load(
         open(os.path.join(DATA, "referees", "%s.json" % r["official_id"]), encoding="utf-8"))
         for r in referees_index}
+    min_games_for = {"rs": LEADERBOARD_MIN_GAMES, "po": PO_LEADERBOARD_MIN_GAMES}
 
     leaderboards = {}
     for key, ncol, label, slug in WHISTLE_STATS:
         leaderboards[key] = {"label": label, "slug": slug}
         for kind in ("rs", "po"):
+            min_games = min_games_for[kind]
             rows = []
             for r in referees_index:
                 off_id = r["official_id"]
                 entry = docs[off_id]["whistle_profile"][kind]
                 val, n = entry.get(key), entry.get(ncol)
-                if val is None or n is None or n < LEADERBOARD_MIN_GAMES:
+                if val is None or n is None or n < min_games:
                     continue
                 rows.append({"official_id": off_id, "name": r["name"], "slug": r["slug"],
                              "value": val, "n": n})
@@ -1125,8 +1136,9 @@ def build_whistle_leaderboards(referees_index):
             leaderboards[key][kind] = [
                 {"rank": x["rank"], "name": x["name"], "slug": x["slug"],
                  "value": x["value"], "n": x["n"], "pctile": x["pctile"]} for x in rows]
-        print("  %-24s rs qualifying=%-4d po qualifying=%-4d"
-              % (key, len(leaderboards[key]["rs"]), len(leaderboards[key]["po"])))
+        print("  %-24s rs qualifying=%-4d (>=%d)   po qualifying=%-4d (>=%d)"
+              % (key, len(leaderboards[key]["rs"]), LEADERBOARD_MIN_GAMES,
+                 len(leaderboards[key]["po"]), PO_LEADERBOARD_MIN_GAMES))
 
     # Every ref's whistle_profile gets a (possibly None) pctile field for every
     # stat, even when they don't qualify, so render_pages.py can read it
@@ -1139,7 +1151,8 @@ def build_whistle_leaderboards(referees_index):
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(doc, fh, ensure_ascii=False, indent=2)
 
-    leaderboards["_meta"] = {"min_games": LEADERBOARD_MIN_GAMES}
+    leaderboards["_meta"] = {"min_games": {"rs": LEADERBOARD_MIN_GAMES,
+                                           "po": PO_LEADERBOARD_MIN_GAMES}}
     assert_no_nan(leaderboards, "whistle_leaderboards")
     with open(os.path.join(DATA, "whistle_leaderboards.json"), "w", encoding="utf-8") as fh:
         json.dump(leaderboards, fh, ensure_ascii=False, indent=2)

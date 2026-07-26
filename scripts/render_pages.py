@@ -589,31 +589,36 @@ def whistle_rank_table(rows, valfmt):
 
 
 def render_whistle_leaderboard(doc):
-    label, min_games = doc["label"], doc["min_games"]
+    label = doc["label"]
+    mg_rs, mg_po = doc["min_games"]["rs"], doc["min_games"]["po"]
     valfmt = WHISTLE_VALFMT[doc["key"]]
     title = "%s leaderboard: every qualifying NBA referee ranked" % label
-    desc = ("Every NBA official with at least %s games ranked by %s, regular season and "
-            "playoffs ranked separately. A descriptive ranking, not a causal claim." % (
-                i(min_games), label.lower()))
+    desc = ("Every NBA official ranked by %s -- regular season (min. %s games) and "
+            "playoffs (min. %s games) ranked separately. A descriptive ranking, "
+            "not a causal claim." % (label.lower(), i(mg_rs), i(mg_po)))
     chips = [
         stat_chip("Regular season refs", i(len(doc["rs"])), accent=True),
         stat_chip("Playoff refs", i(len(doc["po"]))),
-        stat_chip("Min. games to qualify", i(min_games)),
+        stat_chip("Min. RS games", i(mg_rs)),
+        stat_chip("Min. PO games", i(mg_po)),
     ]
     blocks = [back_home(),
               hero_block("Whistle-profile leaderboard", label, "", chips),
               ref_search(2, "top")]
-    methods = ('<p class="caption">Referees with at least {mg} games in that split. '
-               'A descriptive ranking of on-court numbers, not a causal claim about '
-               'officiating.</p>').format(mg=i(min_games))
+    rs_methods = ('<p class="caption">Referees with at least {mg} regular-season games. '
+                  'A descriptive ranking of on-court numbers, not a causal claim about '
+                  'officiating.</p>').format(mg=i(mg_rs))
+    po_methods = ('<p class="caption">Referees with at least {mg} playoff games -- a lower '
+                  'bar than the regular-season ranking, since playoff games are far scarcer '
+                  'per career. A descriptive ranking, not a causal claim.</p>').format(mg=i(mg_po))
     blocks.append(
         '<section class="block" id="rs"><div class="block-head"><h2>Regular season</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (whistle_rank_table(doc["rs"], valfmt), methods))
+        % (whistle_rank_table(doc["rs"], valfmt), rs_methods))
     blocks.append(
         '<section class="block" id="po"><div class="block-head"><h2>Playoffs</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (whistle_rank_table(doc["po"], valfmt), methods))
+        % (whistle_rank_table(doc["po"], valfmt), po_methods))
     blocks.append(ref_search(2, "bottom"))
     return page(title, desc, 2, "".join(blocks))
 
