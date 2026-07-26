@@ -42,14 +42,6 @@ DATA = os.path.join(REPO, "data")
 ASSETS = os.path.join(REPO, "assets")
 REFEREE_DIR = os.path.join(REPO, "referee")
 
-# Seasons for which ESPN-scheme sourcing means playoff round / Game-7 labeling
-# is unavailable (BUILD_SPEC section 5 / RENDER_SPEC section 2).
-GAP_BLOCKS = [
-    ({"2000-01", "2001-02", "2002-03"}, "the 2000-01 to 2002-03 seasons"),
-    ({"2012-13"}, "the 2012-13 season"),
-    ({"2023-24", "2024-25", "2025-26"}, "the 2023-24 season onward"),
-]
-GAP_SEASONS = set().union(*[b[0] for b in GAP_BLOCKS])
 CURRENT_SEASON = "2025-26"
 
 ATTRIBUTION = [
@@ -95,17 +87,6 @@ def career_span(first, last):
     start = int(str(first)[:4])
     end = int(str(last)[:4]) + 1
     return "%d-%d" % (start, end)
-
-
-def gap_phrase(per_season):
-    """Human phrase naming which gap era(s) a referee's career overlaps."""
-    seasons = set(per_season)
-    parts = [label for block, label in GAP_BLOCKS if block & seasons]
-    if not parts:
-        return None
-    if len(parts) == 1:
-        return parts[0]
-    return ", ".join(parts[:-1]) + ", and " + parts[-1]
 
 
 # ---------------------------------------------------------------------------
@@ -457,24 +438,18 @@ def render_ref(doc):
                               '%s officiated.</p>' % esc(name)))
         next_num = "%02d" % (int(next_num) + 1)
 
-    # notable games + gap disclosure
-    gp = gap_phrase(s["per_season"])
+    # notable games
     finals_line = ('<p class="notable-counts">Finals games: <b>{f}</b> '
                    '&middot; Game 7s: <b>{g}</b></p>').format(
         f=i(s["finals_games"]), g=i(s["game7s"]))
-    disclosure = ""
-    if gp:
-        disclosure = ('<p class="disclosure"><span class="disclosure-mark" aria-hidden="true"></span>'
-                      'Round and Game 7 detail isn’t available for {ph}; playoff '
-                      'appearances from those seasons may be missing from this list.</p>').format(ph=esc(gp))
     if doc["notable_games"]:
         inner = '<div class="table-wrap">%s</div>' % notable_table(doc["notable_games"])
     elif s["games_po"] or s.get("games_pi"):
         inner = ('<p class="empty-note">No Finals or Game 7 games are labeled for this '
-                 'official. See the note below.</p>')
+                 'official.</p>')
     else:
         inner = '<p class="empty-note">No playoff games on record for this official.</p>'
-    blocks.append(section(next_num, "Notable games", inner, finals_line + disclosure))
+    blocks.append(section(next_num, "Notable games", inner, finals_line))
     blocks.append(ref_search(2, "bottom"))
 
     return page(title, desc, 2, "".join(blocks))
@@ -637,12 +612,12 @@ def render_player(doc):
 # index page
 # ---------------------------------------------------------------------------
 LEADERBOARD_TABS = [
-    ("career", "Career games", "most_career_games", "games_total", i, None),
-    ("active", "Active", "most_career_games_active", "games_total", i, None),
-    ("playoffs", "Playoff games", "most_playoff_games", "games_po", i, None),
-    ("finals", "Finals games", "most_finals_games", "finals_games", i, "gap"),
-    ("game7s", "Game 7s", "most_game7s", "game7s", i, "gap"),
-    ("season", "This season", "most_games_current_season", "games_current", i, None),
+    ("career", "Career games", "most_career_games", "games_total", i),
+    ("active", "Active", "most_career_games_active", "games_total", i),
+    ("playoffs", "Playoff games", "most_playoff_games", "games_po", i),
+    ("finals", "Finals games", "most_finals_games", "finals_games", i),
+    ("game7s", "Game 7s", "most_game7s", "game7s", i),
+    ("season", "This season", "most_games_current_season", "games_current", i),
 ]
 
 
@@ -724,11 +699,7 @@ def render_index(refs, lb):
     # leaderboards
     tabs_btns = []
     panels = []
-    gap_footnote = ('<p class="caption lb-foot">Finals and Game 7 totals undercount '
-                    'officials active in the 2000-01 to 2002-03, 2012-13, and '
-                    '2023-24-onward seasons, where playoff round labeling isn’t '
-                    'available.</p>')
-    for idx, (tab_id, label, key, valkey, valfmt, flag) in enumerate(LEADERBOARD_TABS):
+    for idx, (tab_id, label, key, valkey, valfmt) in enumerate(LEADERBOARD_TABS):
         active = idx == 0
         tabs_btns.append(
             '<button class="lb-tab{act}" data-tab="{id}" role="tab" '
@@ -737,11 +708,10 @@ def render_index(refs, lb):
                 sel="true" if active else "false", lab=esc(label)))
         items = "".join(leaderboard_row(n, r, valkey, valfmt)
                         for n, r in enumerate(lb[key], 1))
-        fn = gap_footnote if flag == "gap" else ""
         panels.append(
             '<div class="lb-panel{act}" data-panel="{id}" role="tabpanel">'
-            '<ol class="lb-list lb-list-wide">{items}</ol>{fn}</div>'.format(
-                act=" is-active" if active else "", id=tab_id, items=items, fn=fn))
+            '<ol class="lb-list lb-list-wide">{items}</ol></div>'.format(
+                act=" is-active" if active else "", id=tab_id, items=items))
 
     # paired panels: home win% and total FTA
     tabs_btns.append('<button class="lb-tab" data-tab="homewin" role="tab" aria-selected="false">Home win%</button>')
@@ -961,15 +931,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .s-neg-3{color:#a52218;background:rgba(239,68,68,.28)}
 .s-neg-4{color:#851a12;background:rgba(239,68,68,.42);font-weight:700}
 
-/* ---- notable counts + gap disclosure ---- */
+/* ---- notable counts ---- */
 .notable-counts{font-family:var(--mono);font-size:.8rem;color:var(--text-secondary);margin:.3rem 0 0}
 .notable-counts b{color:var(--text)}
-.disclosure{display:flex;gap:.6rem;align-items:flex-start;margin:.9rem 0 0;
-  padding:.7rem .85rem;background:var(--surface);border:1px solid var(--border);
-  border-left:3px solid var(--orange);border-radius:10px;
-  font-size:.8rem;color:var(--text-secondary);max-width:74ch}
-.disclosure-mark{flex:none;width:.5rem;height:.5rem;border-radius:50%;
-  background:var(--orange);margin-top:.4rem}
 .empty-note{color:var(--text-secondary);font-size:.85rem;padding:.4rem 0}
 
 /* ---- search + directory ---- */
@@ -1036,7 +1000,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-name{flex:1;color:var(--text);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-name:hover{color:var(--accent)}
 .lb-val{font-family:var(--mono);font-weight:700;font-size:.86rem}
-.lb-foot{grid-column:1/-1}
 
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
@@ -1276,15 +1239,12 @@ def main():
                 removed += 1
 
     n = 0
-    disclosed = 0
     for doc in docs:
         slug = doc["summary"]["slug"]
         out_dir = os.path.join(REFEREE_DIR, slug)
         os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write(render_ref(doc))
-        if gap_phrase(doc["summary"]["per_season"]):
-            disclosed += 1
         n += 1
 
     # team pages
@@ -1307,7 +1267,7 @@ def main():
     print("wrote assets/style.css, assets/app.js")
     if removed:
         print("removed %d stale referee page(s)" % removed)
-    print("wrote %d referee pages (%d carry the gap-season disclosure)" % (n, disclosed))
+    print("wrote %d referee pages" % n)
     print("wrote %d team pages, %d player pages" % (n_teams, n_players))
     print("sample URLs:")
     for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/"]:
