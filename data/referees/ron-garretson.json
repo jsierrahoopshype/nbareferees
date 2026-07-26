@@ -219,6 +219,16 @@
       "avg_margin_for_team": 0.89
     },
     {
+      "team_abbr": "MEM",
+      "games": 90,
+      "wins": 45,
+      "losses": 45,
+      "win_pct": 0.5,
+      "home_games": 43,
+      "home_wins": 29,
+      "avg_margin_for_team": -0.08
+    },
+    {
       "team_abbr": "BOS",
       "games": 88,
       "wins": 35,
@@ -299,16 +309,6 @@
       "avg_margin_for_team": -0.65
     },
     {
-      "team_abbr": "MEM",
-      "games": 83,
-      "wins": 43,
-      "losses": 40,
-      "win_pct": 0.52,
-      "home_games": 40,
-      "home_wins": 27,
-      "avg_margin_for_team": 0.37
-    },
-    {
       "team_abbr": "HOU",
       "games": 77,
       "wins": 46,
@@ -317,6 +317,16 @@
       "home_games": 38,
       "home_wins": 29,
       "avg_margin_for_team": 2.47
+    },
+    {
+      "team_abbr": "BKN",
+      "games": 76,
+      "wins": 30,
+      "losses": 46,
+      "win_pct": 0.39,
+      "home_games": 38,
+      "home_wins": 20,
+      "avg_margin_for_team": -3.28
     },
     {
       "team_abbr": "WAS",
@@ -337,6 +347,16 @@
       "home_games": 35,
       "home_wins": 16,
       "avg_margin_for_team": -4.43
+    },
+    {
+      "team_abbr": "NOP",
+      "games": 72,
+      "wins": 31,
+      "losses": 41,
+      "win_pct": 0.43,
+      "home_games": 31,
+      "home_wins": 15,
+      "avg_margin_for_team": -2.74
     },
     {
       "team_abbr": "MIL",
@@ -419,26 +439,6 @@
       "avg_margin_for_team": 2.02
     },
     {
-      "team_abbr": "NJN",
-      "games": 50,
-      "wins": 22,
-      "losses": 28,
-      "win_pct": 0.44,
-      "home_games": 27,
-      "home_wins": 15,
-      "avg_margin_for_team": -2.14
-    },
-    {
-      "team_abbr": "NOH",
-      "games": 33,
-      "wins": 14,
-      "losses": 19,
-      "win_pct": 0.42,
-      "home_games": 17,
-      "home_wins": 7,
-      "avg_margin_for_team": -2.94
-    },
-    {
       "team_abbr": "SEA",
       "games": 32,
       "wins": 14,
@@ -447,46 +447,6 @@
       "home_games": 21,
       "home_wins": 10,
       "avg_margin_for_team": -3.41
-    },
-    {
-      "team_abbr": "NOP",
-      "games": 31,
-      "wins": 15,
-      "losses": 16,
-      "win_pct": 0.48,
-      "home_games": 12,
-      "home_wins": 8,
-      "avg_margin_for_team": -1.74
-    },
-    {
-      "team_abbr": "BKN",
-      "games": 26,
-      "wins": 8,
-      "losses": 18,
-      "win_pct": 0.31,
-      "home_games": 11,
-      "home_wins": 5,
-      "avg_margin_for_team": -5.46
-    },
-    {
-      "team_abbr": "NOK",
-      "games": 8,
-      "wins": 2,
-      "losses": 6,
-      "win_pct": 0.25,
-      "home_games": 2,
-      "home_wins": 0,
-      "avg_margin_for_team": -5.75
-    },
-    {
-      "team_abbr": "VAN",
-      "games": 7,
-      "wins": 2,
-      "losses": 5,
-      "win_pct": 0.29,
-      "home_games": 3,
-      "home_wins": 2,
-      "avg_margin_for_team": -5.43
     }
   ],
   "whistle_profile": {

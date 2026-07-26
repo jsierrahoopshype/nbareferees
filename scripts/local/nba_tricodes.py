@@ -57,6 +57,48 @@ def display_name(abbr):
         return ""
     return TEAM_DISPLAY_NAMES.get(str(abbr).strip().upper(), str(abbr))
 
+
+# Franchise consolidation: which CURRENT franchise a historical/relocated
+# tricode's on-court record rolls up under for TEAM-LEVEL aggregation (ref-page
+# team-records, team pages). This is intentionally separate from
+# to_nba_tricode()/ESPN_TO_NBA_ABBR above, which normalizes ABBREVIATION
+# SPELLING for the same franchise across data sources (e.g. ESPN's "PHO" ->
+# "PHX"); FRANCHISE_CANONICAL instead answers "whose franchise history does
+# this historical tricode's record belong to", per each team's own relocation:
+#   VAN (Vancouver Grizzlies, 1995-2001)         -> MEM (relocated 2001)
+#   NJN (New Jersey Nets, 1977-2012)              -> BKN (relocated 2012)
+#   NOH (New Orleans Hornets, 2002-07 & 2007-13)  -> NOP (renamed 2013)
+#   NOK (New Orleans/OKC Hornets, Katrina, 05-07) -> NOP
+#
+# SEA and OKC are deliberately NOT merged: per the 2008 relocation settlement,
+# the Thunder do not claim the SuperSonics' history, so SEA stays its own
+# canonical entity with its own team page. CHH (pre-2002 Charlotte Hornets) has
+# no in-scope games (predates SEASON_FLOOR_YEAR) so isn't listed here, but is
+# not a candidate for consolidation into CHA on the same non-succession logic
+# as SEA/OKC -- the current Charlotte Hornets' claim on that history is a
+# separate NBA ruling, out of scope for this map. Every current franchise not
+# listed here is canonical=self (no merge) -- this dict only needs entries for
+# the historical side.
+FRANCHISE_CANONICAL = {
+    "VAN": "MEM",
+    "NJN": "BKN",
+    "NOH": "NOP",
+    "NOK": "NOP",
+}
+
+
+def canonical_franchise(abbr):
+    """Canonical current-franchise tricode for TEAM-LEVEL aggregation (team
+    pages, ref-page team-records). Historical/relocated tricodes map to their
+    modern successor franchise; everything else -- including SEA, which stays
+    its own canonical entity -- maps to itself. Per-game display (matchup
+    lines, notable games, etc.) should keep using the raw tricode; this
+    function is for aggregation only."""
+    if abbr is None:
+        return ""
+    a = str(abbr).strip().upper()
+    return FRANCHISE_CANONICAL.get(a, a)
+
 # Alternate abbreviation -> canonical NBA tricode. Identity entries are kept so a
 # value that is already canonical resolves to itself. Anything NOT present here is
 # passed through unchanged (see to_nba_tricode) -- that is how historical tricodes

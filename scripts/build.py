@@ -776,7 +776,13 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
                 "total": int(len(g2)),
             }
 
-        # ---- team records ----------------------------------------------------
+        # ---- team records ------------------------------------------------
+        # Grouped by CANONICAL franchise (nba_tricodes.canonical_franchise),
+        # not raw team_abbr, per the franchise-consolidation layer: a
+        # historical/relocated tricode's games roll into its modern
+        # successor's row (VAN->MEM, NJN->BKN, NOH/NOK->NOP). This only
+        # affects team-LEVEL aggregation; the raw per-game team_abbr is
+        # untouched everywhere else (notable games, top performances, etc.).
         team_rows = defaultdict(lambda: {"games": 0, "wins": 0, "losses": 0,
                                          "home_games": 0, "home_wins": 0, "margin_sum": 0.0})
         for gid, g in gsub.iterrows():
@@ -784,6 +790,7 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
                 team = g["%s_team_abbr" % side]
                 if not isinstance(team, str) or not team:
                     continue
+                team = nba_tricodes.canonical_franchise(team)
                 won = (g["home_win"] == 1) if side == "home" else (g["home_win"] == 0)
                 margin = (g["home_pts"] - g["away_pts"]) if side == "home" \
                     else (g["away_pts"] - g["home_pts"])
@@ -1073,15 +1080,27 @@ def build_team_pages(all_team_records, gm):
     team_dir = os.path.join(DATA, "teams")
     _clean_dir(team_dir)
 
+    # franchise-consolidation audit: confirm each historical tricode's games
+    # are entirely absent as a standalone key (they roll into their canonical
+    # successor) and print how many games moved.
+    print("Franchise consolidation (historical tricode -> canonical franchise):")
+    for hist, canon in sorted(nba_tricodes.FRANCHISE_CANONICAL.items()):
+        n = int(((gm["home_team_abbr"] == hist) | (gm["away_team_abbr"] == hist)).sum())
+        print("  %s -> %s : %d games rolled up" % (hist, canon, n))
+    print("SEA / OKC kept as separate canonical entities (no merge, per the "
+          "2008 relocation settlement)")
+
     by_team = defaultdict(list)
     for r in all_team_records:
         by_team[r["team_abbr"]].append(r)
 
-    # per-team seasons + dataset game totals from the games table
+    # per-team seasons + dataset game totals from the games table, grouped by
+    # canonical franchise (VAN's 2000-01 season rolls into MEM's, etc.) --
+    # same consolidation as the team_records aggregation above.
     seasons_for, total_for = {}, {}
     long = pd.concat([
-        gm[["game_id", "season"]].assign(t=gm["home_team_abbr"]),
-        gm[["game_id", "season"]].assign(t=gm["away_team_abbr"]),
+        gm[["game_id", "season"]].assign(t=gm["home_team_abbr"].map(nba_tricodes.canonical_franchise)),
+        gm[["game_id", "season"]].assign(t=gm["away_team_abbr"].map(nba_tricodes.canonical_franchise)),
     ])
     for tri, grp in long.groupby("t"):
         seasons_for[tri] = sorted(grp["season"].unique())
