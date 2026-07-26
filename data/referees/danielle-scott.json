@@ -371,7 +371,13 @@
       "home_win_pct": 0.55,
       "avg_abs_margin": 13.15,
       "ot_games": 13,
-      "ot_rate": 0.07
+      "ot_rate": 0.07,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 0,
@@ -382,7 +388,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -614,17 +626,6 @@
   ],
   "player_swings": [
     {
-      "player_id": "1628368",
-      "name": "De'Aaron Fox",
-      "n_games": 15,
-      "slug": "deaaron-fox",
-      "pts_with_ref": 20.0,
-      "pts_baseline": 23.59,
-      "pts_swing": -3.59,
-      "fta_swing": -0.8,
-      "pf_swing": -0.1
-    },
-    {
       "player_id": "4066328",
       "name": "Jarrett Allen",
       "n_games": 15,
@@ -634,17 +635,6 @@
       "pts_swing": 1.73,
       "fta_swing": 1.1,
       "pf_swing": 0.65
-    },
-    {
-      "player_id": "3062679",
-      "name": "Josh Hart",
-      "n_games": 15,
-      "slug": "josh-hart",
-      "pts_with_ref": 11.0,
-      "pts_baseline": 12.61,
-      "pts_swing": -1.61,
-      "fta_swing": 0.06,
-      "pf_swing": 0.24
     },
     {
       "player_id": "2490149",
@@ -711,6 +701,28 @@
       "pts_swing": -0.1,
       "fta_swing": 0.62,
       "pf_swing": 0.28
+    },
+    {
+      "player_id": "3062679",
+      "name": "Josh Hart",
+      "n_games": 15,
+      "slug": "josh-hart",
+      "pts_with_ref": 11.0,
+      "pts_baseline": 12.61,
+      "pts_swing": -1.61,
+      "fta_swing": 0.06,
+      "pf_swing": 0.24
+    },
+    {
+      "player_id": "1628368",
+      "name": "De'Aaron Fox",
+      "n_games": 15,
+      "slug": "deaaron-fox",
+      "pts_with_ref": 20.0,
+      "pts_baseline": 23.59,
+      "pts_swing": -3.59,
+      "fta_swing": -0.8,
+      "pf_swing": -0.1
     }
   ],
   "notable_games": [],

@@ -377,7 +377,13 @@
       "home_win_pct": 0.54,
       "avg_abs_margin": 11.42,
       "ot_games": 16,
-      "ot_rate": 0.08
+      "ot_rate": 0.08,
+      "avg_total_points_pctile": 93.52,
+      "avg_total_fta_pctile": 15.74,
+      "avg_total_pf_pctile": 17.59,
+      "avg_abs_margin_pctile": 59.26,
+      "home_win_pct_pctile": 9.26,
+      "ot_rate_pctile": 97.22
     },
     "po": {
       "n": 0,
@@ -388,7 +394,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -653,17 +665,6 @@
       "pf_swing": -0.24
     },
     {
-      "player_id": "3134932",
-      "name": "John Konchar",
-      "n_games": 15,
-      "slug": "john-konchar",
-      "pts_with_ref": 2.4,
-      "pts_baseline": 4.14,
-      "pts_swing": -1.74,
-      "fta_swing": -0.26,
-      "pf_swing": -0.03
-    },
-    {
       "player_id": "4348700",
       "name": "Goga Bitadze",
       "n_games": 16,
@@ -673,17 +674,6 @@
       "pts_swing": 1.61,
       "fta_swing": 0.77,
       "pf_swing": 0.19
-    },
-    {
-      "player_id": "3135046",
-      "name": "Tyus Jones",
-      "n_games": 16,
-      "slug": "tyus-jones",
-      "pts_with_ref": 7.19,
-      "pts_baseline": 8.74,
-      "pts_swing": -1.55,
-      "fta_swing": 0.02,
-      "pf_swing": -0.15
     },
     {
       "player_id": "4432165",
@@ -728,28 +718,6 @@
       "pts_swing": 1.18,
       "fta_swing": -0.09,
       "pf_swing": -0.14
-    },
-    {
-      "player_id": "4683021",
-      "name": "Deni Avdija",
-      "n_games": 15,
-      "slug": "deni-avdija",
-      "pts_with_ref": 13.07,
-      "pts_baseline": 14.07,
-      "pts_swing": -1.0,
-      "fta_swing": -0.38,
-      "pf_swing": 0.14
-    },
-    {
-      "player_id": "4566434",
-      "name": "Franz Wagner",
-      "n_games": 17,
-      "slug": "franz-wagner",
-      "pts_with_ref": 18.88,
-      "pts_baseline": 19.81,
-      "pts_swing": -0.93,
-      "fta_swing": 0.44,
-      "pf_swing": 0.22
     },
     {
       "player_id": "3062679",
@@ -816,6 +784,50 @@
       "pts_swing": 0.22,
       "fta_swing": 0.05,
       "pf_swing": -0.01
+    },
+    {
+      "player_id": "4566434",
+      "name": "Franz Wagner",
+      "n_games": 17,
+      "slug": "franz-wagner",
+      "pts_with_ref": 18.88,
+      "pts_baseline": 19.81,
+      "pts_swing": -0.93,
+      "fta_swing": 0.44,
+      "pf_swing": 0.22
+    },
+    {
+      "player_id": "4683021",
+      "name": "Deni Avdija",
+      "n_games": 15,
+      "slug": "deni-avdija",
+      "pts_with_ref": 13.07,
+      "pts_baseline": 14.07,
+      "pts_swing": -1.0,
+      "fta_swing": -0.38,
+      "pf_swing": 0.14
+    },
+    {
+      "player_id": "3135046",
+      "name": "Tyus Jones",
+      "n_games": 16,
+      "slug": "tyus-jones",
+      "pts_with_ref": 7.19,
+      "pts_baseline": 8.74,
+      "pts_swing": -1.55,
+      "fta_swing": 0.02,
+      "pf_swing": -0.15
+    },
+    {
+      "player_id": "3134932",
+      "name": "John Konchar",
+      "n_games": 15,
+      "slug": "john-konchar",
+      "pts_with_ref": 2.4,
+      "pts_baseline": 4.14,
+      "pts_swing": -1.74,
+      "fta_swing": -0.26,
+      "pf_swing": -0.03
     }
   ],
   "notable_games": [],

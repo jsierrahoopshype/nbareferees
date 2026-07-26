@@ -437,7 +437,13 @@
       "home_win_pct": 0.57,
       "avg_abs_margin": 11.23,
       "ot_games": 63,
-      "ot_rate": 0.07
+      "ot_rate": 0.07,
+      "avg_total_points_pctile": 71.3,
+      "avg_total_fta_pctile": 11.11,
+      "avg_total_pf_pctile": 13.89,
+      "avg_abs_margin_pctile": 45.37,
+      "home_win_pct_pctile": 33.33,
+      "ot_rate_pctile": 85.19
     },
     "po": {
       "n": 93,
@@ -448,7 +454,13 @@
       "home_win_pct": 0.63,
       "avg_abs_margin": 14.76,
       "ot_games": 4,
-      "ot_rate": 0.04
+      "ot_rate": 0.04,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -702,17 +714,6 @@
       "pf_swing": 0.08
     },
     {
-      "player_id": "201564",
-      "name": "O.J. Mayo",
-      "n_games": 19,
-      "slug": "o-j-mayo",
-      "pts_with_ref": 7.68,
-      "pts_baseline": 11.62,
-      "pts_swing": -3.94,
-      "fta_swing": -0.5,
-      "pf_swing": 0.13
-    },
-    {
       "player_id": "203490",
       "name": "Otto Porter Jr.",
       "n_games": 26,
@@ -733,50 +734,6 @@
       "pts_swing": 3.59,
       "fta_swing": 1.19,
       "pf_swing": -0.26
-    },
-    {
-      "player_id": "4396993",
-      "name": "Tyrese Haliburton",
-      "n_games": 19,
-      "slug": "tyrese-haliburton",
-      "pts_with_ref": 14.42,
-      "pts_baseline": 17.85,
-      "pts_swing": -3.43,
-      "fta_swing": -0.83,
-      "pf_swing": -0.21
-    },
-    {
-      "player_id": "201945",
-      "name": "Gerald Henderson",
-      "n_games": 23,
-      "slug": "gerald-henderson",
-      "pts_with_ref": 8.43,
-      "pts_baseline": 11.81,
-      "pts_swing": -3.38,
-      "fta_swing": -1.18,
-      "pf_swing": -0.08
-    },
-    {
-      "player_id": "202703",
-      "name": "Nikola Mirotic",
-      "n_games": 18,
-      "slug": "nikola-mirotic",
-      "pts_with_ref": 8.5,
-      "pts_baseline": 11.85,
-      "pts_swing": -3.35,
-      "fta_swing": -1.12,
-      "pf_swing": -0.51
-    },
-    {
-      "player_id": "4592492",
-      "name": "Bones Hyland",
-      "n_games": 17,
-      "slug": "bones-hyland",
-      "pts_with_ref": 5.82,
-      "pts_baseline": 9.0,
-      "pts_swing": -3.18,
-      "fta_swing": -0.58,
-      "pf_swing": -0.17
     },
     {
       "player_id": "200752",
@@ -801,17 +758,6 @@
       "pf_swing": 0.34
     },
     {
-      "player_id": "4432816",
-      "name": "LaMelo Ball",
-      "n_games": 16,
-      "slug": "lamelo-ball",
-      "pts_with_ref": 17.56,
-      "pts_baseline": 20.55,
-      "pts_swing": -2.99,
-      "fta_swing": -0.54,
-      "pf_swing": 0.4
-    },
-    {
       "player_id": "1629130",
       "name": "Duncan Robinson",
       "n_games": 36,
@@ -834,28 +780,6 @@
       "pf_swing": 0.04
     },
     {
-      "player_id": "4432573",
-      "name": "Paolo Banchero",
-      "n_games": 15,
-      "slug": "paolo-banchero",
-      "pts_with_ref": 20.67,
-      "pts_baseline": 23.48,
-      "pts_swing": -2.82,
-      "fta_swing": -1.99,
-      "pf_swing": -0.27
-    },
-    {
-      "player_id": "1626156",
-      "name": "D'Angelo Russell",
-      "n_games": 37,
-      "slug": "dangelo-russell",
-      "pts_with_ref": 14.76,
-      "pts_baseline": 17.51,
-      "pts_swing": -2.75,
-      "fta_swing": -0.51,
-      "pf_swing": -0.07
-    },
-    {
       "player_id": "1629021",
       "name": "Moritz Wagner",
       "n_games": 18,
@@ -865,17 +789,6 @@
       "pts_swing": 2.71,
       "fta_swing": -0.1,
       "pf_swing": -0.19
-    },
-    {
-      "player_id": "101111",
-      "name": "Charlie Villanueva",
-      "n_games": 20,
-      "slug": "charlie-villanueva",
-      "pts_with_ref": 5.3,
-      "pts_baseline": 7.95,
-      "pts_swing": -2.65,
-      "fta_swing": -0.19,
-      "pf_swing": -0.11
     },
     {
       "player_id": "201568",
@@ -944,39 +857,6 @@
       "pf_swing": -0.27
     },
     {
-      "player_id": "203118",
-      "name": "Mike Scott",
-      "n_games": 27,
-      "slug": "mike-scott",
-      "pts_with_ref": 4.74,
-      "pts_baseline": 7.1,
-      "pts_swing": -2.36,
-      "fta_swing": -0.15,
-      "pf_swing": -0.15
-    },
-    {
-      "player_id": "202330",
-      "name": "Gordon Hayward",
-      "n_games": 41,
-      "slug": "gordon-hayward",
-      "pts_with_ref": 13.71,
-      "pts_baseline": 15.99,
-      "pts_swing": -2.29,
-      "fta_swing": -0.56,
-      "pf_swing": 0.05
-    },
-    {
-      "player_id": "1627732",
-      "name": "Ben Simmons",
-      "n_games": 19,
-      "slug": "ben-simmons",
-      "pts_with_ref": 8.53,
-      "pts_baseline": 10.78,
-      "pts_swing": -2.26,
-      "fta_swing": -0.46,
-      "pf_swing": 0.36
-    },
-    {
       "player_id": "4871144",
       "name": "Alperen Sengun",
       "n_games": 20,
@@ -1021,50 +901,6 @@
       "pf_swing": 0.12
     },
     {
-      "player_id": "203507",
-      "name": "Giannis Antetokounmpo",
-      "n_games": 44,
-      "slug": "giannis-antetokounmpo",
-      "pts_with_ref": 23.0,
-      "pts_baseline": 25.11,
-      "pts_swing": -2.11,
-      "fta_swing": -1.54,
-      "pf_swing": 0.08
-    },
-    {
-      "player_id": "4431671",
-      "name": "Jaden McDaniels",
-      "n_games": 26,
-      "slug": "jaden-mcdaniels",
-      "pts_with_ref": 9.81,
-      "pts_baseline": 11.88,
-      "pts_swing": -2.08,
-      "fta_swing": -0.06,
-      "pf_swing": -0.35
-    },
-    {
-      "player_id": "2548",
-      "name": "Dwyane Wade",
-      "n_games": 36,
-      "slug": "dwyane-wade",
-      "pts_with_ref": 17.03,
-      "pts_baseline": 19.1,
-      "pts_swing": -2.07,
-      "fta_swing": -1.19,
-      "pf_swing": -0.08
-    },
-    {
-      "player_id": "1629014",
-      "name": "Anfernee Simons",
-      "n_games": 20,
-      "slug": "anfernee-simons",
-      "pts_with_ref": 11.95,
-      "pts_baseline": 13.99,
-      "pts_swing": -2.04,
-      "fta_swing": 0.22,
-      "pf_swing": 0.26
-    },
-    {
       "player_id": "1628991",
       "name": "Jaren Jackson Jr.",
       "n_games": 19,
@@ -1076,15 +912,114 @@
       "pf_swing": -0.35
     },
     {
-      "player_id": "6430",
-      "name": "Jimmy Butler III",
-      "n_games": 17,
-      "slug": "jimmy-butler-iii",
-      "pts_with_ref": 12.76,
-      "pts_baseline": 14.75,
-      "pts_swing": -1.99,
-      "fta_swing": -1.9,
-      "pf_swing": -0.03
+      "player_id": "201563",
+      "name": "Michael Beasley",
+      "n_games": 24,
+      "slug": "michael-beasley",
+      "pts_with_ref": 14.33,
+      "pts_baseline": 12.36,
+      "pts_swing": 1.97,
+      "fta_swing": 0.37,
+      "pf_swing": 0.49
+    },
+    {
+      "player_id": "1629028",
+      "name": "Deandre Ayton",
+      "n_games": 34,
+      "slug": "deandre-ayton",
+      "pts_with_ref": 17.21,
+      "pts_baseline": 15.27,
+      "pts_swing": 1.94,
+      "fta_swing": 0.25,
+      "pf_swing": -0.19
+    },
+    {
+      "player_id": "4395626",
+      "name": "Tre Jones",
+      "n_games": 18,
+      "slug": "tre-jones",
+      "pts_with_ref": 11.44,
+      "pts_baseline": 9.52,
+      "pts_swing": 1.92,
+      "fta_swing": -0.49,
+      "pf_swing": 0.03
+    },
+    {
+      "player_id": "2037",
+      "name": "Jamal Crawford",
+      "n_games": 27,
+      "slug": "jamal-crawford",
+      "pts_with_ref": 14.7,
+      "pts_baseline": 12.83,
+      "pts_swing": 1.88,
+      "fta_swing": 0.31,
+      "pf_swing": 0.06
+    },
+    {
+      "player_id": "201166",
+      "name": "Aaron Brooks",
+      "n_games": 19,
+      "slug": "aaron-brooks",
+      "pts_with_ref": 7.63,
+      "pts_baseline": 9.48,
+      "pts_swing": -1.85,
+      "fta_swing": -0.77,
+      "pf_swing": -0.26
+    },
+    {
+      "player_id": "1627763",
+      "name": "Malcolm Brogdon",
+      "n_games": 22,
+      "slug": "malcolm-brogdon",
+      "pts_with_ref": 13.09,
+      "pts_baseline": 14.97,
+      "pts_swing": -1.88,
+      "fta_swing": -0.07,
+      "pf_swing": -0.21
+    },
+    {
+      "player_id": "1626145",
+      "name": "Tyus Jones",
+      "n_games": 37,
+      "slug": "tyus-jones",
+      "pts_with_ref": 5.19,
+      "pts_baseline": 7.13,
+      "pts_swing": -1.94,
+      "fta_swing": -0.54,
+      "pf_swing": -0.25
+    },
+    {
+      "player_id": "1629634",
+      "name": "Brandon Clarke",
+      "n_games": 15,
+      "slug": "brandon-clarke",
+      "pts_with_ref": 8.8,
+      "pts_baseline": 10.74,
+      "pts_swing": -1.94,
+      "fta_swing": -0.05,
+      "pf_swing": 0.25
+    },
+    {
+      "player_id": "4277811",
+      "name": "Collin Sexton",
+      "n_games": 20,
+      "slug": "collin-sexton",
+      "pts_with_ref": 15.85,
+      "pts_baseline": 17.8,
+      "pts_swing": -1.95,
+      "fta_swing": -0.33,
+      "pf_swing": -0.17
+    },
+    {
+      "player_id": "1627823",
+      "name": "Juancho Hernangomez",
+      "n_games": 16,
+      "slug": "juancho-hernangomez",
+      "pts_with_ref": 3.38,
+      "pts_baseline": 5.34,
+      "pts_swing": -1.97,
+      "fta_swing": -0.61,
+      "pf_swing": -0.33
     },
     {
       "player_id": "202331",
@@ -1120,114 +1055,191 @@
       "pf_swing": 0.25
     },
     {
-      "player_id": "201563",
-      "name": "Michael Beasley",
-      "n_games": 24,
-      "slug": "michael-beasley",
-      "pts_with_ref": 14.33,
-      "pts_baseline": 12.36,
-      "pts_swing": 1.97,
-      "fta_swing": 0.37,
-      "pf_swing": 0.49
+      "player_id": "6430",
+      "name": "Jimmy Butler III",
+      "n_games": 17,
+      "slug": "jimmy-butler-iii",
+      "pts_with_ref": 12.76,
+      "pts_baseline": 14.75,
+      "pts_swing": -1.99,
+      "fta_swing": -1.9,
+      "pf_swing": -0.03
     },
     {
-      "player_id": "1627823",
-      "name": "Juancho Hernangomez",
-      "n_games": 16,
-      "slug": "juancho-hernangomez",
-      "pts_with_ref": 3.38,
-      "pts_baseline": 5.34,
-      "pts_swing": -1.97,
-      "fta_swing": -0.61,
-      "pf_swing": -0.33
-    },
-    {
-      "player_id": "4277811",
-      "name": "Collin Sexton",
+      "player_id": "1629014",
+      "name": "Anfernee Simons",
       "n_games": 20,
-      "slug": "collin-sexton",
-      "pts_with_ref": 15.85,
-      "pts_baseline": 17.8,
-      "pts_swing": -1.95,
-      "fta_swing": -0.33,
+      "slug": "anfernee-simons",
+      "pts_with_ref": 11.95,
+      "pts_baseline": 13.99,
+      "pts_swing": -2.04,
+      "fta_swing": 0.22,
+      "pf_swing": 0.26
+    },
+    {
+      "player_id": "2548",
+      "name": "Dwyane Wade",
+      "n_games": 36,
+      "slug": "dwyane-wade",
+      "pts_with_ref": 17.03,
+      "pts_baseline": 19.1,
+      "pts_swing": -2.07,
+      "fta_swing": -1.19,
+      "pf_swing": -0.08
+    },
+    {
+      "player_id": "4431671",
+      "name": "Jaden McDaniels",
+      "n_games": 26,
+      "slug": "jaden-mcdaniels",
+      "pts_with_ref": 9.81,
+      "pts_baseline": 11.88,
+      "pts_swing": -2.08,
+      "fta_swing": -0.06,
+      "pf_swing": -0.35
+    },
+    {
+      "player_id": "203507",
+      "name": "Giannis Antetokounmpo",
+      "n_games": 44,
+      "slug": "giannis-antetokounmpo",
+      "pts_with_ref": 23.0,
+      "pts_baseline": 25.11,
+      "pts_swing": -2.11,
+      "fta_swing": -1.54,
+      "pf_swing": 0.08
+    },
+    {
+      "player_id": "1627732",
+      "name": "Ben Simmons",
+      "n_games": 19,
+      "slug": "ben-simmons",
+      "pts_with_ref": 8.53,
+      "pts_baseline": 10.78,
+      "pts_swing": -2.26,
+      "fta_swing": -0.46,
+      "pf_swing": 0.36
+    },
+    {
+      "player_id": "202330",
+      "name": "Gordon Hayward",
+      "n_games": 41,
+      "slug": "gordon-hayward",
+      "pts_with_ref": 13.71,
+      "pts_baseline": 15.99,
+      "pts_swing": -2.29,
+      "fta_swing": -0.56,
+      "pf_swing": 0.05
+    },
+    {
+      "player_id": "203118",
+      "name": "Mike Scott",
+      "n_games": 27,
+      "slug": "mike-scott",
+      "pts_with_ref": 4.74,
+      "pts_baseline": 7.1,
+      "pts_swing": -2.36,
+      "fta_swing": -0.15,
+      "pf_swing": -0.15
+    },
+    {
+      "player_id": "101111",
+      "name": "Charlie Villanueva",
+      "n_games": 20,
+      "slug": "charlie-villanueva",
+      "pts_with_ref": 5.3,
+      "pts_baseline": 7.95,
+      "pts_swing": -2.65,
+      "fta_swing": -0.19,
+      "pf_swing": -0.11
+    },
+    {
+      "player_id": "1626156",
+      "name": "D'Angelo Russell",
+      "n_games": 37,
+      "slug": "dangelo-russell",
+      "pts_with_ref": 14.76,
+      "pts_baseline": 17.51,
+      "pts_swing": -2.75,
+      "fta_swing": -0.51,
+      "pf_swing": -0.07
+    },
+    {
+      "player_id": "4432573",
+      "name": "Paolo Banchero",
+      "n_games": 15,
+      "slug": "paolo-banchero",
+      "pts_with_ref": 20.67,
+      "pts_baseline": 23.48,
+      "pts_swing": -2.82,
+      "fta_swing": -1.99,
+      "pf_swing": -0.27
+    },
+    {
+      "player_id": "4432816",
+      "name": "LaMelo Ball",
+      "n_games": 16,
+      "slug": "lamelo-ball",
+      "pts_with_ref": 17.56,
+      "pts_baseline": 20.55,
+      "pts_swing": -2.99,
+      "fta_swing": -0.54,
+      "pf_swing": 0.4
+    },
+    {
+      "player_id": "4592492",
+      "name": "Bones Hyland",
+      "n_games": 17,
+      "slug": "bones-hyland",
+      "pts_with_ref": 5.82,
+      "pts_baseline": 9.0,
+      "pts_swing": -3.18,
+      "fta_swing": -0.58,
       "pf_swing": -0.17
     },
     {
-      "player_id": "1626145",
-      "name": "Tyus Jones",
-      "n_games": 37,
-      "slug": "tyus-jones",
-      "pts_with_ref": 5.19,
-      "pts_baseline": 7.13,
-      "pts_swing": -1.94,
-      "fta_swing": -0.54,
-      "pf_swing": -0.25
-    },
-    {
-      "player_id": "1629028",
-      "name": "Deandre Ayton",
-      "n_games": 34,
-      "slug": "deandre-ayton",
-      "pts_with_ref": 17.21,
-      "pts_baseline": 15.27,
-      "pts_swing": 1.94,
-      "fta_swing": 0.25,
-      "pf_swing": -0.19
-    },
-    {
-      "player_id": "1629634",
-      "name": "Brandon Clarke",
-      "n_games": 15,
-      "slug": "brandon-clarke",
-      "pts_with_ref": 8.8,
-      "pts_baseline": 10.74,
-      "pts_swing": -1.94,
-      "fta_swing": -0.05,
-      "pf_swing": 0.25
-    },
-    {
-      "player_id": "4395626",
-      "name": "Tre Jones",
+      "player_id": "202703",
+      "name": "Nikola Mirotic",
       "n_games": 18,
-      "slug": "tre-jones",
-      "pts_with_ref": 11.44,
-      "pts_baseline": 9.52,
-      "pts_swing": 1.92,
-      "fta_swing": -0.49,
-      "pf_swing": 0.03
+      "slug": "nikola-mirotic",
+      "pts_with_ref": 8.5,
+      "pts_baseline": 11.85,
+      "pts_swing": -3.35,
+      "fta_swing": -1.12,
+      "pf_swing": -0.51
     },
     {
-      "player_id": "2037",
-      "name": "Jamal Crawford",
-      "n_games": 27,
-      "slug": "jamal-crawford",
-      "pts_with_ref": 14.7,
-      "pts_baseline": 12.83,
-      "pts_swing": 1.88,
-      "fta_swing": 0.31,
-      "pf_swing": 0.06
+      "player_id": "201945",
+      "name": "Gerald Henderson",
+      "n_games": 23,
+      "slug": "gerald-henderson",
+      "pts_with_ref": 8.43,
+      "pts_baseline": 11.81,
+      "pts_swing": -3.38,
+      "fta_swing": -1.18,
+      "pf_swing": -0.08
     },
     {
-      "player_id": "1627763",
-      "name": "Malcolm Brogdon",
-      "n_games": 22,
-      "slug": "malcolm-brogdon",
-      "pts_with_ref": 13.09,
-      "pts_baseline": 14.97,
-      "pts_swing": -1.88,
-      "fta_swing": -0.07,
+      "player_id": "4396993",
+      "name": "Tyrese Haliburton",
+      "n_games": 19,
+      "slug": "tyrese-haliburton",
+      "pts_with_ref": 14.42,
+      "pts_baseline": 17.85,
+      "pts_swing": -3.43,
+      "fta_swing": -0.83,
       "pf_swing": -0.21
     },
     {
-      "player_id": "201166",
-      "name": "Aaron Brooks",
+      "player_id": "201564",
+      "name": "O.J. Mayo",
       "n_games": 19,
-      "slug": "aaron-brooks",
-      "pts_with_ref": 7.63,
-      "pts_baseline": 9.48,
-      "pts_swing": -1.85,
-      "fta_swing": -0.77,
-      "pf_swing": -0.26
+      "slug": "o-j-mayo",
+      "pts_with_ref": 7.68,
+      "pts_baseline": 11.62,
+      "pts_swing": -3.94,
+      "fta_swing": -0.5,
+      "pf_swing": 0.13
     }
   ],
   "notable_games": [

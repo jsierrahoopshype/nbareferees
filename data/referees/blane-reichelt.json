@@ -365,7 +365,13 @@
       "home_win_pct": 0.58,
       "avg_abs_margin": 11.01,
       "ot_games": 20,
-      "ot_rate": 0.07
+      "ot_rate": 0.07,
+      "avg_total_points_pctile": 1.85,
+      "avg_total_fta_pctile": 89.81,
+      "avg_total_pf_pctile": 87.96,
+      "avg_abs_margin_pctile": 36.11,
+      "home_win_pct_pctile": 50.0,
+      "ot_rate_pctile": 90.74
     },
     "po": {
       "n": 16,
@@ -376,7 +382,13 @@
       "home_win_pct": 0.81,
       "avg_abs_margin": 10.06,
       "ot_games": 1,
-      "ot_rate": 0.06
+      "ot_rate": 0.06,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -608,17 +620,6 @@
   ],
   "player_swings": [
     {
-      "player_id": "385",
-      "name": "Antawn Jamison",
-      "n_games": 25,
-      "slug": "antawn-jamison",
-      "pts_with_ref": 15.72,
-      "pts_baseline": 19.94,
-      "pts_swing": -4.22,
-      "fta_swing": -1.06,
-      "pf_swing": -0.03
-    },
-    {
       "player_id": "1713",
       "name": "Vince Carter",
       "n_games": 16,
@@ -674,28 +675,6 @@
       "pf_swing": 0.0
     },
     {
-      "player_id": "703",
-      "name": "Quentin Richardson",
-      "n_games": 20,
-      "slug": "quentin-richardson",
-      "pts_with_ref": 9.35,
-      "pts_baseline": 12.25,
-      "pts_swing": -2.9,
-      "fta_swing": -0.7,
-      "pf_swing": -0.12
-    },
-    {
-      "player_id": "2240",
-      "name": "Gilbert Arenas",
-      "n_games": 17,
-      "slug": "gilbert-arenas",
-      "pts_with_ref": 17.65,
-      "pts_baseline": 20.49,
-      "pts_swing": -2.84,
-      "fta_swing": -0.65,
-      "pf_swing": -0.3
-    },
-    {
       "player_id": "951",
       "name": "Ray Allen",
       "n_games": 15,
@@ -705,17 +684,6 @@
       "pts_swing": 2.3,
       "fta_swing": -0.48,
       "pf_swing": -0.05
-    },
-    {
-      "player_id": "246",
-      "name": "Derek Fisher",
-      "n_games": 18,
-      "slug": "derek-fisher",
-      "pts_with_ref": 7.78,
-      "pts_baseline": 10.06,
-      "pts_swing": -2.28,
-      "fta_swing": -0.34,
-      "pf_swing": -0.02
     },
     {
       "player_id": "377",
@@ -729,17 +697,6 @@
       "pf_swing": -0.11
     },
     {
-      "player_id": "592",
-      "name": "Steve Nash",
-      "n_games": 21,
-      "slug": "steve-nash",
-      "pts_with_ref": 14.24,
-      "pts_baseline": 16.46,
-      "pts_swing": -2.22,
-      "fta_swing": 0.69,
-      "pf_swing": -0.28
-    },
-    {
       "player_id": "17",
       "name": "Shandon Anderson",
       "n_games": 27,
@@ -749,17 +706,6 @@
       "pts_swing": 2.18,
       "fta_swing": 0.53,
       "pf_swing": 0.23
-    },
-    {
-      "player_id": "261",
-      "name": "Kevin Garnett",
-      "n_games": 19,
-      "slug": "kevin-garnett",
-      "pts_with_ref": 20.58,
-      "pts_baseline": 22.65,
-      "pts_swing": -2.07,
-      "fta_swing": -0.78,
-      "pf_swing": -0.15
     },
     {
       "player_id": "714",
@@ -817,17 +763,6 @@
       "pf_swing": -0.03
     },
     {
-      "player_id": "349",
-      "name": "Allan Houston",
-      "n_games": 18,
-      "slug": "allan-houston",
-      "pts_with_ref": 18.11,
-      "pts_baseline": 19.99,
-      "pts_swing": -1.88,
-      "fta_swing": -1.49,
-      "pf_swing": 0.57
-    },
-    {
       "player_id": "165",
       "name": "Jamal Crawford",
       "n_games": 19,
@@ -883,17 +818,6 @@
       "pf_swing": -0.19
     },
     {
-      "player_id": "215",
-      "name": "Tim Duncan",
-      "n_games": 25,
-      "slug": "tim-duncan",
-      "pts_with_ref": 21.0,
-      "pts_baseline": 22.74,
-      "pts_swing": -1.74,
-      "fta_swing": -0.72,
-      "pf_swing": -0.63
-    },
-    {
       "player_id": "742",
       "name": "Bryon Russell",
       "n_games": 16,
@@ -927,17 +851,6 @@
       "pf_swing": -0.49
     },
     {
-      "player_id": "885",
-      "name": "Ben Wallace",
-      "n_games": 18,
-      "slug": "ben-wallace",
-      "pts_with_ref": 6.61,
-      "pts_baseline": 8.2,
-      "pts_swing": -1.59,
-      "fta_swing": -0.27,
-      "pf_swing": 0.12
-    },
-    {
       "player_id": "497",
       "name": "Corey Maggette",
       "n_games": 19,
@@ -947,17 +860,6 @@
       "pts_swing": 1.52,
       "fta_swing": -0.3,
       "pf_swing": 0.18
-    },
-    {
-      "player_id": "347",
-      "name": "Robert Horry",
-      "n_games": 24,
-      "slug": "robert-horry",
-      "pts_with_ref": 4.46,
-      "pts_baseline": 5.97,
-      "pts_swing": -1.51,
-      "fta_swing": -0.14,
-      "pf_swing": -0.29
     },
     {
       "player_id": "1504",
@@ -971,17 +873,6 @@
       "pf_swing": 0.25
     },
     {
-      "player_id": "937",
-      "name": "Kevin Willis",
-      "n_games": 19,
-      "slug": "kevin-willis",
-      "pts_with_ref": 3.58,
-      "pts_baseline": 5.05,
-      "pts_swing": -1.47,
-      "fta_swing": -0.21,
-      "pf_swing": -0.43
-    },
-    {
       "player_id": "656",
       "name": "Morris Peterson",
       "n_games": 18,
@@ -991,17 +882,6 @@
       "pts_swing": 1.43,
       "fta_swing": 0.11,
       "pf_swing": -0.02
-    },
-    {
-      "player_id": "207",
-      "name": "Michael Doleac",
-      "n_games": 20,
-      "slug": "michael-doleac",
-      "pts_with_ref": 3.3,
-      "pts_baseline": 4.73,
-      "pts_swing": -1.43,
-      "fta_swing": -0.15,
-      "pf_swing": -0.29
     },
     {
       "player_id": "556",
@@ -1070,17 +950,6 @@
       "pf_swing": 0.22
     },
     {
-      "player_id": "193",
-      "name": "Ricky Davis",
-      "n_games": 15,
-      "slug": "ricky-davis",
-      "pts_with_ref": 14.13,
-      "pts_baseline": 15.47,
-      "pts_swing": -1.33,
-      "fta_swing": -0.72,
-      "pf_swing": -0.25
-    },
-    {
       "player_id": "515",
       "name": "Kenyon Martin",
       "n_games": 17,
@@ -1103,39 +972,6 @@
       "pf_swing": -0.04
     },
     {
-      "player_id": "139",
-      "name": "Kelvin Cato",
-      "n_games": 17,
-      "slug": "kelvin-cato",
-      "pts_with_ref": 4.29,
-      "pts_baseline": 5.56,
-      "pts_swing": -1.27,
-      "fta_swing": -1.02,
-      "pf_swing": 0.18
-    },
-    {
-      "player_id": "189",
-      "name": "Antonio Davis",
-      "n_games": 16,
-      "slug": "antonio-davis",
-      "pts_with_ref": 11.0,
-      "pts_baseline": 12.26,
-      "pts_swing": -1.26,
-      "fta_swing": -0.91,
-      "pf_swing": -0.37
-    },
-    {
-      "player_id": "406",
-      "name": "Damon Jones",
-      "n_games": 19,
-      "slug": "damon-jones",
-      "pts_with_ref": 6.11,
-      "pts_baseline": 7.35,
-      "pts_swing": -1.24,
-      "fta_swing": 0.11,
-      "pf_swing": -0.19
-    },
-    {
       "player_id": "205",
       "name": "Vlade Divac",
       "n_games": 18,
@@ -1156,6 +992,182 @@
       "pts_swing": -1.23,
       "fta_swing": 0.05,
       "pf_swing": 0.2
+    },
+    {
+      "player_id": "406",
+      "name": "Damon Jones",
+      "n_games": 19,
+      "slug": "damon-jones",
+      "pts_with_ref": 6.11,
+      "pts_baseline": 7.35,
+      "pts_swing": -1.24,
+      "fta_swing": 0.11,
+      "pf_swing": -0.19
+    },
+    {
+      "player_id": "189",
+      "name": "Antonio Davis",
+      "n_games": 16,
+      "slug": "antonio-davis",
+      "pts_with_ref": 11.0,
+      "pts_baseline": 12.26,
+      "pts_swing": -1.26,
+      "fta_swing": -0.91,
+      "pf_swing": -0.37
+    },
+    {
+      "player_id": "139",
+      "name": "Kelvin Cato",
+      "n_games": 17,
+      "slug": "kelvin-cato",
+      "pts_with_ref": 4.29,
+      "pts_baseline": 5.56,
+      "pts_swing": -1.27,
+      "fta_swing": -1.02,
+      "pf_swing": 0.18
+    },
+    {
+      "player_id": "193",
+      "name": "Ricky Davis",
+      "n_games": 15,
+      "slug": "ricky-davis",
+      "pts_with_ref": 14.13,
+      "pts_baseline": 15.47,
+      "pts_swing": -1.33,
+      "fta_swing": -0.72,
+      "pf_swing": -0.25
+    },
+    {
+      "player_id": "207",
+      "name": "Michael Doleac",
+      "n_games": 20,
+      "slug": "michael-doleac",
+      "pts_with_ref": 3.3,
+      "pts_baseline": 4.73,
+      "pts_swing": -1.43,
+      "fta_swing": -0.15,
+      "pf_swing": -0.29
+    },
+    {
+      "player_id": "937",
+      "name": "Kevin Willis",
+      "n_games": 19,
+      "slug": "kevin-willis",
+      "pts_with_ref": 3.58,
+      "pts_baseline": 5.05,
+      "pts_swing": -1.47,
+      "fta_swing": -0.21,
+      "pf_swing": -0.43
+    },
+    {
+      "player_id": "347",
+      "name": "Robert Horry",
+      "n_games": 24,
+      "slug": "robert-horry",
+      "pts_with_ref": 4.46,
+      "pts_baseline": 5.97,
+      "pts_swing": -1.51,
+      "fta_swing": -0.14,
+      "pf_swing": -0.29
+    },
+    {
+      "player_id": "885",
+      "name": "Ben Wallace",
+      "n_games": 18,
+      "slug": "ben-wallace",
+      "pts_with_ref": 6.61,
+      "pts_baseline": 8.2,
+      "pts_swing": -1.59,
+      "fta_swing": -0.27,
+      "pf_swing": 0.12
+    },
+    {
+      "player_id": "215",
+      "name": "Tim Duncan",
+      "n_games": 25,
+      "slug": "tim-duncan",
+      "pts_with_ref": 21.0,
+      "pts_baseline": 22.74,
+      "pts_swing": -1.74,
+      "fta_swing": -0.72,
+      "pf_swing": -0.63
+    },
+    {
+      "player_id": "349",
+      "name": "Allan Houston",
+      "n_games": 18,
+      "slug": "allan-houston",
+      "pts_with_ref": 18.11,
+      "pts_baseline": 19.99,
+      "pts_swing": -1.88,
+      "fta_swing": -1.49,
+      "pf_swing": 0.57
+    },
+    {
+      "player_id": "261",
+      "name": "Kevin Garnett",
+      "n_games": 19,
+      "slug": "kevin-garnett",
+      "pts_with_ref": 20.58,
+      "pts_baseline": 22.65,
+      "pts_swing": -2.07,
+      "fta_swing": -0.78,
+      "pf_swing": -0.15
+    },
+    {
+      "player_id": "592",
+      "name": "Steve Nash",
+      "n_games": 21,
+      "slug": "steve-nash",
+      "pts_with_ref": 14.24,
+      "pts_baseline": 16.46,
+      "pts_swing": -2.22,
+      "fta_swing": 0.69,
+      "pf_swing": -0.28
+    },
+    {
+      "player_id": "246",
+      "name": "Derek Fisher",
+      "n_games": 18,
+      "slug": "derek-fisher",
+      "pts_with_ref": 7.78,
+      "pts_baseline": 10.06,
+      "pts_swing": -2.28,
+      "fta_swing": -0.34,
+      "pf_swing": -0.02
+    },
+    {
+      "player_id": "2240",
+      "name": "Gilbert Arenas",
+      "n_games": 17,
+      "slug": "gilbert-arenas",
+      "pts_with_ref": 17.65,
+      "pts_baseline": 20.49,
+      "pts_swing": -2.84,
+      "fta_swing": -0.65,
+      "pf_swing": -0.3
+    },
+    {
+      "player_id": "703",
+      "name": "Quentin Richardson",
+      "n_games": 20,
+      "slug": "quentin-richardson",
+      "pts_with_ref": 9.35,
+      "pts_baseline": 12.25,
+      "pts_swing": -2.9,
+      "fta_swing": -0.7,
+      "pf_swing": -0.12
+    },
+    {
+      "player_id": "385",
+      "name": "Antawn Jamison",
+      "n_games": 25,
+      "slug": "antawn-jamison",
+      "pts_with_ref": 15.72,
+      "pts_baseline": 19.94,
+      "pts_swing": -4.22,
+      "fta_swing": -1.06,
+      "pf_swing": -0.03
     }
   ],
   "notable_games": [],

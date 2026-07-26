@@ -64,6 +64,20 @@ SWING_TOP_N = 50
 PO_BASELINE_MIN = 5               # min playoff games in a season to trust a PO baseline
 TOP_PERF_N = 25
 LEADERBOARD_MIN_GAMES = 200
+# Whistle-profile stats eligible for percentile ranking + a dedicated
+# /leaderboard/{slug}/ page. n_column is which whistle_profile[kind] count a
+# ref must clear LEADERBOARD_MIN_GAMES on to qualify -- "n" for stats derived
+# straight from the game row, "n_boxscore" for stats that need box-score data
+# (FTA/PF/OT), matching how each stat is actually computed above.
+WHISTLE_STATS = [
+    # (key, n_column, label, slug)
+    ("avg_total_points", "n", "Combined points", "combined-points"),
+    ("avg_total_fta", "n_boxscore", "Combined free-throw attempts", "combined-fta"),
+    ("avg_total_pf", "n_boxscore", "Combined personal fouls", "combined-fouls"),
+    ("avg_abs_margin", "n", "Avg. margin of victory", "avg-margin"),
+    ("home_win_pct", "n", "Home team win rate", "home-win-rate"),
+    ("ot_rate", "n_boxscore", "Games to overtime", "ot-rate"),
+]
 TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on team pages
 PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
 
@@ -956,6 +970,9 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             })
         player_swings.sort(key=lambda r: -abs(r["pts_swing"] or 0))
         player_swings = player_swings[:SWING_TOP_N]
+        # Selection above is by |swing| (unchanged); DISPLAY order is signed
+        # value descending -- biggest positive first, biggest negative last.
+        player_swings.sort(key=lambda r: -(r["pts_swing"] or 0))
 
         # ---- notable games (Finals + Game 7s; NBA-scheme only) --------------
         notable = []
@@ -1067,6 +1084,67 @@ def build_crewmates(off_ref, referees_index):
             json.dump(doc, fh, ensure_ascii=False, indent=2)
     print("added top_partners to %d referee JSONs (%d distinct ref pairs counted)"
           % (len(referees_index), len(pair)))
+
+
+def build_whistle_leaderboards(referees_index):
+    """For each whistle-profile stat (RS and PO separately): gather qualifying
+    refs -- same LEADERBOARD_MIN_GAMES gate already used for the site's other
+    rate leaderboards, applied to whichever n-column that stat is computed
+    from -- rank them, and:
+      (a) write data/whistle_leaderboards.json, one sorted list per (stat,
+          kind), for the dedicated /leaderboard/{slug}/ pages;
+      (b) inject each qualifying ref's percentile rank back into their own
+          whistle_profile[kind][key + "_pctile"] (100 = highest value in the
+          qualifying field, 0 = lowest -- not "good"/"bad", just where they
+          fall). Non-qualifying refs get None so the renderer never KeyErrors.
+    """
+    hr("SECTION 8  Whistle-profile leaderboards + percentiles")
+    docs = {r["official_id"]: json.load(
+        open(os.path.join(DATA, "referees", "%s.json" % r["official_id"]), encoding="utf-8"))
+        for r in referees_index}
+
+    leaderboards = {}
+    for key, ncol, label, slug in WHISTLE_STATS:
+        leaderboards[key] = {"label": label, "slug": slug}
+        for kind in ("rs", "po"):
+            rows = []
+            for r in referees_index:
+                off_id = r["official_id"]
+                entry = docs[off_id]["whistle_profile"][kind]
+                val, n = entry.get(key), entry.get(ncol)
+                if val is None or n is None or n < LEADERBOARD_MIN_GAMES:
+                    continue
+                rows.append({"official_id": off_id, "name": r["name"], "slug": r["slug"],
+                             "value": val, "n": n})
+            rows.sort(key=lambda x: x["value"], reverse=True)
+            total = len(rows)
+            for rank, row in enumerate(rows, 1):
+                pctile = clean_num((total - rank) / (total - 1) * 100) if total > 1 else 100.0
+                docs[row["official_id"]]["whistle_profile"][kind][key + "_pctile"] = pctile
+                row["rank"], row["pctile"] = rank, pctile
+            leaderboards[key][kind] = [
+                {"rank": x["rank"], "name": x["name"], "slug": x["slug"],
+                 "value": x["value"], "n": x["n"], "pctile": x["pctile"]} for x in rows]
+        print("  %-24s rs qualifying=%-4d po qualifying=%-4d"
+              % (key, len(leaderboards[key]["rs"]), len(leaderboards[key]["po"])))
+
+    # Every ref's whistle_profile gets a (possibly None) pctile field for every
+    # stat, even when they don't qualify, so render_pages.py can read it
+    # unconditionally.
+    for off_id, doc in docs.items():
+        for kind in ("rs", "po"):
+            for key, *_rest in WHISTLE_STATS:
+                doc["whistle_profile"][kind].setdefault(key + "_pctile", None)
+        path = os.path.join(DATA, "referees", "%s.json" % off_id)
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=2)
+
+    leaderboards["_meta"] = {"min_games": LEADERBOARD_MIN_GAMES}
+    assert_no_nan(leaderboards, "whistle_leaderboards")
+    with open(os.path.join(DATA, "whistle_leaderboards.json"), "w", encoding="utf-8") as fh:
+        json.dump(leaderboards, fh, ensure_ascii=False, indent=2)
+    print("wrote data/whistle_leaderboards.json")
+    return leaderboards
 
 
 def _clean_dir(path):
@@ -1485,6 +1563,7 @@ def main():
         off_ref, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity)
 
     build_crewmates(off_ref, referees_index)
+    build_whistle_leaderboards(referees_index)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
     game_crew = build_game_crew(off_ref, ref_lookup)
     team_index = build_team_pages(all_team_records, gm)

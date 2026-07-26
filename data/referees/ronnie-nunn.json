@@ -351,7 +351,13 @@
       "home_win_pct": 0.58,
       "avg_abs_margin": 10.29,
       "ot_games": 13,
-      "ot_rate": 0.09
+      "ot_rate": 0.09,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 10,
@@ -362,7 +368,13 @@
       "home_win_pct": 0.8,
       "avg_abs_margin": 12.7,
       "ot_games": 2,
-      "ot_rate": 0.2
+      "ot_rate": 0.2,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -594,28 +606,6 @@
   ],
   "player_swings": [
     {
-      "player_id": "598",
-      "name": "Rasho Nesterovic",
-      "n_games": 17,
-      "slug": "rasho-nesterovic",
-      "pts_with_ref": 6.12,
-      "pts_baseline": 7.69,
-      "pts_swing": -1.57,
-      "fta_swing": -0.31,
-      "pf_swing": 0.33
-    },
-    {
-      "player_id": "831",
-      "name": "Wally Szczerbiak",
-      "n_games": 17,
-      "slug": "wally-szczerbiak",
-      "pts_with_ref": 14.88,
-      "pts_baseline": 16.09,
-      "pts_swing": -1.21,
-      "fta_swing": -0.27,
-      "pf_swing": 0.38
-    },
-    {
       "player_id": "261",
       "name": "Kevin Garnett",
       "n_games": 17,
@@ -636,6 +626,28 @@
       "pts_swing": -0.1,
       "fta_swing": 0.05,
       "pf_swing": -0.27
+    },
+    {
+      "player_id": "831",
+      "name": "Wally Szczerbiak",
+      "n_games": 17,
+      "slug": "wally-szczerbiak",
+      "pts_with_ref": 14.88,
+      "pts_baseline": 16.09,
+      "pts_swing": -1.21,
+      "fta_swing": -0.27,
+      "pf_swing": 0.38
+    },
+    {
+      "player_id": "598",
+      "name": "Rasho Nesterovic",
+      "n_games": 17,
+      "slug": "rasho-nesterovic",
+      "pts_with_ref": 6.12,
+      "pts_baseline": 7.69,
+      "pts_swing": -1.57,
+      "fta_swing": -0.31,
+      "pf_swing": 0.33
     }
   ],
   "notable_games": [],

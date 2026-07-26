@@ -389,7 +389,13 @@
       "home_win_pct": 0.55,
       "avg_abs_margin": 11.36,
       "ot_games": 21,
-      "ot_rate": 0.04
+      "ot_rate": 0.04,
+      "avg_total_points_pctile": 85.19,
+      "avg_total_fta_pctile": 19.44,
+      "avg_total_pf_pctile": 10.19,
+      "avg_abs_margin_pctile": 52.78,
+      "home_win_pct_pctile": 10.19,
+      "ot_rate_pctile": 2.78
     },
     "po": {
       "n": 7,
@@ -400,7 +406,13 @@
       "home_win_pct": 0.86,
       "avg_abs_margin": 13.57,
       "ot_games": 1,
-      "ot_rate": 0.14
+      "ot_rate": 0.14,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -643,61 +655,6 @@
       "pf_swing": -0.13
     },
     {
-      "player_id": "201933",
-      "name": "Blake Griffin",
-      "n_games": 16,
-      "slug": "blake-griffin",
-      "pts_with_ref": 10.31,
-      "pts_baseline": 14.58,
-      "pts_swing": -4.27,
-      "fta_swing": -0.54,
-      "pf_swing": -0.32
-    },
-    {
-      "player_id": "1628449",
-      "name": "Chris Boucher",
-      "n_games": 15,
-      "slug": "chris-boucher",
-      "pts_with_ref": 5.87,
-      "pts_baseline": 9.8,
-      "pts_swing": -3.93,
-      "fta_swing": -0.82,
-      "pf_swing": -0.77
-    },
-    {
-      "player_id": "1628991",
-      "name": "Jaren Jackson Jr.",
-      "n_games": 23,
-      "slug": "jaren-jackson-jr",
-      "pts_with_ref": 15.17,
-      "pts_baseline": 18.9,
-      "pts_swing": -3.72,
-      "fta_swing": 0.05,
-      "pf_swing": 0.21
-    },
-    {
-      "player_id": "4397014",
-      "name": "Quentin Grimes",
-      "n_games": 21,
-      "slug": "quentin-grimes",
-      "pts_with_ref": 7.71,
-      "pts_baseline": 11.24,
-      "pts_swing": -3.53,
-      "fta_swing": -0.68,
-      "pf_swing": -0.46
-    },
-    {
-      "player_id": "4594268",
-      "name": "Anthony Edwards",
-      "n_games": 24,
-      "slug": "anthony-edwards",
-      "pts_with_ref": 22.33,
-      "pts_baseline": 25.68,
-      "pts_swing": -3.35,
-      "fta_swing": -0.68,
-      "pf_swing": -0.42
-    },
-    {
       "player_id": "203924",
       "name": "Jerami Grant",
       "n_games": 24,
@@ -707,28 +664,6 @@
       "pts_swing": 3.11,
       "fta_swing": 0.76,
       "pf_swing": -0.07
-    },
-    {
-      "player_id": "201939",
-      "name": "Stephen Curry",
-      "n_games": 24,
-      "slug": "stephen-curry",
-      "pts_with_ref": 23.92,
-      "pts_baseline": 27.02,
-      "pts_swing": -3.1,
-      "fta_swing": -0.05,
-      "pf_swing": -0.15
-    },
-    {
-      "player_id": "1630174",
-      "name": "Aaron Nesmith",
-      "n_games": 18,
-      "slug": "aaron-nesmith",
-      "pts_with_ref": 5.33,
-      "pts_baseline": 8.41,
-      "pts_swing": -3.08,
-      "fta_swing": -0.12,
-      "pf_swing": -0.93
     },
     {
       "player_id": "4432811",
@@ -753,17 +688,6 @@
       "pf_swing": -0.42
     },
     {
-      "player_id": "202683",
-      "name": "Enes Freedom",
-      "n_games": 15,
-      "slug": "enes-freedom",
-      "pts_with_ref": 7.73,
-      "pts_baseline": 10.64,
-      "pts_swing": -2.9,
-      "fta_swing": -0.76,
-      "pf_swing": -0.22
-    },
-    {
       "player_id": "1627741",
       "name": "Buddy Hield",
       "n_games": 23,
@@ -784,28 +708,6 @@
       "pts_swing": 2.81,
       "fta_swing": 0.02,
       "pf_swing": -0.45
-    },
-    {
-      "player_id": "4871145",
-      "name": "Josh Giddey",
-      "n_games": 16,
-      "slug": "josh-giddey",
-      "pts_with_ref": 11.81,
-      "pts_baseline": 14.61,
-      "pts_swing": -2.8,
-      "fta_swing": -0.35,
-      "pf_swing": -0.08
-    },
-    {
-      "player_id": "1629027",
-      "name": "Trae Young",
-      "n_games": 26,
-      "slug": "trae-young",
-      "pts_with_ref": 21.58,
-      "pts_baseline": 24.33,
-      "pts_swing": -2.76,
-      "fta_swing": -0.65,
-      "pf_swing": -0.2
     },
     {
       "player_id": "1630169",
@@ -863,17 +765,6 @@
       "pf_swing": 0.48
     },
     {
-      "player_id": "1629012",
-      "name": "Collin Sexton",
-      "n_games": 22,
-      "slug": "collin-sexton",
-      "pts_with_ref": 14.64,
-      "pts_baseline": 17.18,
-      "pts_swing": -2.54,
-      "fta_swing": -0.35,
-      "pf_swing": -0.53
-    },
-    {
       "player_id": "1628384",
       "name": "OG Anunoby",
       "n_games": 29,
@@ -894,17 +785,6 @@
       "pts_swing": 2.48,
       "fta_swing": 0.24,
       "pf_swing": 0.16
-    },
-    {
-      "player_id": "1628378",
-      "name": "Donovan Mitchell",
-      "n_games": 34,
-      "slug": "donovan-mitchell",
-      "pts_with_ref": 22.74,
-      "pts_baseline": 25.21,
-      "pts_swing": -2.47,
-      "fta_swing": -0.93,
-      "pf_swing": 0.07
     },
     {
       "player_id": "202685",
@@ -929,39 +809,6 @@
       "pf_swing": -0.41
     },
     {
-      "player_id": "203967",
-      "name": "Dario Saric",
-      "n_games": 17,
-      "slug": "dario-saric",
-      "pts_with_ref": 6.88,
-      "pts_baseline": 9.28,
-      "pts_swing": -2.4,
-      "fta_swing": -0.23,
-      "pf_swing": 0.01
-    },
-    {
-      "player_id": "1626149",
-      "name": "Montrezl Harrell",
-      "n_games": 16,
-      "slug": "montrezl-harrell",
-      "pts_with_ref": 11.12,
-      "pts_baseline": 13.45,
-      "pts_swing": -2.33,
-      "fta_swing": -0.06,
-      "pf_swing": 0.13
-    },
-    {
-      "player_id": "203484",
-      "name": "Kentavious Caldwell-Pope",
-      "n_games": 35,
-      "slug": "kentavious-caldwell-pope",
-      "pts_with_ref": 8.17,
-      "pts_baseline": 10.42,
-      "pts_swing": -2.25,
-      "fta_swing": -0.09,
-      "pf_swing": -0.12
-    },
-    {
       "player_id": "1626224",
       "name": "Cedi Osman",
       "n_games": 23,
@@ -971,28 +818,6 @@
       "pts_swing": 2.17,
       "fta_swing": 0.39,
       "pf_swing": 0.17
-    },
-    {
-      "player_id": "202722",
-      "name": "Davis Bertans",
-      "n_games": 15,
-      "slug": "davis-bertans",
-      "pts_with_ref": 5.87,
-      "pts_baseline": 7.95,
-      "pts_swing": -2.08,
-      "fta_swing": -0.31,
-      "pf_swing": 0.0
-    },
-    {
-      "player_id": "1628368",
-      "name": "De'Aaron Fox",
-      "n_games": 20,
-      "slug": "deaaron-fox",
-      "pts_with_ref": 20.95,
-      "pts_baseline": 23.0,
-      "pts_swing": -2.05,
-      "fta_swing": -0.52,
-      "pf_swing": 0.0
     },
     {
       "player_id": "4395724",
@@ -1006,39 +831,6 @@
       "pf_swing": -0.09
     },
     {
-      "player_id": "1628398",
-      "name": "Kyle Kuzma",
-      "n_games": 29,
-      "slug": "kyle-kuzma",
-      "pts_with_ref": 14.38,
-      "pts_baseline": 16.37,
-      "pts_swing": -1.99,
-      "fta_swing": 0.39,
-      "pf_swing": 0.26
-    },
-    {
-      "player_id": "3914044",
-      "name": "Landry Shamet",
-      "n_games": 21,
-      "slug": "landry-shamet",
-      "pts_with_ref": 6.38,
-      "pts_baseline": 8.33,
-      "pts_swing": -1.94,
-      "fta_swing": 0.17,
-      "pf_swing": -0.19
-    },
-    {
-      "player_id": "1627832",
-      "name": "Fred VanVleet",
-      "n_games": 22,
-      "slug": "fred-vanvleet",
-      "pts_with_ref": 14.18,
-      "pts_baseline": 16.09,
-      "pts_swing": -1.91,
-      "fta_swing": 0.29,
-      "pf_swing": -0.06
-    },
-    {
       "player_id": "4433247",
       "name": "Jonathan Kuminga",
       "n_games": 19,
@@ -1050,17 +842,6 @@
       "pf_swing": 0.22
     },
     {
-      "player_id": "3936299",
-      "name": "Jamal Murray",
-      "n_games": 25,
-      "slug": "jamal-murray",
-      "pts_with_ref": 19.16,
-      "pts_baseline": 21.03,
-      "pts_swing": -1.87,
-      "fta_swing": -0.34,
-      "pf_swing": 0.4
-    },
-    {
       "player_id": "1629659",
       "name": "Talen Horton-Tucker",
       "n_games": 15,
@@ -1070,28 +851,6 @@
       "pts_swing": 1.84,
       "fta_swing": 1.21,
       "pf_swing": -0.15
-    },
-    {
-      "player_id": "202695",
-      "name": "Kawhi Leonard",
-      "n_games": 16,
-      "slug": "kawhi-leonard",
-      "pts_with_ref": 23.38,
-      "pts_baseline": 25.2,
-      "pts_swing": -1.83,
-      "fta_swing": -1.05,
-      "pf_swing": -0.47
-    },
-    {
-      "player_id": "3062679",
-      "name": "Josh Hart",
-      "n_games": 27,
-      "slug": "josh-hart",
-      "pts_with_ref": 9.3,
-      "pts_baseline": 11.09,
-      "pts_swing": -1.8,
-      "fta_swing": -0.53,
-      "pf_swing": 0.0
     },
     {
       "player_id": "1627732",
@@ -1116,39 +875,6 @@
       "pf_swing": 0.1
     },
     {
-      "player_id": "1629014",
-      "name": "Anfernee Simons",
-      "n_games": 20,
-      "slug": "anfernee-simons",
-      "pts_with_ref": 12.3,
-      "pts_baseline": 14.07,
-      "pts_swing": -1.77,
-      "fta_swing": 0.08,
-      "pf_swing": 0.11
-    },
-    {
-      "player_id": "1630188",
-      "name": "Jalen Smith",
-      "n_games": 19,
-      "slug": "jalen-smith",
-      "pts_with_ref": 6.11,
-      "pts_baseline": 7.86,
-      "pts_swing": -1.76,
-      "fta_swing": -0.24,
-      "pf_swing": -0.35
-    },
-    {
-      "player_id": "203903",
-      "name": "Jordan Clarkson",
-      "n_games": 31,
-      "slug": "jordan-clarkson",
-      "pts_with_ref": 13.39,
-      "pts_baseline": 15.13,
-      "pts_swing": -1.74,
-      "fta_swing": 0.48,
-      "pf_swing": 0.36
-    },
-    {
       "player_id": "4066648",
       "name": "Rui Hachimura",
       "n_games": 22,
@@ -1158,6 +884,17 @@
       "pts_swing": 1.74,
       "fta_swing": -0.06,
       "pf_swing": -0.15
+    },
+    {
+      "player_id": "1628370",
+      "name": "Malik Monk",
+      "n_games": 25,
+      "slug": "malik-monk",
+      "pts_with_ref": 12.04,
+      "pts_baseline": 13.74,
+      "pts_swing": -1.7,
+      "fta_swing": -0.05,
+      "pf_swing": 0.28
     },
     {
       "player_id": "203095",
@@ -1171,15 +908,290 @@
       "pf_swing": 0.36
     },
     {
-      "player_id": "1628370",
-      "name": "Malik Monk",
+      "player_id": "203903",
+      "name": "Jordan Clarkson",
+      "n_games": 31,
+      "slug": "jordan-clarkson",
+      "pts_with_ref": 13.39,
+      "pts_baseline": 15.13,
+      "pts_swing": -1.74,
+      "fta_swing": 0.48,
+      "pf_swing": 0.36
+    },
+    {
+      "player_id": "1630188",
+      "name": "Jalen Smith",
+      "n_games": 19,
+      "slug": "jalen-smith",
+      "pts_with_ref": 6.11,
+      "pts_baseline": 7.86,
+      "pts_swing": -1.76,
+      "fta_swing": -0.24,
+      "pf_swing": -0.35
+    },
+    {
+      "player_id": "1629014",
+      "name": "Anfernee Simons",
+      "n_games": 20,
+      "slug": "anfernee-simons",
+      "pts_with_ref": 12.3,
+      "pts_baseline": 14.07,
+      "pts_swing": -1.77,
+      "fta_swing": 0.08,
+      "pf_swing": 0.11
+    },
+    {
+      "player_id": "3062679",
+      "name": "Josh Hart",
+      "n_games": 27,
+      "slug": "josh-hart",
+      "pts_with_ref": 9.3,
+      "pts_baseline": 11.09,
+      "pts_swing": -1.8,
+      "fta_swing": -0.53,
+      "pf_swing": 0.0
+    },
+    {
+      "player_id": "202695",
+      "name": "Kawhi Leonard",
+      "n_games": 16,
+      "slug": "kawhi-leonard",
+      "pts_with_ref": 23.38,
+      "pts_baseline": 25.2,
+      "pts_swing": -1.83,
+      "fta_swing": -1.05,
+      "pf_swing": -0.47
+    },
+    {
+      "player_id": "3936299",
+      "name": "Jamal Murray",
       "n_games": 25,
-      "slug": "malik-monk",
-      "pts_with_ref": 12.04,
-      "pts_baseline": 13.74,
-      "pts_swing": -1.7,
+      "slug": "jamal-murray",
+      "pts_with_ref": 19.16,
+      "pts_baseline": 21.03,
+      "pts_swing": -1.87,
+      "fta_swing": -0.34,
+      "pf_swing": 0.4
+    },
+    {
+      "player_id": "1627832",
+      "name": "Fred VanVleet",
+      "n_games": 22,
+      "slug": "fred-vanvleet",
+      "pts_with_ref": 14.18,
+      "pts_baseline": 16.09,
+      "pts_swing": -1.91,
+      "fta_swing": 0.29,
+      "pf_swing": -0.06
+    },
+    {
+      "player_id": "3914044",
+      "name": "Landry Shamet",
+      "n_games": 21,
+      "slug": "landry-shamet",
+      "pts_with_ref": 6.38,
+      "pts_baseline": 8.33,
+      "pts_swing": -1.94,
+      "fta_swing": 0.17,
+      "pf_swing": -0.19
+    },
+    {
+      "player_id": "1628398",
+      "name": "Kyle Kuzma",
+      "n_games": 29,
+      "slug": "kyle-kuzma",
+      "pts_with_ref": 14.38,
+      "pts_baseline": 16.37,
+      "pts_swing": -1.99,
+      "fta_swing": 0.39,
+      "pf_swing": 0.26
+    },
+    {
+      "player_id": "1628368",
+      "name": "De'Aaron Fox",
+      "n_games": 20,
+      "slug": "deaaron-fox",
+      "pts_with_ref": 20.95,
+      "pts_baseline": 23.0,
+      "pts_swing": -2.05,
+      "fta_swing": -0.52,
+      "pf_swing": 0.0
+    },
+    {
+      "player_id": "202722",
+      "name": "Davis Bertans",
+      "n_games": 15,
+      "slug": "davis-bertans",
+      "pts_with_ref": 5.87,
+      "pts_baseline": 7.95,
+      "pts_swing": -2.08,
+      "fta_swing": -0.31,
+      "pf_swing": 0.0
+    },
+    {
+      "player_id": "203484",
+      "name": "Kentavious Caldwell-Pope",
+      "n_games": 35,
+      "slug": "kentavious-caldwell-pope",
+      "pts_with_ref": 8.17,
+      "pts_baseline": 10.42,
+      "pts_swing": -2.25,
+      "fta_swing": -0.09,
+      "pf_swing": -0.12
+    },
+    {
+      "player_id": "1626149",
+      "name": "Montrezl Harrell",
+      "n_games": 16,
+      "slug": "montrezl-harrell",
+      "pts_with_ref": 11.12,
+      "pts_baseline": 13.45,
+      "pts_swing": -2.33,
+      "fta_swing": -0.06,
+      "pf_swing": 0.13
+    },
+    {
+      "player_id": "203967",
+      "name": "Dario Saric",
+      "n_games": 17,
+      "slug": "dario-saric",
+      "pts_with_ref": 6.88,
+      "pts_baseline": 9.28,
+      "pts_swing": -2.4,
+      "fta_swing": -0.23,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "1628378",
+      "name": "Donovan Mitchell",
+      "n_games": 34,
+      "slug": "donovan-mitchell",
+      "pts_with_ref": 22.74,
+      "pts_baseline": 25.21,
+      "pts_swing": -2.47,
+      "fta_swing": -0.93,
+      "pf_swing": 0.07
+    },
+    {
+      "player_id": "1629012",
+      "name": "Collin Sexton",
+      "n_games": 22,
+      "slug": "collin-sexton",
+      "pts_with_ref": 14.64,
+      "pts_baseline": 17.18,
+      "pts_swing": -2.54,
+      "fta_swing": -0.35,
+      "pf_swing": -0.53
+    },
+    {
+      "player_id": "1629027",
+      "name": "Trae Young",
+      "n_games": 26,
+      "slug": "trae-young",
+      "pts_with_ref": 21.58,
+      "pts_baseline": 24.33,
+      "pts_swing": -2.76,
+      "fta_swing": -0.65,
+      "pf_swing": -0.2
+    },
+    {
+      "player_id": "4871145",
+      "name": "Josh Giddey",
+      "n_games": 16,
+      "slug": "josh-giddey",
+      "pts_with_ref": 11.81,
+      "pts_baseline": 14.61,
+      "pts_swing": -2.8,
+      "fta_swing": -0.35,
+      "pf_swing": -0.08
+    },
+    {
+      "player_id": "202683",
+      "name": "Enes Freedom",
+      "n_games": 15,
+      "slug": "enes-freedom",
+      "pts_with_ref": 7.73,
+      "pts_baseline": 10.64,
+      "pts_swing": -2.9,
+      "fta_swing": -0.76,
+      "pf_swing": -0.22
+    },
+    {
+      "player_id": "1630174",
+      "name": "Aaron Nesmith",
+      "n_games": 18,
+      "slug": "aaron-nesmith",
+      "pts_with_ref": 5.33,
+      "pts_baseline": 8.41,
+      "pts_swing": -3.08,
+      "fta_swing": -0.12,
+      "pf_swing": -0.93
+    },
+    {
+      "player_id": "201939",
+      "name": "Stephen Curry",
+      "n_games": 24,
+      "slug": "stephen-curry",
+      "pts_with_ref": 23.92,
+      "pts_baseline": 27.02,
+      "pts_swing": -3.1,
       "fta_swing": -0.05,
-      "pf_swing": 0.28
+      "pf_swing": -0.15
+    },
+    {
+      "player_id": "4594268",
+      "name": "Anthony Edwards",
+      "n_games": 24,
+      "slug": "anthony-edwards",
+      "pts_with_ref": 22.33,
+      "pts_baseline": 25.68,
+      "pts_swing": -3.35,
+      "fta_swing": -0.68,
+      "pf_swing": -0.42
+    },
+    {
+      "player_id": "4397014",
+      "name": "Quentin Grimes",
+      "n_games": 21,
+      "slug": "quentin-grimes",
+      "pts_with_ref": 7.71,
+      "pts_baseline": 11.24,
+      "pts_swing": -3.53,
+      "fta_swing": -0.68,
+      "pf_swing": -0.46
+    },
+    {
+      "player_id": "1628991",
+      "name": "Jaren Jackson Jr.",
+      "n_games": 23,
+      "slug": "jaren-jackson-jr",
+      "pts_with_ref": 15.17,
+      "pts_baseline": 18.9,
+      "pts_swing": -3.72,
+      "fta_swing": 0.05,
+      "pf_swing": 0.21
+    },
+    {
+      "player_id": "1628449",
+      "name": "Chris Boucher",
+      "n_games": 15,
+      "slug": "chris-boucher",
+      "pts_with_ref": 5.87,
+      "pts_baseline": 9.8,
+      "pts_swing": -3.93,
+      "fta_swing": -0.82,
+      "pf_swing": -0.77
+    },
+    {
+      "player_id": "201933",
+      "name": "Blake Griffin",
+      "n_games": 16,
+      "slug": "blake-griffin",
+      "pts_with_ref": 10.31,
+      "pts_baseline": 14.58,
+      "pts_swing": -4.27,
+      "fta_swing": -0.54,
+      "pf_swing": -0.32
     }
   ],
   "notable_games": [],
