@@ -5,19 +5,32 @@ Why this exists
 ---------------
 source-data/officials.csv.gz (and games.csv.gz) still carry a few NBA-scheme
 game_id rows -- 10-digit, '00'-prefixed ids from nbadb's original sparse
-coverage -- for 2000-01, 2001-02, 2002-03, and 2012-13. Those seasons are now
-sourced ENTIRELY from ESPN (fetch_espn_seasons.py), which stores ESPN event ids
-in game_id. So the old NBA-scheme rows duplicate real games under a second,
+coverage -- for 2000-01, 2001-02, 2002-03, 2012-13, and (as of the 1990s ESPN
+backfill) 1996-97, 1997-98, 1998-99, and 1999-00. Those seasons are now sourced
+ENTIRELY from ESPN (fetch_espn_seasons.py), which stores ESPN event ids in
+game_id. So the old NBA-scheme rows duplicate real games under a second,
 NON-JOINABLE id scheme and must be removed. (2012-13 is the ~85-game playoff
 fragment flagged in _freshness_espn.txt's "2012-13 DOUBLE-COUNT WARNING" -- it
-was documented for build.py to ignore but never actually removed until now.)
+was documented for build.py to ignore but never actually removed until now.
+1996-97 through 1999-00 also have nbadb NBA-scheme rows that the 1990s ESPN
+fetch will duplicate -- and, on inspection, these are NOT "sparse" the way
+that phrase is normally used in this project: nbadb's GAME rows for those
+seasons are essentially complete full schedules (e.g. 1189 rows = a full
+82-game/29-team season; 725 for the lockout-shortened 1998-99 = exactly
+29 teams x 50 games / 2). What's actually sparse is OFFICIALS coverage for
+those same games (~1-3%), matching the already-documented early-2000s
+pattern. Either way the old rows are non-joinable duplicates once ESPN's
+full replacement lands, so the removal logic is unchanged.
+1993-94/1994-95/1995-96 apparently have no nbadb rows at all to begin with,
+so they're left out of this list; if a future run finds otherwise,
+count_remaining_stale() below will catch it.)
 
 What it does
 ------------
 Removes EXACTLY the rows whose game_id is NBA-scheme (10 digits, starts '00')
 AND whose season -- decoded with the SAME logic as extract_from_nbadb.py (reused
-here by import, not reinvented) -- is one of {2000-01, 2001-02, 2002-03, 2012-13},
-from BOTH games.csv.gz and officials.csv.gz. It touches:
+here by import, not reinvented) -- is one of TARGET_SEASONS, from BOTH
+games.csv.gz and officials.csv.gz. It touches:
   * no ESPN-scheme rows (their ids are not NBA-scheme),
   * no other season,
   * no player_logs files (nbadb never had player box scores).
@@ -47,7 +60,8 @@ from extract_from_nbadb import (  # noqa: E402
     season_type_from_gid,
 )
 
-TARGET_SEASONS = {"2000-01", "2001-02", "2002-03", "2012-13"}
+TARGET_SEASONS = {"2000-01", "2001-02", "2002-03", "2012-13",
+                  "1996-97", "1997-98", "1998-99", "1999-00"}
 
 
 def is_nba_scheme(gid):
