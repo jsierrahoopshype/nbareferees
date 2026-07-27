@@ -42,6 +42,7 @@ import sys
 import re
 import json
 import glob
+import datetime
 import unicodedata
 from collections import defaultdict
 
@@ -85,6 +86,15 @@ WHISTLE_STATS = [
     ("home_win_pct", "n", "Home team win rate", "home-win-rate"),
     ("ot_rate", "n_boxscore", "Games to overtime", "ot-rate"),
 ]
+# Officiating "quality score" (DASHBOARD_SPEC §2): weight each game a ref
+# worked with known round by how deep into the playoffs it was, per BUILD_SPEC
+# round labels (label_rounds) -- this includes the 13 2000-01 games with round
+# kept but game_num nulled, since round is all this needs.
+QUALITY_POINTS = {1: 1, 2: 2, 3: 4, 4: 8}
+QUALITY_MIN_SEASONS = 3           # min seasons_active for the PER-SEASON ranking only
+# Subset of WHISTLE_STATS eligible for a spotlight "signature line" (DASHBOARD_
+# SPEC §1) -- excludes avg_abs_margin, which the spec's spotlight list omits.
+SPOTLIGHT_STAT_KEYS = ["home_win_pct", "avg_total_fta", "avg_total_pf", "ot_rate", "avg_total_points"]
 TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on team pages
 PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
 
@@ -144,6 +154,21 @@ def clean_num(x):
     if isinstance(x, float):
         return round(x, 2)
     return x
+
+
+def pct_str(x, places=1):
+    """0.605 -> '60.5%'; used only for the small, fixed dashboard.records list
+    (build.py stores a human display string there rather than a raw number --
+    render_pages.py's own pct()/dec() handle every other, more general table)."""
+    return "—" if x is None else "%.*f%%" % (places, float(x) * 100)
+
+
+def dec_str(x, places=1):
+    return "—" if x is None else "%.*f" % (places, float(x))
+
+
+def int_str(x):
+    return "—" if x is None else "{:,}".format(int(x))
 
 
 def assert_no_nan(obj, path="root"):
@@ -1001,12 +1026,23 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             })
         notable.sort(key=lambda r: r["date"], reverse=True)
 
+        # ---- officiating quality score (DASHBOARD_SPEC section 2) -----------
+        # Every game with a known round (label_rounds) is weighted by how deep
+        # into the playoffs it was; games without a round (season not yet
+        # labeled, or a genuinely unrecoverable game) simply don't contribute.
+        quality_total = int(sum(
+            QUALITY_POINTS.get(int(r), 0) for r in gsub["po_round"].dropna()))
+        seasons_active = len(per_season)
+        quality_per_season = clean_num(quality_total / seasons_active) if seasons_active else None
+
         summary = {
             "official_id": ref_key, "name": display[ref_key], "slug": slug,
             "raw_ids": sorted(raw_ids[ref_key]), "eras": sorted(eras[ref_key]),
             "first_season": seasons[0], "last_season": seasons[-1],
             "games_total": n_total, "games_rs": n_rs, "games_po": n_po, "games_pi": n_pi,
             "finals_games": finals_games, "game7s": game7s, "active": active,
+            "quality_total": quality_total, "seasons_active": seasons_active,
+            "quality_per_season": quality_per_season,
             "per_season": per_season,
         }
 
@@ -1029,6 +1065,8 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             "first_season": seasons[0], "last_season": seasons[-1],
             "games_total": n_total, "games_rs": n_rs, "games_po": n_po,
             "finals_games": finals_games, "game7s": game7s, "active": active,
+            "quality_total": quality_total, "seasons_active": seasons_active,
+            "quality_per_season": quality_per_season,
         })
 
         # keep the per-ref detail around for QA/leaderboards without re-reading
@@ -1438,6 +1476,18 @@ def build_leaderboards(referees_index):
         if rs["n_boxscore"] >= LEADERBOARD_MIN_GAMES and rs["avg_total_fta"] is not None:
             fta.append(entry(r, {"avg_total_fta": rs["avg_total_fta"], "n": rs["n_boxscore"]}))
 
+    # Officiating quality score (DASHBOARD_SPEC section 2). Career-total
+    # ranking has no seasons_active gate; the per-season ranking applies
+    # QUALITY_MIN_SEASONS so a single lucky rookie-season Finals assignment
+    # can't top the list on n=1 -- the same small-sample guard the site
+    # already applies everywhere else (e.g. LEADERBOARD_MIN_GAMES).
+    most_quality_total = [entry(r, {"quality_total": r["quality_total"]})
+                          for r in top(idx, lambda r: r["quality_total"])]
+    most_quality_per_season = [
+        entry(r, {"quality_per_season": r["quality_per_season"], "n": r["seasons_active"]})
+        for r in top(idx, lambda r: r["quality_per_season"],
+                     filt=lambda r: r["seasons_active"] >= QUALITY_MIN_SEASONS)]
+
     leaderboards = {
         "most_career_games": most_games,
         "most_career_games_active": most_games_active,
@@ -1449,7 +1499,10 @@ def build_leaderboards(referees_index):
         "lowest_home_win_pct": sorted(hw, key=lambda r: r["home_win_pct"])[:25],
         "highest_avg_total_fta_rs": sorted(fta, key=lambda r: -r["avg_total_fta"])[:25],
         "lowest_avg_total_fta_rs": sorted(fta, key=lambda r: r["avg_total_fta"])[:25],
+        "most_quality_total": most_quality_total,
+        "most_quality_per_season": most_quality_per_season,
         "_meta": {"min_games_for_rate_leaderboards": LEADERBOARD_MIN_GAMES,
+                  "min_seasons_for_quality_per_season": QUALITY_MIN_SEASONS,
                   "current_season": CURRENT_SEASON},
     }
     assert_no_nan(leaderboards, "leaderboards")
@@ -1457,6 +1510,263 @@ def build_leaderboards(referees_index):
         json.dump(leaderboards, fh, ensure_ascii=False, indent=2)
     print("wrote data/leaderboards.json")
     return leaderboards, details
+
+
+# ----------------------------------------------------------------------------
+# frontpage dashboard (DASHBOARD_SPEC section 1)
+# ----------------------------------------------------------------------------
+# 3-5 fixed, factual curiosity entries for the history strip -- genuinely true
+# facts about this project's own dataset/methodology (verified during earlier
+# build rounds), not fabricated trivia.
+DASHBOARD_CURIOSITIES = [
+    "This database spans two different data-collection eras -- Kaggle's nbadb "
+    "warehouse and ESPN's public API -- reconciled into one continuous record "
+    "back to the 2000-01 season.",
+    "Four historical franchises' games are folded into their modern "
+    "successor's team page: the Vancouver Grizzlies into Memphis, the New "
+    "Jersey Nets into Brooklyn, and both New Orleans Hornets eras into the "
+    "Pelicans.",
+    "The Seattle SuperSonics keep their own separate page -- per the 2008 "
+    "relocation settlement, the Thunder don't claim that franchise's history.",
+    "Four 2000-01 playoff series are missing games entirely from the "
+    "historical record, including a Finals with only one game on file.",
+    "Alternate officials count too: when a game lists more than three names, "
+    "only the first three (as originally recorded) are treated as having "
+    "actually worked it.",
+]
+
+
+def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderboards,
+                    seg_to_entity):
+    hr("SECTION 9  Frontpage dashboard")
+
+    # ---- spotlight --------------------------------------------------------
+    # One entry per ref: a precomputed "signature line" is the SPOTLIGHT_STAT_
+    # KEYS stat where this ref's RS percentile (already computed by
+    # build_whistle_leaderboards, same n>=LEADERBOARD_MIN_GAMES gate) sits
+    # farthest from the field median -- i.e. the same "how unusual" measure
+    # already validated and shown on the ref page, not a second parallel
+    # statistic. Refs below the gate fall back to a tenure line (seasons_active
+    # + career games) instead.
+    spotlight = []
+    for r in referees_index:
+        det = details[r["official_id"]]
+        rs = det["whistle_profile"]["rs"]
+        best_key, best_dist = None, -1
+        if rs["n"] >= LEADERBOARD_MIN_GAMES:
+            for key in SPOTLIGHT_STAT_KEYS:
+                p = rs.get(key + "_pctile")
+                if p is None:
+                    continue
+                d = abs(p - 50)
+                if d > best_dist:
+                    best_key, best_dist = key, d
+        signature = None
+        if best_key:
+            signature = {"key": best_key, "value": rs[best_key],
+                        "pctile": rs[best_key + "_pctile"], "n": rs["n"]}
+        spotlight.append({
+            "slug": r["slug"], "name": r["name"], "games_total": r["games_total"],
+            "first_season": r["first_season"], "last_season": r["last_season"],
+            "seasons_active": r["seasons_active"], "active": r["active"],
+            "signature": signature,
+        })
+    spotlight.sort(key=lambda x: x["slug"])  # stable rotation order
+
+    # ---- records ------------------------------------------------------------
+    # Reuse already-computed, already-gated leaderboard #1 entries wherever
+    # possible rather than recomputing the same rankings a second way.
+    def rec(label, value_display, name, slug, n):
+        return {"label": label, "value": value_display, "ref_name": name,
+                "ref_slug": slug, "n": n}
+
+    records = []
+    if leaderboards["highest_home_win_pct"]:
+        e = leaderboards["highest_home_win_pct"][0]
+        records.append(rec("Highest home team win rate", pct_str(e["home_win_pct"]),
+                           e["name"], e["slug"], e["n"]))
+    if leaderboards["lowest_home_win_pct"]:
+        e = leaderboards["lowest_home_win_pct"][0]
+        records.append(rec("Lowest home team win rate", pct_str(e["home_win_pct"]),
+                           e["name"], e["slug"], e["n"]))
+    if leaderboards["highest_avg_total_fta_rs"]:
+        e = leaderboards["highest_avg_total_fta_rs"][0]
+        records.append(rec("Busiest whistle (combined FTA/game, RS)", dec_str(e["avg_total_fta"]),
+                           e["name"], e["slug"], e["n"]))
+    if leaderboards["most_career_games"]:
+        e = leaderboards["most_career_games"][0]
+        records.append(rec("Most career games", "%s games" % int_str(e["games_total"]),
+                           e["name"], e["slug"], e["games_total"]))
+    if leaderboards["most_playoff_games"]:
+        e = leaderboards["most_playoff_games"][0]
+        records.append(rec("Most playoff games", "%s games" % int_str(e["games_po"]),
+                           e["name"], e["slug"], e["games_po"]))
+    if leaderboards["most_career_games_active"]:
+        e = leaderboards["most_career_games_active"][0]
+        records.append(rec("Most games, active official", "%s games" % int_str(e["games_total"]),
+                           e["name"], e["slug"], e["games_total"]))
+
+    # most OT games (RS+PO combined) -- not already in leaderboards.json
+    ot_best = None
+    for r in referees_index:
+        det = details[r["official_id"]]
+        wp = det["whistle_profile"]
+        ot = (wp["rs"].get("ot_games") or 0) + (wp["po"].get("ot_games") or 0)
+        if ot_best is None or ot > ot_best[0]:
+            ot_best = (ot, r)
+    if ot_best and ot_best[0] > 0:
+        ot, r = ot_best
+        records.append(rec("Most overtime games", "%s OT games" % int_str(ot),
+                           r["name"], r["slug"], r["games_total"]))
+
+    # longest tenure span -- not already in leaderboards.json
+    span_best = None
+    for r in referees_index:
+        span_years = int(str(r["last_season"])[:4]) + 1 - int(str(r["first_season"])[:4])
+        if span_best is None or span_years > span_best[0]:
+            span_best = (span_years, r)
+    if span_best:
+        yrs, r = span_best
+        records.append(rec("Longest tenure", "%d seasons (%s–%s)" % (yrs, r["first_season"], r["last_season"]),
+                           r["name"], r["slug"], yrs))
+
+    # ---- history ------------------------------------------------------------
+    # Global (not per-ref) join of player logs with game context, reused for
+    # both the top-10 scoring strip and the date_index below.
+    pl_g = pl.merge(
+        gm[["game_id", "game_date", "home_team_abbr", "away_team_abbr", "era"]],
+        on="game_id", how="inner")
+    pl_g["opp_abbr"] = pl_g["away_team_abbr"].where(
+        pl_g["team_abbr"] == pl_g["home_team_abbr"], pl_g["home_team_abbr"])
+    pl_g["seg_id"] = pl_g["era"] + ":" + pl_g["player_id"]
+    pl_g["slug"] = pl_g["seg_id"].map(lambda s: (seg_to_entity.get(s) or {}).get("slug"))
+    pl_g["name"] = pl_g["seg_id"].map(lambda s: (seg_to_entity.get(s) or {}).get("display"))
+
+    top10 = pl_g.sort_values("pts", ascending=False).head(10)
+    top_scoring_games = [{
+        "player_name": row["name"] or row["player_name"], "player_slug": row["slug"],
+        "pts": int(row["pts"]), "team_abbr": row["team_abbr"], "opp_abbr": row["opp_abbr"],
+        "game_date": row["game_date"], "game_id": row["game_id"],
+        "crew": game_crew.get(row["game_id"], []),
+    } for _, row in top10.iterrows()]
+
+    # most frequent crew trio ever (crews are already alternate-trimmed, so a
+    # game's distinct ref_keys ARE the trio when a game has exactly 3).
+    name_of = {r["official_id"]: r["name"] for r in referees_index}
+    slug_of = {r["official_id"]: r["slug"] for r in referees_index}
+    trio_counter = defaultdict(int)
+    for _gid, grp in off_ref.groupby("game_id"):
+        crew = tuple(sorted(set(grp["ref_key"])))
+        if len(crew) == 3:
+            trio_counter[crew] += 1
+    top_trio = None
+    if trio_counter:
+        best_crew, best_n = max(trio_counter.items(), key=lambda kv: kv[1])
+        top_trio = {
+            "refs": [{"name": name_of[k], "slug": slug_of[k]} for k in best_crew if k in name_of],
+            "games": best_n,
+        }
+
+    history = {
+        "top_scoring_games": top_scoring_games,
+        "top_crew_trio": top_trio,
+        "curiosities": DASHBOARD_CURIOSITIES,
+    }
+
+    # ---- date_index -----------------------------------------------------
+    # Highest-scoring individual performance on each calendar date (MM-DD)
+    # across all seasons. Every one of the 366 possible calendar dates gets an
+    # entry: dates with no games in the dataset fall back to the nearest PRIOR
+    # date that has one (wrapping from Jan 1 back to Dec 31), precomputed here
+    # so the client JS only ever does a dict lookup.
+    pl_g["month_day"] = pl_g["game_date"].str.slice(5, 10)
+    best_idx = pl_g.groupby("month_day")["pts"].idxmax()
+    best_by_md = {}
+    for md, idx_ in best_idx.items():
+        row = pl_g.loc[idx_]
+        best_by_md[md] = {
+            "month_day": md, "date": row["game_date"],
+            "player_name": row["name"] or row["player_name"], "player_slug": row["slug"],
+            "pts": int(row["pts"]), "team_abbr": row["team_abbr"], "opp_abbr": row["opp_abbr"],
+            "game_id": row["game_id"], "crew": game_crew.get(row["game_id"], []),
+        }
+
+    all_mds = [d.strftime("%m-%d") for d in pd.date_range("2000-01-01", "2000-12-31")]
+    first_with_data = next((md for md in all_mds if md in best_by_md), None)
+    date_index = {}
+    if first_with_data:
+        start = all_mds.index(first_with_data)
+        rotated = all_mds[start:] + all_mds[:start]
+        carry = None
+        for md in rotated:
+            if md in best_by_md:
+                carry = best_by_md[md]
+            date_index[md] = carry
+    print("date_index: %d/%d calendar dates have a real game; rest fall back to the "
+          "nearest prior date" % (len(best_by_md), len(all_mds)))
+
+    dashboard = {
+        "spotlight": spotlight,
+        "records": records,
+        "history": history,
+        "date_index": date_index,
+    }
+    assert_no_nan(dashboard, "dashboard")
+    with open(os.path.join(DATA, "dashboard.json"), "w", encoding="utf-8") as fh:
+        json.dump(dashboard, fh, ensure_ascii=False, indent=2)
+    print("wrote data/dashboard.json (%d spotlight, %d records, %d top-scoring, "
+          "trio=%s, %d curiosities)"
+          % (len(spotlight), len(records), len(top_scoring_games),
+             "yes" if top_trio else "no", len(DASHBOARD_CURIOSITIES)))
+    return dashboard
+
+
+def qa_dashboard(dashboard, referees_index):
+    """DASHBOARD_SPEC section 5: no NaN (already asserted in build_dashboard),
+    every slug resolves to a real referee, every records/history entry carries
+    n or count."""
+    hr("SECTION 9  Dashboard QA")
+    failures = []
+    known_slugs = {r["slug"] for r in referees_index}
+
+    bad_spot = [s["slug"] for s in dashboard["spotlight"] if s["slug"] not in known_slugs]
+    if bad_spot:
+        failures.append("spotlight slugs not in referees_index: %s" % bad_spot[:5])
+
+    bad_rec = [r["label"] for r in dashboard["records"]
+              if r["ref_slug"] not in known_slugs or not r.get("n")]
+    if bad_rec:
+        failures.append("records missing a valid slug or n: %s" % bad_rec[:5])
+
+    for g in dashboard["history"]["top_scoring_games"]:
+        if not g.get("pts"):
+            failures.append("top_scoring_games entry missing pts: %s" % g.get("game_id"))
+        for c in g.get("crew") or []:
+            if c["slug"] not in known_slugs:
+                failures.append("top_scoring_games crew slug not in referees_index: %s" % c["slug"])
+
+    trio = dashboard["history"]["top_crew_trio"]
+    if trio:
+        for rf in trio["refs"]:
+            if rf["slug"] not in known_slugs:
+                failures.append("top_crew_trio slug not in referees_index: %s" % rf["slug"])
+        if not trio.get("games"):
+            failures.append("top_crew_trio missing a games count")
+
+    print("[hard] spotlight entries: %d, all slugs resolve: %s"
+          % (len(dashboard["spotlight"]), not bad_spot))
+    print("[hard] records entries: %d, all carry ref_slug + n: %s"
+          % (len(dashboard["records"]), not bad_rec))
+    print("[hard] top_scoring_games: %d, top_crew_trio present: %s"
+          % (len(dashboard["history"]["top_scoring_games"]), bool(trio)))
+    print("[hard] date_index: %d calendar-date entries" % len(dashboard["date_index"]))
+
+    if failures:
+        hr("DASHBOARD QA: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[dashboard QA checks all passed]")
 
 
 # ----------------------------------------------------------------------------
@@ -1555,6 +1865,38 @@ def spot_checks(referees_index, details):
         show(n)
 
 
+def dashboard_spot_checks(referees_index, details, dashboard):
+    """DASHBOARD_SPEC section 5: hand-checkable quality-score numbers for 3
+    known playoff-heavy refs, plus a spotlight-rotation sanity line. Printed
+    for human review, same pattern as spot_checks() above -- no external
+    ground truth to assert against automatically."""
+    hr("SECTION 9  Dashboard spot-checks")
+    by_name = {r["name"]: r for r in referees_index}
+
+    print("Quality score (R1=1/R2=2/R3=4/R4=8 pt per playoff round worked) "
+          "vs. already-verified Finals/Game-7 counts:")
+    for n in ["Scott Foster", "Tony Brothers", "James Capers"]:
+        r = by_name.get(n)
+        if r is None:
+            print("  %-20s NOT FOUND" % n)
+            continue
+        print("  %-20s quality_total=%-5d quality_per_season=%-6s seasons_active=%-3d "
+              "(cross-check: finals=%-3d g7=%-3d games_po=%-4d)"
+              % (n, r["quality_total"], r["quality_per_season"], r["seasons_active"],
+                 r["finals_games"], r["game7s"], r["games_po"]))
+
+    spotlight = dashboard["spotlight"]
+    if spotlight:
+        today = datetime.date.today()
+        tomorrow = today + datetime.timedelta(days=1)
+        pick_today = spotlight[today.timetuple().tm_yday % len(spotlight)]
+        pick_tomorrow = spotlight[tomorrow.timetuple().tm_yday % len(spotlight)]
+        print("\nSpotlight rotation sanity check (day-of-year %% %d spotlight entries):"
+              % len(spotlight))
+        print("  today    (%s): %s" % (today.isoformat(), pick_today["name"]))
+        print("  tomorrow (%s): %s" % (tomorrow.isoformat(), pick_tomorrow["name"]))
+
+
 # ----------------------------------------------------------------------------
 # main
 # ----------------------------------------------------------------------------
@@ -1583,9 +1925,13 @@ def main():
     player_index = build_player_pages(all_swings, entities, seg_to_entity, pl, gm, game_crew)
 
     leaderboards, details = build_leaderboards(referees_index)
+    dashboard = build_dashboard(referees_index, details, gm, pl, game_crew, off_ref,
+                                leaderboards, seg_to_entity)
     qa_gate(off_raw, gm, off_trimmed, referees_index, details)
     qa_teams_players(referees_index, team_index, player_index)
+    qa_dashboard(dashboard, referees_index)
     spot_checks(referees_index, details)
+    dashboard_spot_checks(referees_index, details, dashboard)
 
     hr("BUILD COMPLETE")
     print("referees: %d | teams: %d | players: %d"
