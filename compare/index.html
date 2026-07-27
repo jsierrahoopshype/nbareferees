@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare two NBA referees side by side</title>
+<meta name="description" content="Head-to-head comparison of any two NBA referees: whistle profiles, career summary, and team-record extremes for each, regular season and playoffs. Share a comparison by its URL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <a class="brand" href="../index.html">
+    <span class="brand-stripe" aria-hidden="true"></span>
+    <span class="brand-name">Referee Database</span>
+  </a>
+  <nav class="masthead-nav"><a href="../compare/index.html">Compare</a></nav>
+  <span class="brand-sub">NBA officiating record &middot; 2000-01 to 2025-26</span>
+</header>
+<main id="main"><section class="block">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Compare</span><h2>Compare two referees</h2></div>
+  <div class="compare-pickers">
+    <div class="compare-picker"><div class="refsearch-wrap" data-json="../data/search-index.json" data-root="../" data-pos="top" data-type-filter="ref" data-compare="a"><input type="search" class="refsearch" autocomplete="off" placeholder="Search referees…" aria-label="Search referees…"><div class="refsearch-results" role="listbox" hidden></div></div></div>
+    <div class="compare-picker"><div class="refsearch-wrap" data-json="../data/search-index.json" data-root="../" data-pos="top" data-type-filter="ref" data-compare="b"><input type="search" class="refsearch" autocomplete="off" placeholder="Search referees…" aria-label="Search referees…"><div class="refsearch-results" role="listbox" hidden></div></div></div>
+  </div>
+  <p class="empty-note" id="compare-prompt">Select two referees above to compare their
+  career numbers side by side.</p>
+  <div class="compare-cols">
+    <div class="compare-col" id="compare-col-a"></div>
+    <div class="compare-col" id="compare-col-b"></div>
+  </div>
+</section></main>
+<footer class="site-foot">
+  <p class="foot-editorial">Every figure here is a descriptive record of games
+  as they were officiated. Nothing on this site implies a referee causes a
+  result or favors a team.</p>
+  <p class="foot-links"><a href="../sources/index.html">Data sources</a></p>
+</footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

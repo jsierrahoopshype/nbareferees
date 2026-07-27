@@ -1,0 +1,48 @@
+NBA assignments reachability + shape probe -- CLOUD ENVIRONMENT
+======================================================================
+Run from: Claude Code cloud session (this repo's build environment)
+Run at (UTC): 2026-07-27T19:27Z
+Read-only. No extract files touched. This section is written once by the
+cloud session; scripts/local/probe_nba_assignments.py APPENDS the local
+(Jorge's Windows machine) section below this one when he runs it, so both
+environments' reachability results sit side by side.
+
+Method: direct curl through this session's outbound agent proxy (the same
+CONNECT-tunnel mechanism all outbound HTTPS from this environment uses),
+plus the proxy's own /__agentproxy/status endpoint to see the raw relay
+failure detail rather than just a client-side timeout.
+
+Candidates tested:
+  - https://official.nba.com/referee-assignments/
+  - https://official.nba.com/
+  - https://data.nba.com/data/10s/prod/v1/today.json
+
+Result: all three UNREACHABLE. curl returned exit 56 ("CONNECT tunnel
+failed, response 403") for every one -- no HTTP response from the target
+site itself, because the tunnel never got that far. The proxy's own status
+endpoint confirms this precisely:
+
+  host: official.nba.com:443 -> connect_rejected: "gateway answered 403 to
+    CONNECT (policy denial or upstream failure)"
+  host: data.nba.com:443     -> connect_rejected: same detail
+
+IMPORTANT NUANCE for the September GitHub-Actions-vs-local-scheduled-task
+decision this probe is meant to inform: this is NOT an NBA-specific block.
+The same proxy status log shows an IDENTICAL connect_rejected/403 pattern
+for completely unrelated hosts queried around the same time (www.google.com,
+redirector.gvt1.com, android.clients.google.com) -- i.e. this Claude Code
+session's outbound network policy is a general default-deny (or a narrow
+allowlist), not a targeted NBA/sports-data block the way stats.nba.com's
+datacenter-IP block (documented elsewhere in this project) specifically is.
+
+That means this result answers "can THIS Claude Code cloud session reach
+official.nba.com" (no) but does NOT by itself answer "would a GitHub Actions
+runner be blocked too" -- GH Actions runners are a different network
+environment with their own (typically much more open) egress, not subject to
+this session's proxy policy. Settling the GH-Actions question needs a real
+test from an actual GH Actions runner in September, or a design decision to
+default to the local-scheduled-task path if that test isn't run before then.
+
+No page/JSON shape was observed (nothing got past the tunnel), so the
+"which URL, what shape, is it parseable" half of this probe is unanswered
+from the cloud side -- that's the local run's job below.

@@ -128,6 +128,7 @@ def head(title, description, depth):
     <span class="brand-stripe" aria-hidden="true"></span>
     <span class="brand-name">Referee Database</span>
   </a>
+  <nav class="masthead-nav"><a href="{root}compare/index.html">Compare</a></nav>
   <span class="brand-sub">NBA officiating record &middot; 2000-01 to {cur}</span>
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
@@ -152,18 +153,30 @@ def page(title, description, depth, body):
     return head(title, description, depth) + body + footer(depth)
 
 
-def ref_search(depth, position):
+def ref_search(depth, position, type_filter=None, compare_slot=None):
     """Client-side navigate-search over data/search-index.json (referees, teams
     and players). data-root is the page's path back to the repo root, so the JS
-    can build the correct depth for referee/, team/ and player/ targets."""
+    can build the correct depth for referee/, team/ and player/ targets.
+
+    type_filter restricts results to one type (e.g. "ref" for the comparator's
+    two boxes). compare_slot ("a"/"b") makes selecting a result update that
+    query-string param on the CURRENT page instead of navigating to the
+    referee's own page -- both are read by the same shared JS block, so this
+    is the same search component, not a new one."""
     root = "../" * depth
+    extra = ""
+    if type_filter:
+        extra += ' data-type-filter="%s"' % esc(type_filter)
+    if compare_slot:
+        extra += ' data-compare="%s"' % esc(compare_slot)
+    placeholder = "Search referees…" if type_filter == "ref" else "Search referees, teams, players…"
     return ('<div class="refsearch-wrap" data-json="{root}data/search-index.json" '
-            'data-root="{root}" data-pos="{pos}">'
+            'data-root="{root}" data-pos="{pos}"{extra}>'
             '<input type="search" class="refsearch" autocomplete="off" '
-            'placeholder="Search referees, teams, players…" '
-            'aria-label="Search referees, teams and players">'
+            'placeholder="{ph}" '
+            'aria-label="{ph}">'
             '<div class="refsearch-results" role="listbox" hidden></div>'
-            '</div>').format(root=root, pos=position)
+            '</div>').format(root=root, pos=position, extra=extra, ph=esc(placeholder))
 
 
 def swing_class(v):
@@ -440,10 +453,11 @@ def render_ref(doc):
   <div class="ref-hero-body">
     <p class="ref-kicker">NBA on-court official</p>
     <h1 class="ref-name">{name}</h1>
-    <div class="ref-badges">{active}</div>
+    <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a></div>
     <div class="chip-row">{chips}</div>
   </div>
-</section>""".format(name=esc(name), active=active, chips="".join(chips))
+</section>""".format(name=esc(name), active=active, chips="".join(chips),
+                     root=ROOT2, slug=esc(s["slug"]))
 
     blocks = [back_home(), hero, ref_search(2, "top")]
     blocks.append(partners_card(doc.get("top_partners")))
@@ -709,20 +723,31 @@ def render_player(doc):
 # index page
 # ---------------------------------------------------------------------------
 LEADERBOARD_TABS = [
-    ("career", "Career games", "most_career_games", "games_total", i),
-    ("active", "Active", "most_career_games_active", "games_total", i),
-    ("playoffs", "Playoff games", "most_playoff_games", "games_po", i),
-    ("finals", "Finals games", "most_finals_games", "finals_games", i),
-    ("game7s", "Game 7s", "most_game7s", "game7s", i),
-    ("season", "This season", "most_games_current_season", "games_current", i),
+    # (tab_id, label, leaderboards.json key, valkey, valfmt, n_key)
+    ("career", "Career games", "most_career_games", "games_total", i, None),
+    ("active", "Active", "most_career_games_active", "games_total", i, None),
+    ("playoffs", "Playoff games", "most_playoff_games", "games_po", i, None),
+    ("finals", "Finals games", "most_finals_games", "finals_games", i, None),
+    ("game7s", "Game 7s", "most_game7s", "game7s", i, None),
+    ("season", "This season", "most_games_current_season", "games_current", i, None),
+    # DASHBOARD_SPEC section 2: playoff-weight quality score (R1=1/R2=2/R3=4/
+    # R4=8 per game). Per-season is gated at seasons_active>=3 at build time;
+    # n_key surfaces that season count on each row so the gate is visible, not
+    # just applied silently.
+    ("quality", "Playoff weight — career", "most_quality_total", "quality_total", i, None),
+    ("quality_season", "Playoff weight — per season", "most_quality_per_season",
+     "quality_per_season", dec, "n"),
 ]
 
 
-def leaderboard_row(rank, r, valkey, valfmt):
+def leaderboard_row(rank, r, valkey, valfmt, n_key=None):
+    n_span = ""
+    if n_key and r.get(n_key) is not None:
+        n_span = ' <span class="lb-n">n=%s</span>' % i(r[n_key])
     return ('<li class="lb-row"><span class="lb-rank">{rk}</span>'
             '<a class="lb-name" href="referee/{slug}/index.html">{name}</a>'
-            '<span class="lb-val">{val}</span></li>').format(
-        rk=rank, slug=esc(r["slug"]), name=esc(r["name"]), val=valfmt(r[valkey]))
+            '<span class="lb-val">{val}{nspan}</span></li>').format(
+        rk=rank, slug=esc(r["slug"]), name=esc(r["name"]), val=valfmt(r[valkey]), nspan=n_span)
 
 
 def paired_panel(tab_id, active, title_hi, rows_hi, title_lo, rows_lo, valkey, valfmt, footnote=""):
@@ -735,7 +760,102 @@ def paired_panel(tab_id, active, title_hi, rows_hi, title_lo, rows_lo, valkey, v
         a=col(title_hi, rows_hi), b=col(title_lo, rows_lo), fn=footnote)
 
 
-def render_index(refs, lb):
+# ---------------------------------------------------------------------------
+# frontpage dashboard sections (DASHBOARD_SPEC section 3)
+# ---------------------------------------------------------------------------
+def dashboard_records_strip(records):
+    """Horizontally scannable row of small stat cards, each linking to the
+    ref. Static/known at build time, so rendered server-side like everything
+    else on the site (real HTML, not JS-injected)."""
+    cards = "".join(
+        '<a class="record-card" href="referee/{slug}/index.html">'
+        '<span class="record-label">{label}</span>'
+        '<span class="record-val">{val}</span>'
+        '<span class="record-ref">{name} <span class="record-n">n={n}</span></span>'
+        '</a>'.format(slug=esc(r["ref_slug"]), label=esc(r["label"]),
+                     val=esc(r["value"]), name=esc(r["ref_name"]), n=i(r["n"]))
+        for r in records)
+    return ("""<section class="block" id="records">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Records &amp; oddities</h2></div>
+  <div class="record-strip">{cards}</div>
+</section>""").format(cards=cards)
+
+
+def dashboard_history_strip(history):
+    """Top scoring games (linked crew + player) and the most frequent
+    3-official crew ever, plus a few fixed factual notes about the dataset."""
+    game_items = []
+    for rank, g in enumerate(history["top_scoring_games"], 1):
+        crew = " &middot; ".join(ref_link(c["name"], c["slug"]) for c in g.get("crew") or []) or "—"
+        game_items.append(
+            '<li class="history-row"><span class="history-rank">{rk}</span>'
+            '<span class="history-pts">{pts}</span> {player} '
+            '<span class="history-matchup">{team} <span class="vs">vs</span> {opp}</span> '
+            '<span class="history-date">{date}</span>'
+            '<span class="history-crew">Crew: {crew}</span></li>'.format(
+                rk=rank, pts=i(g["pts"]),
+                player=player_link(g["player_name"], g.get("player_slug")),
+                team=team_cell(g["team_abbr"]), opp=team_cell(g["opp_abbr"]),
+                date=esc(g["game_date"]), crew=crew))
+
+    trio = history.get("top_crew_trio")
+    trio_html = '<p class="empty-note">No three-official crew on record.</p>'
+    if trio:
+        names = ", ".join(ref_link(r["name"], r["slug"]) for r in trio["refs"])
+        trio_html = ('<p class="history-trio">{names} — {n} games together, more than '
+                    'any other three-official crew.</p>').format(names=names, n=i(trio["games"]))
+
+    curiosities = "".join("<li>%s</li>" % esc(c) for c in history.get("curiosities") or [])
+
+    return ("""<section class="block" id="history">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>History</h2></div>
+  <div class="history-cols">
+    <div class="history-col"><h3 class="lb-subhead">Top scoring games</h3>
+      <ol class="history-list">{games}</ol></div>
+    <div class="history-col"><h3 class="lb-subhead">Most frequent crew</h3>{trio}
+      <h3 class="lb-subhead">Notes on this data</h3>
+      <ul class="curiosity-list">{cur}</ul></div>
+  </div>
+</section>""").format(games="".join(game_items), trio=trio_html, cur=curiosities)
+
+
+def dashboard_rotation_slots(dashboard):
+    """Empty containers for the day-of-year spotlight pick and 'on this date'
+    card, plus the data they need embedded inline (not fetched) so there's no
+    flash of missing content on first paint. The SELECTION is inherently
+    client-side (must reflect the viewer's actual today on a statically-built
+    site), but the underlying data ships as real JSON in the page source."""
+    payload = json.dumps(
+        {"spotlight": dashboard["spotlight"], "date_index": dashboard["date_index"]},
+        ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return ("""<section class="block" id="spotlight">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Spotlight of the day</h2></div>
+  <div id="spotlight-card" class="spotlight-card"><p class="empty-note">Loading…</p></div>
+</section>
+<section class="block" id="on-this-date">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>On this date</h2></div>
+  <div id="ondate-card" class="ondate-card"><p class="empty-note">Loading…</p></div>
+</section>
+<script type="application/json" id="dashboard-rotation-data">{payload}</script>""").format(payload=payload)
+
+
+def dashboard_tonights_crews_slot():
+    """Empty, hidden by default. app.js fetches data/tonights-crews.json (a
+    September-pipeline output that doesn't exist yet) and only un-hides this
+    if it's present AND dated today/yesterday (US time) -- absent or stale
+    renders nothing at all, no placeholder."""
+    return ("""<section class="block" id="tonights-crews" hidden>
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Tonight</span><h2>Tonight's crews</h2></div>
+  <div id="tonights-crews-body"></div>
+</section>""")
+
+
+def render_index(refs, lb, dashboard):
     total = len(refs)
     span = "%s to %s" % (min(r["first_season"] for r in refs), CURRENT_SEASON)
     active_n = sum(1 for r in refs if r["active"])
@@ -796,14 +916,14 @@ def render_index(refs, lb):
     # leaderboards
     tabs_btns = []
     panels = []
-    for idx, (tab_id, label, key, valkey, valfmt) in enumerate(LEADERBOARD_TABS):
+    for idx, (tab_id, label, key, valkey, valfmt, n_key) in enumerate(LEADERBOARD_TABS):
         active = idx == 0
         tabs_btns.append(
             '<button class="lb-tab{act}" data-tab="{id}" role="tab" '
             'aria-selected="{sel}">{lab}</button>'.format(
                 act=" is-active" if active else "", id=tab_id,
                 sel="true" if active else "false", lab=esc(label)))
-        items = "".join(leaderboard_row(n, r, valkey, valfmt)
+        items = "".join(leaderboard_row(n, r, valkey, valfmt, n_key)
                         for n, r in enumerate(lb[key], 1))
         panels.append(
             '<div class="lb-panel{act}" data-panel="{id}" role="tabpanel">'
@@ -834,7 +954,13 @@ def render_index(refs, lb):
   officials with at least {min_n} qualifying games.</p>
 </section>""".format(tabs="".join(tabs_btns), panels="".join(panels), min_n=min_n)
 
-    body = hero + leaderboards + directory + ref_search(0, "bottom")
+    dashboard_sections = (
+        dashboard_rotation_slots(dashboard)
+        + dashboard_tonights_crews_slot()
+        + dashboard_records_strip(dashboard["records"])
+        + dashboard_history_strip(dashboard["history"])
+    )
+    body = hero + dashboard_sections + leaderboards + directory + ref_search(0, "bottom")
     title = "NBA Referee Database — career stats for every on-court official since 2000-01"
     desc = ("Searchable career profiles for %d NBA referees since 2000-01: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
@@ -863,6 +989,36 @@ def render_sources():
     title = "Data sources — NBA Referee Database"
     desc = ("Attribution and licensing for the NBA Referee Database: Wyatt Walsh's "
             "NBA Database (CC BY-SA 4.0), ESPN's public API, and szymonjwiak's box scores.")
+    return page(title, desc, 1, body)
+
+
+# ---------------------------------------------------------------------------
+# comparator (DASHBOARD_SPEC section 3) -- a static shell; the actual
+# comparison is client-side (any of ~159*158/2 pairs is impossible to
+# pre-render), reading the same data/referees/{slug}.json every other page
+# already uses. Shareable via ?a=slug&b=slug.
+# ---------------------------------------------------------------------------
+def render_compare():
+    title = "Compare two NBA referees side by side"
+    desc = ("Head-to-head comparison of any two NBA referees: whistle profiles, career "
+            "summary, and team-record extremes for each, regular season and playoffs. "
+            "Share a comparison by its URL.")
+    box_a = ref_search(1, "top", type_filter="ref", compare_slot="a")
+    box_b = ref_search(1, "top", type_filter="ref", compare_slot="b")
+    body = """<section class="block">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Compare</span><h2>Compare two referees</h2></div>
+  <div class="compare-pickers">
+    <div class="compare-picker">{box_a}</div>
+    <div class="compare-picker">{box_b}</div>
+  </div>
+  <p class="empty-note" id="compare-prompt">Select two referees above to compare their
+  career numbers side by side.</p>
+  <div class="compare-cols">
+    <div class="compare-col" id="compare-col-a"></div>
+    <div class="compare-col" id="compare-col-b"></div>
+  </div>
+</section>""".format(box_a=box_a, box_b=box_b)
     return page(title, desc, 1, body)
 
 
@@ -920,6 +1076,9 @@ h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .brand-name{font-size:1.05rem;letter-spacing:-.02em}
 .brand-sub{color:var(--text-secondary);font-family:var(--mono);font-size:.68rem;
   text-transform:uppercase;letter-spacing:.06em;margin-left:auto}
+.masthead-nav a{font-family:var(--mono);font-size:.72rem;font-weight:600;
+  color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.masthead-nav a:hover{color:var(--accent)}
 main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 
 /* ---- index hero ---- */
@@ -953,6 +1112,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   padding:.16rem .5rem;border-radius:5px;text-transform:uppercase;letter-spacing:.04em}
 .badge-active{background:var(--green-dim);color:var(--green)}
 .badge-past{background:var(--surface-hover);color:var(--text-secondary)}
+.compare-btn{display:inline-block;font-family:var(--mono);font-size:.64rem;font-weight:700;
+  padding:.16rem .55rem;border-radius:5px;text-transform:uppercase;letter-spacing:.04em;
+  background:var(--accent-dim);color:var(--accent)}
+.compare-btn:hover{background:var(--accent);color:#fff;text-decoration:none}
 .chip-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
   gap:.7rem;margin-top:1.1rem}
 .chip{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.75rem .9rem}
@@ -1109,6 +1272,55 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-name{flex:1;color:var(--text);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-name:hover{color:var(--accent)}
 .lb-val{font-family:var(--mono);font-weight:700;font-size:.86rem}
+.lb-n{font-weight:500;color:var(--text-secondary);font-size:.7rem;margin-left:.3rem}
+
+/* ---- frontpage dashboard (spotlight, on this date, records, history) ---- */
+.spotlight-card,.ondate-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.1rem 1.3rem}
+.spotlight-name{font-size:1.15rem;font-weight:700;color:var(--text)}
+.spotlight-name:hover{color:var(--accent)}
+.spotlight-meta{font-family:var(--mono);font-size:.74rem;color:var(--text-secondary);margin:.4rem 0 0}
+.spotlight-sig{font-size:.85rem;margin:.6rem 0 0;max-width:60ch}
+.ondate-card{font-size:.88rem}
+
+.record-strip{display:flex;gap:.9rem;overflow-x:auto;padding-bottom:.3rem;
+  scrollbar-width:thin}
+.record-card{flex:0 0 auto;min-width:11.5rem;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;
+  color:inherit;text-decoration:none;display:flex;flex-direction:column}
+.record-card:hover{border-color:var(--accent)}
+.record-label{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--text-secondary)}
+.record-val{font-size:1.2rem;font-weight:700;margin-top:.3rem;letter-spacing:-.01em}
+.record-ref{font-size:.76rem;color:var(--text-secondary);margin-top:.35rem}
+.record-n{font-family:var(--mono);font-size:.66rem}
+
+.history-cols{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem}
+.history-list{list-style:none}
+.history-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;
+  padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+.history-rank{font-family:var(--mono);color:var(--text-secondary);font-size:.72rem;width:1.4em}
+.history-pts{font-family:var(--mono);font-weight:700}
+.history-matchup{font-size:.78rem;color:var(--text-secondary)}
+.history-date{font-family:var(--mono);font-size:.7rem;color:var(--text-secondary)}
+.history-crew{flex-basis:100%;font-size:.72rem;color:var(--text-secondary)}
+.history-trio{font-size:.85rem}
+.curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
+.curiosity-list li{margin-bottom:.5rem}
+
+#tonights-crews-body{display:flex;flex-direction:column;gap:.6rem}
+.crew-game{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:.6rem .85rem;font-size:.84rem}
+.crew-matchup{font-weight:700}
+.crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
+.crew-names{font-size:.8rem}
+
+/* ---- comparator ---- */
+.compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.1rem}
+.compare-col:empty{display:none}
+.compare-line{font-size:.84rem;margin:.3rem 0}
 
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
@@ -1127,6 +1339,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .whistle-cols{grid-template-columns:1fr}
   .lb-paired.is-active{grid-template-columns:1fr}
   .lb-list-wide{columns:1}
+  .history-cols{grid-template-columns:1fr}
+  .compare-pickers,.compare-cols{grid-template-columns:1fr}
   .table-wrap{border:0;background:none;overflow:visible}
   .data-table,.data-table tbody,.data-table tr{display:block;width:100%}
   .data-table thead{position:absolute;left:-9999px}
@@ -1177,19 +1391,32 @@ JS = r"""(function(){
     var out=wrap.querySelector(".refsearch-results");
     var root=wrap.getAttribute("data-root")||"";
     var url=wrap.getAttribute("data-json");
+    var typeFilter=wrap.getAttribute("data-type-filter");   // e.g. "ref" -- comparator boxes
+    var compareSlot=wrap.getAttribute("data-compare");      // "a" or "b" -- comparator boxes
     var idx=null, active=-1;
-    function href(e){return root+TYPE_DIR[e.t]+"/"+e.s+"/index.html";}
+    function href(e){
+      if(compareSlot){
+        var params=new URLSearchParams(window.location.search);
+        params.set(compareSlot,e.s);
+        return "?"+params.toString();
+      }
+      return root+TYPE_DIR[e.t]+"/"+e.s+"/index.html";
+    }
     function close(){out.hidden=true;out.innerHTML="";active=-1;}
     function render(q){
       if(!q){close();return;}
-      var hits=(idx||[]).filter(function(e){return e.n.toLowerCase().indexOf(q)!==-1;});
+      var pool=typeFilter?(idx||[]).filter(function(e){return e.t===typeFilter;}):(idx||[]);
+      var hits=pool.filter(function(e){return e.n.toLowerCase().indexOf(q)!==-1;});
       hits.sort(function(a,b){
         var ap=a.n.toLowerCase().indexOf(q)===0?0:1, bp=b.n.toLowerCase().indexOf(q)===0?0:1;
         if(ap!==bp)return ap-bp;
         return a.n.length-b.n.length;
       });
       hits=hits.slice(0,12);
-      if(!hits.length){out.innerHTML='<div class="rs-empty">No referee, team or player matches.</div>';out.hidden=false;active=-1;return;}
+      if(!hits.length){
+        out.innerHTML='<div class="rs-empty">No '+(typeFilter?"referee":"referee, team or player")+' matches.</div>';
+        out.hidden=false;active=-1;return;
+      }
       out.innerHTML=hits.map(function(e){
         return '<a class="rs-item" href="'+href(e)+'">'+
           '<span class="rs-badge rs-'+e.t+'">'+TYPE_LABEL[e.t]+'</span>'+
@@ -1252,6 +1479,162 @@ JS = r"""(function(){
       });
     });
   }
+  // --- dashboard: spotlight of the day + on this date (index only) ---
+  // Rotation is deterministic client-side: day-of-year modulo the spotlight
+  // array (ordered by slug at build time for a stable rotation). The data
+  // itself ships inline in the page (real content in the HTML); only the
+  // day-dependent SELECTION runs in JS, since a statically-built site can't
+  // otherwise know the viewer's "today".
+  var WHISTLE_LABELS={avg_total_points:"Combined points",avg_total_fta:"Combined free-throw attempts",
+    avg_total_pf:"Combined personal fouls",home_win_pct:"Home team win rate",ot_rate:"Games to overtime"};
+  var WHISTLE_ISPCT={home_win_pct:1,ot_rate:1};
+  function fmtWhistle(key,v){return WHISTLE_ISPCT[key]?(v*100).toFixed(1)+"%":v.toFixed(1);}
+  var dashData=document.getElementById("dashboard-rotation-data");
+  if(dashData){
+    try{
+      var dash=JSON.parse(dashData.textContent);
+      var spotlight=dash.spotlight||[];
+      var dateIndex=dash.date_index||{};
+      var now=new Date();
+      var startOfYear=new Date(now.getFullYear(),0,0);
+      var doy=Math.floor((now-startOfYear)/86400000);
+
+      var spotCard=document.getElementById("spotlight-card");
+      if(spotCard&&spotlight.length){
+        var pick=spotlight[doy%spotlight.length];
+        var sigHtml;
+        if(pick.signature){
+          var sig=pick.signature, dir=sig.pctile>=50?"higher":"lower",
+            pctShow=(sig.pctile>=50?sig.pctile:(100-sig.pctile)).toFixed(0),
+            label=WHISTLE_LABELS[sig.key]||sig.key, val=fmtWhistle(sig.key,sig.value);
+          sigHtml='<p class="spotlight-sig">'+escHtml(label)+": "+escHtml(val)+" — "+dir+
+            " than "+pctShow+"% of qualifying officials (n="+sig.n+").</p>";
+        }else{
+          sigHtml='<p class="spotlight-sig">'+pick.seasons_active+" seasons officiating, "+
+            pick.games_total+" career games.</p>";
+        }
+        var badge=pick.active?' <span class="badge badge-active">Active</span>':"";
+        spotCard.innerHTML='<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
+          escHtml(pick.name)+'</a>'+badge+
+          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+pick.first_season+'–'+pick.last_season+'</p>'+sigHtml;
+      }
+
+      var mm=("0"+(now.getMonth()+1)).slice(-2), dd=("0"+now.getDate()).slice(-2);
+      var entry=dateIndex[mm+"-"+dd];
+      var onDate=document.getElementById("ondate-card");
+      if(onDate&&entry){
+        var playerBit=entry.player_slug
+          ?'<a href="player/'+entry.player_slug+'/index.html">'+escHtml(entry.player_name)+'</a>'
+          :escHtml(entry.player_name);
+        var fallbackNote=entry.month_day===(mm+"-"+dd)?"":
+          ' <span class="caption">(nearest date with games on record; from '+entry.date+')</span>';
+        onDate.innerHTML='<span class="history-pts">'+entry.pts+'</span> '+playerBit+' '+
+          escHtml(entry.team_abbr)+' <span class="vs">vs</span> '+escHtml(entry.opp_abbr)+
+          ' — '+escHtml(entry.date)+fallbackNote;
+      }
+    }catch(e){/* dashboard rotation is decorative -- fail silently */}
+  }
+  // --- Tonight's Crews (September pipeline; absent all season until then) ---
+  // Expected data/tonights-crews.json schema once the pipeline ships:
+  //   {date, games:[{away, home, tipoff_et, crew:[{name, slug}], crew_note}]}
+  // Absent, unparseable, or dated anything other than today/yesterday (US
+  // Eastern time, since that's the NBA's scheduling clock) -- render NOTHING,
+  // not even a placeholder.
+  (function(){
+    var slot=document.getElementById("tonights-crews");
+    if(!slot)return;
+    function usEasternISO(offsetDays){
+      var d=new Date(Date.now()+offsetDays*86400000);
+      var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
+        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+      var o={};parts.forEach(function(p){o[p.type]=p.value;});
+      return o.year+"-"+o.month+"-"+o.day;
+    }
+    fetch("data/tonights-crews.json").then(function(r){
+      if(!r.ok)throw new Error("absent");
+      return r.json();
+    }).then(function(data){
+      var valid=data&&data.date&&(data.date===usEasternISO(0)||data.date===usEasternISO(-1));
+      if(!valid||!Array.isArray(data.games)||!data.games.length)return;
+      var body=slot.querySelector("#tonights-crews-body");
+      body.innerHTML=data.games.map(function(g){
+        var crew=(g.crew||[]).map(function(c){
+          return '<a href="referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
+        }).join(", ");
+        var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
+        return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
+          '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
+          '<span class="crew-names">'+crew+'</span>'+note+'</div>';
+      }).join("");
+      slot.hidden=false;
+    }).catch(function(){/* absent or unparseable -- render nothing, by design */});
+  })();
+  // --- comparator (/compare/) -- reads existing data/referees/{slug}.json
+  // client-side, keyed off the ?a=/?b= query string so any pair is shareable
+  // without pre-rendering the ~159*158/2 possible combinations. ---
+  (function(){
+    var colA=document.getElementById("compare-col-a"), colB=document.getElementById("compare-col-b");
+    if(!colA||!colB)return;
+    var WHISTLE_ALL_LABELS={avg_total_points:"Combined points",avg_total_fta:"Combined free-throw attempts",
+      avg_total_pf:"Combined personal fouls",avg_abs_margin:"Avg. margin of victory",
+      home_win_pct:"Home team win rate",ot_rate:"Games to overtime"};
+    var WHISTLE_ALL_ISPCT={home_win_pct:1,ot_rate:1};
+    function fmtWhistleAll(key,v){return WHISTLE_ALL_ISPCT[key]?(v*100).toFixed(1)+"%":v.toFixed(1);}
+    function intensityClass(pctile){
+      if(pctile==null)return"";
+      var d=Math.abs(pctile-50),lvl=d>=40?4:d>=30?3:d>=20?2:d>=10?1:0;
+      return "wm-i"+lvl;
+    }
+    function whistleColHtml(kindLabel,w){
+      if(!w||!w.n)return "";
+      var keys=["avg_total_points","avg_total_fta","avg_total_pf","avg_abs_margin","home_win_pct","ot_rate"];
+      var nMap={avg_total_points:w.n,avg_total_fta:w.n_boxscore,avg_total_pf:w.n_boxscore,
+        avg_abs_margin:w.n,home_win_pct:w.n,ot_rate:w.n_boxscore};
+      var cells=keys.map(function(k){
+        var v=w[k],cls=intensityClass(w[k+"_pctile"]),vs=(v==null)?"—":fmtWhistleAll(k,v);
+        return '<div class="wm '+cls+'"><div class="wm-val">'+vs+'</div>'+
+          '<div class="wm-label">'+WHISTLE_ALL_LABELS[k]+'</div><div class="wm-n">n = '+(nMap[k]||0)+'</div></div>';
+      }).join("");
+      return '<div class="whistle-col"><h3 class="whistle-kind">'+kindLabel+
+        ' <span class="whistle-n">'+(w.n||0)+' games</span></h3><div class="whistle-grid">'+cells+'</div></div>';
+    }
+    function teamExtremes(records){
+      if(!records||!records.length)return '<p class="empty-note">No team records on file.</p>';
+      var byGames=records.slice().sort(function(a,b){return b.games-a.games;})[0];
+      var qualifying=records.filter(function(r){return r.games>=10&&r.win_pct!=null;});
+      var byWin=qualifying.length?qualifying.slice().sort(function(a,b){return b.win_pct-a.win_pct;})[0]:null;
+      var out='<p class="compare-line">Most games: '+escHtml(byGames.team_abbr)+' ('+byGames.games+' games)</p>';
+      if(byWin)out+='<p class="compare-line">Best record: '+escHtml(byWin.team_abbr)+' ('+
+        (byWin.win_pct*100).toFixed(1)+'%, '+byWin.games+' games)</p>';
+      return out;
+    }
+    function renderCompareCol(container,doc){
+      var s=doc.summary;
+      var badge=s.active?' <span class="badge badge-active">Active</span>':"";
+      container.innerHTML=
+        '<a class="spotlight-name" href="../referee/'+s.slug+'/index.html">'+escHtml(s.name)+'</a>'+badge+
+        '<p class="spotlight-meta">'+s.games_total+' games &middot; '+s.first_season+'–'+s.last_season+
+        ' &middot; RS '+s.games_rs+' &middot; PO '+s.games_po+' &middot; Finals '+s.finals_games+
+        ' &middot; G7s '+s.game7s+'</p>'+
+        '<div class="whistle-cols">'+whistleColHtml("Regular season",doc.whistle_profile.rs)+
+        whistleColHtml("Playoffs",doc.whistle_profile.po)+'</div>'+
+        '<h3 class="lb-subhead">Team records</h3>'+teamExtremes(doc.team_records);
+    }
+    var params=new URLSearchParams(window.location.search);
+    var aSlug=params.get("a"), bSlug=params.get("b");
+    var promptEl=document.getElementById("compare-prompt");
+    if(promptEl)promptEl.hidden=!!(aSlug||bSlug);
+    function loadCol(container,slug){
+      if(!slug){container.innerHTML='<p class="empty-note">Select a referee above.</p>';return;}
+      fetch("../data/referees/"+slug+".json").then(function(r){
+        if(!r.ok)throw new Error("not found");
+        return r.json();
+      }).then(function(doc){renderCompareCol(container,doc);})
+        .catch(function(){container.innerHTML='<p class="empty-note">Referee not found.</p>';});
+    }
+    loadCol(colA,aSlug);
+    loadCol(colB,bSlug);
+  })();
 })();
 """
 
@@ -1304,6 +1687,7 @@ def build_search_index(refs, team_docs, player_docs):
 def main():
     refs = json.load(open(os.path.join(DATA, "referees.json"), encoding="utf-8"))
     lb = json.load(open(os.path.join(DATA, "leaderboards.json"), encoding="utf-8"))
+    dashboard = json.load(open(os.path.join(DATA, "dashboard.json"), encoding="utf-8"))
     team_index = json.load(open(os.path.join(DATA, "teams.json"), encoding="utf-8"))
     player_index = json.load(open(os.path.join(DATA, "players.json"), encoding="utf-8"))
 
@@ -1320,12 +1704,17 @@ def main():
 
     # index
     with open(os.path.join(REPO, "index.html"), "w", encoding="utf-8") as f:
-        f.write(render_index(refs, lb))
+        f.write(render_index(refs, lb, dashboard))
 
     # data-sources page (attribution moved out of the footer)
     os.makedirs(os.path.join(REPO, "sources"), exist_ok=True)
     with open(os.path.join(REPO, "sources", "index.html"), "w", encoding="utf-8") as f:
         f.write(render_sources())
+
+    # comparator page (static shell; content loads client-side)
+    os.makedirs(os.path.join(REPO, "compare"), exist_ok=True)
+    with open(os.path.join(REPO, "compare", "index.html"), "w", encoding="utf-8") as f:
+        f.write(render_compare())
 
     # referee pages
     docs = [json.load(open(p, encoding="utf-8"))
@@ -1386,6 +1775,7 @@ def main():
 
     print("wrote index.html")
     print("wrote sources/index.html")
+    print("wrote compare/index.html")
     print("wrote assets/style.css, assets/app.js")
     if removed:
         print("removed %d stale referee page(s)" % removed)
@@ -1394,7 +1784,7 @@ def main():
     print("wrote %d whistle-leaderboard pages" % n_leaderboards)
     print("sample URLs:")
     for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/",
-              "leaderboard/ot-rate/"]:
+              "leaderboard/ot-rate/", "compare/"]:
         print("  %sindex.html" % u)
 
 
