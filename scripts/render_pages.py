@@ -44,6 +44,20 @@ REFEREE_DIR = os.path.join(REPO, "referee")
 
 CURRENT_SEASON = "2025-26"
 
+# Mirrors build.py's WHISTLE_STATS exactly (key, n_column, label, slug) -- the
+# six whistle-profile stats eligible for percentile coloring and a dedicated
+# /leaderboard/{slug}/ ranking page. n_column isn't used on the render side
+# (build.py already resolved qualification into *_pctile) but is kept so the
+# two lists stay copy-paste identical and don't drift.
+WHISTLE_STATS = [
+    ("avg_total_points", "n", "Combined points", "combined-points"),
+    ("avg_total_fta", "n_boxscore", "Combined free-throw attempts", "combined-fta"),
+    ("avg_total_pf", "n_boxscore", "Combined personal fouls", "combined-fouls"),
+    ("avg_abs_margin", "n", "Avg. margin of victory", "avg-margin"),
+    ("home_win_pct", "n", "Home team win rate", "home-win-rate"),
+    ("ot_rate", "n_boxscore", "Games to overtime", "ot-rate"),
+]
+
 ATTRIBUTION = [
     ("Wyatt Walsh's NBA Database", "https://www.kaggle.com/datasets/wyattowalsh/basketball",
      "Kaggle, CC BY-SA 4.0"),
@@ -174,27 +188,57 @@ def stat_chip(label, value, accent=False):
         a=" chip-accent" if accent else "", v=value, l=esc(label))
 
 
-def whistle_column(kind_label, w):
+def whistle_intensity_class(pctile):
+    """Single-hue 'how unusual' intensity for a whistle-profile stat card, from
+    its percentile rank -- NOT directional (no red/green, no good/bad
+    implication): distance from the median (pctile 50) only. None (ref doesn't
+    clear the min-games gate for this stat) -> no class, card renders plain."""
+    if pctile is None:
+        return ""
+    d = abs(pctile - 50)
+    lvl = 4 if d >= 40 else 3 if d >= 30 else 2 if d >= 20 else 1 if d >= 10 else 0
+    return "wm-i%d" % lvl
+
+
+# valfmt per whistle stat key -- shared by ref-page cards and leaderboard pages.
+WHISTLE_VALFMT = {
+    "avg_total_points": dec, "avg_total_fta": dec, "avg_total_pf": dec,
+    "avg_abs_margin": dec, "home_win_pct": pct, "ot_rate": pct,
+}
+
+
+def whistle_column(kind_label, kind, w):
+    """kind is 'rs' or 'po' -- used both to read this stat's n-column choice
+    (already baked into w) and to deep-link each card to the right section of
+    its /leaderboard/{slug}/ page."""
     n = w["n"]
     if not n:
         return ""
     nb = w["n_boxscore"]
+    # (key, raw value, n for this stat) -- label/slug come from WHISTLE_STATS.
     rows = [
-        ("Combined points", dec(w["avg_total_points"]), n),
-        ("Combined free-throw attempts", dec(w["avg_total_fta"]), nb),
-        ("Combined personal fouls", dec(w["avg_total_pf"]), nb),
-        ("Avg. margin of victory", dec(w["avg_abs_margin"]), n),
-        ("Home team win rate", pct(w["home_win_pct"]), n),
-        ("Games to overtime", pct(w["ot_rate"]) if w["ot_rate"] is not None else "—", nb),
+        ("avg_total_points", w["avg_total_points"], n),
+        ("avg_total_fta", w["avg_total_fta"], nb),
+        ("avg_total_pf", w["avg_total_pf"], nb),
+        ("avg_abs_margin", w["avg_abs_margin"], n),
+        ("home_win_pct", w["home_win_pct"], n),
+        ("ot_rate", w["ot_rate"], nb),
     ]
-    cells = "".join(
-        '<div class="wm"><div class="wm-val">{v}</div>'
-        '<div class="wm-label">{l}</div><div class="wm-n">n = {n}</div></div>'.format(
-            v=v, l=esc(l), n=i(nn)) for l, v, nn in rows)
+    slug_by_key = {k: slug for k, _n, lab, slug in WHISTLE_STATS}
+    label_by_key = {k: lab for k, _n, lab, slug in WHISTLE_STATS}
+    cells = []
+    for key, raw, nn in rows:
+        v = "—" if raw is None else WHISTLE_VALFMT[key](raw)
+        cls = whistle_intensity_class(w.get(key + "_pctile"))
+        href = "%sleaderboard/%s/index.html#%s" % (ROOT2, slug_by_key[key], kind)
+        cells.append(
+            '<a class="wm {cls}" href="{href}"><div class="wm-val">{v}</div>'
+            '<div class="wm-label">{l}</div><div class="wm-n">n = {n}</div></a>'.format(
+                cls=cls, href=href, v=v, l=esc(label_by_key[key]), n=i(nn)))
     return ('<div class="whistle-col"><h3 class="whistle-kind">{k} '
             '<span class="whistle-n">{n} games</span></h3>'
             '<div class="whistle-grid">{c}</div></div>').format(
-        k=esc(kind_label), n=i(n), c=cells)
+        k=esc(kind_label), n=i(n), c="".join(cells))
 
 
 # Existence sets for cross-linking (populated in main). A name is linkified only
@@ -360,10 +404,13 @@ def notable_table(games):
 
 
 def section(num, title, inner, extra_head=""):
-    return ('<section class="block"><div class="block-head">'
-            '<span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>'
-            '{num}</span><h2>{title}</h2>{extra}</div>{inner}</section>').format(
-        num=esc(num), title=esc(title), extra=extra_head, inner=inner)
+    """num=None/"" omits the small eyebrow label entirely (ref pages don't use
+    section numbers); team/player pages still pass one."""
+    eyebrow = ('<span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>'
+               '{num}</span>'.format(num=esc(num))) if num else ""
+    return ('<section class="block"><div class="block-head">{eyebrow}'
+            '<h2>{title}</h2>{extra}</div>{inner}</section>').format(
+        eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
 
 
 def render_ref(doc):
@@ -402,16 +449,16 @@ def render_ref(doc):
     blocks.append(partners_card(doc.get("top_partners")))
 
     # whistle profile
-    cols = whistle_column("Regular season", doc["whistle_profile"]["rs"]) + \
-        whistle_column("Playoffs", doc["whistle_profile"]["po"])
+    cols = whistle_column("Regular season", "rs", doc["whistle_profile"]["rs"]) + \
+        whistle_column("Playoffs", "po", doc["whistle_profile"]["po"])
     caption = ('<p class="caption">Averages describe the box score in games this '
                'official worked — combined totals for both teams. Each figure '
                'shows its sample size (n).</p>')
-    blocks.append(section("01", "Whistle profile",
+    blocks.append(section(None, "Whistle profile",
                           '<div class="whistle-cols">%s</div>' % cols, caption))
 
     # team records
-    blocks.append(section("02", "Team records under %s" % name,
+    blocks.append(section(None, "Team records under %s" % name,
                           '<div class="table-wrap">%s</div>' % team_records_table(doc["team_records"]),
                           '<p class="caption">A team’s record in games this official worked. '
                           'Descriptive only. Tap a column to sort.</p>'))
@@ -423,20 +470,16 @@ def render_ref(doc):
                 'these games and that player’s own same-season average. This is a '
                 'descriptive split, not a causal claim — it does not mean the official '
                 'affected the player.</p>').format(name=esc(name))
-        blocks.append(section("03", "Player splits",
+        blocks.append(section(None, "Player splits",
                               '<div class="table-wrap">%s</div>' % swings_table(doc["player_swings"]),
                               note))
-        next_num = "04"
-    else:
-        next_num = "03"
 
     # top performances
     if doc["top_performances"]:
-        blocks.append(section(next_num, "Top scoring games",
+        blocks.append(section(None, "Top scoring games",
                               '<div class="table-wrap">%s</div>' % top_perf_table(doc["top_performances"]),
                               '<p class="caption">Highest individual point totals in games '
                               '%s officiated.</p>' % esc(name)))
-        next_num = "%02d" % (int(next_num) + 1)
 
     # notable games
     finals_line = ('<p class="notable-counts">Finals games: <b>{f}</b> '
@@ -449,7 +492,7 @@ def render_ref(doc):
                  'official.</p>')
     else:
         inner = '<p class="empty-note">No playoff games on record for this official.</p>'
-    blocks.append(section(next_num, "Notable games", inner, finals_line))
+    blocks.append(section(None, "Notable games", inner, finals_line))
     blocks.append(ref_search(2, "bottom"))
 
     return page(title, desc, 2, "".join(blocks))
@@ -522,6 +565,60 @@ def render_team(doc):
     blocks.append(section("01", "Record by referee",
                           '<div class="table-wrap">%s</div>' % team_ref_table(doc["ref_records"]),
                           methods))
+    blocks.append(ref_search(2, "bottom"))
+    return page(title, desc, 2, "".join(blocks))
+
+
+def whistle_rank_table(rows, valfmt):
+    if not rows:
+        return '<p class="empty-note">No officials currently qualify for this ranking.</p>'
+    body = []
+    for r in rows:
+        body.append(
+            "<tr>"
+            '<td data-label="#" class="rank">{rk}</td>'
+            '<td data-label="Referee">{ref}</td>'
+            '<td data-label="Value"><span class="big-num">{v}</span></td>'
+            '<td data-label="Games">{n}</td>'
+            "</tr>".format(rk=r["rank"], ref=ref_link(r["name"], r["slug"]),
+                           v=valfmt(r["value"]), n=i(r["n"])))
+    return ('<table class="data-table"><thead><tr>'
+            '<th scope="col">#</th><th scope="col">Referee</th>'
+            '<th scope="col">Value</th><th scope="col">Games</th></tr></thead>'
+            '<tbody>%s</tbody></table>') % "".join(body)
+
+
+def render_whistle_leaderboard(doc):
+    label = doc["label"]
+    mg_rs, mg_po = doc["min_games"]["rs"], doc["min_games"]["po"]
+    valfmt = WHISTLE_VALFMT[doc["key"]]
+    title = "%s leaderboard: every qualifying NBA referee ranked" % label
+    desc = ("Every NBA official ranked by %s -- regular season (min. %s games) and "
+            "playoffs (min. %s games) ranked separately. A descriptive ranking, "
+            "not a causal claim." % (label.lower(), i(mg_rs), i(mg_po)))
+    chips = [
+        stat_chip("Regular season refs", i(len(doc["rs"])), accent=True),
+        stat_chip("Playoff refs", i(len(doc["po"]))),
+        stat_chip("Min. RS games", i(mg_rs)),
+        stat_chip("Min. PO games", i(mg_po)),
+    ]
+    blocks = [back_home(),
+              hero_block("Whistle-profile leaderboard", label, "", chips),
+              ref_search(2, "top")]
+    rs_methods = ('<p class="caption">Referees with at least {mg} regular-season games. '
+                  'A descriptive ranking of on-court numbers, not a causal claim about '
+                  'officiating.</p>').format(mg=i(mg_rs))
+    po_methods = ('<p class="caption">Referees with at least {mg} playoff games -- a lower '
+                  'bar than the regular-season ranking, since playoff games are far scarcer '
+                  'per career. A descriptive ranking, not a causal claim.</p>').format(mg=i(mg_po))
+    blocks.append(
+        '<section class="block" id="rs"><div class="block-head"><h2>Regular season</h2></div>'
+        '<div class="table-wrap">%s</div>%s</section>'
+        % (whistle_rank_table(doc["rs"], valfmt), rs_methods))
+    blocks.append(
+        '<section class="block" id="po"><div class="block-head"><h2>Playoffs</h2></div>'
+        '<div class="table-wrap">%s</div>%s</section>'
+        % (whistle_rank_table(doc["po"], valfmt), po_methods))
     blocks.append(ref_search(2, "bottom"))
     return page(title, desc, 2, "".join(blocks))
 
@@ -872,10 +969,22 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .whistle-n{font-family:var(--mono);font-size:.66rem;font-weight:500;color:var(--text-secondary)}
 .whistle-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;
   background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.wm{background:var(--surface);padding:.7rem .8rem}
+.wm{display:block;background:var(--surface);padding:.7rem .8rem;color:inherit;
+  text-decoration:none;transition:background-color .12s}
+.wm:hover{background:var(--accent-dim)}
 .wm-val{font-size:1.35rem;font-weight:700;letter-spacing:-.02em}
 .wm-label{font-size:.74rem;color:var(--text-secondary);margin-top:.15rem;line-height:1.3}
 .wm-n{font-family:var(--mono);font-size:.62rem;color:var(--text-secondary);margin-top:.4rem}
+/* Single-hue "how unusual" intensity (distance from the field's median) --
+   deliberately NOT red/green: no directional good/bad implication, just how
+   far a card's value sits from typical. wm-i0 = near median (no tint) up to
+   wm-i4 = most extreme (either direction alike). */
+.wm-i1{background:rgba(59,130,246,.08)}
+.wm-i2{background:rgba(59,130,246,.16)}
+.wm-i3{background:rgba(59,130,246,.26)}
+.wm-i4{background:rgba(59,130,246,.38)}
+.wm-i3 .wm-val,.wm-i4 .wm-val{color:var(--accent)}
+.wm-i1:hover,.wm-i2:hover,.wm-i3:hover,.wm-i4:hover{background:rgba(59,130,246,.46)}
 
 /* ---- tables (Polymarket table.lb treatment) ---- */
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:auto}
@@ -1257,6 +1366,19 @@ def main():
                                              encoding="utf-8")) for p in player_index}
     n_players = _render_dir(os.path.join(REPO, "player"), player_docs, render_player)
 
+    # whistle-profile leaderboard pages (one per stat, RS + PO sections)
+    whistle_lb = json.load(open(os.path.join(DATA, "whistle_leaderboards.json"), encoding="utf-8"))
+    min_games = whistle_lb["_meta"]["min_games"]
+    leaderboard_docs = {}
+    for key, doc in whistle_lb.items():
+        if key == "_meta":
+            continue
+        leaderboard_docs[doc["slug"]] = {"key": key, "label": doc["label"],
+                                         "rs": doc["rs"], "po": doc["po"],
+                                         "min_games": min_games}
+    n_leaderboards = _render_dir(os.path.join(REPO, "leaderboard"), leaderboard_docs,
+                                 render_whistle_leaderboard)
+
     # global search index (referees + teams + players) for the navigate-search
     search_index = build_search_index(refs, team_docs, player_docs)
     with open(os.path.join(DATA, "search-index.json"), "w", encoding="utf-8") as f:
@@ -1269,8 +1391,10 @@ def main():
         print("removed %d stale referee page(s)" % removed)
     print("wrote %d referee pages" % n)
     print("wrote %d team pages, %d player pages" % (n_teams, n_players))
+    print("wrote %d whistle-leaderboard pages" % n_leaderboards)
     print("sample URLs:")
-    for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/"]:
+    for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/",
+              "leaderboard/ot-rate/"]:
         print("  %sindex.html" % u)
 
 

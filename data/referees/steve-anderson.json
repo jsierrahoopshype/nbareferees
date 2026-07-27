@@ -363,7 +363,13 @@
       "home_win_pct": 0.59,
       "avg_abs_margin": 11.68,
       "ot_games": 12,
-      "ot_rate": 0.06
+      "ot_rate": 0.06,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 0,
@@ -374,7 +380,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -650,17 +662,6 @@
       "pf_swing": -0.21
     },
     {
-      "player_id": "203482",
-      "name": "Kelly Olynyk",
-      "n_games": 18,
-      "slug": "kelly-olynyk",
-      "pts_with_ref": 7.5,
-      "pts_baseline": 9.41,
-      "pts_swing": -1.91,
-      "fta_swing": -0.6,
-      "pf_swing": 0.46
-    },
-    {
       "player_id": "202344",
       "name": "Trevor Booker",
       "n_games": 15,
@@ -681,17 +682,6 @@
       "pts_swing": 1.28,
       "fta_swing": 0.43,
       "pf_swing": -0.01
-    },
-    {
-      "player_id": "203486",
-      "name": "Mason Plumlee",
-      "n_games": 15,
-      "slug": "mason-plumlee",
-      "pts_with_ref": 7.87,
-      "pts_baseline": 8.83,
-      "pts_swing": -0.96,
-      "fta_swing": -0.23,
-      "pf_swing": -0.26
     },
     {
       "player_id": "203109",
@@ -727,17 +717,6 @@
       "pf_swing": -0.06
     },
     {
-      "player_id": "201973",
-      "name": "Jonas Jerebko",
-      "n_games": 16,
-      "slug": "jonas-jerebko",
-      "pts_with_ref": 3.94,
-      "pts_baseline": 4.48,
-      "pts_swing": -0.54,
-      "fta_swing": -0.43,
-      "pf_swing": -0.15
-    },
-    {
       "player_id": "203092",
       "name": "Tyler Zeller",
       "n_games": 16,
@@ -747,17 +726,6 @@
       "pts_swing": 0.53,
       "fta_swing": -0.08,
       "pf_swing": -0.08
-    },
-    {
-      "player_id": "201567",
-      "name": "Kevin Love",
-      "n_games": 15,
-      "slug": "kevin-love",
-      "pts_with_ref": 18.27,
-      "pts_baseline": 18.78,
-      "pts_swing": -0.51,
-      "fta_swing": 0.57,
-      "pf_swing": 0.14
     },
     {
       "player_id": "202340",
@@ -771,17 +739,6 @@
       "pf_swing": 0.44
     },
     {
-      "player_id": "200752",
-      "name": "Rudy Gay",
-      "n_games": 15,
-      "slug": "rudy-gay",
-      "pts_with_ref": 18.73,
-      "pts_baseline": 19.15,
-      "pts_swing": -0.42,
-      "fta_swing": 0.49,
-      "pf_swing": 0.04
-    },
-    {
       "player_id": "201152",
       "name": "Thaddeus Young",
       "n_games": 16,
@@ -793,15 +750,15 @@
       "pf_swing": 0.11
     },
     {
-      "player_id": "201945",
-      "name": "Gerald Henderson",
+      "player_id": "203469",
+      "name": "Cody Zeller",
       "n_games": 15,
-      "slug": "gerald-henderson",
-      "pts_with_ref": 11.33,
-      "pts_baseline": 11.71,
-      "pts_swing": -0.38,
-      "fta_swing": -0.18,
-      "pf_swing": -0.38
+      "slug": "cody-zeller",
+      "pts_with_ref": 8.27,
+      "pts_baseline": 8.02,
+      "pts_swing": 0.25,
+      "fta_swing": 0.83,
+      "pf_swing": -0.05
     },
     {
       "player_id": "203507",
@@ -815,15 +772,70 @@
       "pf_swing": -0.25
     },
     {
-      "player_id": "203469",
-      "name": "Cody Zeller",
+      "player_id": "201945",
+      "name": "Gerald Henderson",
       "n_games": 15,
-      "slug": "cody-zeller",
-      "pts_with_ref": 8.27,
-      "pts_baseline": 8.02,
-      "pts_swing": 0.25,
-      "fta_swing": 0.83,
-      "pf_swing": -0.05
+      "slug": "gerald-henderson",
+      "pts_with_ref": 11.33,
+      "pts_baseline": 11.71,
+      "pts_swing": -0.38,
+      "fta_swing": -0.18,
+      "pf_swing": -0.38
+    },
+    {
+      "player_id": "200752",
+      "name": "Rudy Gay",
+      "n_games": 15,
+      "slug": "rudy-gay",
+      "pts_with_ref": 18.73,
+      "pts_baseline": 19.15,
+      "pts_swing": -0.42,
+      "fta_swing": 0.49,
+      "pf_swing": 0.04
+    },
+    {
+      "player_id": "201567",
+      "name": "Kevin Love",
+      "n_games": 15,
+      "slug": "kevin-love",
+      "pts_with_ref": 18.27,
+      "pts_baseline": 18.78,
+      "pts_swing": -0.51,
+      "fta_swing": 0.57,
+      "pf_swing": 0.14
+    },
+    {
+      "player_id": "201973",
+      "name": "Jonas Jerebko",
+      "n_games": 16,
+      "slug": "jonas-jerebko",
+      "pts_with_ref": 3.94,
+      "pts_baseline": 4.48,
+      "pts_swing": -0.54,
+      "fta_swing": -0.43,
+      "pf_swing": -0.15
+    },
+    {
+      "player_id": "203486",
+      "name": "Mason Plumlee",
+      "n_games": 15,
+      "slug": "mason-plumlee",
+      "pts_with_ref": 7.87,
+      "pts_baseline": 8.83,
+      "pts_swing": -0.96,
+      "fta_swing": -0.23,
+      "pf_swing": -0.26
+    },
+    {
+      "player_id": "203482",
+      "name": "Kelly Olynyk",
+      "n_games": 18,
+      "slug": "kelly-olynyk",
+      "pts_with_ref": 7.5,
+      "pts_baseline": 9.41,
+      "pts_swing": -1.91,
+      "fta_swing": -0.6,
+      "pf_swing": 0.46
     }
   ],
   "notable_games": [],

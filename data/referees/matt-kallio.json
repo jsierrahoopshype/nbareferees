@@ -371,7 +371,13 @@
       "home_win_pct": 0.57,
       "avg_abs_margin": 12.67,
       "ot_games": 10,
-      "ot_rate": 0.06
+      "ot_rate": 0.06,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 0,
@@ -382,7 +388,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -614,28 +626,6 @@
   ],
   "player_swings": [
     {
-      "player_id": "2528426",
-      "name": "Jordan Clarkson",
-      "n_games": 15,
-      "slug": "jordan-clarkson",
-      "pts_with_ref": 13.53,
-      "pts_baseline": 15.75,
-      "pts_swing": -2.22,
-      "fta_swing": -1.11,
-      "pf_swing": 0.05
-    },
-    {
-      "player_id": "4277811",
-      "name": "Collin Sexton",
-      "n_games": 16,
-      "slug": "collin-sexton",
-      "pts_with_ref": 15.88,
-      "pts_baseline": 17.7,
-      "pts_swing": -1.82,
-      "fta_swing": -0.64,
-      "pf_swing": -0.4
-    },
-    {
       "player_id": "2583632",
       "name": "Royce O'Neale",
       "n_games": 17,
@@ -645,6 +635,17 @@
       "pts_swing": 1.51,
       "fta_swing": 0.04,
       "pf_swing": 0.44
+    },
+    {
+      "player_id": "4278039",
+      "name": "Nickeil Alexander-Walker",
+      "n_games": 16,
+      "slug": "nickeil-alexander-walker",
+      "pts_with_ref": 10.94,
+      "pts_baseline": 10.98,
+      "pts_swing": -0.04,
+      "fta_swing": 0.06,
+      "pf_swing": 0.29
     },
     {
       "player_id": "3032976",
@@ -658,15 +659,26 @@
       "pf_swing": -0.32
     },
     {
-      "player_id": "4278039",
-      "name": "Nickeil Alexander-Walker",
+      "player_id": "4277811",
+      "name": "Collin Sexton",
       "n_games": 16,
-      "slug": "nickeil-alexander-walker",
-      "pts_with_ref": 10.94,
-      "pts_baseline": 10.98,
-      "pts_swing": -0.04,
-      "fta_swing": 0.06,
-      "pf_swing": 0.29
+      "slug": "collin-sexton",
+      "pts_with_ref": 15.88,
+      "pts_baseline": 17.7,
+      "pts_swing": -1.82,
+      "fta_swing": -0.64,
+      "pf_swing": -0.4
+    },
+    {
+      "player_id": "2528426",
+      "name": "Jordan Clarkson",
+      "n_games": 15,
+      "slug": "jordan-clarkson",
+      "pts_with_ref": 13.53,
+      "pts_baseline": 15.75,
+      "pts_swing": -2.22,
+      "fta_swing": -1.11,
+      "pf_swing": 0.05
     }
   ],
   "notable_games": [],

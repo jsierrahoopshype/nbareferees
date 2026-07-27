@@ -359,7 +359,13 @@
       "home_win_pct": 0.65,
       "avg_abs_margin": 9.72,
       "ot_games": 11,
-      "ot_rate": 0.06
+      "ot_rate": 0.06,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 0,
@@ -370,7 +376,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -646,17 +658,6 @@
       "pf_swing": -0.12
     },
     {
-      "player_id": "2046",
-      "name": "Desmond Mason",
-      "n_games": 15,
-      "slug": "desmond-mason",
-      "pts_with_ref": 11.47,
-      "pts_baseline": 13.98,
-      "pts_swing": -2.52,
-      "fta_swing": -0.43,
-      "pf_swing": -0.31
-    },
-    {
       "player_id": "467",
       "name": "Jason Kidd",
       "n_games": 16,
@@ -679,17 +680,6 @@
       "pf_swing": -0.0
     },
     {
-      "player_id": "2446",
-      "name": "Rasual Butler",
-      "n_games": 15,
-      "slug": "rasual-butler",
-      "pts_with_ref": 5.2,
-      "pts_baseline": 7.46,
-      "pts_swing": -2.26,
-      "fta_swing": -0.17,
-      "pf_swing": -0.34
-    },
-    {
       "player_id": "1510",
       "name": "Brevin Knight",
       "n_games": 15,
@@ -699,17 +689,6 @@
       "pts_swing": 1.79,
       "fta_swing": 1.38,
       "pf_swing": 0.02
-    },
-    {
-      "player_id": "2052",
-      "name": "DeShawn Stevenson",
-      "n_games": 15,
-      "slug": "deshawn-stevenson",
-      "pts_with_ref": 7.87,
-      "pts_baseline": 9.35,
-      "pts_swing": -1.49,
-      "fta_swing": -0.4,
-      "pf_swing": -0.3
     },
     {
       "player_id": "2050",
@@ -743,39 +722,6 @@
       "pts_swing": 1.33,
       "fta_swing": 0.47,
       "pf_swing": 0.01
-    },
-    {
-      "player_id": "2229",
-      "name": "Mike James",
-      "n_games": 15,
-      "slug": "mike-james",
-      "pts_with_ref": 12.07,
-      "pts_baseline": 13.36,
-      "pts_swing": -1.29,
-      "fta_swing": -0.76,
-      "pf_swing": 0.29
-    },
-    {
-      "player_id": "147",
-      "name": "Jalen Rose",
-      "n_games": 16,
-      "slug": "jalen-rose",
-      "pts_with_ref": 15.19,
-      "pts_baseline": 15.87,
-      "pts_swing": -0.69,
-      "fta_swing": 0.43,
-      "pf_swing": -0.26
-    },
-    {
-      "player_id": "1718",
-      "name": "Paul Pierce",
-      "n_games": 18,
-      "slug": "paul-pierce",
-      "pts_with_ref": 24.11,
-      "pts_baseline": 24.8,
-      "pts_swing": -0.69,
-      "fta_swing": -0.91,
-      "pf_swing": 0.09
     },
     {
       "player_id": "1711",
@@ -831,6 +777,72 @@
       "pts_swing": -0.11,
       "fta_swing": -0.03,
       "pf_swing": -0.25
+    },
+    {
+      "player_id": "147",
+      "name": "Jalen Rose",
+      "n_games": 16,
+      "slug": "jalen-rose",
+      "pts_with_ref": 15.19,
+      "pts_baseline": 15.87,
+      "pts_swing": -0.69,
+      "fta_swing": 0.43,
+      "pf_swing": -0.26
+    },
+    {
+      "player_id": "1718",
+      "name": "Paul Pierce",
+      "n_games": 18,
+      "slug": "paul-pierce",
+      "pts_with_ref": 24.11,
+      "pts_baseline": 24.8,
+      "pts_swing": -0.69,
+      "fta_swing": -0.91,
+      "pf_swing": 0.09
+    },
+    {
+      "player_id": "2229",
+      "name": "Mike James",
+      "n_games": 15,
+      "slug": "mike-james",
+      "pts_with_ref": 12.07,
+      "pts_baseline": 13.36,
+      "pts_swing": -1.29,
+      "fta_swing": -0.76,
+      "pf_swing": 0.29
+    },
+    {
+      "player_id": "2052",
+      "name": "DeShawn Stevenson",
+      "n_games": 15,
+      "slug": "deshawn-stevenson",
+      "pts_with_ref": 7.87,
+      "pts_baseline": 9.35,
+      "pts_swing": -1.49,
+      "fta_swing": -0.4,
+      "pf_swing": -0.3
+    },
+    {
+      "player_id": "2446",
+      "name": "Rasual Butler",
+      "n_games": 15,
+      "slug": "rasual-butler",
+      "pts_with_ref": 5.2,
+      "pts_baseline": 7.46,
+      "pts_swing": -2.26,
+      "fta_swing": -0.17,
+      "pf_swing": -0.34
+    },
+    {
+      "player_id": "2046",
+      "name": "Desmond Mason",
+      "n_games": 15,
+      "slug": "desmond-mason",
+      "pts_with_ref": 11.47,
+      "pts_baseline": 13.98,
+      "pts_swing": -2.52,
+      "fta_swing": -0.43,
+      "pf_swing": -0.31
     }
   ],
   "notable_games": [],

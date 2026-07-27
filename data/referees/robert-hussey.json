@@ -371,7 +371,13 @@
       "home_win_pct": 0.58,
       "avg_abs_margin": 12.43,
       "ot_games": 6,
-      "ot_rate": 0.03
+      "ot_rate": 0.03,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     },
     "po": {
       "n": 0,
@@ -382,7 +388,13 @@
       "home_win_pct": null,
       "avg_abs_margin": null,
       "ot_games": null,
-      "ot_rate": null
+      "ot_rate": null,
+      "avg_total_points_pctile": null,
+      "avg_total_fta_pctile": null,
+      "avg_total_pf_pctile": null,
+      "avg_abs_margin_pctile": null,
+      "home_win_pct_pctile": null,
+      "ot_rate_pctile": null
     }
   },
   "top_performances": [
@@ -614,17 +626,6 @@
   ],
   "player_swings": [
     {
-      "player_id": "4066383",
-      "name": "Miles Bridges",
-      "n_games": 15,
-      "slug": "miles-bridges",
-      "pts_with_ref": 16.33,
-      "pts_baseline": 19.42,
-      "pts_swing": -3.09,
-      "fta_swing": 0.4,
-      "pf_swing": -0.12
-    },
-    {
       "player_id": "4395723",
       "name": "Keldon Johnson",
       "n_games": 15,
@@ -634,39 +635,6 @@
       "pts_swing": 2.67,
       "fta_swing": 1.18,
       "pf_swing": -0.03
-    },
-    {
-      "player_id": "3978",
-      "name": "DeMar DeRozan",
-      "n_games": 15,
-      "slug": "demar-derozan",
-      "pts_with_ref": 19.93,
-      "pts_baseline": 21.96,
-      "pts_swing": -2.03,
-      "fta_swing": -0.03,
-      "pf_swing": -0.04
-    },
-    {
-      "player_id": "3064514",
-      "name": "Julius Randle",
-      "n_games": 16,
-      "slug": "julius-randle",
-      "pts_with_ref": 20.0,
-      "pts_baseline": 21.88,
-      "pts_swing": -1.88,
-      "fta_swing": -1.1,
-      "pf_swing": 0.11
-    },
-    {
-      "player_id": "4396971",
-      "name": "Naz Reid",
-      "n_games": 16,
-      "slug": "naz-reid",
-      "pts_with_ref": 11.25,
-      "pts_baseline": 12.93,
-      "pts_swing": -1.68,
-      "fta_swing": -0.73,
-      "pf_swing": -0.06
     },
     {
       "player_id": "4431679",
@@ -680,17 +648,6 @@
       "pf_swing": 0.62
     },
     {
-      "player_id": "4431680",
-      "name": "Onyeka Okongwu",
-      "n_games": 15,
-      "slug": "onyeka-okongwu",
-      "pts_with_ref": 11.07,
-      "pts_baseline": 12.35,
-      "pts_swing": -1.28,
-      "fta_swing": -1.07,
-      "pf_swing": 0.06
-    },
-    {
       "player_id": "3908845",
       "name": "John Collins",
       "n_games": 15,
@@ -700,39 +657,6 @@
       "pts_swing": 1.22,
       "fta_swing": 0.11,
       "pf_swing": 0.01
-    },
-    {
-      "player_id": "4395725",
-      "name": "Tyler Herro",
-      "n_games": 17,
-      "slug": "tyler-herro",
-      "pts_with_ref": 19.53,
-      "pts_baseline": 20.42,
-      "pts_swing": -0.89,
-      "fta_swing": -0.05,
-      "pf_swing": 0.16
-    },
-    {
-      "player_id": "6477",
-      "name": "Jonas Valanciunas",
-      "n_games": 16,
-      "slug": "jonas-valanciunas",
-      "pts_with_ref": 10.88,
-      "pts_baseline": 11.74,
-      "pts_swing": -0.86,
-      "fta_swing": 1.34,
-      "pf_swing": -0.05
-    },
-    {
-      "player_id": "3149673",
-      "name": "Pascal Siakam",
-      "n_games": 19,
-      "slug": "pascal-siakam",
-      "pts_with_ref": 21.68,
-      "pts_baseline": 22.3,
-      "pts_swing": -0.62,
-      "fta_swing": 0.38,
-      "pf_swing": 0.2
     },
     {
       "player_id": "4066261",
@@ -755,6 +679,94 @@
       "pts_swing": 0.14,
       "fta_swing": 0.96,
       "pf_swing": 0.44
+    },
+    {
+      "player_id": "3149673",
+      "name": "Pascal Siakam",
+      "n_games": 19,
+      "slug": "pascal-siakam",
+      "pts_with_ref": 21.68,
+      "pts_baseline": 22.3,
+      "pts_swing": -0.62,
+      "fta_swing": 0.38,
+      "pf_swing": 0.2
+    },
+    {
+      "player_id": "6477",
+      "name": "Jonas Valanciunas",
+      "n_games": 16,
+      "slug": "jonas-valanciunas",
+      "pts_with_ref": 10.88,
+      "pts_baseline": 11.74,
+      "pts_swing": -0.86,
+      "fta_swing": 1.34,
+      "pf_swing": -0.05
+    },
+    {
+      "player_id": "4395725",
+      "name": "Tyler Herro",
+      "n_games": 17,
+      "slug": "tyler-herro",
+      "pts_with_ref": 19.53,
+      "pts_baseline": 20.42,
+      "pts_swing": -0.89,
+      "fta_swing": -0.05,
+      "pf_swing": 0.16
+    },
+    {
+      "player_id": "4431680",
+      "name": "Onyeka Okongwu",
+      "n_games": 15,
+      "slug": "onyeka-okongwu",
+      "pts_with_ref": 11.07,
+      "pts_baseline": 12.35,
+      "pts_swing": -1.28,
+      "fta_swing": -1.07,
+      "pf_swing": 0.06
+    },
+    {
+      "player_id": "4396971",
+      "name": "Naz Reid",
+      "n_games": 16,
+      "slug": "naz-reid",
+      "pts_with_ref": 11.25,
+      "pts_baseline": 12.93,
+      "pts_swing": -1.68,
+      "fta_swing": -0.73,
+      "pf_swing": -0.06
+    },
+    {
+      "player_id": "3064514",
+      "name": "Julius Randle",
+      "n_games": 16,
+      "slug": "julius-randle",
+      "pts_with_ref": 20.0,
+      "pts_baseline": 21.88,
+      "pts_swing": -1.88,
+      "fta_swing": -1.1,
+      "pf_swing": 0.11
+    },
+    {
+      "player_id": "3978",
+      "name": "DeMar DeRozan",
+      "n_games": 15,
+      "slug": "demar-derozan",
+      "pts_with_ref": 19.93,
+      "pts_baseline": 21.96,
+      "pts_swing": -2.03,
+      "fta_swing": -0.03,
+      "pf_swing": -0.04
+    },
+    {
+      "player_id": "4066383",
+      "name": "Miles Bridges",
+      "n_games": 15,
+      "slug": "miles-bridges",
+      "pts_with_ref": 16.33,
+      "pts_baseline": 19.42,
+      "pts_swing": -3.09,
+      "fta_swing": 0.4,
+      "pf_swing": -0.12
     }
   ],
   "notable_games": [],
