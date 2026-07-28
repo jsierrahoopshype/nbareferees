@@ -12,6 +12,10 @@ seasons from ESPN instead:
     * 2023-24, 2024-25, 2025-26  (regular season + play-in + playoffs)
     * 2000-01, 2001-02, 2002-03, 2012-13  (regular season + playoffs -- no play-in
       existed yet; the whole season in the ESPN scheme)
+    * 1993-94 through 1999-2000  (regular season + playoffs, no play-in --
+      1990s backfill; ESPN's archive was confirmed to reach at least this far
+      back by source-data/_probe_rounds_reach.txt. --discover-floor probes
+      whether it goes back further, before any of that gets added to SEASONS)
 
 For each configured season we walk the ESPN scoreboard day by day to enumerate
 games, then hit the summary endpoint per completed game to pull three things
@@ -112,6 +116,20 @@ USER_AGENT = (
 PLAYIN_TYPE = 5
 
 SEASONS = [
+    # 1990s backfill: the probe (source-data/_probe_rounds_reach.txt) confirmed
+    # ESPN carries officials and player box scores back to at least 1993-11.
+    # Regular season + playoffs only -- the play-in tournament didn't exist yet,
+    # so no type 5 here (unlike 2023-24+ below). Generous Oct 20 -> Jun 25 date
+    # windows, except 1998-99: the lockout pushed the season to Feb 1 - Jun 30
+    # 1999 entirely (games.csv.gz/officials.csv.gz still label it "1998-99" per
+    # the standard NBA season-label convention).
+    {"label": "1993-94", "start": "1993-10-20", "end": "1994-06-25", "types": {2, 3}},
+    {"label": "1994-95", "start": "1994-10-20", "end": "1995-06-25", "types": {2, 3}},
+    {"label": "1995-96", "start": "1995-10-20", "end": "1996-06-25", "types": {2, 3}},
+    {"label": "1996-97", "start": "1996-10-20", "end": "1997-06-25", "types": {2, 3}},
+    {"label": "1997-98", "start": "1997-10-20", "end": "1998-06-25", "types": {2, 3}},
+    {"label": "1998-99", "start": "1999-02-01", "end": "1999-06-30", "types": {2, 3}},
+    {"label": "1999-00", "start": "1999-10-20", "end": "2000-06-25", "types": {2, 3}},
     {"label": "2000-01", "start": "2000-10-25", "end": "2001-06-20", "types": {2, 3}},
     {"label": "2001-02", "start": "2001-10-25", "end": "2002-06-20", "types": {2, 3}},
     {"label": "2002-03", "start": "2002-10-25", "end": "2003-06-20", "types": {2, 3}},
@@ -754,6 +772,78 @@ def write_espn_freshness(summary_counts):
 
 
 # --------------------------------------------------------------------------- #
+# --discover-floor : find where ESPN's archive truly ends before committing to
+# fetching any further back than the 1993-94 season already configured above.
+# --------------------------------------------------------------------------- #
+def discover_floor():
+    """Probe one date per November, walking BACKWARD from 1992 to 1985, and
+    print event counts + whether officials parse for each. Writes nothing to
+    the extracts -- this only tells us where to stop, before SEASONS grows any
+    further back than 1993-94."""
+    print("Discovering ESPN archive floor (one November date per year, 1992 -> 1985)")
+    print("=" * 70)
+    results = []
+    for year in range(1992, 1984, -1):
+        d = datetime.date(year, 11, 15)
+        ymd = d.strftime("%Y%m%d")
+        try:
+            sb = get_json(SCOREBOARD_URL, {"dates": ymd})
+        except RuntimeError as e:
+            print("  {}: scoreboard FAILED: {}".format(d.isoformat(), e))
+            results.append((year, None, None))
+            time.sleep(DELAY_SECONDS)
+            continue
+        time.sleep(DELAY_SECONDS)
+
+        events = sb.get("events", []) or []
+        n = len(events)
+        officials_ok = None
+        if events:
+            completed = [ev for ev in events if (
+                (((ev.get("status") or {}).get("type")) or {}).get("completed")
+                or (((ev.get("status") or {}).get("type")) or {}).get("state") == "post")]
+            target = completed[0] if completed else events[0]
+            eid = str(target.get("id", "")).strip()
+            if eid:
+                try:
+                    summ = get_json(SUMMARY_URL, {"event": eid})
+                    time.sleep(DELAY_SECONDS)
+                    _, lst = pick_officials_list(summ)
+                    officials_ok = bool(lst)
+                except RuntimeError as e:
+                    print("    summary FAILED for event {}: {}".format(eid, e))
+
+        results.append((year, n, officials_ok))
+        detail = "" if not events else "  officials_parse={}".format(officials_ok)
+        print("  {}: {} event(s){}".format(d.isoformat(), n, detail))
+
+    print("\n" + "=" * 70)
+    print("Summary (November 15th, 1985-1992):")
+    for year, n, ok in sorted(results, reverse=True):
+        if not n:
+            status = "no events"
+        elif ok:
+            status = "events found, officials PARSE"
+        elif ok is False:
+            status = "events found, officials MISSING"
+        else:
+            status = "events found, officials not probed (no completed game)"
+        print("  {}-11-15: {}".format(year, status))
+
+    with_events = [y for y, n, _ok in results if n]
+    if with_events:
+        floor_year = min(with_events)
+        print("\nArchive appears to extend back to at least November {}.".format(floor_year))
+        print("Before adding {}-{} or earlier to SEASONS, confirm this isn't just a".format(
+            floor_year, str(floor_year + 1)[-2:]))
+        print("single lucky probe date -- check a few more dates in that season.")
+    else:
+        print("\nNo events found on November 15th in any probed year 1985-1992.")
+        print("The archive floor is somewhere between 1993 (confirmed, see SEASONS)")
+        print("and 1992 (probed here, empty) -- narrow further with more dates in 1992-93.")
+
+
+# --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
 def main():
@@ -909,8 +999,13 @@ if __name__ == "__main__":
         description="Fetch missing NBA seasons from ESPN into source-data/ extracts.")
     ap.add_argument("--clean", action="store_true",
                     help="Purge already-written exhibition (non-NBA-team) games and exit.")
+    ap.add_argument("--discover-floor", action="store_true",
+                    help="Probe one November date per year, 1992 -> 1985, to find where "
+                         "ESPN's archive ends. Writes nothing; prints only.")
     cli = ap.parse_args()
     if cli.clean:
         clean_exhibitions()
+    elif cli.discover_floor:
+        discover_floor()
     else:
         main()

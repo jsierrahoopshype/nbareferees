@@ -1,0 +1,16 @@
+1990s backfill completeness audit (audit_1990s_completeness.py)
+======================================================================
+Seasons in scope: 1993-94, 1994-95, 1995-96, 1996-97, 1997-98, 1998-99, 1999-00
+Read-only. Does NOT write round_labels.csv.gz -- no round-labeling
+for these seasons yet; this only surfaces how complete the fetched
+playoff data actually is, using the SAME win-based completeness
+check fetch_espn_round_labels.py runs for 2000-01 onward (imported,
+not reimplemented).
+
+Not yet present in games.csv.gz (run fetch_espn_seasons.py first): 1993-94, 1994-95, 1995-96
+Auditing 4 season(s) present: 1996-97, 1997-98, 1998-99, 1999-00
+
+Structural derivation + completeness audit (per season):
+  derived 0 ESPN-scheme playoff labels; 0 flagged series across all seasons; overall PASSED
+
+All 4 audited season(s) PASSED the completeness check.
