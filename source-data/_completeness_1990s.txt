@@ -7,10 +7,19 @@ playoff data actually is, using the SAME win-based completeness
 check fetch_espn_round_labels.py runs for 2000-01 onward (imported,
 not reimplemented).
 
-Not yet present in games.csv.gz (run fetch_espn_seasons.py first): 1993-94, 1994-95, 1995-96
-Auditing 4 season(s) present: 1996-97, 1997-98, 1998-99, 1999-00
+Auditing 7 season(s) present: 1993-94, 1994-95, 1995-96, 1996-97, 1997-98, 1998-99, 1999-00
 
 Structural derivation + completeness audit (per season):
-  derived 0 ESPN-scheme playoff labels; 0 flagged series across all seasons; overall PASSED
+  1993-94: 77 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=0  ->  OK
+  1994-95: 73 games  series=16  R1=9  R4=1  round-disagreements=1  flagged=1  ->  FLAGS
+     ROUND DISAGREEMENT {'MIA', 'ORL'} teams claim rounds [1, 5]
+     INCOMPLETE  R1 MIA/ORL (best-of-5): 1 games present, series score 1-0, no team reached 3 wins -> games MISSING
+  1995-96: 67 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=1  ->  FLAGS
+     INCOMPLETE  R2 CHI/NYK (best-of-7): 4 games present, series score 3-1, no team reached 4 wins -> games MISSING
+  1996-97: 71 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=0  ->  OK
+  1997-98: 67 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=0  ->  OK
+  1998-99: 67 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=0  ->  OK
+  1999-00: 76 games  series=15  R1=8  R4=1  round-disagreements=0  flagged=0  ->  OK
+  derived 498 ESPN-scheme playoff labels; 2 flagged series across all seasons; overall has FLAGS (see above)
 
-All 4 audited season(s) PASSED the completeness check.
+One or more audited seasons have FLAGGED (incomplete or over-long) series -- see above. No recovery attempted in this pass; this is a survey only.

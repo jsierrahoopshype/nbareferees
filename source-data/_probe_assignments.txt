@@ -46,3 +46,48 @@ default to the local-scheduled-task path if that test isn't run before then.
 No page/JSON shape was observed (nothing got past the tunnel), so the
 "which URL, what shape, is it parseable" half of this probe is unanswered
 from the cloud side -- that's the local run's job below.
+
+
+NBA assignments reachability + shape probe (probe_nba_assignments.py)
+======================================================================
+Run from: Jorge's local Windows machine
+Run at (local clock): 2026-07-27T21:45:55
+Read-only. Writes nothing to games/officials/player_logs extracts.
+
+--- referee-assignments page ---
+URL: https://official.nba.com/referee-assignments/
+HTTP status: 200
+Content-Type: text/html; charset=UTF-8
+Body length: 107543 bytes
+Body does not look like JSON -- treating as HTML/text.
+Keyword scan (referee, official, crew, assignment): found ['referee', 'official', 'crew', 'assignment']
+First 300 chars of body:
+  '<!DOCTYPE html>\n<html lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article# video: http://ogp.me/ns/video#" >\n<head>\n    <meta charset="UTF-8"><script type="text/javascript">(window.NREUM||(NREUM={})).init={privacy:{cookies_enabled:true},ajax:{deny_li'
+
+--- official.nba.com root ---
+URL: https://official.nba.com/
+HTTP status: 200
+Content-Type: text/html; charset=UTF-8
+Body length: 120959 bytes
+Body does not look like JSON -- treating as HTML/text.
+Keyword scan (referee, official, crew, assignment): found ['referee', 'official', 'crew', 'assignment']
+First 300 chars of body:
+  '\n<!DOCTYPE html>\n<html lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article# video: http://ogp.me/ns/video#" >\n<head>\n    <meta charset="UTF-8"><script type="text/javascript">(window.NREUM||(NREUM={})).init={privacy:{cookies_enabled:true},ajax:{deny_l'
+
+--- data.nba.com today.json (legacy) ---
+URL: https://data.nba.com/data/10s/prod/v1/today.json
+HTTP status: 403
+Content-Type: application/xml
+Body length: 243 bytes
+Body does not look like JSON -- treating as HTML/text.
+Keyword scan (referee, official, crew, assignment): found none
+First 300 chars of body:
+  '<?xml version="1.0" encoding="UTF-8"?>\n<Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>4080SB9YB3FCZ40R</RequestId><HostId>UwhYFwp/LXk+UlmZdg/HCWtzLbRNPFonvsn5Q8jxtswtcIR1aYAcS/ZTEZm7s6dmpWQlVjfbj20=</HostId></Error>'
+
+======================================================================
+LOCAL ENVIRONMENT SUMMARY
+reachable: 3/3 candidates
+  OK    referee-assignments page         HTTP 200  json=False  keyword_hits=['referee', 'official', 'crew', 'assignment']
+  OK    official.nba.com root            HTTP 200  json=False  keyword_hits=['referee', 'official', 'crew', 'assignment']
+  OK    data.nba.com today.json (legacy) HTTP 403  json=False  keyword_hits=[]
+At least one candidate's body mentions referee/official/crew/assignment keywords -- worth a closer look for September's real parser.

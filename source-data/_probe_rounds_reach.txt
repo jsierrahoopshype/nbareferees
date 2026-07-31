@@ -1,0 +1,377 @@
+ESPN round-labeling + backward-reach probe (probe_espn_rounds_and_reach.py)
+==========================================================================
+Read-only. Writes nothing to the extracts; only console + source-data\_probe_rounds_reach.txt.
+(1) round/game dates (8): 2001-04-22, 2001-06-08, 2013-05-05, 2013-06-13, 2024-04-22, 2024-06-09, 2026-05-05, 2026-06-08
+(2) backward-reach dates (5): 1999-11-02, 1999-02-06, 1997-11-01, 1995-11-03, 1993-11-06
+
+########################################################################
+# (1) ROUND / GAME LABELING  -- fields that may carry series/round/game
+########################################################################
+
+=== 2001-04-22  (scoreboard dates=20010422) ===
+  events: 4
+    event id='210422023'  PHX @ SAC  season.type=3  completed=True  name='PHX @ SAC'
+    event id='210422018'  TOR @ NYK  season.type=3  completed=True  name='TOR @ NY'
+    event id='210422013'  POR @ LAL  season.type=3  completed=True  name='POR @ LAL'
+    event id='210422015'  ORL @ MIL  season.type=3  completed=True  name='ORL @ MIL'
+  -- SCOREBOARD event 210422023 field dump --
+     event.name: "Phoenix Suns at Sacramento Kings"
+     event.shortName: "PHX @ SAC"
+     event.season: {"year": 2001, "type": 3, "slug": "post-season"}
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "PHX leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "23", "uid": "s:40~l:46~t:23", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/23?lang=en&region=us"}, {"id": "21", "uid": "s:40~l:46~t:21", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/21?lang=en&region=us"}]}
+     competitions[0].type: {"id": "1", "abbreviation": "STD"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 1 interesting key(s):
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "PHX leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "23", "uid": "s:40~l:46~t:23", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/23?lang=en&region=us"}, {"id": "21", "uid": "s:40~l:46~t:21", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/21?lang=en&region=us"}]}
+  -- SUMMARY for event 210422023 --
+     header.season: {"year": 2001, "current": false, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "SAC wins series 3-1", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "23", "uid": "s:40~l:46~t:23", "wins": 3, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/23?lang=en&region=us"}}, {"id": "21", "uid": "s:40~l:46~t:21", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/21?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/201201023?lang=en&region=us", "id": "201201023"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210102023?lang=en&region=us", "id": "210102023"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210307021?lang=en&region=us", "id": "210307021"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210415021?lang=en&region=us", "id": "210415021"}], "startDate": "2000-12-02T00:30Z"}, {"type": "playoff", "title": "Playoff Series", "description": " ...[+1061 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "SAC wins series 3-1", "completed": true, "totalCompetitions": 4, "seriesLabel": "Regular Season", "seriesScore": "3-1", "shortSummary": "SAC wins season", "events": [{"id": "201201023", "uid": "s:40~l:46~e:201201023~c:201201023", "date": "2000-12-02T00:30:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": true, "team": {"id": "23", "uid": "s:40~l:46~t:23", "displayName": "Sacramento Kings", "abbreviation": "SAC", "links": [{"href": "https://www.espn.com/nba/team/_/name/sac/sacramento-kings", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/sac", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sac.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/sac.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/team ...[+23913 chars]
+     summary scan -- 7 interesting key(s):
+       root.news.articles[0].headline = "2026 NBA buzz: Latest summer league, free agency, trade updates"
+       root.news.articles[1].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[2].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[3].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[4].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[5].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "SAC wins series 3-1", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "23", "uid": "s:40~l:46~t:23", "wins": 3, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/23?lang=en&region=us"}}, {"id": "21", "uid": "s:40~l:46~t:21", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2001/teams/21?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/201201023?lang=en&region=us", "id": "201201023"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210102023?lang=en&region=us", "id": "210102023"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210307021?lang=en&region=us", "id": "210307021"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/210415021?lang=en&region=us", "id": "210415021"}], "startDate": "2000-12-02T00:30Z"}, {"type": "playoff", "title": "Playoff Series", "description": " ...[+1061 chars]
+
+=== 2001-06-08  (scoreboard dates=20010608) ===
+  events: 0
+  (no events to dump)
+
+=== 2013-05-05  (scoreboard dates=20130505) ===
+  events: 2
+    event id='400464192'  MEM @ OKC  season.type=3  completed=True  name='MEM @ OKC'
+    event id='400464191'  IND @ NYK  season.type=3  completed=True  name='IND @ NY'
+  -- SCOREBOARD event 400464192 field dump --
+     event.name: "Memphis Grizzlies at Oklahoma City Thunder"
+     event.shortName: "MEM @ OKC"
+     event.season: {"year": 2013, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "WESTERN CONFERENCE SEMIFINALS - GAME 1"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "OKC leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "25", "uid": "s:40~l:46~t:25", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/25?lang=en&region=us"}, {"id": "29", "uid": "s:40~l:46~t:29", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/29?lang=en&region=us"}]}
+     competitions[0].type: {"id": "15", "abbreviation": "QTR"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 3 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "WESTERN CONFERENCE SEMIFINALS - GAME 1"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "OKC leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "25", "uid": "s:40~l:46~t:25", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/25?lang=en&region=us"}, {"id": "29", "uid": "s:40~l:46~t:29", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/29?lang=en&region=us"}]}
+       root.competitions[0].headlines = [{"type": "Recap", "description": "Kevin Durant scored 35 points and hit a pair of jumpers in the final minute to lift the Oklahoma City Thunder to a 93-91 victory against the Memphis Grizzlies on Sunday in Game 1 of the Western Conference semifinals.", "shortLinkText": "Durant, Thunder hold off Grizzlies in Game 1"}]
+  -- SUMMARY for event 400464192 --
+     header.season: {"year": 2013, "current": false, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MEM wins series 2-1", "completed": true, "totalCompetitions": 3, "competitors": [{"id": "25", "uid": "s:40~l:46~t:25", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/25?lang=en&region=us"}}, {"id": "29", "uid": "s:40~l:46~t:29", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/29?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400277833?lang=en&region=us", "id": "400277833"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278402?lang=en&region=us", "id": "400278402"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278732?lang=en&region=us", "id": "400278732"}], "startDate": "2012-11-15T01:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "Western Conference Semifinals", "summary": "OKC leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id" ...[+1076 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MEM wins series 2-1", "completed": true, "totalCompetitions": 3, "seriesLabel": "Regular Season", "seriesScore": "2-1", "shortSummary": "MEM wins season", "events": [{"id": "400277833", "uid": "s:40~l:46~e:400277833~c:400277833", "date": "2012-11-15T01:00:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": false, "team": {"id": "25", "uid": "s:40~l:46~t:25", "displayName": "Oklahoma City Thunder", "abbreviation": "OKC", "links": [{"href": "https://www.espn.com/nba/team/_/name/okc/oklahoma-city-thunder", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/okc", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/okc.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/okc.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn ...[+24166 chars]
+     summary scan -- 9 interesting key(s):
+       root.news.articles[0].headline = "2026 NBA buzz: Latest summer league, free agency, trade updates"
+       root.news.articles[1].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[2].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[3].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[4].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[5].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MEM wins series 2-1", "completed": true, "totalCompetitions": 3, "competitors": [{"id": "25", "uid": "s:40~l:46~t:25", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/25?lang=en&region=us"}}, {"id": "29", "uid": "s:40~l:46~t:29", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/29?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400277833?lang=en&region=us", "id": "400277833"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278402?lang=en&region=us", "id": "400278402"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278732?lang=en&region=us", "id": "400278732"}], "startDate": "2012-11-15T01:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "Western Conference Semifinals", "summary": "OKC leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id" ...[+1076 chars]
+       root.header.gameNote = "WESTERN CONFERENCE SEMIFINALS - GAME 1"
+       root.article.headline = "Kevin Durant, Thunder knock off Grizzlies in Game 1"
+
+=== 2013-06-13  (scoreboard dates=20130613) ===
+  events: 1
+    event id='400467336'  MIA @ SAS  season.type=3  completed=True  name='MIA @ SA'
+  -- SCOREBOARD event 400467336 field dump --
+     event.name: "Miami Heat at San Antonio Spurs"
+     event.shortName: "MIA @ SA"
+     event.season: {"year": 2013, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "NBA FINALS - GAME 4"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "Series tied 2-2", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/24?lang=en&region=us"}, {"id": "14", "uid": "s:40~l:46~t:14", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/14?lang=en&region=us"}]}
+     competitions[0].type: {"id": "17", "abbreviation": "FINAL"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 3 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "NBA FINALS - GAME 4"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "Series tied 2-2", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/24?lang=en&region=us"}, {"id": "14", "uid": "s:40~l:46~t:14", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/14?lang=en&region=us"}]}
+       root.competitions[0].headlines = [{"type": "Recap", "description": "LeBron James scored 33 points while playing with the aggression and ferocity that everyone expects of the four-time MVP, leading the Heat to a 109-93 victory over the Spurs on Thursday night that evened the NBA Finals at two games apiece.", "shortLinkText": "Wade, LeBron help Heat pull even in Finals"}]
+  -- SUMMARY for event 400467336 --
+     header.season: {"year": 2013, "current": false, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MIA wins series 2-0", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 0, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/24?lang=en&region=us"}}, {"id": "14", "uid": "s:40~l:46~t:14", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/14?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400277940?lang=en&region=us", "id": "400277940"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278818?lang=en&region=us", "id": "400278818"}], "startDate": "2012-11-30T01:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "Series tied 2-2", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams ...[+1184 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MIA wins series 2-0", "completed": true, "totalCompetitions": 2, "seriesLabel": "Regular Season", "seriesScore": "2-0", "shortSummary": "MIA wins season", "events": [{"id": "400277940", "uid": "s:40~l:46~e:400277940~c:400277940", "date": "2012-11-30T01:00:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": true, "team": {"id": "14", "uid": "s:40~l:46~t:14", "displayName": "Miami Heat", "abbreviation": "MIA", "links": [{"href": "https://www.espn.com/nba/team/_/name/mia/miami-heat", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/mia", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/mia.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/mia.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/teamlogos/nba/50 ...[+26881 chars]
+     summary scan -- 14 interesting key(s):
+       root.news.articles[0].headline = "2026 NBA buzz: Latest summer league, free agency, trade updates"
+       root.news.articles[1].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[2].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[3].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[4].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[5].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "MIA wins series 2-0", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 0, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/24?lang=en&region=us"}}, {"id": "14", "uid": "s:40~l:46~t:14", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams/14?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400277940?lang=en&region=us", "id": "400277940"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/400278818?lang=en&region=us", "id": "400278818"}], "startDate": "2012-11-30T01:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "Series tied 2-2", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "24", "uid": "s:40~l:46~t:24", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2013/teams ...[+1184 chars]
+       root.header.gameNote = "NBA FINALS - GAME 4"
+       root.article.headline = "Dwyane Wade, LeBron James help Heat tie NBA Finals at 2-2"
+       root.article.related[0].headline = "2 seriously hurt after deck collapses"
+       root.article.related[1].headline = "Mike Miller to start in Game 4"
+       root.article.related[2].headline = "Tony Parker: 'Ready to go'"
+       root.article.related[3].headline = "Admiral rooting for Tim Duncan"
+       root.article.related[4].headline = "LeBron makes vow before Game 4"
+
+=== 2024-04-22  (scoreboard dates=20240422) ===
+  events: 3
+    event id='401655118'  ORL @ CLE  season.type=3  completed=True  name='ORL @ CLE'
+    event id='401655106'  PHI @ NYK  season.type=3  completed=True  name='PHI @ NY'
+    event id='401655082'  LAL @ DEN  season.type=3  completed=True  name='LAL @ DEN'
+  -- SCOREBOARD event 401655118 field dump --
+     event.name: "Orlando Magic at Cleveland Cavaliers"
+     event.shortName: "ORL @ CLE"
+     event.season: {"year": 2024, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "East 1st Round - Game 2"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "CLE leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/5?lang=en&region=us"}, {"id": "19", "uid": "s:40~l:46~t:19", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/19?lang=en&region=us"}]}
+     competitions[0].type: {"id": "14", "abbreviation": "RD16"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 3 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "East 1st Round - Game 2"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "CLE leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/5?lang=en&region=us"}, {"id": "19", "uid": "s:40~l:46~t:19", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/19?lang=en&region=us"}]}
+       root.competitions[0].headlines = [{"type": "Recap", "description": "— Through two games, the Cavaliers have been tough guys in these playoffs.", "shortLinkText": "Donovan Mitchell scores 23 as Cavaliers power to 96-86 win over Magic and 2-0 lead in series"}]
+  -- SUMMARY for event 401655118 --
+     header.season: {"year": 2024, "current": false, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/5?lang=en&region=us"}}, {"id": "19", "uid": "s:40~l:46~t:19", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/19?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401616459?lang=en&region=us", "id": "401616459"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401584922?lang=en&region=us", "id": "401584922"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585235?lang=en&region=us", "id": "401585235"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585420?lang=en&region=us", "id": "401585420"}], "startDate": "2024-04-20T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "Playoff ...[+1447 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "seriesLabel": "Regular Season", "seriesScore": "2-2", "shortSummary": "Season tied", "events": [{"id": "401616459", "uid": "s:40~l:46~e:401616459~c:401616459", "date": "2023-12-07T00:00:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": true, "team": {"id": "5", "uid": "s:40~l:46~t:5", "displayName": "Cleveland Cavaliers", "abbreviation": "CLE", "links": [{"href": "https://www.espn.com/nba/team/_/name/cle/cleveland-cavaliers", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/cle", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/cle.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/cle.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/teamlogo ...[+33241 chars]
+     summary scan -- 10 interesting key(s):
+       root.seasonseries[1].round = "East 1st Round"
+       root.news.articles[0].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[1].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[2].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[3].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[4].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.news.articles[5].headline = "Indiana Pacers vs. Philadelphia 76ers: Game Highlights"
+       root.article.headline = "Donovan Mitchell scores 23 as Cavaliers power to 96-86 win over Magic and 2-0 lead in series"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/5?lang=en&region=us"}}, {"id": "19", "uid": "s:40~l:46~t:19", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/19?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401616459?lang=en&region=us", "id": "401616459"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401584922?lang=en&region=us", "id": "401584922"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585235?lang=en&region=us", "id": "401585235"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585420?lang=en&region=us", "id": "401585420"}], "startDate": "2024-04-20T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "Playoff ...[+1447 chars]
+       root.header.gameNote = "East 1st Round - Game 2"
+
+=== 2024-06-09  (scoreboard dates=20240609) ===
+  events: 1
+    event id='401656360'  DAL @ BOS  season.type=3  completed=True  name='DAL @ BOS'
+  -- SCOREBOARD event 401656360 field dump --
+     event.name: "Dallas Mavericks at Boston Celtics"
+     event.shortName: "DAL @ BOS"
+     event.season: {"year": 2024, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "NBA Finals - Game 2"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "BOS leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2?lang=en&region=us"}, {"id": "6", "uid": "s:40~l:46~t:6", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/6?lang=en&region=us"}]}
+     competitions[0].type: {"id": "17", "abbreviation": "FINAL"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 3 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "NBA Finals - Game 2"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "BOS leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2?lang=en&region=us"}, {"id": "6", "uid": "s:40~l:46~t:6", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/6?lang=en&region=us"}]}
+       root.competitions[0].headlines = [{"type": "Recap", "description": "— Jrue Holiday led the scoring. Derrick White added a chase-down block. Jayson Tatum and Jaylen Brown pitched in, too — with their passing and defense.", "shortLinkText": "Celtics beat Mavericks 105-98, take 2-0 lead in NBA Finals as series heads to Dallas"}]
+  -- SUMMARY for event 401656360 --
+     header.season: {"year": 2024, "current": false, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "BOS wins series 2-0", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2?lang=en&region=us"}}, {"id": "6", "uid": "s:40~l:46~t:6", "wins": 0, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/6?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585239?lang=en&region=us", "id": "401585239"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585487?lang=en&region=us", "id": "401585487"}], "startDate": "2024-06-06T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "BOS leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2? ...[+913 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "BOS wins series 2-0", "completed": true, "totalCompetitions": 2, "seriesLabel": "Regular Season", "seriesScore": "2-0", "shortSummary": "BOS wins season", "events": [{"id": "401585239", "uid": "s:40~l:46~e:401585239~c:401585239", "date": "2024-01-23T01:30:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": false, "team": {"id": "6", "uid": "s:40~l:46~t:6", "displayName": "Dallas Mavericks", "abbreviation": "DAL", "links": [{"href": "https://www.espn.com/nba/team/_/name/dal/dallas-mavericks", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/dal", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/dal.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/dal.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/teaml ...[+20890 chars]
+     summary scan -- 10 interesting key(s):
+       root.seasonseries[1].round = "NBA Finals"
+       root.news.articles[0].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[1].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[2].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[3].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[4].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.news.articles[5].headline = "Indiana Pacers vs. Philadelphia 76ers: Game Highlights"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "Regular Season Series", "summary": "BOS wins series 2-0", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2?lang=en&region=us"}}, {"id": "6", "uid": "s:40~l:46~t:6", "wins": 0, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/6?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585239?lang=en&region=us", "id": "401585239"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401585487?lang=en&region=us", "id": "401585487"}], "startDate": "2024-06-06T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "BOS leads series 2-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "2", "uid": "s:40~l:46~t:2", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2024/teams/2? ...[+913 chars]
+       root.header.gameNote = "NBA Finals - Game 2"
+       root.article.headline = "Celtics beat Mavericks 105-98, take 2-0 lead in NBA Finals as series heads to Dallas"
+
+=== 2026-05-05  (scoreboard dates=20260505) ===
+  events: 2
+    event id='401871333'  CLE @ DET  season.type=3  completed=True  name='CLE @ DET'
+    event id='401871326'  LAL @ OKC  season.type=3  completed=True  name='LAL @ OKC'
+  -- SCOREBOARD event 401871333 field dump --
+     event.name: "Cleveland Cavaliers at Detroit Pistons"
+     event.shortName: "CLE @ DET"
+     event.season: {"year": 2026, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "East Semifinals - Game 1"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "DET leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "8", "uid": "s:40~l:46~t:8", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/8?lang=en&region=us"}, {"id": "5", "uid": "s:40~l:46~t:5", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/5?lang=en&region=us"}]}
+     competitions[0].type: {"id": "15", "abbreviation": "QTR"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 4 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "East Semifinals - Game 1"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "DET leads series 1-0", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "8", "uid": "s:40~l:46~t:8", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/8?lang=en&region=us"}, {"id": "5", "uid": "s:40~l:46~t:5", "wins": 0, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/5?lang=en&region=us"}]}
+       root.competitions[0].highlights[0].headline = "Cleveland Cavaliers vs. Detroit Pistons: Game Highlights"
+       root.competitions[0].headlines = [{"type": "Recap", "description": "— Cade Cunningham scored 23 points, Tobias Harris had 20 and the Detroit Pistons beat the Cleveland Cavaliers 111-101 on Tuesday night in Game 1 of...", "shortLinkText": "Cade Cunningham scores 23, Tobias Harris has 20 to help Pistons beat Cavs 111-101 in Game 1", "video": [{"id": 48689563, "source": "espn", "headline": "Cleveland Cavaliers vs. Detroit Pistons: Game Highlights", "thumbnail": "https://a.espncdn.com/media/motion/wsc/2026/0506/98bf25cc-db4d-4935-8c01-13cc91156b15/98bf25cc-db4d-4935-8c01-13cc91156b15.jpg", "duration": 98, "tracking": {"sportName": "basketball", "leagueName": "NBA", "coverageType": "Final Game Highlight", "trackingName": "COM_NBA Highlight (Cleveland Cavaliers vs. Detroit Pistons: Game Highlights) 2026/05/05 ESHEET", "trackingId": "dm_20260505_NBA_cleveland_cavaliers_vs_detroit_pistons_game_highlights", "program": "NBC Sports Network"}, "deviceRestrictions": {"type": "whitelist", "devices": ["settop", "tablet", "handset", "ipad", "desktop"]}, "geoRestrictions": {"type": "whitelist", "countries": ["PR", "HN", "PW", "PY", "HT", "IE", "AG", "ZA", "AI", "AM", "AO", "AR", "AS", "RE", "ZM", "AU", "AW", "ZW", "BB", "JM", "BF" ...[+3824 chars]
+  -- SUMMARY for event 401871333 --
+     header.season: {"year": 2026, "current": true, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "East Semifinals", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "8", "uid": "s:40~l:46~t:8", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/8?lang=en&region=us"}}, {"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/5?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401809245?lang=en&region=us", "id": "401809245"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810349?lang=en&region=us", "id": "401810349"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810713?lang=en&region=us", "id": "401810713"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810739?lang=en&region=us", "id": "401810739"}], "startDate": "2026-05-05T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "East Semifinals" ...[+1436 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "East Semifinals", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "seriesLabel": "Regular Season", "seriesScore": "2-2", "shortSummary": "Season tied", "events": [{"id": "401809245", "uid": "s:40~l:46~e:401809245~c:401809245", "date": "2025-10-27T23:00:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": false, "team": {"id": "8", "uid": "s:40~l:46~t:8", "displayName": "Detroit Pistons", "abbreviation": "DET", "links": [{"href": "https://www.espn.com/nba/team/_/name/det/detroit-pistons", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/det", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/det.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/det.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/teamlogos/nba/500-dar ...[+33337 chars]
+     summary scan -- 22 interesting key(s):
+       root.seasonseries[1].round = "East Semifinals"
+       root.news.articles[0].headline = "2026 NBA buzz: Latest summer league, free agency, trade updates"
+       root.news.articles[1].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[2].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[3].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[4].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[5].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "East Semifinals", "summary": "Series tied 2-2", "completed": true, "totalCompetitions": 4, "competitors": [{"id": "8", "uid": "s:40~l:46~t:8", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/8?lang=en&region=us"}}, {"id": "5", "uid": "s:40~l:46~t:5", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/5?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401809245?lang=en&region=us", "id": "401809245"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810349?lang=en&region=us", "id": "401810349"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810713?lang=en&region=us", "id": "401810713"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810739?lang=en&region=us", "id": "401810739"}], "startDate": "2026-05-05T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "East Semifinals" ...[+1436 chars]
+       root.header.gameNote = "East Semifinals - Game 1"
+       root.article.headline = "Cade Cunningham scores 23, Tobias Harris has 20 to help Pistons beat Cavs 111-101 in Game 1"
+       root.article.video[0].headline = "Cade Cunningham finds Jalen Duren for ferocious slam"
+       root.videos[0].headline = "Cleveland Cavaliers vs. Detroit Pistons: Game Highlights"
+       root.videos[1].headline = "Ausar Thompson makes a fancy layup for the Pistons"
+       root.videos[2].headline = "Ausar Thompson elevates for a chasedown block"
+       root.videos[3].headline = "Donovan Mitchell nails a floater for the Cavaliers"
+       root.videos[4].headline = "Javonte Green beats 1st-quarter buzzer with a deep 3"
+       root.videos[5].headline = "Ausar Thompson throws down big dunk vs. Cleveland Cavaliers"
+       root.videos[6].headline = "Donovan Mitchell sparks a trey for the Cavaliers"
+       root.videos[7].headline = "Tobias Harris splashes jumper for Pistons"
+       root.videos[8].headline = "Ronald Holland II shows off his range at the buzzer for Detroit"
+       root.videos[9].headline = "Max Strus gets the and-1 to fall"
+       root.videos[10].headline = "Jalen Duren protects the rim with big block for Pistons"
+
+=== 2026-06-08  (scoreboard dates=20260608) ===
+  events: 1
+    event id='401859965'  SAS @ NYK  season.type=3  completed=True  name='SA @ NY'
+  -- SCOREBOARD event 401859965 field dump --
+     event.name: "San Antonio Spurs at New York Knicks"
+     event.shortName: "SA @ NY"
+     event.season: {"year": 2026, "type": 3, "slug": "post-season"}
+     competitions[0].notes: [{"type": "event", "headline": "NBA Finals - Game 3"}]
+     competitions[0].series: {"type": "playoff", "title": "Playoff Series", "summary": "NY leads series 2-1", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en&region=us"}, {"id": "24", "uid": "s:40~l:46~t:24", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/24?lang=en&region=us"}]}
+     competitions[0].type: {"id": "17", "abbreviation": "FINAL"}
+     competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     scoreboard event scan -- 4 interesting key(s):
+       root.competitions[0].notes = [{"type": "event", "headline": "NBA Finals - Game 3"}]
+       root.competitions[0].series = {"type": "playoff", "title": "Playoff Series", "summary": "NY leads series 2-1", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 2, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en&region=us"}, {"id": "24", "uid": "s:40~l:46~t:24", "wins": 1, "ties": 0, "href": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/24?lang=en&region=us"}]}
+       root.competitions[0].highlights[0].headline = "Spurs bounce back to beat Knicks at MSG in Game 3"
+       root.competitions[0].headlines = [{"type": "Recap", "description": "— Victor Wembanyama has his first NBA Finals win — and the New York Knicks suddenly have a lot of work left to end their 53-year championship drought.", "shortLinkText": "Victor Wembanyama carries Spurs to 115-111 win that cuts Knicks' NBA Finals lead to 2-1", "video": [{"id": 49005876, "source": "espn", "headline": "Spurs bounce back to beat Knicks at MSG in Game 3", "thumbnail": "https://a.espncdn.com/media/motion/wsc/2026/0609/4b9c54f8-61fc-41be-8f9a-a116c569aeb6/4b9c54f8-61fc-41be-8f9a-a116c569aeb6.jpg", "duration": 116, "tracking": {"sportName": "basketball", "leagueName": "NBA", "coverageType": "Final Game Highlight", "trackingName": "COM_NBA Highlight (Spurs bounce back to beat Knicks at MSG in Game 3) 2026/06/09 ESHEET SOTFULL", "trackingId": "dm_20260609_NBA_spurs_bounce_back_to_beat_knicks_at_msg_in_game_3", "program": "ABC"}, "deviceRestrictions": {"type": "whitelist", "devices": ["settop", "tablet", "handset", "ipad", "desktop"]}, "geoRestrictions": {"type": "whitelist", "countries": ["PR", "HN", "PW", "PY", "HT", "IE", "AG", "ZA", "AI", "AM", "AO", "AR", "AS", "ZM", "RE", "AU", "AW", "ZW", "BB", "JM", "BF", "RW", "BI", "BJ", "BM", "BO ...[+4010 chars]
+  -- SUMMARY for event 401859965 --
+     header.season: {"year": 2026, "current": true, "type": 3}
+     header.competitions[0].series: [{"type": "season", "title": "Regular Season Series", "description": "NBA Finals", "summary": "Series tied 1-1", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en&region=us"}}, {"id": "24", "uid": "s:40~l:46~t:24", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/24?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810322?lang=en&region=us", "id": "401810322"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810723?lang=en&region=us", "id": "401810723"}], "startDate": "2026-06-03T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "NY leads series 2-1", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en ...[+909 chars]
+     header.competitions[0].status.type: {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}
+     seasonseries: [{"type": "season", "title": "Regular Season Series", "description": "NBA Finals", "summary": "Series tied 1-1", "completed": true, "totalCompetitions": 2, "seriesLabel": "Regular Season", "seriesScore": "1-1", "shortSummary": "Season tied", "events": [{"id": "401810322", "uid": "s:40~l:46~e:401810322~c:401810322", "date": "2026-01-01T00:00:00Z", "timeValid": true, "status": "post", "statusType": {"id": "3", "name": "STATUS_FINAL", "state": "post", "completed": true, "description": "Final", "detail": "Final", "shortDetail": "Final"}, "neutralSite": false, "competitors": [{"homeAway": "home", "winner": true, "team": {"id": "24", "uid": "s:40~l:46~t:24", "displayName": "San Antonio Spurs", "abbreviation": "SA", "links": [{"href": "https://www.espn.com/nba/team/_/name/sa/san-antonio-spurs", "text": "Clubhouse"}, {"href": "https://www.espn.com/nba/team/schedule/_/name/sa", "text": "Schedule"}], "logo": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png", "logos": [{"href": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png", "width": 500, "height": 500, "alt": "", "rel": ["full", "default"], "lastUpdated": "2024-06-25T21:17Z"}, {"href": "https://a.espncdn.com/i/teamlogos/nba/500-dark/sa. ...[+20779 chars]
+     summary scan -- 32 interesting key(s):
+       root.seasonseries[1].round = "NBA Finals"
+       root.news.articles[0].headline = "2026 NBA buzz: Latest summer league, free agency, trade updates"
+       root.news.articles[1].headline = "Los Angeles Lakers vs. Dallas Mavericks: Game Highlights"
+       root.news.articles[2].headline = "Houston Rockets vs. Toronto Raptors: Game Highlights"
+       root.news.articles[3].headline = "Atlanta Hawks vs. Brooklyn Nets: Game Highlights"
+       root.news.articles[4].headline = "Denver Nuggets vs. Minnesota Timberwolves: Game Highlights"
+       root.news.articles[5].headline = "New York Knicks vs. San Antonio Spurs: Game Highlights"
+       root.article.headline = "Victor Wembanyama carries Spurs to 115-111 win that cuts Knicks' NBA Finals lead to 2-1"
+       root.article.video[0].headline = "Spurs bounce back to beat Knicks at MSG in Game 3"
+       root.videos[0].headline = "Spurs bounce back to beat Knicks at MSG in Game 3"
+       root.videos[1].headline = "President Donald Trump in attendance for Game 3 of NBA Finals"
+       root.videos[2].headline = "Castle steps through 2 Knicks for tough and-1 finish"
+       root.videos[3].headline = "Wemby Eurosteps into the lane for an and-1"
+       root.videos[4].headline = "Castle finds Wemby from halfcourt for open finish"
+       root.videos[5].headline = "Brunson nails high-arcing fadeaway over Wemby"
+       root.videos[6].headline = "Harper soars past Anunoby for huge 2-hand flush"
+       root.videos[7].headline = "Tensions flare as Hart shoves Kornet, receives technical foul"
+       root.videos[8].headline = "'Oh, woah!' Wemby shoves Brunson to the ground"
+       root.videos[9].headline = "Derek Jeter, Eli Manning hyped as Brunson sinks 3 over Wemby"
+       root.videos[10].headline = "Anunoby takes Wemby 1-on-1, rises for 2-hand jam"
+       root.videos[11].headline = "Brunson disagrees with flagrant on Champagnie's 4-point play"
+       root.videos[12].headline = "Anunoby gets past the defense for open slam"
+       root.videos[13].headline = "Brunson somehow gets unreal circus shot to fall plus the foul"
+       root.videos[14].headline = "MSG erupts as Clarkson beats shot clock with triple"
+       root.videos[15].headline = "Wemby elevates to finish alley-oop from Castle"
+       root.videos[16].headline = "Wemby's deep 3 for Spurs overturned after review"
+       root.videos[17].headline = "Wemby gets up for a clutch chase-down block"
+       root.videos[18].headline = "De'Aaron Fox drills step-back to ice Spurs' Game 3 win"
+       root.videos[19].headline = "Wemby becomes second-youngest with 30-5-5 in a Finals game"
+       root.videos[20].headline = "Barkley: Game 4 now a must-win for Knicks"
+       root.header.competitions[0].series = [{"type": "season", "title": "Regular Season Series", "description": "NBA Finals", "summary": "Series tied 1-1", "completed": true, "totalCompetitions": 2, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en&region=us"}}, {"id": "24", "uid": "s:40~l:46~t:24", "wins": 1, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/24?lang=en&region=us"}}], "events": [{"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810322?lang=en&region=us", "id": "401810322"}, {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/events/401810723?lang=en&region=us", "id": "401810723"}], "startDate": "2026-06-03T04:00Z"}, {"type": "playoff", "title": "Playoff Series", "description": "NBA Finals", "summary": "NY leads series 2-1", "completed": false, "totalCompetitions": 7, "competitors": [{"id": "18", "uid": "s:40~l:46~t:18", "wins": 2, "ties": 0, "team": {"$ref": "http://sports.core.api.espn.pvt/v2/sports/basketball/leagues/nba/seasons/2026/teams/18?lang=en ...[+909 chars]
+       root.header.gameNote = "NBA Finals - Game 3"
+
+########################################################################
+# (2) BACKWARD REACH  -- event counts/ids + officials/boxscore presence
+########################################################################
+
+=== 1999-11-02  (scoreboard dates=19991102) ===
+  events: 13
+    event id='191102007'  PHX @ DEN  season.type=2  completed=True
+    event id='191102024'  PHI @ SAS  season.type=2  completed=True
+    event id='191102027'  ATL @ WAS  season.type=2  completed=True
+    event id='191102003'  ORL @ CHA  season.type=2  completed=True
+    event id='191102006'  GSW @ DAL  season.type=2  completed=True
+    event id='191102010'  MIL @ HOU  season.type=2  completed=True
+    event id='191102012'  SEA @ LAC  season.type=2  completed=True
+    event id='191102014'  DET @ MIA  season.type=2  completed=True
+    event id='191102017'  IND @ NJN  season.type=2  completed=True
+    event id='191102018'  CLE @ NYK  season.type=2  completed=True
+    event id='191102029'  POR @ VAN  season.type=2  completed=True
+    event id='191102028'  BOS @ TOR  season.type=2  completed=True
+    event id='191102026'  LAL @ UTA  season.type=2  completed=True
+  -- summary for event 191102007 (PHX @ DEN) --
+     officials: YES at root.gameInfo.officials (3 entries)
+       parsed -> id='espn:jack-nies' name='Jack Nies' jersey=''
+       parsed -> id='espn:bill-spooner' name='Bill Spooner' jersey=''
+       parsed -> id='espn:kevin-fehr' name='Kevin Fehr' jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 1999-02-06  (scoreboard dates=19990206) ===
+  events: 7
+    event id='190206002'  CLE @ BOS  season.type=2  completed=True
+    event id='190206027'  TOR @ WAS  season.type=2  completed=True
+    event id='190206001'  NJN @ ATL  season.type=2  completed=True
+    event id='190206003'  MIL @ CHA  season.type=2  completed=True
+    event id='190206009'  HOU @ GSW  season.type=2  completed=True
+    event id='190206020'  ORL @ PHI  season.type=2  completed=True
+    event id='190206024'  MIN @ SAS  season.type=2  completed=True
+  -- summary for event 190206002 (CLE @ BOS) --
+     officials: YES at root.gameInfo.officials (3 entries)
+       parsed -> id='espn:hue-hollins' name='Hue Hollins' jersey=''
+       parsed -> id='espn:ted-bernhardt' name='Ted Bernhardt' jersey=''
+       parsed -> id='espn:tommie-wood' name='Tommie Wood' jersey=''
+     boxscore.players: yes (athlete rows: 28)
+
+=== 1997-11-01  (scoreboard dates=19971101) ===
+  events: 11
+    event id='171101011'  GSW @ IND  season.type=2  completed=True
+    event id='171101016'  CHA @ MIN  season.type=2  completed=True
+    event id='171101025'  DAL @ SEA  season.type=2  completed=True
+    event id='171101029'  SAC @ VAN  season.type=2  completed=True
+    event id='171101100'  DEN @ UTA  season.type=2  completed=True
+    event id='171101001'  TOR @ ATL  season.type=2  completed=True
+    event id='171101004'  PHI @ CHI  season.type=2  completed=True
+    event id='171101012'  POR @ LAC  season.type=2  completed=True
+    event id='171101024'  CLE @ SAS  season.type=2  completed=True
+    event id='171101027'  MIA @ WAS  season.type=2  completed=True
+    event id='171101015'  NJN @ MIL  season.type=2  completed=True
+  -- summary for event 171101011 (GSW @ IND) --
+     officials: YES at root.gameInfo.officials (3 entries)
+       parsed -> id='espn:hue-hollins' name='Hue Hollins' jersey=''
+       parsed -> id='espn:nolan-fine' name='Nolan Fine' jersey=''
+       parsed -> id='espn:scott-wall' name='Scott Wall' jersey=''
+     boxscore.players: yes (athlete rows: 24)
+
+=== 1995-11-03  (scoreboard dates=19951103) ===
+  events: 14
+    event id='151103004'  CHA @ CHI  season.type=2  completed=True
+    event id='151103022'  VAN @ POR  season.type=2  completed=True
+    event id='151103026'  SEA @ UTA  season.type=2  completed=True
+    event id='151103001'  IND @ ATL  season.type=2  completed=True
+    event id='151103002'  MIL @ BOS  season.type=2  completed=True
+    event id='151103008'  NYK @ DET  season.type=2  completed=True
+    event id='151103010'  GSW @ HOU  season.type=2  completed=True
+    event id='151103012'  PHX @ LAC  season.type=2  completed=True
+    event id='151103013'  DEN @ LAL  season.type=2  completed=True
+    event id='151103019'  CLE @ ORL  season.type=2  completed=True
+    event id='151103020'  WAS @ PHI  season.type=2  completed=True
+    event id='151103023'  MIN @ SAC  season.type=2  completed=True
+    event id='151103024'  DAL @ SAS  season.type=2  completed=True
+    event id='151103028'  NJN @ TOR  season.type=2  completed=True
+  -- summary for event 151103004 (CHA @ CHI) --
+     officials: YES at root.gameInfo.officials (1 entries)
+       parsed -> id='espn:bill-kennedy' name='Bill Kennedy' jersey=''
+     boxscore.players: yes (athlete rows: 22)
+
+=== 1993-11-06  (scoreboard dates=19931106) ===
+  events: 8
+    event id='131106016'  UTA @ MIN  season.type=2  completed=True
+    event id='131106025'  LAL @ SEA  season.type=2  completed=True
+    event id='131106004'  MIA @ CHI  season.type=2  completed=True
+    event id='131106006'  GSW @ DAL  season.type=2  completed=True
+    event id='131106011'  DET @ IND  season.type=2  completed=True
+    event id='131106019'  PHI @ ORL  season.type=2  completed=True
+    event id='131106027'  BOS @ WAS  season.type=2  completed=True
+    event id='131106015'  CHA @ MIL  season.type=2  completed=True
+  -- summary for event 131106016 (UTA @ MIN) --
+     officials: YES at root.gameInfo.officials (3 entries)
+       parsed -> id='espn:ron-garretson' name='Ron Garretson' jersey=''
+       parsed -> id='espn:ken-mauer' name='Ken Mauer' jersey=''
+       parsed -> id='espn:sean-corbin' name='Sean Corbin' jersey=''
+     boxscore.players: yes (athlete rows: 24)
