@@ -1,0 +1,63 @@
+1990s completeness-flag diagnosis (diagnose_1990s_flags.py)
+======================================================================
+Read-only. Investigates the two series _completeness_1990s.txt flagged
+for 1994-95 (MIA/ORL) and 1995-96 (CHI/NYK). No round-labeling, no
+recovery attempted -- diagnosis only. Touches no extract file.
+
+######################################################################
+# PART 1: 1994-95 MIA/ORL -- 'claims rounds [1, 5]'
+######################################################################
+
+1994-95 playoff rows total: 73 (NBA-scheme/nbadb rows among them: 0)
+
+Every MIA/ORL playoff row in 1994-95 (this is the entire flagged 'series'):
+  game_id=150611014  game_date=1995-06-11  season_type=Playoffs  home_team_id=14  home_team_abbr=MIA  away_team_id=19  away_team_abbr=ORL  home_pts=106  away_pts=103  home_win=1
+
+Every 1994-95 PLAYOFF row involving MIA in any position (same as above -- MIA has no other playoff appearance that season):
+  game_id=150611014  game_date=1995-06-11  season_type=Playoffs  home_team_id=14  home_team_abbr=MIA  away_team_id=19  away_team_abbr=ORL  home_pts=106  away_pts=103  home_win=1
+
+1994-95 REGULAR SEASON rows involving MIA: 81 (confirms Miami is a real, correctly-fetched 1994-95 franchise -- just one that did not make the playoffs, consistent with the actual historical standings).
+
+The real 1995 NBA Finals (HOU/ORL) rows the MIA row sits chronologically inside (Rockets swept Magic 4-0):
+  game_id=150607019  game_date=1995-06-08  season_type=Playoffs  home_team_id=19  home_team_abbr=ORL  away_team_id=10  away_team_abbr=HOU  home_pts=118  away_pts=120  home_win=0
+  game_id=150609019  game_date=1995-06-10  season_type=Playoffs  home_team_id=19  home_team_abbr=ORL  away_team_id=10  away_team_abbr=HOU  home_pts=106  away_pts=117  home_win=0
+  game_id=150611010  game_date=1995-06-11  season_type=Playoffs  home_team_id=10  home_team_abbr=HOU  away_team_id=19  away_team_abbr=ORL  home_pts=106  away_pts=103  home_win=1
+  game_id=150614019  game_date=1995-06-15  season_type=Playoffs  home_team_id=10  home_team_abbr=HOU  away_team_id=19  away_team_abbr=ORL  home_pts=113  away_pts=101  home_win=1
+
+Side-by-side: the suspected ghost row vs. the real game on the same date:
+  game_id=150611014  game_date=1995-06-11  season_type=Playoffs  home_team_id=14  home_team_abbr=MIA  away_team_id=19  away_team_abbr=ORL  home_pts=106  away_pts=103  home_win=1
+  game_id=150611010  game_date=1995-06-11  season_type=Playoffs  home_team_id=10  home_team_abbr=HOU  away_team_id=19  away_team_abbr=ORL  home_pts=106  away_pts=103  home_win=1
+  -> identical scores: True   identical away team (ORL): True   DIFFERENT home_team_id: True
+  -> since away_team_id/abbr and the score match exactly, and only home_team_id differs (10=HOU vs 14=MIA), this is a duplicate ESPN event carrying the WRONG home team for an otherwise-correct real game -- not a normalization bug (both team_id->abbr mappings are individually correct), and not a structural-derivation bug either. derive_structural() is working exactly as designed on bad input: it groups series purely by {home_team_abbr, away_team_abbr}, so this one corrupt row creates a phantom 'MIA/ORL' series (1 game, unclinched -> INCOMPLETE) alongside the real 'HOU/ORL' Finals series, and gives ORL a bogus 5th chronological series entry (round 5) alongside MIA's only entry (round 1) -- exactly reproducing the audit's 'claim rounds [1, 5]' disagreement.
+
+VERDICT (Part 1): 1994-95 MIA/ORL is not a real series and not a data gap. It is a single corrupt ESPN row (game_id 150611014) that duplicates the real Finals Game 3 (150611010) under the wrong home team. No recovery attempted in this pass -- diagnosis only.
+
+
+######################################################################
+# PART 2: 1995-96 CHI/NYK -- '4 games present, 3-1, missing Game 5'
+######################################################################
+
+1995-96 playoff rows total: 67 (NBA-scheme/nbadb rows among them: 0)
+
+Every CHI/NYK playoff row in 1995-96:
+  game_id=160505004  game_date=1996-05-05  season_type=Playoffs  home_team_id=4  home_team_abbr=CHI  away_team_id=18  away_team_abbr=NYK  home_pts=91  away_pts=84  home_win=1
+  game_id=160511018  game_date=1996-05-11  season_type=Playoffs  home_team_id=18  home_team_abbr=NYK  away_team_id=4  away_team_abbr=CHI  home_pts=102  away_pts=99  home_win=1
+  game_id=160512018  game_date=1996-05-12  season_type=Playoffs  home_team_id=18  home_team_abbr=NYK  away_team_id=4  away_team_abbr=CHI  home_pts=91  away_pts=94  home_win=0
+  game_id=160514004  game_date=1996-05-14  season_type=Playoffs  home_team_id=4  home_team_abbr=CHI  away_team_id=18  away_team_abbr=NYK  home_pts=94  away_pts=81  home_win=1
+
+Win tally from the 4 present games: CHI 3 - NYK 1
+Real historical record for this series (per the caller): Bulls won 4-1. The present games are consistent with that -- CHI already leads 3-1 and needs exactly one more win (the clincher) to reach 4, matching a 4-1 finish precisely (not 4-2 or any other alternative).
+
+Exhaustive search for a misfiled or duplicated Game 5, across the ENTIRE file (not just 1995-96 playoffs) -- every row anywhere pairing ESPN team_id 4 (CHI) and 18 (NYK), any season/season_type/date:
+  CHI/NYK rows found in 1995-96: 8 total (4 Playoffs, 4 other season_type -- the 4 regular-season meetings, which are separate real games, not a hidden Game 5). Playoffs count matches the 4 already shown above exactly; no 5th playoff entry hides under a different season_type.
+
+All 1995-96 rows 1996-05-14..1996-05-19 involving team_id 4 or 18 in any position (the gap window right after the last present CHI/NYK game and right before CHI/ORL, the real next round, begins 1996-05-19):
+  game_id=160514004  game_date=1996-05-14  season_type=Playoffs  home_team_id=4  home_team_abbr=CHI  away_team_id=18  away_team_abbr=NYK  home_pts=94  away_pts=81  home_win=1
+  game_id=160519004  game_date=1996-05-19  season_type=Playoffs  home_team_id=4  home_team_abbr=CHI  away_team_id=19  away_team_abbr=ORL  home_pts=121  away_pts=83  home_win=1
+
+Same-date/same-score duplicate scan across all of 1995-96, restricted to rows involving CHI or NYK (the ghost-row pattern that explained Part 1): 1 matching row(s) found.
+  game_id=160128004  game_date=1996-01-28  season_type=Regular Season  home_team_id=4  home_team_abbr=CHI  away_team_id=21  away_team_abbr=PHX  home_pts=93  away_pts=82  home_win=1
+
+Bracket context: CHI/ORL (the real 1996 Eastern Conference Finals, Bulls swept Magic 4-0) begins 1996-05-19 -- immediately after this series' last present game (5/14) -- exactly where a 5th CHI/NYK game would need to sit for the bracket to connect. Nothing occupies that slot.
+
+VERDICT (Part 2): the missing game is genuinely ABSENT from games.csv.gz, not mis-scored or misfiled elsewhere. All 4 present rows check out (real teams, real scores, consistent with a 4-1 finish); an exhaustive search of the whole file finds no trace of a 5th CHI/NYK game under any team_id pairing, season_type, or nearby date, and no duplicate/ghost row like the one found in Part 1. This is an ESPN-fetch coverage gap, not a data-quality corruption. No recovery attempted in this pass -- diagnosis only.
