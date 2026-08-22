@@ -6,6 +6,24 @@ game in source-data/games.csv.gz, closing the BUILD_SPEC section 5 gap where
 ESPN ids (unlike the 10-digit '00...' NBA ids) do not encode round/game in the
 id itself.
 
+There is no season allowlist here -- derive_structural() processes whatever
+ESPN-scheme playoff rows are present in games.csv.gz, for every season at
+once. That means the 1990s backfill (1993-94 through 1999-00) is already in
+scope the moment fetch_espn_seasons.py has populated those rows, exactly like
+2000-01/2001-02/2002-03 before them: no gameNote for any of these (see
+GAMENOTE_SEASONS below), so they get structural-derivation labels only, and
+the win-based completeness audit runs for them the same as every other
+season. (For 1995-96's CHI/NYK, that audit will keep flagging a genuinely
+missing Game 5 -- see source-data/_diagnose_1990s_flags.txt. Once this script
+is actually re-run against the fetched data, that series' game_ids belong in
+build.py's ESPN_GAME_NUM_UNRECOVERABLE set, the SAME "round kept, game_num
+nulled" treatment already applied to four 2000-01 series. That nulling can't
+happen in this script's own output: round_labels.csv.gz must keep real 1-7
+game_num values for every row, because build.py's label_rounds() verifies
+game_num is in 1-7 across ALL ESPN seasons at once, BEFORE nulling anything
+-- a null baked in here would fail that check globally and silently skip
+round-labeling for every ESPN season, not just the affected one.)
+
 Two label sources, combined:
 
   (1) STRUCTURAL DERIVATION  -- pure pandas, NO network, runs anywhere.
@@ -67,8 +85,9 @@ from fetch_espn_seasons import (  # noqa: E402
 DELAY_SECONDS = 1.0
 OUT_COLUMNS = ["game_id", "round", "game_num", "source"]
 
-# Seasons where ESPN carries a usable playoff gameNote worth fetching. The early
-# 2000s (2000-01..2002-03) predate the note, so those stay structural-only.
+# Seasons where ESPN carries a usable playoff gameNote worth fetching. Every
+# 1990s/early-2000s season (1993-94..1999-00, 2000-01..2002-03) predates the
+# note, so those all stay structural-only -- nothing to add here for them.
 GAMENOTE_SEASONS = {"2012-13", "2023-24", "2024-25", "2025-26"}
 
 

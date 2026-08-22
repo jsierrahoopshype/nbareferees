@@ -431,16 +431,23 @@ def reconcile_referees(off):
 # ----------------------------------------------------------------------------
 # playoff round / Game-7 labeling (BUILD_SPEC section 5)
 # ----------------------------------------------------------------------------
-# 2000-01 games belonging to the four playoff series that scripts/local/
-# fetch_espn_round_labels.py's win-based completeness audit found genuinely
-# missing games for, after a real recovery attempt (scripts/local/
+# Games belonging to playoff series that scripts/local/fetch_espn_round_labels
+# .py's win-based completeness audit found genuinely missing games for. Round
+# is still correct for these games (derived from each team's series-sequence
+# order, independent of how many games are present in any one series), but
+# game_num is NOT -- it's the chronological rank among the games we have,
+# which is wrong once a game is missing (whether from the middle, or the end
+# where it would silently understate how long the series actually ran).
+# Honest fallback: game_num is nulled for exactly these games; round is kept.
+# This nulling MUST happen here, downstream of round_labels.csv.gz, not in
+# fetch_espn_round_labels.py's own output -- label_rounds() below verifies
+# game_num is in 1-7 across ALL ESPN seasons at once, BEFORE any nulling; a
+# null baked into round_labels.csv.gz itself would fail that check globally
+# and silently skip round-labeling for every ESPN season, not just this one.
+#
+# 2000-01, after a real recovery attempt (scripts/local/
 # recover_2000_01_playoffs.py + recover_final_two_dates.py both came back
-# empty for every remaining gap date). Round is still correct for these games
-# (derived from each team's series-sequence order, independent of how many
-# games are present in any one series), but game_num is NOT -- it's the
-# chronological rank among the games we have, which is wrong when games are
-# missing from the middle or end of a series. Honest fallback: game_num is
-# nulled for exactly these 13 games; round is kept.
+# empty for every remaining gap date):
 #   R2 CHA/MIL (5 present, series score 3-2, needed 4):
 #     210510003 210513003 210515015 210517003 210520015
 #   R3 LAL/SAS West Finals (3 present, series score 3-0, needed 4):
@@ -449,11 +456,18 @@ def reconcile_referees(off):
 #     210522020 210524020 210526015 210528015
 #   R4 LAL/PHI Finals (1 present, series score 1-0, needed 4):
 #     210615020
+#
+# 1995-96, diagnosed genuinely absent (not mis-scored or misfiled -- see
+# source-data/_diagnose_1990s_flags.txt Part 2); no recovery attempted yet:
+#   R2 CHI/NYK (4 present, series score 3-1, needed 4 -- real record is a
+#   Bulls series win 4-1, so Game 5 is the missing game):
+#     160505004 160511018 160512018 160514004
 ESPN_GAME_NUM_UNRECOVERABLE = {
     "210510003", "210513003", "210515015", "210517003", "210520015",
     "210519024", "210521024", "210525013",
     "210522020", "210524020", "210526015", "210528015",
     "210615020",
+    "160505004", "160511018", "160512018", "160514004",
 }
 
 
@@ -505,11 +519,13 @@ def label_rounds(gm):
             lab = labels.set_index("game_id").reindex(idx)
             gm.loc[espn_po.index, "po_round"] = lab["round"].values
             gm.loc[espn_po.index, "po_game_num"] = lab["game_num"].values
-            n_nulled = gm["game_id"].isin(ESPN_GAME_NUM_UNRECOVERABLE).sum()
-            gm.loc[gm["game_id"].isin(ESPN_GAME_NUM_UNRECOVERABLE), "po_game_num"] = None
+            nulled_mask = gm["game_id"].isin(ESPN_GAME_NUM_UNRECOVERABLE)
+            n_nulled = nulled_mask.sum()
+            nulled_seasons = sorted(gm.loc[nulled_mask, "season"].unique())
+            gm.loc[nulled_mask, "po_game_num"] = None
             print("verification PASSED -> round/Game-7 labels trusted for ESPN scheme")
-            print("game_num nulled for %d games in 4 known-incomplete 2000-01 series "
-                  "(round kept -- see ESPN_GAME_NUM_UNRECOVERABLE)" % n_nulled)
+            print("game_num nulled for %d games in known-incomplete series across %s "
+                  "(round kept -- see ESPN_GAME_NUM_UNRECOVERABLE)" % (n_nulled, nulled_seasons))
         else:
             print("verification FAILED -> skipping round labeling rather than guessing")
     elif len(espn_po):
