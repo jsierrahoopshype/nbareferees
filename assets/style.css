@@ -235,6 +235,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-panel{display:none}
 .lb-panel.is-active{display:block}
 .lb-paired.is-active{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.lb-triple.is-active{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem}
 .lb-subhead{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;
   letter-spacing:.06em;color:var(--text-secondary);font-weight:600;margin-bottom:.6rem}
 .lb-list{list-style:none}
@@ -310,7 +311,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   main{padding:0 1rem}
   .hero-title{font-size:1.5rem}
   .whistle-cols{grid-template-columns:1fr}
-  .lb-paired.is-active{grid-template-columns:1fr}
+  .lb-paired.is-active,.lb-triple.is-active{grid-template-columns:1fr}
   .lb-list-wide{columns:1}
   .history-cols{grid-template-columns:1fr}
   .compare-pickers,.compare-cols{grid-template-columns:1fr}
