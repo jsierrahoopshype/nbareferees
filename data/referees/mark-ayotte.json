@@ -11,19 +11,25 @@
       "espn",
       "nba"
     ],
-    "first_season": "2004-05",
+    "first_season": "1995-96",
     "last_season": "2020-21",
-    "games_total": 933,
-    "games_rs": 924,
+    "games_total": 936,
+    "games_rs": 927,
     "games_po": 9,
     "games_pi": 0,
     "finals_games": 0,
     "game7s": 0,
     "active": false,
     "quality_total": 10,
-    "seasons_active": 17,
-    "quality_per_season": 0.59,
+    "seasons_active": 18,
+    "quality_per_season": 0.56,
     "per_season": {
+      "1995-96": {
+        "rs": 3,
+        "po": 0,
+        "pi": 0,
+        "total": 3
+      },
       "2004-05": {
         "rs": 51,
         "po": 0,
@@ -131,23 +137,23 @@
   "team_records": [
     {
       "team_abbr": "GSW",
-      "games": 88,
+      "games": 89,
       "wins": 46,
-      "losses": 42,
+      "losses": 43,
       "win_pct": 0.52,
-      "home_games": 47,
+      "home_games": 48,
       "home_wins": 30,
-      "avg_margin_for_team": 1.35
+      "avg_margin_for_team": 1.26
     },
     {
       "team_abbr": "SAC",
-      "games": 78,
-      "wins": 33,
+      "games": 79,
+      "wins": 34,
       "losses": 45,
-      "win_pct": 0.42,
-      "home_games": 38,
-      "home_wins": 18,
-      "avg_margin_for_team": -2.31
+      "win_pct": 0.43,
+      "home_games": 39,
+      "home_wins": 19,
+      "avg_margin_for_team": -2.03
     },
     {
       "team_abbr": "POR",
@@ -201,13 +207,13 @@
     },
     {
       "team_abbr": "LAC",
-      "games": 70,
+      "games": 71,
       "wins": 38,
-      "losses": 32,
+      "losses": 33,
       "win_pct": 0.54,
-      "home_games": 37,
+      "home_games": 38,
       "home_wins": 24,
-      "avg_margin_for_team": 2.01
+      "avg_margin_for_team": 1.86
     },
     {
       "team_abbr": "DEN",
@@ -280,6 +286,16 @@
       "avg_margin_for_team": 6.73
     },
     {
+      "team_abbr": "ORL",
+      "games": 59,
+      "wins": 28,
+      "losses": 31,
+      "win_pct": 0.47,
+      "home_games": 25,
+      "home_wins": 15,
+      "avg_margin_for_team": -0.8
+    },
+    {
       "team_abbr": "CHI",
       "games": 58,
       "wins": 21,
@@ -290,16 +306,6 @@
       "avg_margin_for_team": -5.84
     },
     {
-      "team_abbr": "ORL",
-      "games": 58,
-      "wins": 27,
-      "losses": 31,
-      "win_pct": 0.47,
-      "home_games": 25,
-      "home_wins": 15,
-      "avg_margin_for_team": -0.97
-    },
-    {
       "team_abbr": "IND",
       "games": 57,
       "wins": 32,
@@ -308,6 +314,16 @@
       "home_games": 29,
       "home_wins": 18,
       "avg_margin_for_team": 0.58
+    },
+    {
+      "team_abbr": "DET",
+      "games": 56,
+      "wins": 32,
+      "losses": 24,
+      "win_pct": 0.57,
+      "home_games": 28,
+      "home_wins": 17,
+      "avg_margin_for_team": 2.07
     },
     {
       "team_abbr": "BOS",
@@ -328,16 +344,6 @@
       "home_games": 23,
       "home_wins": 16,
       "avg_margin_for_team": -2.11
-    },
-    {
-      "team_abbr": "DET",
-      "games": 55,
-      "wins": 31,
-      "losses": 24,
-      "win_pct": 0.56,
-      "home_games": 28,
-      "home_wins": 17,
-      "avg_margin_for_team": 1.98
     },
     {
       "team_abbr": "CLE",
@@ -411,13 +417,13 @@
     },
     {
       "team_abbr": "MIA",
-      "games": 48,
+      "games": 49,
       "wins": 29,
-      "losses": 19,
-      "win_pct": 0.6,
+      "losses": 20,
+      "win_pct": 0.59,
       "home_games": 21,
       "home_wins": 14,
-      "avg_margin_for_team": 2.81
+      "avg_margin_for_team": 2.35
     },
     {
       "team_abbr": "OKC",
@@ -442,21 +448,21 @@
   ],
   "whistle_profile": {
     "rs": {
-      "n": 924,
-      "n_boxscore": 924,
-      "avg_total_points": 205.78,
-      "avg_total_fta": 47.51,
-      "avg_total_pf": 41.17,
-      "home_win_pct": 0.63,
-      "avg_abs_margin": 11.78,
-      "ot_games": 57,
+      "n": 927,
+      "n_boxscore": 927,
+      "avg_total_points": 205.82,
+      "avg_total_fta": 47.58,
+      "avg_total_pf": 41.22,
+      "home_win_pct": 0.62,
+      "avg_abs_margin": 11.79,
+      "ot_games": 58,
       "ot_rate": 0.06,
-      "avg_total_points_pctile": 45.37,
-      "avg_total_fta_pctile": 64.81,
-      "avg_total_pf_pctile": 55.56,
-      "avg_abs_margin_pctile": 73.15,
-      "home_win_pct_pctile": 96.3,
-      "ot_rate_pctile": 47.22
+      "avg_total_points_pctile": 56.69,
+      "avg_total_fta_pctile": 49.61,
+      "avg_total_pf_pctile": 44.88,
+      "avg_abs_margin_pctile": 77.95,
+      "home_win_pct_pctile": 89.76,
+      "ot_rate_pctile": 50.39
     },
     "po": {
       "n": 9,
@@ -969,6 +975,17 @@
       "pf_swing": -0.25
     },
     {
+      "player_id": "255",
+      "name": "Grant Hill",
+      "n_games": 26,
+      "slug": "grant-hill",
+      "pts_with_ref": 14.27,
+      "pts_baseline": 12.46,
+      "pts_swing": 1.81,
+      "fta_swing": 0.17,
+      "pf_swing": -0.0
+    },
+    {
       "player_id": "2731",
       "name": "Emeka Okafor",
       "n_games": 22,
@@ -1000,17 +1017,6 @@
       "pts_swing": 1.77,
       "fta_swing": -0.18,
       "pf_swing": 0.32
-    },
-    {
-      "player_id": "977",
-      "name": "Kobe Bryant",
-      "n_games": 39,
-      "slug": "kobe-bryant",
-      "pts_with_ref": 27.9,
-      "pts_baseline": 26.2,
-      "pts_swing": 1.69,
-      "fta_swing": 0.8,
-      "pf_swing": 0.26
     },
     {
       "player_id": "2198",

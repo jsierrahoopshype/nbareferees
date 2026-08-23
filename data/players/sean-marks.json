@@ -2,16 +2,17 @@
   "summary": {
     "name": "Sean Marks",
     "slug": "sean-marks",
-    "first_season": "2001-02",
+    "first_season": "1998-99",
     "last_season": "2010-11",
     "teams": [
       "MIA",
       "NOH",
       "PHX",
       "POR",
-      "SAS"
+      "SAS",
+      "TOR"
     ],
-    "games_total": 224,
+    "games_total": 237,
     "eras": [
       "espn",
       "nba"
@@ -41,6 +42,55 @@
         "2008-09",
         "2009-10",
         "2010-11"
+      ]
+    },
+    {
+      "ref_name": "Tom Washington",
+      "ref_slug": "tom-washington",
+      "player_id": "1752",
+      "n_games": 16,
+      "pts_with_ref": 3.06,
+      "pts_baseline": 2.62,
+      "pts_swing": 0.45,
+      "reb_with_ref": 2.06,
+      "reb_baseline": 2.14,
+      "reb_swing": -0.08,
+      "ast_with_ref": 0.12,
+      "ast_baseline": 0.2,
+      "ast_swing": -0.08,
+      "seasons": [
+        "1998-99",
+        "2002-03",
+        "2004-05",
+        "2005-06",
+        "2007-08",
+        "2008-09",
+        "2009-10",
+        "2010-11"
+      ]
+    },
+    {
+      "ref_name": "Bennett Salvatore",
+      "ref_slug": "bennett-salvatore",
+      "player_id": "511",
+      "n_games": 15,
+      "pts_with_ref": 3.27,
+      "pts_baseline": 2.91,
+      "pts_swing": 0.36,
+      "reb_with_ref": 3.0,
+      "reb_baseline": 2.27,
+      "reb_swing": 0.73,
+      "ast_with_ref": 0.33,
+      "ast_baseline": 0.19,
+      "ast_swing": 0.15,
+      "seasons": [
+        "1998-99",
+        "1999-00",
+        "2001-02",
+        "2002-03",
+        "2004-05",
+        "2005-06",
+        "2008-09"
       ]
     },
     {
@@ -115,26 +165,27 @@
       ]
     },
     {
-      "ref_name": "Tom Washington",
-      "ref_slug": "tom-washington",
+      "ref_name": "Scott Wall",
+      "ref_slug": "scott-wall",
       "player_id": "1752",
       "n_games": 15,
-      "pts_with_ref": 3.0,
-      "pts_baseline": 2.7,
-      "pts_swing": 0.3,
-      "reb_with_ref": 2.13,
-      "reb_baseline": 2.28,
-      "reb_swing": -0.15,
+      "pts_with_ref": 2.93,
+      "pts_baseline": 2.87,
+      "pts_swing": 0.06,
+      "reb_with_ref": 2.27,
+      "reb_baseline": 2.03,
+      "reb_swing": 0.23,
       "ast_with_ref": 0.13,
-      "ast_baseline": 0.21,
-      "ast_swing": -0.08,
+      "ast_baseline": 0.2,
+      "ast_swing": -0.07,
       "seasons": [
-        "2002-03",
+        "1998-99",
+        "1999-00",
+        "2001-02",
         "2004-05",
         "2005-06",
-        "2007-08",
+        "2006-07",
         "2008-09",
-        "2009-10",
         "2010-11"
       ]
     }
@@ -165,29 +216,6 @@
     },
     {
       "pts": 16,
-      "reb": 5,
-      "ast": 2,
-      "team_abbr": "SAS",
-      "opp_abbr": "TOR",
-      "game_date": "2006-02-08",
-      "game_id": "0020500711",
-      "crew": [
-        {
-          "name": "Derrick Collins",
-          "slug": "derrick-collins"
-        },
-        {
-          "name": "Scott Foster",
-          "slug": "scott-foster"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
-        }
-      ]
-    },
-    {
-      "pts": 16,
       "reb": 13,
       "ast": 0,
       "team_abbr": "PHX",
@@ -206,6 +234,29 @@
         {
           "name": "Pat Fraher",
           "slug": "pat-fraher"
+        }
+      ]
+    },
+    {
+      "pts": 16,
+      "reb": 5,
+      "ast": 2,
+      "team_abbr": "SAS",
+      "opp_abbr": "TOR",
+      "game_date": "2006-02-08",
+      "game_id": "0020500711",
+      "crew": [
+        {
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
+        },
+        {
+          "name": "Scott Foster",
+          "slug": "scott-foster"
+        },
+        {
+          "name": "Leroy Richardson",
+          "slug": "leroy-richardson"
         }
       ]
     },
@@ -326,6 +377,29 @@
     },
     {
       "pts": 9,
+      "reb": 5,
+      "ast": 0,
+      "team_abbr": "SAS",
+      "opp_abbr": "SEA",
+      "game_date": "2005-03-30",
+      "game_id": "0020401059",
+      "crew": [
+        {
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
+        },
+        {
+          "name": "Jason Phillips",
+          "slug": "jason-phillips"
+        },
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        }
+      ]
+    },
+    {
+      "pts": 9,
       "reb": 6,
       "ast": 0,
       "team_abbr": "SAS",
@@ -344,29 +418,6 @@
         {
           "name": "Dan Crawford",
           "slug": "dan-crawford"
-        }
-      ]
-    },
-    {
-      "pts": 9,
-      "reb": 1,
-      "ast": 0,
-      "team_abbr": "SAS",
-      "opp_abbr": "CHA",
-      "game_date": "2006-01-24",
-      "game_id": "0020500603",
-      "crew": [
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        },
-        {
-          "name": "David Guthrie",
-          "slug": "david-guthrie"
-        },
-        {
-          "name": "David Jones",
-          "slug": "david-jones"
         }
       ]
     }
