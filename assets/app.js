@@ -109,9 +109,16 @@
     });
   });
   // --- leaderboard tabs ---
-  var tabs=[].slice.call(document.querySelectorAll(".lb-tab"));
-  if(tabs.length){
-    var panels=[].slice.call(document.querySelectorAll(".lb-panel"));
+  // Scoped PER .lb-tabs container (its .lb-panels sibling), not globally --
+  // a page can carry more than one independent tab group (e.g. the index's
+  // Career-leaders tabs AND its separate Era-leaders tabs), and a single
+  // shared tabs/panels array would cross-wire them: clicking a tab in one
+  // group would deactivate every tab in the OTHER group too, with no
+  // matching panel id to reactivate, leaving it blank.
+  [].slice.call(document.querySelectorAll(".lb-tabs")).forEach(function(tabsEl){
+    var tabs=[].slice.call(tabsEl.querySelectorAll(".lb-tab"));
+    var panelsEl=tabsEl.nextElementSibling;
+    var panels=panelsEl?[].slice.call(panelsEl.querySelectorAll(".lb-panel")):[];
     tabs.forEach(function(tab){
       tab.addEventListener("click",function(){
         var id=tab.getAttribute("data-tab");
@@ -120,7 +127,7 @@
         panels.forEach(function(p){p.classList.toggle("is-active",p.getAttribute("data-panel")===id);});
       });
     });
-  }
+  });
   // --- dashboard: spotlight of the day + on this date (index only) ---
   // Rotation is deterministic client-side: day-of-year modulo the spotlight
   // array (ordered by slug at build time for a stable rotation). The data

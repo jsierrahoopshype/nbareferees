@@ -454,7 +454,8 @@ def render_ref(doc):
   <div class="ref-hero-body">
     <p class="ref-kicker">NBA on-court official</p>
     <h1 class="ref-name">{name}</h1>
-    <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a></div>
+    <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a>
+    <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a></div>
     <div class="chip-row">{chips}</div>
   </div>
 </section>""".format(name=esc(name), active=active, chips="".join(chips),
@@ -484,7 +485,8 @@ def render_ref(doc):
                 '“Swing” is the average difference between a player’s output in '
                 'these games and that player’s own same-season average. This is a '
                 'descriptive split, not a causal claim — it does not mean the official '
-                'affected the player.</p>').format(name=esc(name))
+                'affected the player. <a href="{root}swings/index.html">See the biggest '
+                'swings across every referee &rarr;</a></p>').format(name=esc(name), root=ROOT2)
         blocks.append(section(None, "Player splits",
                               '<div class="table-wrap">%s</div>' % swings_table(doc["player_swings"]),
                               note))
@@ -511,6 +513,75 @@ def render_ref(doc):
     blocks.append(ref_search(2, "bottom"))
 
     return page(title, desc, 2, "".join(blocks))
+
+
+# ---------------------------------------------------------------------------
+# referee game log (docs/TIER_C_SPEC.md section 3) -- one level deeper than
+# any other content page (referee/{slug}/games/), so team_cell/ref_link's
+# hardcoded ROOT2 ("../../", correct for depth 2) would silently produce a
+# broken "referee/referee/..." link here. Depth-3-correct local variants only
+# for this page rather than touching ROOT2 (used everywhere else).
+# ---------------------------------------------------------------------------
+ROOT3 = "../../../"
+
+
+def team_cell_d3(abbr):
+    full = nba_tricodes.display_name(abbr)
+    tag = '<span class="team-tag">%s</span>' % esc(abbr)
+    if full == abbr:
+        return '<span class="team-cell">%s</span>' % tag
+    name = esc(full)
+    if abbr in TEAM_EXISTS:
+        name = '<a href="%steam/%s/index.html">%s</a>' % (ROOT3, esc(abbr.lower()), name)
+    return '<span class="team-cell"><span class="team-name">%s</span>%s</span>' % (name, tag)
+
+
+def ref_link_d3(name, slug):
+    return '<a href="%sreferee/%s/index.html">%s</a>' % (ROOT3, esc(slug), esc(name))
+
+
+def referee_game_log_table(games):
+    cols = [("Date", "text"), ("Matchup", "text"), ("Score", "text"),
+            ("Round", "text"), ("Co-officials", "text")]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    body = []
+    for g in games:
+        hp, ap = g["home_pts"], g["away_pts"]
+        score = ("%s %s, %s %s" % (g["home_team_abbr"], i(hp), g["away_team_abbr"], i(ap))
+                 if hp is not None and ap is not None else "—")
+        co = " &middot; ".join(ref_link_d3(c["name"], c["slug"]) for c in g["co_officials"]) or "—"
+        body.append(
+            "<tr>"
+            '<td data-label="Date">{dt}</td>'
+            '<td data-label="Matchup" class="matchup">{away} <span class="vs">@</span> {home}</td>'
+            '<td data-label="Score">{sc}</td>'
+            '<td data-label="Round"><span class="round-tag">{rd}</span></td>'
+            '<td data-label="Co-officials" class="crew">{co}</td>'
+            "</tr>".format(dt=esc(g["date"]), away=team_cell_d3(g["away_team_abbr"]),
+                           home=team_cell_d3(g["home_team_abbr"]), sc=esc(score),
+                           rd=esc(g["round_label"] or "—"), co=co))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def render_ref_games(doc):
+    name = doc["name"]
+    n_seasons = len(doc["by_season"])
+    title = "%s — every game officiated, full game log" % name
+    desc = ("Complete game-by-game officiating log for %s: %s games across %d seasons, "
+            "with matchup, final score, playoff round, and co-officials for every game." % (
+                name, i(doc["games_total"]), n_seasons))
+    back = '<a class="backlink" href="../index.html">&larr; Back to %s</a>' % esc(name)
+    chips = [stat_chip("Career games", i(doc["games_total"]), accent=True),
+            stat_chip("Seasons logged", i(n_seasons))]
+    hero = hero_block("Full game log", name, "", chips)
+    blocks = [back, hero]
+    for block in doc["by_season"]:
+        inner = '<div class="table-wrap">%s</div>' % referee_game_log_table(block["games"])
+        blocks.append(section(None, "%s (%d games)" % (block["season"], len(block["games"])), inner))
+    blocks.append(back)
+    return page(title, desc, 3, "".join(blocks))
 
 
 # ---------------------------------------------------------------------------
@@ -707,7 +778,8 @@ def render_player(doc):
     methods = ('<p class="caption">“Swing” (Δ) is the average difference between '
                '%s’s output in games each official worked and %s’s own same-season '
                'average — a descriptive split, not a causal claim. Referees with at '
-               'least 15 games are listed.</p>' % (esc(name), esc(name)))
+               'least 15 games are listed. <a href="%sswings/index.html">See the biggest '
+               'swings across every player &rarr;</a></p>' % (esc(name), esc(name), ROOT2))
     blocks.append(section("01", "Splits by referee",
                           '<div class="table-wrap">%s</div>' % player_ref_table(doc["ref_splits"]),
                           methods))
@@ -741,14 +813,14 @@ LEADERBOARD_TABS = [
 ]
 
 
-def leaderboard_row(rank, r, valkey, valfmt, n_key=None):
+def leaderboard_row(rank, r, valkey, valfmt, n_key=None, root=""):
     n_span = ""
     if n_key and r.get(n_key) is not None:
         n_span = ' <span class="lb-n">n=%s</span>' % i(r[n_key])
     return ('<li class="lb-row"><span class="lb-rank">{rk}</span>'
-            '<a class="lb-name" href="referee/{slug}/index.html">{name}</a>'
+            '<a class="lb-name" href="{root}referee/{slug}/index.html">{name}</a>'
             '<span class="lb-val">{val}{nspan}</span></li>').format(
-        rk=rank, slug=esc(r["slug"]), name=esc(r["name"]), val=valfmt(r[valkey]), nspan=n_span)
+        rk=rank, root=root, slug=esc(r["slug"]), name=esc(r["name"]), val=valfmt(r[valkey]), nspan=n_span)
 
 
 def paired_panel(tab_id, active, title_hi, rows_hi, title_lo, rows_lo, valkey, valfmt, footnote=""):
@@ -856,6 +928,73 @@ def dashboard_tonights_crews_slot():
 </section>""")
 
 
+# ---------------------------------------------------------------------------
+# Tier C index widgets (docs/TIER_C_SPEC.md section 3) -- each links to its
+# own full-list page.
+# ---------------------------------------------------------------------------
+def dashboard_crews_strip(crews):
+    top5 = crews[:5]
+    items = "".join(
+        '<li class="history-row"><span class="history-rank">{rk}</span>'
+        '<span class="crew-names">{names}</span> '
+        '<span class="lb-val">{g} games together</span></li>'.format(
+            rk=rank, names=", ".join(ref_link(r["name"], r["slug"]) for r in c["refs"]),
+            g=i(c["games"]))
+        for rank, c in enumerate(top5, 1))
+    return ("""<section class="block" id="crews">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Crew chemistry</h2></div>
+  <ol class="history-list">{items}</ol>
+  <p class="caption">The most frequent three-official crews in the database, by games
+  worked together. <a href="crews/index.html">See all {n} ranked crews &rarr;</a></p>
+</section>""").format(items=items, n=i(len(crews)))
+
+
+def dashboard_team_officials_strip(team_officials):
+    cards = "".join(
+        '<a class="record-card" href="referee/{slug}/index.html">'
+        '<span class="record-label">{team}</span>'
+        '<span class="record-val">{ref}</span>'
+        '<span class="record-ref">{g} games <span class="record-n">n={n}</span></span>'
+        '</a>'.format(slug=esc(t["ref_slug"]), team=esc(t["team_name"]),
+                     ref=esc(t["ref_name"]), g=i(t["games"]), n=i(t["n"]))
+        for t in team_officials)
+    return ("""<section class="block" id="team-officials">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Most frequent official, by team</h2></div>
+  <div class="record-strip">{cards}</div>
+  <p class="caption">Frequency only — not a "best" or "worst" referee ranking by outcome.
+  <a href="team-officials/index.html">See the full list &rarr;</a></p>
+</section>""").format(cards=cards)
+
+
+def dashboard_debuts_widget(debuts_farewells):
+    if not debuts_farewells:
+        return ""
+    block = debuts_farewells[0]           # already sorted most-recent-season first
+    inner = debuts_farewells_section(block)
+    return ("""<section class="block" id="debuts">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Debuts &amp; farewells &mdash; {season}</h2></div>
+  <div class="history-cols">{inner}</div>
+  <p class="caption">"First"/"last game in this database" describe this site's own coverage
+  (starting 1993-94), not an official's actual NBA career.
+  <a href="debuts/index.html">See every season &rarr;</a></p>
+</section>""").format(season=esc(block["season"]), inner=inner)
+
+
+def dashboard_era_leaders_widget(era_leaders):
+    tabs, panels = era_leaders_block(era_leaders)
+    return ("""<section class="block" id="era-leaders">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Dashboard</span><h2>Leaders by decade</h2></div>
+  <div class="lb-tabs" role="tablist">{tabs}</div>
+  <div class="lb-panels">{panels}</div>
+  <p class="caption">Each decade counts only games within it, not career totals.
+  <a href="eras/index.html">See full decade tables &rarr;</a></p>
+</section>""").format(tabs=tabs, panels=panels)
+
+
 def render_index(refs, lb, dashboard):
     total = len(refs)
     span = "%s to %s" % (min(r["first_season"] for r in refs), CURRENT_SEASON)
@@ -960,6 +1099,10 @@ def render_index(refs, lb, dashboard):
         + dashboard_tonights_crews_slot()
         + dashboard_records_strip(dashboard["records"])
         + dashboard_history_strip(dashboard["history"])
+        + dashboard_crews_strip(dashboard["crews"])
+        + dashboard_team_officials_strip(dashboard["team_officials"])
+        + dashboard_debuts_widget(dashboard["debuts_farewells"])
+        + dashboard_era_leaders_widget(dashboard["era_leaders"])
     )
     body = hero + dashboard_sections + leaderboards + directory + ref_search(0, "bottom")
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
@@ -1021,6 +1164,238 @@ def render_compare():
   </div>
 </section>""".format(box_a=box_a, box_b=box_b)
     return page(title, desc, 1, body)
+
+
+# ---------------------------------------------------------------------------
+# Tier C full-list pages (docs/TIER_C_SPEC.md)
+# ---------------------------------------------------------------------------
+def crews_table(crews):
+    cols = [("Crew", "text"), ("Games together", "num"), ("First season", "text"),
+            ("Last season", "text"), ("Avg total pts", "num"), ("Avg total FTA", "num")]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    body = []
+    for c in crews:
+        names_sort = esc(", ".join(r["name"] for r in c["refs"]).lower())
+        names = ", ".join(ref_link(r["name"], r["slug"]) for r in c["refs"])
+        pts = ("%s <span class=\"lb-n\">n=%s</span>" % (dec(c["avg_total_points"]), i(c["pts_n"]))
+              if c["avg_total_points"] is not None else "—")
+        fta = ("%s <span class=\"lb-n\">n=%s</span>" % (dec(c["avg_total_fta"]), i(c["fta_n"]))
+              if c["avg_total_fta"] is not None else "—")
+        body.append(
+            "<tr>"
+            '<td data-label="Crew" data-sort="{sortnm}">{names}</td>'
+            '<td data-label="Games together" data-sort="{g}">{gi}</td>'
+            '<td data-label="First season">{fs}</td>'
+            '<td data-label="Last season">{ls}</td>'
+            '<td data-label="Avg total pts">{pts}</td>'
+            '<td data-label="Avg total FTA">{fta}</td>'
+            "</tr>".format(sortnm=names_sort, names=names, g=c["games"], gi=i(c["games"]),
+                           fs=esc(c["first_season"]), ls=esc(c["last_season"]), pts=pts, fta=fta))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def render_crews(crews):
+    title = "Most frequent 3-official crews in NBA history"
+    desc = ("The %d most frequent three-official officiating crews in the database, "
+            "ranked by games worked together, with combined scoring and free-throw "
+            "averages for each trio." % len(crews))
+    chips = [stat_chip("Crews ranked", i(len(crews)), accent=True)]
+    blocks = [back_home(), hero_block("Crew chemistry", "Most frequent officiating crews", "", chips),
+              ref_search(1, "top")]
+    blocks.append(section(None, "Top crew trios",
+                          '<div class="table-wrap">%s</div>' % crews_table(crews),
+                          '<p class="caption">Crew-of-three games only (alternate officials '
+                          'excluded, per the site-wide first-3-by-row-order rule). A '
+                          'descriptive ranking of how often three officials have worked '
+                          'together, not a causal claim.</p>'))
+    blocks.append(ref_search(1, "bottom"))
+    return page(title, desc, 1, "".join(blocks))
+
+
+def team_officials_table(rows):
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l))
+        for l, t in [("Team", "text"), ("Official", "text"), ("Games", "num")])
+    body = []
+    for t in rows:
+        body.append(
+            "<tr>"
+            '<td data-label="Team" data-sort="{tsort}">{team}</td>'
+            '<td data-label="Official" data-sort="{rsort}">{ref}</td>'
+            '<td data-label="Games" data-sort="{g}">{gi} <span class="lb-n">n={n}</span></td>'
+            "</tr>".format(tsort=esc(t["team_name"].lower()), team=team_cell(t["tricode"]),
+                           rsort=esc(t["ref_name"].lower()),
+                           ref=ref_link(t["ref_name"], t["ref_slug"]),
+                           g=t["games"], gi=i(t["games"]), n=i(t["n"])))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def render_team_officials(team_officials):
+    title = "The most frequent official for every NBA team"
+    desc = ("For every one of the %d NBA franchises in this database: the official who "
+            "has worked the most of that team's games. Frequency only, not a win-rate "
+            "ranking." % len(team_officials))
+    chips = [stat_chip("Teams", i(len(team_officials)), accent=True)]
+    blocks = [back_home(), hero_block("Team officials", "Most frequent official, by team", "", chips),
+              ref_search(1, "top")]
+    blocks.append(section(None, "Most frequent official by team",
+                          '<div class="table-wrap">%s</div>' % team_officials_table(team_officials),
+                          '<p class="caption">Frequency only — the official who has worked the '
+                          'most games for each franchise, not a "best" or "worst" ranking by '
+                          'outcome. Per-referee win rates for every team appear on that team’s '
+                          'own page.</p>'))
+    blocks.append(ref_search(1, "bottom"))
+    return page(title, desc, 1, "".join(blocks))
+
+
+def debuts_farewells_list(entries, root=""):
+    if not entries:
+        return '<p class="empty-note">None on record.</p>'
+    items = "".join('<li class="partner"><a class="partner-name" href="%sreferee/%s/index.html">%s'
+                    '</a></li>' % (root, esc(r["slug"]), esc(r["name"])) for r in entries)
+    return '<ul class="partners">%s</ul>' % items
+
+
+def debuts_farewells_section(block, root=""):
+    """root="" for the index widget (depth 0); root="../" for the full
+    /debuts/ page (depth 1)."""
+    debuts = debuts_farewells_list(block["debuts"], root)
+    farewells = debuts_farewells_list(block["farewells"], root)
+    return ('<div class="history-col"><h3 class="lb-subhead">First game in this database '
+            '&mdash; {season}</h3>{debuts}</div>'
+            '<div class="history-col"><h3 class="lb-subhead">Last game in this database '
+            '&mdash; {season}</h3>{farewells}</div>').format(
+        season=esc(block["season"]), debuts=debuts, farewells=farewells)
+
+
+def render_debuts(debuts_farewells):
+    title = "NBA referees' first and last games in this database, by season"
+    desc = ("Every season since 1993-94: which officials' first game in this database "
+            "falls that season, and whose last game does. Not NBA debuts or retirements "
+            "— this dataset's own coverage starts at 1993-94, so officials active before "
+            "then have real careers predating it.")
+    chips = [stat_chip("Seasons", i(len(debuts_farewells)), accent=True)]
+    blocks = [back_home(), hero_block("Debuts & farewells", "First and last games, by season", "", chips),
+              ref_search(1, "top")]
+    note = ('<p class="caption">"First game" / "last game" describe this DATABASE’s coverage, '
+            'not an official’s actual NBA career — officials active before the 1993-94 floor '
+            'have real games this site doesn’t carry. The current season (%s) never lists a '
+            '"last game" here, since those officials are presumably still active.</p>'
+            % esc(CURRENT_SEASON))
+    inner = "".join('<section class="block"><div class="block-head"><h2>%s</h2></div>'
+                    '<div class="history-cols">%s</div></section>'
+                    % (esc(block["season"]), debuts_farewells_section(block, root="../"))
+                    for block in debuts_farewells)
+    blocks.append(note)
+    blocks.append(inner)
+    blocks.append(ref_search(1, "bottom"))
+    return page(title, desc, 1, "".join(blocks))
+
+
+def era_panel(tab_id, active, era, root=""):
+    def col(title, rows):
+        items = "".join(leaderboard_row(n, r, "value", i, root=root) for n, r in enumerate(rows, 1))
+        if not items:
+            items = '<li class="empty-note">No qualifying referees this decade.</li>'
+        return '<div class="lb-col"><h3 class="lb-subhead">{t}</h3><ol class="lb-list">{it}</ol></div>'.format(
+            t=esc(title), it=items)
+    cols = (col("Total games", era["total_games"]) + col("Playoff games", era["playoff_games"])
+           + col("Finals games", era["finals_games"]))
+    return '<div class="lb-panel lb-triple{act}" data-panel="{id}">{cols}</div>'.format(
+        act=" is-active" if active else "", id=tab_id, cols=cols)
+
+
+def era_leaders_block(era_leaders, active_first=True, root=""):
+    """Shared tabbed markup for era_leaders -- used identically on the index
+    widget (root="", depth 0) and the full /eras/ page (root="../", depth 1)
+    (same reusable .lb-tab/.lb-panel component the whistle-profile
+    leaderboards already use elsewhere on the index)."""
+    order = ["1990s", "2000s", "2010s", "2020s"]
+    tabs, panels = [], []
+    for idx, label in enumerate(order):
+        era = era_leaders.get(label)
+        if not era:
+            continue
+        active = active_first and idx == 0
+        tab_label = era["label"] + (" (partial)" if era["partial"] else "")
+        tabs.append('<button class="lb-tab{act}" data-tab="era-{id}" role="tab" '
+                   'aria-selected="{sel}">{lab}</button>'.format(
+                       act=" is-active" if active else "", id=label,
+                       sel="true" if active else "false", lab=esc(tab_label)))
+        panels.append(era_panel("era-%s" % label, active, era, root=root))
+    return "".join(tabs), "".join(panels)
+
+
+def render_eras(era_leaders):
+    title = "NBA referee leaders by decade, 1990s to today"
+    desc = ("Officiating leaders by decade — total games, playoff games, and Finals "
+            "games worked in the 1990s (partial), 2000s, 2010s, and 2020s.")
+    tabs, panels = era_leaders_block(era_leaders, root="../")
+    blocks = [back_home(), hero_block("Era leaders", "Referee leaders by decade", "", [])]
+    blocks.append("""<section class="block" id="eras">
+  <div class="block-head"><h2>Leaders by decade</h2></div>
+  <div class="lb-tabs" role="tablist">{tabs}</div>
+  <div class="lb-panels">{panels}</div>
+  <p class="caption">Each decade counts only games that fall within it — not career
+  totals. The 1990s bucket is partial: this database starts at 1993-94, not
+  1990-91.</p>
+</section>""".format(tabs=tabs, panels=panels))
+    return page(title, desc, 1, "".join(blocks))
+
+
+def swings_all_table(rows):
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l))
+        for l, t in [("Player", "text"), ("Referee", "text"), ("Games", "num"),
+                     ("PTS with", "num"), ("PTS baseline", "num"), ("PTS swing", "num")])
+    body = []
+    for r in rows:
+        body.append(
+            "<tr>"
+            '<td data-label="Player" data-sort="{pn}">{pcell}</td>'
+            '<td data-label="Referee" data-sort="{rn}">{rcell}</td>'
+            '<td data-label="Games" data-sort="{n}">{ni}</td>'
+            '<td data-label="PTS with" data-sort="{pw}">{pwf}</td>'
+            '<td data-label="PTS baseline" data-sort="{pb}">{pbf}</td>'
+            '<td data-label="PTS swing" data-sort="{ps}"><span class="{psc}">{pss}</span></td>'
+            "</tr>".format(
+                pn=esc(r["player_name"].lower()), pcell=player_link(r["player_name"], r["player_slug"]),
+                rn=esc(r["ref_name"].lower()), rcell=ref_link(r["ref_name"], r["ref_slug"]),
+                n=r["n_games"], ni=i(r["n_games"]),
+                pw=r["pts_with_ref"], pwf=dec(r["pts_with_ref"]),
+                pb=r["pts_baseline"], pbf=dec(r["pts_baseline"]),
+                ps=r["pts_swing"], pss=signed(r["pts_swing"]), psc=swing_class(r["pts_swing"])))
+    return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+            '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+
+def render_swings(swings_all):
+    top, bottom = swings_all["top"], swings_all["bottom"]
+    title = "Biggest player scoring swings by NBA referee"
+    desc = ("The %d biggest positive and negative scoring swings across every "
+            "qualifying (15+ game) player-referee pair in the database — the average "
+            "difference between a player's output with a given official and that "
+            "player's own same-season baseline." % (len(top) + len(bottom)))
+    chips = [stat_chip("Qualifying pairs", i(swings_all["total_pairs"]), accent=True),
+            stat_chip("Min. games", "15")]
+    blocks = [back_home(), hero_block("Swings", "Biggest player scoring swings", "", chips),
+              ref_search(1, "top")]
+    note = ('<p class="caption">"Swing" is the average difference between a player’s output '
+            'in games a given official worked and that player’s own same-season average — '
+            'a descriptive split, not a causal claim. It does not mean the official affected '
+            'the player. Pairs with at least 15 games together.</p>')
+    blocks.append(note)
+    blocks.append(
+        '<section class="block" id="top"><div class="block-head"><h2>Biggest positive swings</h2></div>'
+        '<div class="table-wrap">%s</div></section>' % swings_all_table(top))
+    blocks.append(
+        '<section class="block" id="bottom"><div class="block-head"><h2>Biggest negative swings</h2></div>'
+        '<div class="table-wrap">%s</div></section>' % swings_all_table(bottom))
+    blocks.append(ref_search(1, "bottom"))
+    return page(title, desc, 1, "".join(blocks))
 
 
 # ---------------------------------------------------------------------------
@@ -1263,6 +1638,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-panel{display:none}
 .lb-panel.is-active{display:block}
 .lb-paired.is-active{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.lb-triple.is-active{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem}
 .lb-subhead{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;
   letter-spacing:.06em;color:var(--text-secondary);font-weight:600;margin-bottom:.6rem}
 .lb-list{list-style:none}
@@ -1338,7 +1714,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   main{padding:0 1rem}
   .hero-title{font-size:1.5rem}
   .whistle-cols{grid-template-columns:1fr}
-  .lb-paired.is-active{grid-template-columns:1fr}
+  .lb-paired.is-active,.lb-triple.is-active{grid-template-columns:1fr}
   .lb-list-wide{columns:1}
   .history-cols{grid-template-columns:1fr}
   .compare-pickers,.compare-cols{grid-template-columns:1fr}
@@ -1468,9 +1844,16 @@ JS = r"""(function(){
     });
   });
   // --- leaderboard tabs ---
-  var tabs=[].slice.call(document.querySelectorAll(".lb-tab"));
-  if(tabs.length){
-    var panels=[].slice.call(document.querySelectorAll(".lb-panel"));
+  // Scoped PER .lb-tabs container (its .lb-panels sibling), not globally --
+  // a page can carry more than one independent tab group (e.g. the index's
+  // Career-leaders tabs AND its separate Era-leaders tabs), and a single
+  // shared tabs/panels array would cross-wire them: clicking a tab in one
+  // group would deactivate every tab in the OTHER group too, with no
+  // matching panel id to reactivate, leaving it blank.
+  [].slice.call(document.querySelectorAll(".lb-tabs")).forEach(function(tabsEl){
+    var tabs=[].slice.call(tabsEl.querySelectorAll(".lb-tab"));
+    var panelsEl=tabsEl.nextElementSibling;
+    var panels=panelsEl?[].slice.call(panelsEl.querySelectorAll(".lb-panel")):[];
     tabs.forEach(function(tab){
       tab.addEventListener("click",function(){
         var id=tab.getAttribute("data-tab");
@@ -1479,7 +1862,7 @@ JS = r"""(function(){
         panels.forEach(function(p){p.classList.toggle("is-active",p.getAttribute("data-panel")===id);});
       });
     });
-  }
+  });
   // --- dashboard: spotlight of the day + on this date (index only) ---
   // Rotation is deterministic client-side: day-of-year modulo the spotlight
   // array (ordered by slug at build time for a stable rotation). The data
@@ -1724,7 +2107,10 @@ def main():
 
     # Remove pages for referees that no longer exist (e.g. after an identity
     # merge dropped a slug) so stale pages don't linger, mirroring build.py's
-    # output-dir hygiene.
+    # output-dir hygiene. Each slug dir can now also hold a games/ subdirectory
+    # (Tier C game log), which must be cleared FIRST -- otherwise the dir is
+    # never empty and the old "if not os.listdir(d): rmdir" check silently
+    # leaves an orphaned referee/{slug}/ directory behind.
     removed = 0
     if os.path.isdir(REFEREE_DIR):
         for entry in os.listdir(REFEREE_DIR):
@@ -1733,18 +2119,38 @@ def main():
                 page_file = os.path.join(d, "index.html")
                 if os.path.exists(page_file):
                     os.remove(page_file)
+                games_dir = os.path.join(d, "games")
+                games_file = os.path.join(games_dir, "index.html")
+                if os.path.exists(games_file):
+                    os.remove(games_file)
+                if os.path.isdir(games_dir) and not os.listdir(games_dir):
+                    os.rmdir(games_dir)
                 if not os.listdir(d):
                     os.rmdir(d)
                 removed += 1
 
     n = 0
+    n_game_logs = 0
     for doc in docs:
         slug = doc["summary"]["slug"]
+        official_id = doc["summary"]["official_id"]
         out_dir = os.path.join(REFEREE_DIR, slug)
         os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write(render_ref(doc))
         n += 1
+
+        # Tier C per-referee game log (docs/TIER_C_SPEC.md section 3) --
+        # written from a separate data/referee_games/{official_id}.json so
+        # the main referee JSON above doesn't balloon for the busiest refs.
+        log_path = os.path.join(DATA, "referee_games", "%s.json" % official_id)
+        if os.path.exists(log_path):
+            log_doc = json.load(open(log_path, encoding="utf-8"))
+            games_dir = os.path.join(out_dir, "games")
+            os.makedirs(games_dir, exist_ok=True)
+            with open(os.path.join(games_dir, "index.html"), "w", encoding="utf-8") as f:
+                f.write(render_ref_games(log_doc))
+            n_game_logs += 1
 
     # team pages
     team_docs = {t["slug"]: json.load(open(os.path.join(DATA, "teams", "%s.json" % t["slug"]),
@@ -1774,6 +2180,21 @@ def main():
     with open(os.path.join(DATA, "search-index.json"), "w", encoding="utf-8") as f:
         json.dump(search_index, f, ensure_ascii=False, separators=(",", ":"))
 
+    # Tier C full-list pages (docs/TIER_C_SPEC.md section 3)
+    swings_all = json.load(open(os.path.join(DATA, "swings_all.json"), encoding="utf-8"))
+    tier_c_pages = [
+        ("crews", render_crews(dashboard["crews"])),
+        ("team-officials", render_team_officials(dashboard["team_officials"])),
+        ("debuts", render_debuts(dashboard["debuts_farewells"])),
+        ("eras", render_eras(dashboard["era_leaders"])),
+        ("swings", render_swings(swings_all)),
+    ]
+    for slug, html in tier_c_pages:
+        d = os.path.join(REPO, slug)
+        os.makedirs(d, exist_ok=True)
+        with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
+            f.write(html)
+
     print("wrote index.html")
     print("wrote sources/index.html")
     print("wrote compare/index.html")
@@ -1781,11 +2202,14 @@ def main():
     if removed:
         print("removed %d stale referee page(s)" % removed)
     print("wrote %d referee pages" % n)
+    print("wrote %d referee game-log pages" % n_game_logs)
     print("wrote %d team pages, %d player pages" % (n_teams, n_players))
     print("wrote %d whistle-leaderboard pages" % n_leaderboards)
+    print("wrote %d Tier C pages: %s" % (len(tier_c_pages), ", ".join(s for s, _ in tier_c_pages)))
     print("sample URLs:")
-    for u in ["referee/scott-foster/", "team/bos/", "player/lebron-james/",
-              "leaderboard/ot-rate/", "compare/"]:
+    for u in ["referee/scott-foster/", "referee/scott-foster/games/", "team/bos/",
+              "player/lebron-james/", "leaderboard/ot-rate/", "compare/",
+              "crews/", "team-officials/", "debuts/", "eras/", "swings/"]:
         print("  %sindex.html" % u)
 
 
