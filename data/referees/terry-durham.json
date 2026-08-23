@@ -9,19 +9,61 @@
     "eras": [
       "espn"
     ],
-    "first_season": "2000-01",
+    "first_season": "1993-94",
     "last_season": "2001-02",
-    "games_total": 92,
-    "games_rs": 87,
-    "games_po": 5,
+    "games_total": 530,
+    "games_rs": 490,
+    "games_po": 40,
     "games_pi": 0,
     "finals_games": 0,
     "game7s": 0,
     "active": false,
-    "quality_total": 10,
-    "seasons_active": 2,
-    "quality_per_season": 5.0,
+    "quality_total": 69,
+    "seasons_active": 9,
+    "quality_per_season": 7.67,
     "per_season": {
+      "1993-94": {
+        "rs": 62,
+        "po": 2,
+        "pi": 0,
+        "total": 64
+      },
+      "1994-95": {
+        "rs": 63,
+        "po": 5,
+        "pi": 0,
+        "total": 68
+      },
+      "1995-96": {
+        "rs": 44,
+        "po": 4,
+        "pi": 0,
+        "total": 48
+      },
+      "1996-97": {
+        "rs": 62,
+        "po": 3,
+        "pi": 0,
+        "total": 65
+      },
+      "1997-98": {
+        "rs": 68,
+        "po": 7,
+        "pi": 0,
+        "total": 75
+      },
+      "1998-99": {
+        "rs": 40,
+        "po": 6,
+        "pi": 0,
+        "total": 46
+      },
+      "1999-00": {
+        "rs": 64,
+        "po": 8,
+        "pi": 0,
+        "total": 72
+      },
       "2000-01": {
         "rs": 65,
         "po": 5,
@@ -38,324 +80,324 @@
   },
   "team_records": [
     {
-      "team_abbr": "ATL",
-      "games": 10,
-      "wins": 4,
-      "losses": 6,
-      "win_pct": 0.4,
-      "home_games": 4,
-      "home_wins": 2,
-      "avg_margin_for_team": 0.4
-    },
-    {
-      "team_abbr": "PHI",
-      "games": 9,
-      "wins": 6,
-      "losses": 3,
-      "win_pct": 0.67,
-      "home_games": 6,
-      "home_wins": 4,
-      "avg_margin_for_team": 3.33
-    },
-    {
-      "team_abbr": "BKN",
-      "games": 8,
-      "wins": 3,
-      "losses": 5,
-      "win_pct": 0.38,
-      "home_games": 3,
-      "home_wins": 2,
-      "avg_margin_for_team": -1.0
-    },
-    {
-      "team_abbr": "DET",
-      "games": 8,
-      "wins": 6,
-      "losses": 2,
-      "win_pct": 0.75,
-      "home_games": 5,
-      "home_wins": 4,
-      "avg_margin_for_team": 3.88
-    },
-    {
-      "team_abbr": "WAS",
-      "games": 8,
-      "wins": 3,
-      "losses": 5,
-      "win_pct": 0.38,
-      "home_games": 4,
-      "home_wins": 2,
-      "avg_margin_for_team": -1.12
-    },
-    {
-      "team_abbr": "MIL",
-      "games": 8,
-      "wins": 4,
-      "losses": 4,
-      "win_pct": 0.5,
-      "home_games": 4,
-      "home_wins": 2,
-      "avg_margin_for_team": 0.62
-    },
-    {
-      "team_abbr": "MEM",
-      "games": 8,
-      "wins": 4,
-      "losses": 4,
-      "win_pct": 0.5,
-      "home_games": 4,
-      "home_wins": 2,
-      "avg_margin_for_team": 2.5
-    },
-    {
-      "team_abbr": "CHI",
-      "games": 8,
-      "wins": 2,
-      "losses": 6,
-      "win_pct": 0.25,
-      "home_games": 5,
-      "home_wins": 1,
-      "avg_margin_for_team": -9.75
-    },
-    {
-      "team_abbr": "CHA",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 4,
-      "home_wins": 3,
-      "avg_margin_for_team": 1.86
-    },
-    {
-      "team_abbr": "TOR",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 3,
-      "home_wins": 2,
-      "avg_margin_for_team": 1.86
-    },
-    {
-      "team_abbr": "NYK",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 2,
-      "home_wins": 1,
-      "avg_margin_for_team": 3.0
+      "team_abbr": "UTA",
+      "games": 46,
+      "wins": 37,
+      "losses": 9,
+      "win_pct": 0.8,
+      "home_games": 26,
+      "home_wins": 23,
+      "avg_margin_for_team": 7.74
     },
     {
       "team_abbr": "SEA",
-      "games": 7,
-      "wins": 2,
-      "losses": 5,
-      "win_pct": 0.29,
-      "home_games": 3,
-      "home_wins": 1,
-      "avg_margin_for_team": -4.14
-    },
-    {
-      "team_abbr": "PHX",
-      "games": 7,
-      "wins": 3,
-      "losses": 4,
-      "win_pct": 0.43,
-      "home_games": 3,
-      "home_wins": 3,
-      "avg_margin_for_team": -0.43
-    },
-    {
-      "team_abbr": "UTA",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 4,
-      "home_wins": 3,
-      "avg_margin_for_team": 0.14
-    },
-    {
-      "team_abbr": "CLE",
-      "games": 6,
-      "wins": 2,
-      "losses": 4,
-      "win_pct": 0.33,
-      "home_games": 1,
-      "home_wins": 0,
-      "avg_margin_for_team": -3.17
+      "games": 46,
+      "wins": 29,
+      "losses": 17,
+      "win_pct": 0.63,
+      "home_games": 30,
+      "home_wins": 22,
+      "avg_margin_for_team": 6.65
     },
     {
       "team_abbr": "MIN",
-      "games": 6,
-      "wins": 3,
-      "losses": 3,
-      "win_pct": 0.5,
-      "home_games": 4,
-      "home_wins": 2,
-      "avg_margin_for_team": 1.17
-    },
-    {
-      "team_abbr": "LAC",
-      "games": 6,
-      "wins": 5,
-      "losses": 1,
-      "win_pct": 0.83,
-      "home_games": 4,
-      "home_wins": 4,
-      "avg_margin_for_team": 4.0
-    },
-    {
-      "team_abbr": "SAC",
-      "games": 6,
-      "wins": 4,
-      "losses": 2,
-      "win_pct": 0.67,
-      "home_games": 4,
-      "home_wins": 3,
-      "avg_margin_for_team": 9.5
-    },
-    {
-      "team_abbr": "ORL",
-      "games": 6,
-      "wins": 2,
-      "losses": 4,
-      "win_pct": 0.33,
-      "home_games": 3,
-      "home_wins": 1,
-      "avg_margin_for_team": -2.67
-    },
-    {
-      "team_abbr": "BOS",
-      "games": 5,
-      "wins": 1,
-      "losses": 4,
-      "win_pct": 0.2,
-      "home_games": 3,
-      "home_wins": 1,
-      "avg_margin_for_team": -8.4
-    },
-    {
-      "team_abbr": "DEN",
-      "games": 5,
-      "wins": 3,
-      "losses": 2,
-      "win_pct": 0.6,
-      "home_games": 2,
-      "home_wins": 1,
-      "avg_margin_for_team": -1.0
-    },
-    {
-      "team_abbr": "IND",
-      "games": 5,
-      "wins": 2,
-      "losses": 3,
-      "win_pct": 0.4,
-      "home_games": 2,
-      "home_wins": 1,
-      "avg_margin_for_team": -4.2
-    },
-    {
-      "team_abbr": "DAL",
-      "games": 5,
-      "wins": 2,
-      "losses": 3,
-      "win_pct": 0.4,
-      "home_games": 2,
-      "home_wins": 2,
-      "avg_margin_for_team": -6.8
-    },
-    {
-      "team_abbr": "POR",
-      "games": 5,
-      "wins": 3,
-      "losses": 2,
-      "win_pct": 0.6,
-      "home_games": 2,
-      "home_wins": 1,
-      "avg_margin_for_team": 3.8
-    },
-    {
-      "team_abbr": "MIA",
-      "games": 4,
-      "wins": 1,
-      "losses": 3,
-      "win_pct": 0.25,
-      "home_games": 0,
-      "home_wins": 0,
-      "avg_margin_for_team": -3.75
-    },
-    {
-      "team_abbr": "GSW",
-      "games": 4,
-      "wins": 0,
-      "losses": 4,
-      "win_pct": 0.0,
-      "home_games": 2,
-      "home_wins": 0,
-      "avg_margin_for_team": -20.5
-    },
-    {
-      "team_abbr": "HOU",
-      "games": 4,
-      "wins": 4,
-      "losses": 0,
-      "win_pct": 1.0,
-      "home_games": 2,
-      "home_wins": 2,
-      "avg_margin_for_team": 13.75
+      "games": 42,
+      "wins": 12,
+      "losses": 30,
+      "win_pct": 0.29,
+      "home_games": 18,
+      "home_wins": 7,
+      "avg_margin_for_team": -5.21
     },
     {
       "team_abbr": "LAL",
-      "games": 4,
-      "wins": 3,
-      "losses": 1,
-      "win_pct": 0.75,
-      "home_games": 3,
-      "home_wins": 2,
-      "avg_margin_for_team": 1.0
+      "games": 42,
+      "wins": 28,
+      "losses": 14,
+      "win_pct": 0.67,
+      "home_games": 22,
+      "home_wins": 16,
+      "avg_margin_for_team": 4.02
+    },
+    {
+      "team_abbr": "PHI",
+      "games": 41,
+      "wins": 20,
+      "losses": 21,
+      "win_pct": 0.49,
+      "home_games": 22,
+      "home_wins": 12,
+      "avg_margin_for_team": -2.49
+    },
+    {
+      "team_abbr": "PHX",
+      "games": 40,
+      "wins": 20,
+      "losses": 20,
+      "win_pct": 0.5,
+      "home_games": 20,
+      "home_wins": 14,
+      "avg_margin_for_team": 1.38
+    },
+    {
+      "team_abbr": "LAC",
+      "games": 40,
+      "wins": 18,
+      "losses": 22,
+      "win_pct": 0.45,
+      "home_games": 24,
+      "home_wins": 13,
+      "avg_margin_for_team": -1.5
+    },
+    {
+      "team_abbr": "IND",
+      "games": 40,
+      "wins": 24,
+      "losses": 16,
+      "win_pct": 0.6,
+      "home_games": 18,
+      "home_wins": 14,
+      "avg_margin_for_team": 2.65
+    },
+    {
+      "team_abbr": "BOS",
+      "games": 39,
+      "wins": 17,
+      "losses": 22,
+      "win_pct": 0.44,
+      "home_games": 21,
+      "home_wins": 10,
+      "avg_margin_for_team": -1.85
+    },
+    {
+      "team_abbr": "MIL",
+      "games": 39,
+      "wins": 19,
+      "losses": 20,
+      "win_pct": 0.49,
+      "home_games": 17,
+      "home_wins": 9,
+      "avg_margin_for_team": -0.97
+    },
+    {
+      "team_abbr": "GSW",
+      "games": 39,
+      "wins": 14,
+      "losses": 25,
+      "win_pct": 0.36,
+      "home_games": 19,
+      "home_wins": 7,
+      "avg_margin_for_team": -6.03
+    },
+    {
+      "team_abbr": "SAC",
+      "games": 39,
+      "wins": 21,
+      "losses": 18,
+      "win_pct": 0.54,
+      "home_games": 21,
+      "home_wins": 14,
+      "avg_margin_for_team": 0.95
+    },
+    {
+      "team_abbr": "HOU",
+      "games": 38,
+      "wins": 23,
+      "losses": 15,
+      "win_pct": 0.61,
+      "home_games": 17,
+      "home_wins": 14,
+      "avg_margin_for_team": 0.5
     },
     {
       "team_abbr": "SAS",
-      "games": 4,
-      "wins": 4,
-      "losses": 0,
-      "win_pct": 1.0,
-      "home_games": 4,
+      "games": 38,
+      "wins": 26,
+      "losses": 12,
+      "win_pct": 0.68,
+      "home_games": 18,
+      "home_wins": 15,
+      "avg_margin_for_team": 3.71
+    },
+    {
+      "team_abbr": "CLE",
+      "games": 38,
+      "wins": 16,
+      "losses": 22,
+      "win_pct": 0.42,
+      "home_games": 16,
+      "home_wins": 8,
+      "avg_margin_for_team": -0.87
+    },
+    {
+      "team_abbr": "POR",
+      "games": 37,
+      "wins": 21,
+      "losses": 16,
+      "win_pct": 0.57,
+      "home_games": 20,
+      "home_wins": 12,
+      "avg_margin_for_team": 3.32
+    },
+    {
+      "team_abbr": "CHI",
+      "games": 37,
+      "wins": 13,
+      "losses": 24,
+      "win_pct": 0.35,
+      "home_games": 21,
+      "home_wins": 11,
+      "avg_margin_for_team": -0.95
+    },
+    {
+      "team_abbr": "ATL",
+      "games": 37,
+      "wins": 18,
+      "losses": 19,
+      "win_pct": 0.49,
+      "home_games": 20,
+      "home_wins": 13,
+      "avg_margin_for_team": 0.27
+    },
+    {
+      "team_abbr": "DEN",
+      "games": 35,
+      "wins": 15,
+      "losses": 20,
+      "win_pct": 0.43,
+      "home_games": 22,
+      "home_wins": 10,
+      "avg_margin_for_team": -2.91
+    },
+    {
+      "team_abbr": "NYK",
+      "games": 35,
+      "wins": 21,
+      "losses": 14,
+      "win_pct": 0.6,
+      "home_games": 16,
+      "home_wins": 12,
+      "avg_margin_for_team": 1.89
+    },
+    {
+      "team_abbr": "DAL",
+      "games": 34,
+      "wins": 12,
+      "losses": 22,
+      "win_pct": 0.35,
+      "home_games": 12,
+      "home_wins": 7,
+      "avg_margin_for_team": -4.91
+    },
+    {
+      "team_abbr": "BKN",
+      "games": 32,
+      "wins": 11,
+      "losses": 21,
+      "win_pct": 0.34,
+      "home_games": 11,
+      "home_wins": 6,
+      "avg_margin_for_team": -1.97
+    },
+    {
+      "team_abbr": "CHA",
+      "games": 31,
+      "wins": 16,
+      "losses": 15,
+      "win_pct": 0.52,
+      "home_games": 19,
+      "home_wins": 13,
+      "avg_margin_for_team": -0.32
+    },
+    {
+      "team_abbr": "WAS",
+      "games": 31,
+      "wins": 14,
+      "losses": 17,
+      "win_pct": 0.45,
+      "home_games": 14,
+      "home_wins": 9,
+      "avg_margin_for_team": 0.39
+    },
+    {
+      "team_abbr": "ORL",
+      "games": 30,
+      "wins": 18,
+      "losses": 12,
+      "win_pct": 0.6,
+      "home_games": 16,
+      "home_wins": 10,
+      "avg_margin_for_team": 3.33
+    },
+    {
+      "team_abbr": "MEM",
+      "games": 30,
+      "wins": 7,
+      "losses": 23,
+      "win_pct": 0.23,
+      "home_games": 13,
       "home_wins": 4,
-      "avg_margin_for_team": 14.25
+      "avg_margin_for_team": -6.0
+    },
+    {
+      "team_abbr": "MIA",
+      "games": 29,
+      "wins": 19,
+      "losses": 10,
+      "win_pct": 0.66,
+      "home_games": 11,
+      "home_wins": 8,
+      "avg_margin_for_team": 2.9
+    },
+    {
+      "team_abbr": "DET",
+      "games": 28,
+      "wins": 11,
+      "losses": 17,
+      "win_pct": 0.39,
+      "home_games": 13,
+      "home_wins": 6,
+      "avg_margin_for_team": -2.96
+    },
+    {
+      "team_abbr": "TOR",
+      "games": 27,
+      "wins": 10,
+      "losses": 17,
+      "win_pct": 0.37,
+      "home_games": 13,
+      "home_wins": 6,
+      "avg_margin_for_team": -6.85
     }
   ],
   "whistle_profile": {
     "rs": {
-      "n": 87,
-      "n_boxscore": 87,
-      "avg_total_points": 188.21,
-      "avg_total_fta": 49.85,
-      "avg_total_pf": 45.64,
+      "n": 490,
+      "n_boxscore": 487,
+      "avg_total_points": 194.55,
+      "avg_total_fta": 52.73,
+      "avg_total_pf": 46.34,
       "home_win_pct": 0.61,
-      "avg_abs_margin": 10.69,
-      "ot_games": 4,
-      "ot_rate": 0.05,
-      "avg_total_points_pctile": null,
-      "avg_total_fta_pctile": null,
-      "avg_total_pf_pctile": null,
-      "avg_abs_margin_pctile": null,
-      "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "avg_abs_margin": 10.74,
+      "ot_games": 27,
+      "ot_rate": 0.06,
+      "avg_total_points_pctile": 14.17,
+      "avg_total_fta_pctile": 93.7,
+      "avg_total_pf_pctile": 97.64,
+      "avg_abs_margin_pctile": 19.69,
+      "home_win_pct_pctile": 77.95,
+      "ot_rate_pctile": 42.52
     },
     "po": {
-      "n": 5,
-      "n_boxscore": 5,
-      "avg_total_points": 192.8,
-      "avg_total_fta": 58.0,
-      "avg_total_pf": 50.0,
-      "home_win_pct": 0.6,
-      "avg_abs_margin": 13.6,
-      "ot_games": 0,
-      "ot_rate": 0.0,
+      "n": 40,
+      "n_boxscore": 40,
+      "avg_total_points": 191.02,
+      "avg_total_fta": 57.7,
+      "avg_total_pf": 51.88,
+      "home_win_pct": 0.62,
+      "avg_abs_margin": 11.08,
+      "ot_games": 4,
+      "ot_rate": 0.1,
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -384,6 +426,15 @@
       "player_slug": "kobe-bryant"
     },
     {
+      "player_name": "Karl Malone",
+      "pts": 45,
+      "team_abbr": "UTA",
+      "opp_abbr": "HOU",
+      "game_date": "1995-04-19",
+      "game_id": "150419026",
+      "player_slug": "karl-malone"
+    },
+    {
       "player_name": "Allen Iverson",
       "pts": 45,
       "team_abbr": "PHI",
@@ -391,6 +442,60 @@
       "game_date": "2001-04-25",
       "game_id": "210424020",
       "player_slug": "allen-iverson"
+    },
+    {
+      "player_name": "Glen Rice",
+      "pts": 43,
+      "team_abbr": "CHA",
+      "opp_abbr": "MIL",
+      "game_date": "1997-02-01",
+      "game_id": "170131003",
+      "player_slug": "glen-rice"
+    },
+    {
+      "player_name": "David Robinson",
+      "pts": 42,
+      "team_abbr": "SAS",
+      "opp_abbr": "SEA",
+      "game_date": "1994-12-01",
+      "game_id": "141130025",
+      "player_slug": "david-robinson"
+    },
+    {
+      "player_name": "David Robinson",
+      "pts": 42,
+      "team_abbr": "SAS",
+      "opp_abbr": "DEN",
+      "game_date": "1995-04-16",
+      "game_id": "150416007",
+      "player_slug": "david-robinson"
+    },
+    {
+      "player_name": "Karl Malone",
+      "pts": 42,
+      "team_abbr": "UTA",
+      "opp_abbr": "LAC",
+      "game_date": "1997-11-30",
+      "game_id": "171129012",
+      "player_slug": "karl-malone"
+    },
+    {
+      "player_name": "Dee Brown",
+      "pts": 41,
+      "team_abbr": "BOS",
+      "opp_abbr": "PHX",
+      "game_date": "1995-02-22",
+      "game_id": "150221021",
+      "player_slug": "dee-brown"
+    },
+    {
+      "player_name": "Hakeem Olajuwon",
+      "pts": 41,
+      "team_abbr": "HOU",
+      "opp_abbr": "UTA",
+      "game_date": "1997-01-26",
+      "game_id": "170125010",
+      "player_slug": "hakeem-olajuwon"
     },
     {
       "player_name": "Richard Hamilton",
@@ -411,213 +516,701 @@
       "player_slug": "reggie-miller"
     },
     {
-      "player_name": "Jerry Stackhouse",
-      "pts": 37,
-      "team_abbr": "DET",
-      "opp_abbr": "NYK",
-      "game_date": "2001-01-20",
-      "game_id": "210119008",
-      "player_slug": "jerry-stackhouse"
-    },
-    {
-      "player_name": "Allen Iverson",
-      "pts": 37,
-      "team_abbr": "PHI",
-      "opp_abbr": "BOS",
-      "game_date": "2001-12-18",
-      "game_id": "211217020",
-      "player_slug": "allen-iverson"
-    },
-    {
-      "player_name": "Tracy McGrady",
-      "pts": 36,
-      "team_abbr": "ORL",
-      "opp_abbr": "DEN",
-      "game_date": "2001-02-27",
-      "game_id": "210226007",
-      "player_slug": "tracy-mcgrady"
-    },
-    {
-      "player_name": "Gary Payton",
-      "pts": 35,
-      "team_abbr": "SEA",
-      "opp_abbr": "HOU",
-      "game_date": "2000-12-10",
-      "game_id": "201209025",
-      "player_slug": "gary-payton"
-    },
-    {
-      "player_name": "Antonio McDyess",
-      "pts": 35,
-      "team_abbr": "DEN",
-      "opp_abbr": "CHI",
-      "game_date": "2001-03-27",
-      "game_id": "210326004",
-      "player_slug": "antonio-mcdyess"
-    },
-    {
-      "player_name": "Jerry Stackhouse",
-      "pts": 35,
-      "team_abbr": "DET",
-      "opp_abbr": "TOR",
-      "game_date": "2001-04-11",
-      "game_id": "210411008",
-      "player_slug": "jerry-stackhouse"
-    },
-    {
-      "player_name": "Vince Carter",
-      "pts": 34,
-      "team_abbr": "TOR",
-      "opp_abbr": "WAS",
-      "game_date": "2000-11-05",
-      "game_id": "201104028",
-      "player_slug": "vince-carter"
-    },
-    {
-      "player_name": "Juwan Howard",
-      "pts": 34,
-      "team_abbr": "WAS",
-      "opp_abbr": "VAN",
-      "game_date": "2000-12-21",
-      "game_id": "201220029",
-      "player_slug": "juwan-howard"
-    },
-    {
-      "player_name": "Shaquille O'Neal",
-      "pts": 34,
-      "team_abbr": "LAL",
-      "opp_abbr": "CLE",
-      "game_date": "2001-01-13",
-      "game_id": "210112013",
-      "player_slug": "shaquille-oneal"
-    },
-    {
-      "player_name": "Allan Houston",
-      "pts": 34,
-      "team_abbr": "NYK",
-      "opp_abbr": "DET",
-      "game_date": "2001-01-20",
-      "game_id": "210119008",
-      "player_slug": "allan-houston"
-    },
-    {
-      "player_name": "Dirk Nowitzki",
-      "pts": 34,
-      "team_abbr": "DAL",
-      "opp_abbr": "PHX",
-      "game_date": "2001-03-18",
-      "game_id": "210317006",
-      "player_slug": "dirk-nowitzki"
-    },
-    {
-      "player_name": "Allen Iverson",
-      "pts": 34,
-      "team_abbr": "PHI",
-      "opp_abbr": "MIL",
-      "game_date": "2001-05-23",
-      "game_id": "210522020",
-      "player_slug": "allen-iverson"
-    },
-    {
-      "player_name": "Jerry Stackhouse",
-      "pts": 34,
-      "team_abbr": "DET",
-      "opp_abbr": "MEM",
-      "game_date": "2001-11-02",
-      "game_id": "211101029",
-      "player_slug": "jerry-stackhouse"
-    },
-    {
-      "player_name": "Nick Van Exel",
-      "pts": 34,
-      "team_abbr": "DEN",
-      "opp_abbr": "LAL",
-      "game_date": "2001-11-25",
-      "game_id": "211125013",
-      "player_slug": "nick-van-exel"
-    },
-    {
-      "player_name": "Antoine Walker",
-      "pts": 33,
-      "team_abbr": "BOS",
-      "opp_abbr": "DET",
-      "game_date": "2000-11-02",
-      "game_id": "201101002",
-      "player_slug": "antoine-walker"
-    },
-    {
-      "player_name": "Brian Grant",
-      "pts": 33,
-      "team_abbr": "MIA",
-      "opp_abbr": "CHA",
-      "game_date": "2000-11-04",
-      "game_id": "201103003",
-      "player_slug": "brian-grant"
-    },
-    {
-      "player_name": "Steve Francis",
-      "pts": 33,
+      "player_name": "Otis Thorpe",
+      "pts": 40,
       "team_abbr": "HOU",
-      "opp_abbr": "DAL",
-      "game_date": "2001-11-18",
-      "game_id": "211117010",
-      "player_slug": "steve-francis"
+      "opp_abbr": "CHA",
+      "game_date": "1993-12-08",
+      "game_id": "131207010",
+      "player_slug": "otis-thorpe"
     },
     {
-      "player_name": "David Wesley",
-      "pts": 32,
-      "team_abbr": "CHA",
-      "opp_abbr": "TOR",
-      "game_date": "2000-11-30",
-      "game_id": "201129003",
-      "player_slug": "david-wesley"
+      "player_name": "Dee Brown",
+      "pts": 40,
+      "team_abbr": "BOS",
+      "opp_abbr": "CHI",
+      "game_date": "1994-04-22",
+      "game_id": "140422004",
+      "player_slug": "dee-brown"
+    },
+    {
+      "player_name": "Reggie Miller",
+      "pts": 40,
+      "team_abbr": "IND",
+      "opp_abbr": "PHI",
+      "game_date": "2000-05-06",
+      "game_id": "200506011",
+      "player_slug": "reggie-miller"
+    },
+    {
+      "player_name": "Jalen Rose",
+      "pts": 40,
+      "team_abbr": "IND",
+      "opp_abbr": "PHI",
+      "game_date": "2000-05-06",
+      "game_id": "200506011",
+      "player_slug": "jalen-rose"
+    },
+    {
+      "player_name": "David Robinson",
+      "pts": 39,
+      "team_abbr": "SAS",
+      "opp_abbr": "SEA",
+      "game_date": "1993-12-09",
+      "game_id": "131208024",
+      "player_slug": "david-robinson"
+    },
+    {
+      "player_name": "Danny Manning",
+      "pts": 39,
+      "team_abbr": "LAC",
+      "opp_abbr": "NYK",
+      "game_date": "1994-01-28",
+      "game_id": "140127012",
+      "player_slug": "danny-manning"
+    },
+    {
+      "player_name": "Rex Chapman",
+      "pts": 39,
+      "team_abbr": "MIA",
+      "opp_abbr": "CHI",
+      "game_date": "1996-02-24",
+      "game_id": "160223014",
+      "player_slug": "rex-chapman"
+    },
+    {
+      "player_name": "Hakeem Olajuwon",
+      "pts": 39,
+      "team_abbr": "HOU",
+      "opp_abbr": "MIN",
+      "game_date": "1997-03-26",
+      "game_id": "170325010",
+      "player_slug": "hakeem-olajuwon"
+    },
+    {
+      "player_name": "Karl Malone",
+      "pts": 39,
+      "team_abbr": "UTA",
+      "opp_abbr": "LAC",
+      "game_date": "1997-04-26",
+      "game_id": "170426026",
+      "player_slug": "karl-malone"
+    },
+    {
+      "player_name": "Karl Malone",
+      "pts": 39,
+      "team_abbr": "UTA",
+      "opp_abbr": "MIL",
+      "game_date": "1998-01-09",
+      "game_id": "180108026",
+      "player_slug": "karl-malone"
+    },
+    {
+      "player_name": "Michael Finley",
+      "pts": 39,
+      "team_abbr": "DAL",
+      "opp_abbr": "CLE",
+      "game_date": "1998-01-28",
+      "game_id": "180127006",
+      "player_slug": "michael-finley"
+    },
+    {
+      "player_name": "Allen Iverson",
+      "pts": 39,
+      "team_abbr": "PHI",
+      "opp_abbr": "IND",
+      "game_date": "1999-03-18",
+      "game_id": "190317020",
+      "player_slug": "allen-iverson"
     },
     {
       "player_name": "Glen Rice",
-      "pts": 32,
-      "team_abbr": "NYK",
-      "opp_abbr": "MIL",
-      "game_date": "2000-12-17",
-      "game_id": "201217018",
+      "pts": 38,
+      "team_abbr": "MIA",
+      "opp_abbr": "BOS",
+      "game_date": "1993-11-27",
+      "game_id": "131126002",
       "player_slug": "glen-rice"
-    },
-    {
-      "player_name": "Kobe Bryant",
-      "pts": 32,
-      "team_abbr": "LAL",
-      "opp_abbr": "CLE",
-      "game_date": "2001-01-13",
-      "game_id": "210112013",
-      "player_slug": "kobe-bryant"
     }
   ],
-  "player_swings": [],
+  "player_swings": [
+    {
+      "player_id": "660",
+      "name": "Eric Piatkowski",
+      "n_games": 32,
+      "slug": "eric-piatkowski",
+      "pts_with_ref": 11.19,
+      "pts_baseline": 8.44,
+      "pts_swing": 2.75,
+      "fta_swing": 0.12,
+      "pf_swing": 0.29
+    },
+    {
+      "player_id": "931",
+      "name": "Alvin Williams",
+      "n_games": 17,
+      "slug": "alvin-williams",
+      "pts_with_ref": 10.35,
+      "pts_baseline": 7.6,
+      "pts_swing": 2.75,
+      "fta_swing": 0.78,
+      "pf_swing": 0.1
+    },
+    {
+      "player_id": "3",
+      "name": "Shareef Abdur-Rahim",
+      "n_games": 29,
+      "slug": "shareef-abdur-rahim",
+      "pts_with_ref": 23.93,
+      "pts_baseline": 21.21,
+      "pts_swing": 2.72,
+      "fta_swing": 1.35,
+      "pf_swing": -0.04
+    },
+    {
+      "player_id": "302",
+      "name": "Anfernee Hardaway",
+      "n_games": 26,
+      "slug": "anfernee-hardaway",
+      "pts_with_ref": 19.85,
+      "pts_baseline": 17.24,
+      "pts_swing": 2.61,
+      "fta_swing": 0.64,
+      "pf_swing": 0.86
+    },
+    {
+      "player_id": "781",
+      "name": "Steve Smith",
+      "n_games": 31,
+      "slug": "steve-smith",
+      "pts_with_ref": 19.77,
+      "pts_baseline": 17.38,
+      "pts_swing": 2.4,
+      "fta_swing": 0.67,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "9",
+      "name": "Ray Allen",
+      "n_games": 24,
+      "slug": "ray-allen",
+      "pts_with_ref": 21.58,
+      "pts_baseline": 19.29,
+      "pts_swing": 2.3,
+      "fta_swing": 1.33,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "512",
+      "name": "Donyell Marshall",
+      "n_games": 29,
+      "slug": "donyell-marshall",
+      "pts_with_ref": 14.07,
+      "pts_baseline": 11.85,
+      "pts_swing": 2.22,
+      "fta_swing": 0.86,
+      "pf_swing": 0.42
+    },
+    {
+      "player_id": "110",
+      "name": "Kobe Bryant",
+      "n_games": 26,
+      "slug": "kobe-bryant",
+      "pts_with_ref": 20.27,
+      "pts_baseline": 18.19,
+      "pts_swing": 2.08,
+      "fta_swing": 0.66,
+      "pf_swing": 0.47
+    },
+    {
+      "player_id": "446",
+      "name": "Toni Kukoc",
+      "n_games": 35,
+      "slug": "toni-kukoc",
+      "pts_with_ref": 14.89,
+      "pts_baseline": 12.81,
+      "pts_swing": 2.07,
+      "fta_swing": 0.76,
+      "pf_swing": -0.0
+    },
+    {
+      "player_id": "210",
+      "name": "Sherman Douglas",
+      "n_games": 32,
+      "slug": "sherman-douglas",
+      "pts_with_ref": 12.34,
+      "pts_baseline": 10.28,
+      "pts_swing": 2.06,
+      "fta_swing": 1.14,
+      "pf_swing": 0.25
+    },
+    {
+      "player_id": "506",
+      "name": "Danny Manning",
+      "n_games": 30,
+      "slug": "danny-manning",
+      "pts_with_ref": 13.77,
+      "pts_baseline": 11.76,
+      "pts_swing": 2.01,
+      "fta_swing": 0.25,
+      "pf_swing": 0.38
+    },
+    {
+      "player_id": "715",
+      "name": "David Robinson",
+      "n_games": 31,
+      "slug": "david-robinson",
+      "pts_with_ref": 23.29,
+      "pts_baseline": 21.3,
+      "pts_swing": 1.99,
+      "fta_swing": 1.32,
+      "pf_swing": 0.4
+    },
+    {
+      "player_id": "28",
+      "name": "Isaac Austin",
+      "n_games": 24,
+      "slug": "isaac-austin",
+      "pts_with_ref": 10.54,
+      "pts_baseline": 8.69,
+      "pts_swing": 1.85,
+      "fta_swing": 0.14,
+      "pf_swing": 0.26
+    },
+    {
+      "player_id": "143",
+      "name": "Rex Chapman",
+      "n_games": 21,
+      "slug": "rex-chapman",
+      "pts_with_ref": 15.57,
+      "pts_baseline": 13.73,
+      "pts_swing": 1.84,
+      "fta_swing": -0.43,
+      "pf_swing": -0.44
+    },
+    {
+      "player_id": "795",
+      "name": "Rik Smits",
+      "n_games": 30,
+      "slug": "rik-smits",
+      "pts_with_ref": 17.2,
+      "pts_baseline": 15.46,
+      "pts_swing": 1.74,
+      "fta_swing": 0.5,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "855",
+      "name": "Otis Thorpe",
+      "n_games": 26,
+      "slug": "otis-thorpe",
+      "pts_with_ref": 11.77,
+      "pts_baseline": 10.1,
+      "pts_swing": 1.67,
+      "fta_swing": 0.06,
+      "pf_swing": -0.17
+    },
+    {
+      "player_id": "582",
+      "name": "Chris Mullin",
+      "n_games": 26,
+      "slug": "chris-mullin",
+      "pts_with_ref": 13.38,
+      "pts_baseline": 11.85,
+      "pts_swing": 1.54,
+      "fta_swing": 0.69,
+      "pf_swing": -0.03
+    },
+    {
+      "player_id": "811",
+      "name": "Bryant Stith",
+      "n_games": 27,
+      "slug": "bryant-stith",
+      "pts_with_ref": 11.74,
+      "pts_baseline": 10.21,
+      "pts_swing": 1.53,
+      "fta_swing": -0.04,
+      "pf_swing": 0.38
+    },
+    {
+      "player_id": "133",
+      "name": "Chris Carr",
+      "n_games": 18,
+      "slug": "chris-carr",
+      "pts_with_ref": 9.22,
+      "pts_baseline": 7.72,
+      "pts_swing": 1.51,
+      "fta_swing": 0.38,
+      "pf_swing": 0.05
+    },
+    {
+      "player_id": "215",
+      "name": "Tim Duncan",
+      "n_games": 21,
+      "slug": "tim-duncan",
+      "pts_with_ref": 23.9,
+      "pts_baseline": 22.44,
+      "pts_swing": 1.46,
+      "fta_swing": 0.15,
+      "pf_swing": 0.1
+    },
+    {
+      "player_id": "3609",
+      "name": "Derek Harper",
+      "n_games": 21,
+      "slug": "derek-harper",
+      "pts_with_ref": 11.48,
+      "pts_baseline": 10.04,
+      "pts_swing": 1.44,
+      "fta_swing": -0.16,
+      "pf_swing": 0.32
+    },
+    {
+      "player_id": "125",
+      "name": "Marcus Camby",
+      "n_games": 16,
+      "slug": "marcus-camby",
+      "pts_with_ref": 12.06,
+      "pts_baseline": 10.65,
+      "pts_swing": 1.42,
+      "fta_swing": -0.55,
+      "pf_swing": 0.57
+    },
+    {
+      "player_id": "571",
+      "name": "Eric Montross",
+      "n_games": 21,
+      "slug": "eric-montross",
+      "pts_with_ref": 5.95,
+      "pts_baseline": 4.56,
+      "pts_swing": 1.39,
+      "fta_swing": 0.12,
+      "pf_swing": -0.56
+    },
+    {
+      "player_id": "788",
+      "name": "Joe Smith",
+      "n_games": 29,
+      "slug": "joe-smith",
+      "pts_with_ref": 15.28,
+      "pts_baseline": 13.91,
+      "pts_swing": 1.37,
+      "fta_swing": -0.13,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "905",
+      "name": "Doug West",
+      "n_games": 25,
+      "slug": "doug-west",
+      "pts_with_ref": 9.64,
+      "pts_baseline": 8.33,
+      "pts_swing": 1.31,
+      "fta_swing": 0.4,
+      "pf_swing": 0.35
+    },
+    {
+      "player_id": "614",
+      "name": "Shaquille O'Neal",
+      "n_games": 35,
+      "slug": "shaquille-oneal",
+      "pts_with_ref": 27.0,
+      "pts_baseline": 28.34,
+      "pts_swing": -1.34,
+      "fta_swing": 0.79,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "846",
+      "name": "Kurt Thomas",
+      "n_games": 21,
+      "slug": "kurt-thomas",
+      "pts_with_ref": 7.33,
+      "pts_baseline": 8.71,
+      "pts_swing": -1.37,
+      "fta_swing": -0.52,
+      "pf_swing": 0.34
+    },
+    {
+      "player_id": "514",
+      "name": "Darrick Martin",
+      "n_games": 27,
+      "slug": "darrick-martin",
+      "pts_with_ref": 6.15,
+      "pts_baseline": 7.54,
+      "pts_swing": -1.39,
+      "fta_swing": 0.0,
+      "pf_swing": 0.04
+    },
+    {
+      "player_id": "249",
+      "name": "Greg Foster",
+      "n_games": 30,
+      "slug": "greg-foster",
+      "pts_with_ref": 2.37,
+      "pts_baseline": 3.77,
+      "pts_swing": -1.41,
+      "fta_swing": -0.13,
+      "pf_swing": -0.08
+    },
+    {
+      "player_id": "663",
+      "name": "Scottie Pippen",
+      "n_games": 29,
+      "slug": "scottie-pippen",
+      "pts_with_ref": 16.48,
+      "pts_baseline": 17.95,
+      "pts_swing": -1.47,
+      "fta_swing": -0.1,
+      "pf_swing": 0.27
+    },
+    {
+      "player_id": "522",
+      "name": "Walter McCarty",
+      "n_games": 16,
+      "slug": "walter-mccarty",
+      "pts_with_ref": 4.56,
+      "pts_baseline": 6.03,
+      "pts_swing": -1.47,
+      "fta_swing": -0.06,
+      "pf_swing": -0.49
+    },
+    {
+      "player_id": "820",
+      "name": "Erick Strickland",
+      "n_games": 15,
+      "slug": "erick-strickland",
+      "pts_with_ref": 6.87,
+      "pts_baseline": 8.39,
+      "pts_swing": -1.52,
+      "fta_swing": -0.72,
+      "pf_swing": 0.42
+    },
+    {
+      "player_id": "562",
+      "name": "Greg Minor",
+      "n_games": 17,
+      "slug": "greg-minor",
+      "pts_with_ref": 4.94,
+      "pts_baseline": 6.49,
+      "pts_swing": -1.55,
+      "fta_swing": -0.28,
+      "pf_swing": -0.16
+    },
+    {
+      "player_id": "195",
+      "name": "Todd Day",
+      "n_games": 24,
+      "slug": "todd-day",
+      "pts_with_ref": 9.75,
+      "pts_baseline": 11.39,
+      "pts_swing": -1.64,
+      "fta_swing": -0.59,
+      "pf_swing": 0.31
+    },
+    {
+      "player_id": "705",
+      "name": "Isaiah Rider",
+      "n_games": 29,
+      "slug": "isaiah-rider",
+      "pts_with_ref": 15.93,
+      "pts_baseline": 17.58,
+      "pts_swing": -1.64,
+      "fta_swing": -0.08,
+      "pf_swing": 0.02
+    },
+    {
+      "player_id": "929",
+      "name": "Eric Williams",
+      "n_games": 16,
+      "slug": "eric-williams",
+      "pts_with_ref": 7.25,
+      "pts_baseline": 8.89,
+      "pts_swing": -1.64,
+      "fta_swing": -0.38,
+      "pf_swing": 0.13
+    },
+    {
+      "player_id": "336",
+      "name": "Grant Hill",
+      "n_games": 16,
+      "slug": "grant-hill",
+      "pts_with_ref": 20.69,
+      "pts_baseline": 22.39,
+      "pts_swing": -1.71,
+      "fta_swing": -1.08,
+      "pf_swing": 0.79
+    },
+    {
+      "player_id": "517",
+      "name": "Anthony Mason",
+      "n_games": 22,
+      "slug": "anthony-mason",
+      "pts_with_ref": 10.27,
+      "pts_baseline": 12.04,
+      "pts_swing": -1.76,
+      "fta_swing": -0.0,
+      "pf_swing": 0.14
+    },
+    {
+      "player_id": "183",
+      "name": "Antonio Daniels",
+      "n_games": 20,
+      "slug": "antonio-daniels",
+      "pts_with_ref": 5.15,
+      "pts_baseline": 6.99,
+      "pts_swing": -1.84,
+      "fta_swing": -0.27,
+      "pf_swing": 0.04
+    },
+    {
+      "player_id": "266",
+      "name": "Matt Geiger",
+      "n_games": 28,
+      "slug": "matt-geiger",
+      "pts_with_ref": 6.61,
+      "pts_baseline": 8.49,
+      "pts_swing": -1.88,
+      "fta_swing": -0.89,
+      "pf_swing": -0.1
+    },
+    {
+      "player_id": "334",
+      "name": "Tyrone Hill",
+      "n_games": 27,
+      "slug": "tyrone-hill",
+      "pts_with_ref": 8.74,
+      "pts_baseline": 10.65,
+      "pts_swing": -1.91,
+      "fta_swing": -0.33,
+      "pf_swing": 0.14
+    },
+    {
+      "player_id": "401",
+      "name": "Popeye Jones",
+      "n_games": 21,
+      "slug": "popeye-jones",
+      "pts_with_ref": 5.19,
+      "pts_baseline": 7.22,
+      "pts_swing": -2.03,
+      "fta_swing": -0.3,
+      "pf_swing": -0.3
+    },
+    {
+      "player_id": "429",
+      "name": "Jason Kidd",
+      "n_games": 28,
+      "slug": "jason-kidd",
+      "pts_with_ref": 11.86,
+      "pts_baseline": 13.89,
+      "pts_swing": -2.03,
+      "fta_swing": 0.03,
+      "pf_swing": -0.12
+    },
+    {
+      "player_id": "883",
+      "name": "Rasheed Wallace",
+      "n_games": 23,
+      "slug": "rasheed-wallace",
+      "pts_with_ref": 13.26,
+      "pts_baseline": 15.33,
+      "pts_swing": -2.07,
+      "fta_swing": -0.12,
+      "pf_swing": -0.13
+    },
+    {
+      "player_id": "147",
+      "name": "Doug Christie",
+      "n_games": 28,
+      "slug": "doug-christie",
+      "pts_with_ref": 10.32,
+      "pts_baseline": 12.67,
+      "pts_swing": -2.34,
+      "fta_swing": -1.27,
+      "pf_swing": -0.43
+    },
+    {
+      "player_id": "825",
+      "name": "Bob Sura",
+      "n_games": 21,
+      "slug": "bob-sura",
+      "pts_with_ref": 6.33,
+      "pts_baseline": 8.74,
+      "pts_swing": -2.4,
+      "fta_swing": -0.16,
+      "pf_swing": -0.49
+    },
+    {
+      "player_id": "3695",
+      "name": "Blue Edwards",
+      "n_games": 20,
+      "slug": "blue-edwards",
+      "pts_with_ref": 7.25,
+      "pts_baseline": 9.79,
+      "pts_swing": -2.54,
+      "fta_swing": -0.3,
+      "pf_swing": -0.32
+    },
+    {
+      "player_id": "15",
+      "name": "Kenny Anderson",
+      "n_games": 29,
+      "slug": "kenny-anderson",
+      "pts_with_ref": 11.38,
+      "pts_baseline": 13.94,
+      "pts_swing": -2.56,
+      "fta_swing": -0.08,
+      "pf_swing": -0.22
+    },
+    {
+      "player_id": "269",
+      "name": "Kendall Gill",
+      "n_games": 26,
+      "slug": "kendall-gill",
+      "pts_with_ref": 11.62,
+      "pts_baseline": 14.22,
+      "pts_swing": -2.6,
+      "fta_swing": -1.21,
+      "pf_swing": 0.07
+    },
+    {
+      "player_id": "3686",
+      "name": "Clyde Drexler",
+      "n_games": 22,
+      "slug": "clyde-drexler",
+      "pts_with_ref": 16.45,
+      "pts_baseline": 19.2,
+      "pts_swing": -2.75,
+      "fta_swing": -1.4,
+      "pf_swing": -0.3
+    }
+  ],
   "notable_games": [],
   "top_partners": [
     {
-      "name": "Bill Spooner",
-      "slug": "bill-spooner",
-      "games": 17
+      "name": "Joe Crawford",
+      "slug": "joe-crawford",
+      "games": 47
     },
     {
       "name": "Bennie Adams",
       "slug": "bennie-adams",
-      "games": 16
+      "games": 45
     },
     {
-      "name": "Derek Richardson",
-      "slug": "derek-richardson",
-      "games": 13
+      "name": "Monty McCutchen",
+      "slug": "monty-mccutchen",
+      "games": 39
     },
     {
-      "name": "Bill Kennedy",
-      "slug": "bill-kennedy",
-      "games": 9
+      "name": "Bennett Salvatore",
+      "slug": "bennett-salvatore",
+      "games": 35
     },
     {
-      "name": "Violet Palmer",
-      "slug": "violet-palmer",
-      "games": 9
+      "name": "Tony Brothers",
+      "slug": "tony-brothers",
+      "games": 35
     }
   ]
 }

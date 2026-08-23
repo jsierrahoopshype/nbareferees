@@ -62,7 +62,8 @@ ATTRIBUTION = [
     ("Wyatt Walsh's NBA Database", "https://www.kaggle.com/datasets/wyattowalsh/basketball",
      "Kaggle, CC BY-SA 4.0"),
     ("ESPN's public API", "https://www.espn.com/nba/",
-     "games, officials and player logs for 2000-01–02-03, 2012-13, and 2023-24 on"),
+     "games, officials and player logs for 1993-94–1999-00, 2000-01–02-03, "
+     "2012-13, and 2023-24 on"),
     ("szymonjwiak's NBA box scores", "https://www.kaggle.com/datasets/szymonjwiak/nba-traditional",
      "Kaggle; player logs for the nbadb-only seasons"),
 ]
@@ -129,7 +130,7 @@ def head(title, description, depth):
     <span class="brand-name">Referee Database</span>
   </a>
   <nav class="masthead-nav"><a href="{root}compare/index.html">Compare</a></nav>
-  <span class="brand-sub">NBA officiating record &middot; 2000-01 to {cur}</span>
+  <span class="brand-sub">NBA officiating record &middot; 1993-94 to {cur}</span>
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
                            cur=CURRENT_SEASON)
@@ -562,7 +563,7 @@ def render_team(doc):
     title = "How the %s perform with every NBA referee" % name
     desc = ("%s (%s) record with every NBA referee since %s: games, win rate, "
             "home/away split, and average margin under each official." % (
-                name, tri, s["first_season"] or "2000-01"))
+                name, tri, s["first_season"] or "1993-94"))
     badges = ('<span class="badge badge-past">Historical franchise</span>'
               if s.get("historical") else "")
     chips = [
@@ -961,8 +962,8 @@ def render_index(refs, lb, dashboard):
         + dashboard_history_strip(dashboard["history"])
     )
     body = hero + dashboard_sections + leaderboards + directory + ref_search(0, "bottom")
-    title = "NBA Referee Database — career stats for every on-court official since 2000-01"
-    desc = ("Searchable career profiles for %d NBA referees since 2000-01: games worked, "
+    title = "NBA Referee Database — career stats for every on-court official since 1993-94"
+    desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
     return page(title, desc, 0, body)
 

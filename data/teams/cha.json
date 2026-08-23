@@ -3,24 +3,128 @@
     "tricode": "CHA",
     "name": "Charlotte Hornets",
     "slug": "cha",
-    "first_season": "2000-01",
+    "first_season": "1993-94",
     "last_season": "2025-26",
-    "games_total": 1961,
+    "games_total": 2520,
     "historical": false
   },
   "ref_records": [
     {
+      "ref_name": "Tom Washington",
+      "ref_slug": "tom-washington",
+      "games": 118,
+      "wins": 47,
+      "losses": 71,
+      "win_pct": 0.4,
+      "home_games": 58,
+      "home_wins": 30,
+      "away_games": 60,
+      "away_wins": 17,
+      "avg_margin_for_team": -4.32
+    },
+    {
+      "ref_name": "Sean Corbin",
+      "ref_slug": "sean-corbin",
+      "games": 114,
+      "wins": 56,
+      "losses": 58,
+      "win_pct": 0.49,
+      "home_games": 58,
+      "home_wins": 37,
+      "away_games": 56,
+      "away_wins": 19,
+      "avg_margin_for_team": -0.42
+    },
+    {
+      "ref_name": "Tony Brothers",
+      "ref_slug": "tony-brothers",
+      "games": 113,
+      "wins": 45,
+      "losses": 68,
+      "win_pct": 0.4,
+      "home_games": 62,
+      "home_wins": 29,
+      "away_games": 51,
+      "away_wins": 16,
+      "avg_margin_for_team": -1.89
+    },
+    {
+      "ref_name": "Scott Foster",
+      "ref_slug": "scott-foster",
+      "games": 111,
+      "wins": 56,
+      "losses": 55,
+      "win_pct": 0.5,
+      "home_games": 55,
+      "home_wins": 32,
+      "away_games": 56,
+      "away_wins": 24,
+      "avg_margin_for_team": -0.5
+    },
+    {
+      "ref_name": "Ken Mauer",
+      "ref_slug": "ken-mauer",
+      "games": 106,
+      "wins": 55,
+      "losses": 51,
+      "win_pct": 0.52,
+      "home_games": 50,
+      "home_wins": 33,
+      "away_games": 56,
+      "away_wins": 22,
+      "avg_margin_for_team": -0.56
+    },
+    {
       "ref_name": "Marc Davis",
       "ref_slug": "marc-davis",
-      "games": 97,
-      "wins": 40,
-      "losses": 57,
-      "win_pct": 0.41,
-      "home_games": 50,
-      "home_wins": 26,
-      "away_games": 47,
+      "games": 102,
+      "wins": 44,
+      "losses": 58,
+      "win_pct": 0.43,
+      "home_games": 51,
+      "home_wins": 27,
+      "away_games": 51,
+      "away_wins": 17,
+      "avg_margin_for_team": -2.06
+    },
+    {
+      "ref_name": "Eddie Rush",
+      "ref_slug": "eddie-rush",
+      "games": 100,
+      "wins": 45,
+      "losses": 55,
+      "win_pct": 0.45,
+      "home_games": 49,
+      "home_wins": 31,
+      "away_games": 51,
       "away_wins": 14,
-      "avg_margin_for_team": -2.61
+      "avg_margin_for_team": -1.11
+    },
+    {
+      "ref_name": "Ron Garretson",
+      "ref_slug": "ron-garretson",
+      "games": 100,
+      "wins": 47,
+      "losses": 53,
+      "win_pct": 0.47,
+      "home_games": 43,
+      "home_wins": 30,
+      "away_games": 57,
+      "away_wins": 17,
+      "avg_margin_for_team": -2.05
+    },
+    {
+      "ref_name": "Derrick Stafford",
+      "ref_slug": "derrick-stafford",
+      "games": 97,
+      "wins": 43,
+      "losses": 54,
+      "win_pct": 0.44,
+      "home_games": 44,
+      "home_wins": 26,
+      "away_games": 53,
+      "away_wins": 17,
+      "avg_margin_for_team": -1.91
     },
     {
       "ref_name": "Courtney Kirkland",
@@ -36,30 +140,69 @@
       "avg_margin_for_team": -0.82
     },
     {
-      "ref_name": "Tony Brothers",
-      "ref_slug": "tony-brothers",
-      "games": 94,
-      "wins": 36,
-      "losses": 58,
-      "win_pct": 0.38,
-      "home_games": 54,
-      "home_wins": 25,
-      "away_games": 40,
-      "away_wins": 11,
-      "avg_margin_for_team": -2.56
+      "ref_name": "Bennie Adams",
+      "ref_slug": "bennie-adams",
+      "games": 93,
+      "wins": 43,
+      "losses": 50,
+      "win_pct": 0.46,
+      "home_games": 50,
+      "home_wins": 31,
+      "away_games": 43,
+      "away_wins": 12,
+      "avg_margin_for_team": -2.84
     },
     {
-      "ref_name": "Scott Foster",
-      "ref_slug": "scott-foster",
+      "ref_name": "Dick Bavetta",
+      "ref_slug": "dick-bavetta",
       "games": 93,
+      "wins": 53,
+      "losses": 40,
+      "win_pct": 0.57,
+      "home_games": 49,
+      "home_wins": 32,
+      "away_games": 44,
+      "away_wins": 21,
+      "avg_margin_for_team": 0.02
+    },
+    {
+      "ref_name": "Scott Wall",
+      "ref_slug": "scott-wall",
+      "games": 93,
+      "wins": 39,
+      "losses": 54,
+      "win_pct": 0.42,
+      "home_games": 37,
+      "home_wins": 19,
+      "away_games": 56,
+      "away_wins": 20,
+      "avg_margin_for_team": -1.72
+    },
+    {
+      "ref_name": "Mike Callahan",
+      "ref_slug": "mike-callahan",
+      "games": 91,
       "wins": 41,
-      "losses": 52,
+      "losses": 50,
+      "win_pct": 0.45,
+      "home_games": 48,
+      "home_wins": 26,
+      "away_games": 43,
+      "away_wins": 15,
+      "avg_margin_for_team": -2.13
+    },
+    {
+      "ref_name": "Rodney Mott",
+      "ref_slug": "rodney-mott",
+      "games": 91,
+      "wins": 40,
+      "losses": 51,
       "win_pct": 0.44,
-      "home_games": 46,
+      "home_games": 48,
       "home_wins": 25,
-      "away_games": 47,
-      "away_wins": 16,
-      "avg_margin_for_team": -1.98
+      "away_games": 43,
+      "away_wins": 15,
+      "avg_margin_for_team": -3.32
     },
     {
       "ref_name": "Pat Fraher",
@@ -75,30 +218,82 @@
       "avg_margin_for_team": -2.48
     },
     {
-      "ref_name": "Tom Washington",
-      "ref_slug": "tom-washington",
+      "ref_name": "Monty McCutchen",
+      "ref_slug": "monty-mccutchen",
       "games": 89,
-      "wins": 30,
-      "losses": 59,
-      "win_pct": 0.34,
-      "home_games": 42,
+      "wins": 37,
+      "losses": 52,
+      "win_pct": 0.42,
+      "home_games": 49,
       "home_wins": 20,
-      "away_games": 47,
-      "away_wins": 10,
-      "avg_margin_for_team": -6.43
+      "away_games": 40,
+      "away_wins": 17,
+      "avg_margin_for_team": -1.92
     },
     {
-      "ref_name": "Sean Corbin",
-      "ref_slug": "sean-corbin",
-      "games": 87,
-      "wins": 38,
-      "losses": 49,
+      "ref_name": "Bill Kennedy",
+      "ref_slug": "bill-kennedy",
+      "games": 88,
+      "wins": 32,
+      "losses": 56,
+      "win_pct": 0.36,
+      "home_games": 34,
+      "home_wins": 11,
+      "away_games": 54,
+      "away_wins": 21,
+      "avg_margin_for_team": -4.33
+    },
+    {
+      "ref_name": "Bill Spooner",
+      "ref_slug": "bill-spooner",
+      "games": 86,
+      "wins": 36,
+      "losses": 50,
+      "win_pct": 0.42,
+      "home_games": 39,
+      "home_wins": 19,
+      "away_games": 47,
+      "away_wins": 17,
+      "avg_margin_for_team": -1.66
+    },
+    {
+      "ref_name": "David Jones",
+      "ref_slug": "david-jones",
+      "games": 86,
+      "wins": 41,
+      "losses": 45,
+      "win_pct": 0.48,
+      "home_games": 50,
+      "home_wins": 31,
+      "away_games": 36,
+      "away_wins": 10,
+      "avg_margin_for_team": -0.95
+    },
+    {
+      "ref_name": "Dan Crawford",
+      "ref_slug": "dan-crawford",
+      "games": 85,
+      "wins": 37,
+      "losses": 48,
       "win_pct": 0.44,
       "home_games": 43,
-      "home_wins": 24,
-      "away_games": 44,
-      "away_wins": 14,
-      "avg_margin_for_team": -1.56
+      "home_wins": 25,
+      "away_games": 42,
+      "away_wins": 12,
+      "avg_margin_for_team": -2.44
+    },
+    {
+      "ref_name": "Leroy Richardson",
+      "ref_slug": "leroy-richardson",
+      "games": 84,
+      "wins": 34,
+      "losses": 50,
+      "win_pct": 0.4,
+      "home_games": 51,
+      "home_wins": 29,
+      "away_games": 33,
+      "away_wins": 5,
+      "avg_margin_for_team": -3.35
     },
     {
       "ref_name": "Michael Smith",
@@ -114,6 +309,19 @@
       "avg_margin_for_team": -3.62
     },
     {
+      "ref_name": "Leon Wood",
+      "ref_slug": "leon-wood",
+      "games": 83,
+      "wins": 39,
+      "losses": 44,
+      "win_pct": 0.47,
+      "home_games": 38,
+      "home_wins": 16,
+      "away_games": 45,
+      "away_wins": 23,
+      "avg_margin_for_team": -1.11
+    },
+    {
       "ref_name": "Zach Zarba",
       "ref_slug": "zach-zarba",
       "games": 83,
@@ -127,30 +335,30 @@
       "avg_margin_for_team": -1.25
     },
     {
-      "ref_name": "Bill Kennedy",
-      "ref_slug": "bill-kennedy",
-      "games": 81,
-      "wins": 28,
-      "losses": 53,
-      "win_pct": 0.35,
-      "home_games": 31,
-      "home_wins": 9,
-      "away_games": 50,
-      "away_wins": 19,
-      "avg_margin_for_team": -4.85
+      "ref_name": "Derek Richardson",
+      "ref_slug": "derek-richardson",
+      "games": 82,
+      "wins": 32,
+      "losses": 50,
+      "win_pct": 0.39,
+      "home_games": 42,
+      "home_wins": 18,
+      "away_games": 40,
+      "away_wins": 14,
+      "avg_margin_for_team": -2.65
     },
     {
-      "ref_name": "Scott Wall",
-      "ref_slug": "scott-wall",
-      "games": 81,
-      "wins": 34,
-      "losses": 47,
-      "win_pct": 0.42,
-      "home_games": 33,
-      "home_wins": 16,
-      "away_games": 48,
-      "away_wins": 18,
-      "avg_margin_for_team": -2.11
+      "ref_name": "James Capers",
+      "ref_slug": "james-capers",
+      "games": 82,
+      "wins": 32,
+      "losses": 50,
+      "win_pct": 0.39,
+      "home_games": 44,
+      "home_wins": 20,
+      "away_games": 38,
+      "away_wins": 12,
+      "avg_margin_for_team": -2.26
     },
     {
       "ref_name": "Sean Wright",
@@ -166,6 +374,19 @@
       "avg_margin_for_team": -5.74
     },
     {
+      "ref_name": "Bennett Salvatore",
+      "ref_slug": "bennett-salvatore",
+      "games": 80,
+      "wins": 30,
+      "losses": 50,
+      "win_pct": 0.38,
+      "home_games": 37,
+      "home_wins": 21,
+      "away_games": 43,
+      "away_wins": 9,
+      "avg_margin_for_team": -2.73
+    },
+    {
       "ref_name": "Mark Lindsay",
       "ref_slug": "mark-lindsay",
       "games": 80,
@@ -177,19 +398,6 @@
       "away_games": 47,
       "away_wins": 18,
       "avg_margin_for_team": -1.73
-    },
-    {
-      "ref_name": "Rodney Mott",
-      "ref_slug": "rodney-mott",
-      "games": 79,
-      "wins": 34,
-      "losses": 45,
-      "win_pct": 0.43,
-      "home_games": 42,
-      "home_wins": 21,
-      "away_games": 37,
-      "away_wins": 13,
-      "avg_margin_for_team": -3.62
     },
     {
       "ref_name": "Curtis Blair",
@@ -218,56 +426,43 @@
       "avg_margin_for_team": -2.56
     },
     {
-      "ref_name": "Bennie Adams",
-      "ref_slug": "bennie-adams",
-      "games": 76,
-      "wins": 35,
-      "losses": 41,
-      "win_pct": 0.46,
-      "home_games": 42,
+      "ref_name": "Joe Crawford",
+      "ref_slug": "joe-crawford",
+      "games": 77,
+      "wins": 39,
+      "losses": 38,
+      "win_pct": 0.51,
+      "home_games": 47,
       "home_wins": 25,
-      "away_games": 34,
-      "away_wins": 10,
-      "avg_margin_for_team": -2.93
+      "away_games": 30,
+      "away_wins": 14,
+      "avg_margin_for_team": -0.44
     },
     {
       "ref_name": "Derrick Collins",
       "ref_slug": "derrick-collins",
-      "games": 74,
-      "wins": 24,
+      "games": 75,
+      "wins": 25,
       "losses": 50,
-      "win_pct": 0.32,
+      "win_pct": 0.33,
       "home_games": 31,
       "home_wins": 14,
-      "away_games": 43,
-      "away_wins": 10,
-      "avg_margin_for_team": -4.49
+      "away_games": 44,
+      "away_wins": 11,
+      "avg_margin_for_team": -4.28
     },
     {
-      "ref_name": "Derek Richardson",
-      "ref_slug": "derek-richardson",
-      "games": 72,
-      "wins": 28,
-      "losses": 44,
-      "win_pct": 0.39,
-      "home_games": 37,
-      "home_wins": 16,
-      "away_games": 35,
-      "away_wins": 12,
-      "avg_margin_for_team": -3.17
-    },
-    {
-      "ref_name": "Ken Mauer",
-      "ref_slug": "ken-mauer",
+      "ref_name": "Joe Forte",
+      "ref_slug": "joe-forte",
       "games": 71,
-      "wins": 32,
-      "losses": 39,
-      "win_pct": 0.45,
-      "home_games": 31,
+      "wins": 33,
+      "losses": 38,
+      "win_pct": 0.46,
+      "home_games": 33,
       "home_wins": 19,
-      "away_games": 40,
-      "away_wins": 13,
-      "avg_margin_for_team": -2.76
+      "away_games": 38,
+      "away_wins": 14,
+      "avg_margin_for_team": -0.9
     },
     {
       "ref_name": "Eric Lewis",
@@ -283,19 +478,6 @@
       "avg_margin_for_team": -1.06
     },
     {
-      "ref_name": "James Capers",
-      "ref_slug": "james-capers",
-      "games": 70,
-      "wins": 24,
-      "losses": 46,
-      "win_pct": 0.34,
-      "home_games": 39,
-      "home_wins": 16,
-      "away_games": 31,
-      "away_wins": 8,
-      "avg_margin_for_team": -3.26
-    },
-    {
       "ref_name": "John Goble",
       "ref_slug": "john-goble",
       "games": 70,
@@ -309,43 +491,17 @@
       "avg_margin_for_team": -3.59
     },
     {
-      "ref_name": "Derrick Stafford",
-      "ref_slug": "derrick-stafford",
-      "games": 69,
-      "wins": 25,
-      "losses": 44,
-      "win_pct": 0.36,
-      "home_games": 30,
-      "home_wins": 13,
-      "away_games": 39,
-      "away_wins": 12,
-      "avg_margin_for_team": -2.46
-    },
-    {
-      "ref_name": "Leon Wood",
-      "ref_slug": "leon-wood",
-      "games": 69,
-      "wins": 31,
-      "losses": 38,
-      "win_pct": 0.45,
-      "home_games": 32,
-      "home_wins": 13,
-      "away_games": 37,
-      "away_wins": 18,
-      "avg_margin_for_team": -2.01
-    },
-    {
       "ref_name": "Matt Boland",
       "ref_slug": "matt-boland",
-      "games": 69,
+      "games": 70,
       "wins": 20,
-      "losses": 49,
+      "losses": 50,
       "win_pct": 0.29,
       "home_games": 30,
       "home_wins": 8,
-      "away_games": 39,
+      "away_games": 40,
       "away_wins": 12,
-      "avg_margin_for_team": -7.41
+      "avg_margin_for_team": -7.53
     },
     {
       "ref_name": "Tony Brown",
@@ -361,17 +517,17 @@
       "avg_margin_for_team": -4.51
     },
     {
-      "ref_name": "Ron Garretson",
-      "ref_slug": "ron-garretson",
-      "games": 67,
-      "wins": 30,
-      "losses": 37,
-      "win_pct": 0.45,
-      "home_games": 27,
+      "ref_name": "Bob Delaney",
+      "ref_slug": "bob-delaney",
+      "games": 66,
+      "wins": 28,
+      "losses": 38,
+      "win_pct": 0.42,
+      "home_games": 33,
       "home_wins": 19,
-      "away_games": 40,
-      "away_wins": 11,
-      "avg_margin_for_team": -2.3
+      "away_games": 33,
+      "away_wins": 9,
+      "avg_margin_for_team": -1.35
     },
     {
       "ref_name": "Brian Forte",
@@ -400,6 +556,32 @@
       "avg_margin_for_team": -3.53
     },
     {
+      "ref_name": "Kevin Fehr",
+      "ref_slug": "kevin-fehr",
+      "games": 66,
+      "wins": 25,
+      "losses": 41,
+      "win_pct": 0.38,
+      "home_games": 31,
+      "home_wins": 15,
+      "away_games": 35,
+      "away_wins": 10,
+      "avg_margin_for_team": -3.26
+    },
+    {
+      "ref_name": "Mark Wunderlich",
+      "ref_slug": "mark-wunderlich",
+      "games": 66,
+      "wins": 29,
+      "losses": 37,
+      "win_pct": 0.44,
+      "home_games": 35,
+      "home_wins": 19,
+      "away_games": 31,
+      "away_wins": 10,
+      "avg_margin_for_team": -2.61
+    },
+    {
       "ref_name": "Eric Dalen",
       "ref_slug": "eric-dalen",
       "games": 65,
@@ -411,19 +593,6 @@
       "away_games": 32,
       "away_wins": 11,
       "avg_margin_for_team": -2.55
-    },
-    {
-      "ref_name": "Leroy Richardson",
-      "ref_slug": "leroy-richardson",
-      "games": 64,
-      "wins": 24,
-      "losses": 40,
-      "win_pct": 0.38,
-      "home_games": 38,
-      "home_wins": 20,
-      "away_games": 26,
-      "away_wins": 4,
-      "avg_margin_for_team": -3.77
     },
     {
       "ref_name": "Marat Kogut",
@@ -439,32 +608,6 @@
       "avg_margin_for_team": -5.12
     },
     {
-      "ref_name": "Mike Callahan",
-      "ref_slug": "mike-callahan",
-      "games": 63,
-      "wins": 25,
-      "losses": 38,
-      "win_pct": 0.4,
-      "home_games": 34,
-      "home_wins": 17,
-      "away_games": 29,
-      "away_wins": 8,
-      "avg_margin_for_team": -3.83
-    },
-    {
-      "ref_name": "Monty McCutchen",
-      "ref_slug": "monty-mccutchen",
-      "games": 63,
-      "wins": 24,
-      "losses": 39,
-      "win_pct": 0.38,
-      "home_games": 37,
-      "home_wins": 13,
-      "away_games": 26,
-      "away_wins": 11,
-      "avg_margin_for_team": -2.59
-    },
-    {
       "ref_name": "Ed Malloy",
       "ref_slug": "ed-malloy",
       "games": 62,
@@ -478,17 +621,56 @@
       "avg_margin_for_team": -6.87
     },
     {
-      "ref_name": "Bill Spooner",
-      "ref_slug": "bill-spooner",
-      "games": 58,
-      "wins": 25,
+      "ref_name": "Greg Willard",
+      "ref_slug": "greg-willard",
+      "games": 60,
+      "wins": 27,
       "losses": 33,
-      "win_pct": 0.43,
-      "home_games": 28,
-      "home_wins": 13,
-      "away_games": 30,
-      "away_wins": 12,
-      "avg_margin_for_team": -1.9
+      "win_pct": 0.45,
+      "home_games": 22,
+      "home_wins": 11,
+      "away_games": 38,
+      "away_wins": 16,
+      "avg_margin_for_team": -2.98
+    },
+    {
+      "ref_name": "Steve Javie",
+      "ref_slug": "steve-javie",
+      "games": 60,
+      "wins": 31,
+      "losses": 29,
+      "win_pct": 0.52,
+      "home_games": 36,
+      "home_wins": 20,
+      "away_games": 24,
+      "away_wins": 11,
+      "avg_margin_for_team": -0.97
+    },
+    {
+      "ref_name": "Jason Phillips",
+      "ref_slug": "jason-phillips",
+      "games": 58,
+      "wins": 22,
+      "losses": 36,
+      "win_pct": 0.38,
+      "home_games": 29,
+      "home_wins": 16,
+      "away_games": 29,
+      "away_wins": 6,
+      "avg_margin_for_team": -2.84
+    },
+    {
+      "ref_name": "Ron Olesiak",
+      "ref_slug": "ron-olesiak",
+      "games": 58,
+      "wins": 38,
+      "losses": 20,
+      "win_pct": 0.66,
+      "home_games": 29,
+      "home_wins": 21,
+      "away_games": 29,
+      "away_wins": 17,
+      "avg_margin_for_team": 2.48
     },
     {
       "ref_name": "Brent Barnaky",
@@ -517,17 +699,17 @@
       "avg_margin_for_team": -0.38
     },
     {
-      "ref_name": "Jason Phillips",
-      "ref_slug": "jason-phillips",
+      "ref_name": "Jack Nies",
+      "ref_slug": "jack-nies",
       "games": 55,
-      "wins": 19,
-      "losses": 36,
-      "win_pct": 0.35,
+      "wins": 33,
+      "losses": 22,
+      "win_pct": 0.6,
       "home_games": 27,
-      "home_wins": 14,
+      "home_wins": 21,
       "away_games": 28,
-      "away_wins": 5,
-      "avg_margin_for_team": -3.4
+      "away_wins": 12,
+      "avg_margin_for_team": 1.15
     },
     {
       "ref_name": "Nick Buchert",
@@ -556,32 +738,6 @@
       "avg_margin_for_team": -4.67
     },
     {
-      "ref_name": "David Jones",
-      "ref_slug": "david-jones",
-      "games": 53,
-      "wins": 22,
-      "losses": 31,
-      "win_pct": 0.42,
-      "home_games": 30,
-      "home_wins": 17,
-      "away_games": 23,
-      "away_wins": 5,
-      "avg_margin_for_team": -1.43
-    },
-    {
-      "ref_name": "Dick Bavetta",
-      "ref_slug": "dick-bavetta",
-      "games": 53,
-      "wins": 26,
-      "losses": 27,
-      "win_pct": 0.49,
-      "home_games": 30,
-      "home_wins": 18,
-      "away_games": 23,
-      "away_wins": 8,
-      "avg_margin_for_team": -1.49
-    },
-    {
       "ref_name": "Karl Lane",
       "ref_slug": "karl-lane",
       "games": 53,
@@ -595,17 +751,17 @@
       "avg_margin_for_team": -2.62
     },
     {
-      "ref_name": "Dan Crawford",
-      "ref_slug": "dan-crawford",
-      "games": 52,
-      "wins": 20,
-      "losses": 32,
-      "win_pct": 0.38,
-      "home_games": 26,
-      "home_wins": 14,
-      "away_games": 26,
-      "away_wins": 6,
-      "avg_margin_for_team": -3.77
+      "ref_name": "Luis Grillo",
+      "ref_slug": "luis-grillo",
+      "games": 53,
+      "wins": 24,
+      "losses": 29,
+      "win_pct": 0.45,
+      "home_games": 25,
+      "home_wins": 12,
+      "away_games": 28,
+      "away_wins": 12,
+      "avg_margin_for_team": -1.21
     },
     {
       "ref_name": "Kevin Scott",
@@ -634,6 +790,19 @@
       "avg_margin_for_team": -4.41
     },
     {
+      "ref_name": "Gary Zielinski",
+      "ref_slug": "gary-zielinski",
+      "games": 49,
+      "wins": 14,
+      "losses": 35,
+      "win_pct": 0.29,
+      "home_games": 19,
+      "home_wins": 8,
+      "away_games": 30,
+      "away_wins": 6,
+      "avg_margin_for_team": -6.39
+    },
+    {
       "ref_name": "Haywoode Workman",
       "ref_slug": "haywoode-workman",
       "games": 49,
@@ -660,30 +829,56 @@
       "avg_margin_for_team": -2.67
     },
     {
-      "ref_name": "Gary Zielinski",
-      "ref_slug": "gary-zielinski",
+      "ref_name": "Hue Hollins",
+      "ref_slug": "hue-hollins",
       "games": 48,
-      "wins": 14,
-      "losses": 34,
-      "win_pct": 0.29,
-      "home_games": 19,
-      "home_wins": 8,
-      "away_games": 29,
-      "away_wins": 6,
-      "avg_margin_for_team": -6.31
+      "wins": 33,
+      "losses": 15,
+      "win_pct": 0.69,
+      "home_games": 25,
+      "home_wins": 21,
+      "away_games": 23,
+      "away_wins": 12,
+      "avg_margin_for_team": 4.08
     },
     {
-      "ref_name": "Bennett Salvatore",
-      "ref_slug": "bennett-salvatore",
-      "games": 47,
-      "wins": 15,
-      "losses": 32,
-      "win_pct": 0.32,
+      "ref_name": "Tommy Nunez Jr.",
+      "ref_slug": "tommy-nunez",
+      "games": 48,
+      "wins": 21,
+      "losses": 27,
+      "win_pct": 0.44,
       "home_games": 21,
-      "home_wins": 10,
-      "away_games": 26,
-      "away_wins": 5,
-      "avg_margin_for_team": -3.45
+      "home_wins": 13,
+      "away_games": 27,
+      "away_wins": 8,
+      "avg_margin_for_team": -1.69
+    },
+    {
+      "ref_name": "Violet Palmer",
+      "ref_slug": "violet-palmer",
+      "games": 48,
+      "wins": 24,
+      "losses": 24,
+      "win_pct": 0.5,
+      "home_games": 21,
+      "home_wins": 13,
+      "away_games": 27,
+      "away_wins": 11,
+      "avg_margin_for_team": -2.62
+    },
+    {
+      "ref_name": "Joe DeRosa",
+      "ref_slug": "joe-derosa",
+      "games": 47,
+      "wins": 21,
+      "losses": 26,
+      "win_pct": 0.45,
+      "home_games": 23,
+      "home_wins": 14,
+      "away_games": 24,
+      "away_wins": 7,
+      "avg_margin_for_team": 0.49
     },
     {
       "ref_name": "Kane Fitzgerald",
@@ -699,19 +894,6 @@
       "avg_margin_for_team": -2.04
     },
     {
-      "ref_name": "Kevin Fehr",
-      "ref_slug": "kevin-fehr",
-      "games": 47,
-      "wins": 15,
-      "losses": 32,
-      "win_pct": 0.32,
-      "home_games": 24,
-      "home_wins": 10,
-      "away_games": 23,
-      "away_wins": 5,
-      "avg_margin_for_team": -5.19
-    },
-    {
       "ref_name": "Tre Maddox",
       "ref_slug": "tre-maddox",
       "games": 47,
@@ -725,17 +907,17 @@
       "avg_margin_for_team": -0.15
     },
     {
-      "ref_name": "Eddie Rush",
-      "ref_slug": "eddie-rush",
+      "ref_name": "Bernie Fryer",
+      "ref_slug": "bernie-fryer",
       "games": 46,
-      "wins": 18,
-      "losses": 28,
-      "win_pct": 0.39,
-      "home_games": 23,
-      "home_wins": 14,
-      "away_games": 23,
-      "away_wins": 4,
-      "avg_margin_for_team": -2.74
+      "wins": 20,
+      "losses": 26,
+      "win_pct": 0.43,
+      "home_games": 20,
+      "home_wins": 8,
+      "away_games": 26,
+      "away_wins": 12,
+      "avg_margin_for_team": 0.0
     },
     {
       "ref_name": "Gediminas Petraitis",
@@ -751,6 +933,32 @@
       "avg_margin_for_team": -5.31
     },
     {
+      "ref_name": "Nolan Fine",
+      "ref_slug": "nolan-fine",
+      "games": 45,
+      "wins": 28,
+      "losses": 17,
+      "win_pct": 0.62,
+      "home_games": 22,
+      "home_wins": 14,
+      "away_games": 23,
+      "away_wins": 14,
+      "avg_margin_for_team": 4.13
+    },
+    {
+      "ref_name": "Tim Donaghy",
+      "ref_slug": "tim-donaghy",
+      "games": 45,
+      "wins": 23,
+      "losses": 22,
+      "win_pct": 0.51,
+      "home_games": 17,
+      "home_wins": 11,
+      "away_games": 28,
+      "away_wins": 12,
+      "avg_margin_for_team": 0.38
+    },
+    {
       "ref_name": "Dedric Taylor",
       "ref_slug": "dedric-taylor",
       "games": 43,
@@ -762,6 +970,19 @@
       "away_games": 16,
       "away_wins": 5,
       "avg_margin_for_team": -4.05
+    },
+    {
+      "ref_name": "Hugh Evans",
+      "ref_slug": "hugh-evans",
+      "games": 43,
+      "wins": 23,
+      "losses": 20,
+      "win_pct": 0.53,
+      "home_games": 22,
+      "home_wins": 14,
+      "away_games": 21,
+      "away_wins": 9,
+      "avg_margin_for_team": 0.88
     },
     {
       "ref_name": "Jacyn Goble",
@@ -777,6 +998,19 @@
       "avg_margin_for_team": -2.72
     },
     {
+      "ref_name": "Jess Kersey",
+      "ref_slug": "jess-kersey",
+      "games": 43,
+      "wins": 18,
+      "losses": 25,
+      "win_pct": 0.42,
+      "home_games": 23,
+      "home_wins": 9,
+      "away_games": 20,
+      "away_wins": 9,
+      "avg_margin_for_team": -2.51
+    },
+    {
       "ref_name": "J.T. Orr",
       "ref_slug": "j-t-orr",
       "games": 42,
@@ -788,19 +1022,6 @@
       "away_games": 30,
       "away_wins": 9,
       "avg_margin_for_team": -4.12
-    },
-    {
-      "ref_name": "Mark Wunderlich",
-      "ref_slug": "mark-wunderlich",
-      "games": 42,
-      "wins": 16,
-      "losses": 26,
-      "win_pct": 0.38,
-      "home_games": 22,
-      "home_wins": 11,
-      "away_games": 20,
-      "away_wins": 5,
-      "avg_margin_for_team": -3.88
     },
     {
       "ref_name": "Scott Twardoski",
@@ -829,30 +1050,30 @@
       "avg_margin_for_team": -1.63
     },
     {
-      "ref_name": "Bob Delaney",
-      "ref_slug": "bob-delaney",
-      "games": 40,
-      "wins": 13,
-      "losses": 27,
-      "win_pct": 0.33,
-      "home_games": 19,
-      "home_wins": 9,
-      "away_games": 21,
-      "away_wins": 4,
-      "avg_margin_for_team": -3.67
+      "ref_name": "Ronnie Nunn",
+      "ref_slug": "ronnie-nunn",
+      "games": 39,
+      "wins": 22,
+      "losses": 17,
+      "win_pct": 0.56,
+      "home_games": 17,
+      "home_wins": 11,
+      "away_games": 22,
+      "away_wins": 11,
+      "avg_margin_for_team": 1.64
     },
     {
-      "ref_name": "Joe Crawford",
-      "ref_slug": "joe-crawford",
-      "games": 39,
-      "wins": 18,
-      "losses": 21,
-      "win_pct": 0.46,
-      "home_games": 24,
-      "home_wins": 11,
-      "away_games": 15,
-      "away_wins": 7,
-      "avg_margin_for_team": -2.67
+      "ref_name": "Don Vaden",
+      "ref_slug": "don-vaden",
+      "games": 38,
+      "wins": 23,
+      "losses": 15,
+      "win_pct": 0.61,
+      "home_games": 17,
+      "home_wins": 12,
+      "away_games": 21,
+      "away_wins": 11,
+      "avg_margin_for_team": 1.58
     },
     {
       "ref_name": "Eli Roe",
@@ -868,30 +1089,43 @@
       "avg_margin_for_team": -2.87
     },
     {
-      "ref_name": "Violet Palmer",
-      "ref_slug": "violet-palmer",
+      "ref_name": "Ted Bernhardt",
+      "ref_slug": "ted-bernhardt",
       "games": 38,
-      "wins": 18,
-      "losses": 20,
-      "win_pct": 0.47,
-      "home_games": 17,
-      "home_wins": 10,
-      "away_games": 21,
-      "away_wins": 8,
-      "avg_margin_for_team": -3.42
+      "wins": 27,
+      "losses": 11,
+      "win_pct": 0.71,
+      "home_games": 19,
+      "home_wins": 16,
+      "away_games": 19,
+      "away_wins": 11,
+      "avg_margin_for_team": 4.34
     },
     {
-      "ref_name": "Joe Forte",
-      "ref_slug": "joe-forte",
-      "games": 37,
-      "wins": 14,
-      "losses": 23,
-      "win_pct": 0.38,
-      "home_games": 16,
-      "home_wins": 8,
+      "ref_name": "Blane Reichelt",
+      "ref_slug": "blane-reichelt",
+      "games": 36,
+      "wins": 20,
+      "losses": 16,
+      "win_pct": 0.56,
+      "home_games": 15,
+      "home_wins": 10,
       "away_games": 21,
-      "away_wins": 6,
-      "avg_margin_for_team": -2.92
+      "away_wins": 10,
+      "avg_margin_for_team": 1.5
+    },
+    {
+      "ref_name": "Jim Clark",
+      "ref_slug": "jim-clark",
+      "games": 35,
+      "wins": 18,
+      "losses": 17,
+      "win_pct": 0.51,
+      "home_games": 16,
+      "home_wins": 11,
+      "away_games": 19,
+      "away_wins": 7,
+      "avg_margin_for_team": -0.06
     },
     {
       "ref_name": "Justin Van Duyne",
@@ -920,6 +1154,19 @@
       "avg_margin_for_team": -0.35
     },
     {
+      "ref_name": "Phil Robinson",
+      "ref_slug": "phil-robinson",
+      "games": 34,
+      "wins": 17,
+      "losses": 17,
+      "win_pct": 0.5,
+      "home_games": 22,
+      "home_wins": 13,
+      "away_games": 12,
+      "away_wins": 4,
+      "avg_margin_for_team": -0.21
+    },
+    {
       "ref_name": "Jason Goldenberg",
       "ref_slug": "jason-goldenberg",
       "games": 33,
@@ -931,19 +1178,6 @@
       "away_games": 16,
       "away_wins": 5,
       "avg_margin_for_team": -1.67
-    },
-    {
-      "ref_name": "Tommy Nunez Jr.",
-      "ref_slug": "tommy-nunez",
-      "games": 33,
-      "wins": 14,
-      "losses": 19,
-      "win_pct": 0.42,
-      "home_games": 17,
-      "home_wins": 10,
-      "away_games": 16,
-      "away_wins": 4,
-      "avg_margin_for_team": -2.27
     },
     {
       "ref_name": "CJ Washington",
@@ -959,19 +1193,6 @@
       "avg_margin_for_team": 0.22
     },
     {
-      "ref_name": "Greg Willard",
-      "ref_slug": "greg-willard",
-      "games": 32,
-      "wins": 15,
-      "losses": 17,
-      "win_pct": 0.47,
-      "home_games": 13,
-      "home_wins": 5,
-      "away_games": 19,
-      "away_wins": 10,
-      "avg_margin_for_team": -1.72
-    },
-    {
       "ref_name": "Mitchell Ervin",
       "ref_slug": "mitchell-ervin",
       "games": 32,
@@ -983,6 +1204,32 @@
       "away_games": 15,
       "away_wins": 6,
       "avg_margin_for_team": 0.28
+    },
+    {
+      "ref_name": "Gary Benson",
+      "ref_slug": "gary-benson",
+      "games": 31,
+      "wins": 14,
+      "losses": 17,
+      "win_pct": 0.45,
+      "home_games": 15,
+      "home_wins": 10,
+      "away_games": 16,
+      "away_wins": 4,
+      "avg_margin_for_team": -3.71
+    },
+    {
+      "ref_name": "Terry Durham",
+      "ref_slug": "terry-durham",
+      "games": 31,
+      "wins": 16,
+      "losses": 15,
+      "win_pct": 0.52,
+      "home_games": 19,
+      "home_wins": 13,
+      "away_games": 12,
+      "away_wins": 3,
+      "avg_margin_for_team": -0.32
     },
     {
       "ref_name": "Brett Nansel",
@@ -1037,32 +1284,6 @@
       "avg_margin_for_team": -4.33
     },
     {
-      "ref_name": "Steve Javie",
-      "ref_slug": "steve-javie",
-      "games": 30,
-      "wins": 12,
-      "losses": 18,
-      "win_pct": 0.4,
-      "home_games": 19,
-      "home_wins": 9,
-      "away_games": 11,
-      "away_wins": 3,
-      "avg_margin_for_team": -0.93
-    },
-    {
-      "ref_name": "Jack Nies",
-      "ref_slug": "jack-nies",
-      "games": 29,
-      "wins": 14,
-      "losses": 15,
-      "win_pct": 0.48,
-      "home_games": 10,
-      "home_wins": 8,
-      "away_games": 19,
-      "away_wins": 6,
-      "avg_margin_for_team": -1.59
-    },
-    {
       "ref_name": "Tyler Ford",
       "ref_slug": "tyler-ford",
       "games": 29,
@@ -1076,6 +1297,19 @@
       "avg_margin_for_team": -3.93
     },
     {
+      "ref_name": "George Toliver",
+      "ref_slug": "george-toliver",
+      "games": 28,
+      "wins": 17,
+      "losses": 11,
+      "win_pct": 0.61,
+      "home_games": 15,
+      "home_wins": 10,
+      "away_games": 13,
+      "away_wins": 7,
+      "avg_margin_for_team": -0.86
+    },
+    {
       "ref_name": "Aaron Smith",
       "ref_slug": "aaron-smith",
       "games": 27,
@@ -1087,6 +1321,71 @@
       "away_games": 9,
       "away_wins": 3,
       "avg_margin_for_team": -3.41
+    },
+    {
+      "ref_name": "Hank Armstrong",
+      "ref_slug": "hank-armstrong",
+      "games": 27,
+      "wins": 15,
+      "losses": 12,
+      "win_pct": 0.56,
+      "home_games": 13,
+      "home_wins": 9,
+      "away_games": 14,
+      "away_wins": 6,
+      "avg_margin_for_team": 2.81
+    },
+    {
+      "ref_name": "Jim Kinsey",
+      "ref_slug": "jim-kinsey",
+      "games": 27,
+      "wins": 12,
+      "losses": 15,
+      "win_pct": 0.44,
+      "home_games": 13,
+      "home_wins": 8,
+      "away_games": 14,
+      "away_wins": 4,
+      "avg_margin_for_team": -1.81
+    },
+    {
+      "ref_name": "Mike Mathis",
+      "ref_slug": "mike-mathis",
+      "games": 27,
+      "wins": 16,
+      "losses": 11,
+      "win_pct": 0.59,
+      "home_games": 10,
+      "home_wins": 7,
+      "away_games": 17,
+      "away_wins": 9,
+      "avg_margin_for_team": 2.7
+    },
+    {
+      "ref_name": "Bill Oakes",
+      "ref_slug": "bill-oakes",
+      "games": 26,
+      "wins": 16,
+      "losses": 10,
+      "win_pct": 0.62,
+      "home_games": 14,
+      "home_wins": 10,
+      "away_games": 12,
+      "away_wins": 6,
+      "avg_margin_for_team": 4.19
+    },
+    {
+      "ref_name": "Bruce Alexander",
+      "ref_slug": "bruce-alexander",
+      "games": 26,
+      "wins": 15,
+      "losses": 11,
+      "win_pct": 0.58,
+      "home_games": 13,
+      "home_wins": 8,
+      "away_games": 13,
+      "away_wins": 7,
+      "avg_margin_for_team": 1.58
     },
     {
       "ref_name": "Jenna Schroeder",
@@ -1128,19 +1427,6 @@
       "avg_margin_for_team": -2.62
     },
     {
-      "ref_name": "Ron Olesiak",
-      "ref_slug": "ron-olesiak",
-      "games": 26,
-      "wins": 15,
-      "losses": 11,
-      "win_pct": 0.58,
-      "home_games": 9,
-      "home_wins": 7,
-      "away_games": 17,
-      "away_wins": 8,
-      "avg_margin_for_team": 0.77
-    },
-    {
       "ref_name": "Brandon Adair",
       "ref_slug": "brandon-adair",
       "games": 25,
@@ -1167,45 +1453,6 @@
       "avg_margin_for_team": -0.48
     },
     {
-      "ref_name": "Luis Grillo",
-      "ref_slug": "luis-grillo",
-      "games": 25,
-      "wins": 10,
-      "losses": 15,
-      "win_pct": 0.4,
-      "home_games": 12,
-      "home_wins": 5,
-      "away_games": 13,
-      "away_wins": 5,
-      "avg_margin_for_team": -2.36
-    },
-    {
-      "ref_name": "Phil Robinson",
-      "ref_slug": "phil-robinson",
-      "games": 25,
-      "wins": 12,
-      "losses": 13,
-      "win_pct": 0.48,
-      "home_games": 15,
-      "home_wins": 8,
-      "away_games": 10,
-      "away_wins": 4,
-      "avg_margin_for_team": 0.2
-    },
-    {
-      "ref_name": "Tim Donaghy",
-      "ref_slug": "tim-donaghy",
-      "games": 25,
-      "wins": 13,
-      "losses": 12,
-      "win_pct": 0.52,
-      "home_games": 8,
-      "home_wins": 5,
-      "away_games": 17,
-      "away_wins": 8,
-      "avg_margin_for_team": 0.72
-    },
-    {
       "ref_name": "Ray Acosta",
       "ref_slug": "ray-acosta",
       "games": 24,
@@ -1219,17 +1466,17 @@
       "avg_margin_for_team": -6.08
     },
     {
-      "ref_name": "Jess Kersey",
-      "ref_slug": "jess-kersey",
-      "games": 22,
-      "wins": 6,
-      "losses": 16,
-      "win_pct": 0.27,
-      "home_games": 10,
-      "home_wins": 2,
-      "away_games": 12,
-      "away_wins": 4,
-      "avg_margin_for_team": -6.05
+      "ref_name": "Tommie Wood",
+      "ref_slug": "tommie-wood",
+      "games": 23,
+      "wins": 18,
+      "losses": 5,
+      "win_pct": 0.78,
+      "home_games": 14,
+      "home_wins": 11,
+      "away_games": 9,
+      "away_wins": 7,
+      "avg_margin_for_team": 7.3
     },
     {
       "ref_name": "Jimmy Clark",
@@ -1271,19 +1518,6 @@
       "avg_margin_for_team": -4.65
     },
     {
-      "ref_name": "Bernie Fryer",
-      "ref_slug": "bernie-fryer",
-      "games": 20,
-      "wins": 9,
-      "losses": 11,
-      "win_pct": 0.45,
-      "home_games": 8,
-      "home_wins": 2,
-      "away_games": 12,
-      "away_wins": 7,
-      "avg_margin_for_team": 1.15
-    },
-    {
       "ref_name": "Brandon Schwab",
       "ref_slug": "brandon-schwab",
       "games": 20,
@@ -1297,6 +1531,19 @@
       "avg_margin_for_team": -1.3
     },
     {
+      "ref_name": "Ed Middleton",
+      "ref_slug": "ed-middleton",
+      "games": 20,
+      "wins": 12,
+      "losses": 8,
+      "win_pct": 0.6,
+      "home_games": 12,
+      "home_wins": 7,
+      "away_games": 8,
+      "away_wins": 5,
+      "avg_margin_for_team": -1.1
+    },
+    {
       "ref_name": "Evan Scott",
       "ref_slug": "evan-scott",
       "games": 19,
@@ -1308,6 +1555,19 @@
       "away_games": 12,
       "away_wins": 4,
       "avg_margin_for_team": -4.21
+    },
+    {
+      "ref_name": "Dee Kantner",
+      "ref_slug": "dee-kantner",
+      "games": 18,
+      "wins": 10,
+      "losses": 8,
+      "win_pct": 0.56,
+      "home_games": 10,
+      "home_wins": 6,
+      "away_games": 8,
+      "away_wins": 4,
+      "avg_margin_for_team": 3.17
     },
     {
       "ref_name": "Jonathan Sterling",
@@ -1349,19 +1609,6 @@
       "avg_margin_for_team": 3.72
     },
     {
-      "ref_name": "Joe DeRosa",
-      "ref_slug": "joe-derosa",
-      "games": 17,
-      "wins": 8,
-      "losses": 9,
-      "win_pct": 0.47,
-      "home_games": 9,
-      "home_wins": 6,
-      "away_games": 8,
-      "away_wins": 2,
-      "avg_margin_for_team": 2.24
-    },
-    {
       "ref_name": "Robert Hussey",
       "ref_slug": "robert-hussey",
       "games": 17,
@@ -1373,6 +1620,32 @@
       "away_games": 9,
       "away_wins": 4,
       "avg_margin_for_team": -2.18
+    },
+    {
+      "ref_name": "Rashan Michel",
+      "ref_slug": "rashan-michel",
+      "games": 15,
+      "wins": 5,
+      "losses": 10,
+      "win_pct": 0.33,
+      "home_games": 8,
+      "home_wins": 4,
+      "away_games": 7,
+      "away_wins": 1,
+      "avg_margin_for_team": -0.13
+    },
+    {
+      "ref_name": "Woody Mayfield",
+      "ref_slug": "woody-mayfield",
+      "games": 15,
+      "wins": 10,
+      "losses": 5,
+      "win_pct": 0.67,
+      "home_games": 8,
+      "home_wins": 6,
+      "away_games": 7,
+      "away_wins": 4,
+      "avg_margin_for_team": 1.33
     },
     {
       "ref_name": "Andy Nagy",
@@ -1414,19 +1687,6 @@
       "avg_margin_for_team": -2.0
     },
     {
-      "ref_name": "Don Vaden",
-      "ref_slug": "don-vaden",
-      "games": 13,
-      "wins": 7,
-      "losses": 6,
-      "win_pct": 0.54,
-      "home_games": 6,
-      "home_wins": 4,
-      "away_games": 7,
-      "away_wins": 3,
-      "avg_margin_for_team": 0.62
-    },
-    {
       "ref_name": "Che Flores",
       "ref_slug": "che-flores",
       "games": 12,
@@ -1440,17 +1700,17 @@
       "avg_margin_for_team": -5.33
     },
     {
-      "ref_name": "Hue Hollins",
-      "ref_slug": "hue-hollins",
-      "games": 11,
-      "wins": 6,
-      "losses": 5,
-      "win_pct": 0.55,
-      "home_games": 5,
+      "ref_name": "Robbie Robinson",
+      "ref_slug": "robbie-robinson",
+      "games": 12,
+      "wins": 3,
+      "losses": 9,
+      "win_pct": 0.25,
+      "home_games": 9,
       "home_wins": 3,
-      "away_games": 6,
-      "away_wins": 3,
-      "avg_margin_for_team": 1.55
+      "away_games": 3,
+      "away_wins": 0,
+      "avg_margin_for_team": -2.33
     },
     {
       "ref_name": "Michael Henderson",
@@ -1464,19 +1724,6 @@
       "away_games": 6,
       "away_wins": 2,
       "avg_margin_for_team": -2.09
-    },
-    {
-      "ref_name": "Robbie Robinson",
-      "ref_slug": "robbie-robinson",
-      "games": 11,
-      "wins": 3,
-      "losses": 8,
-      "win_pct": 0.27,
-      "home_games": 8,
-      "home_wins": 3,
-      "away_games": 3,
-      "away_wins": 0,
-      "avg_margin_for_team": -2.36
     },
     {
       "ref_name": "Simone Jelks",
@@ -1505,19 +1752,6 @@
       "avg_margin_for_team": -0.5
     },
     {
-      "ref_name": "Blane Reichelt",
-      "ref_slug": "blane-reichelt",
-      "games": 10,
-      "wins": 7,
-      "losses": 3,
-      "win_pct": 0.7,
-      "home_games": 7,
-      "home_wins": 5,
-      "away_games": 3,
-      "away_wins": 2,
-      "avg_margin_for_team": 4.3
-    },
-    {
       "ref_name": "Dannica Baroody",
       "ref_slug": "dannica-baroody",
       "games": 10,
@@ -1529,32 +1763,6 @@
       "away_games": 2,
       "away_wins": 0,
       "avg_margin_for_team": -5.9
-    },
-    {
-      "ref_name": "Dee Kantner",
-      "ref_slug": "dee-kantner",
-      "games": 10,
-      "wins": 7,
-      "losses": 3,
-      "win_pct": 0.7,
-      "home_games": 5,
-      "home_wins": 4,
-      "away_games": 5,
-      "away_wins": 3,
-      "avg_margin_for_team": 5.8
-    },
-    {
-      "ref_name": "Nolan Fine",
-      "ref_slug": "nolan-fine",
-      "games": 10,
-      "wins": 5,
-      "losses": 5,
-      "win_pct": 0.5,
-      "home_games": 5,
-      "home_wins": 2,
-      "away_games": 5,
-      "away_wins": 3,
-      "avg_margin_for_team": 0.5
     },
     {
       "ref_name": "Pat O'Connell",

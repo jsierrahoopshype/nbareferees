@@ -4,24 +4,32 @@
     "name": "Robbie Robinson",
     "slug": "robbie-robinson",
     "raw_ids": [
-      "2883"
+      "2883",
+      "espn:robbie-robinson"
     ],
     "eras": [
+      "espn",
       "nba"
     ],
-    "first_season": "2004-05",
+    "first_season": "1995-96",
     "last_season": "2006-07",
-    "games_total": 139,
-    "games_rs": 139,
+    "games_total": 157,
+    "games_rs": 157,
     "games_po": 0,
     "games_pi": 0,
     "finals_games": 0,
     "game7s": 0,
     "active": false,
     "quality_total": 0,
-    "seasons_active": 3,
+    "seasons_active": 4,
     "quality_per_season": 0.0,
     "per_season": {
+      "1995-96": {
+        "rs": 18,
+        "po": 0,
+        "pi": 0,
+        "total": 18
+      },
       "2004-05": {
         "rs": 47,
         "po": 0,
@@ -44,6 +52,26 @@
   },
   "team_records": [
     {
+      "team_abbr": "MIA",
+      "games": 15,
+      "wins": 11,
+      "losses": 4,
+      "win_pct": 0.73,
+      "home_games": 10,
+      "home_wins": 8,
+      "avg_margin_for_team": 8.8
+    },
+    {
+      "team_abbr": "SEA",
+      "games": 15,
+      "wins": 7,
+      "losses": 8,
+      "win_pct": 0.47,
+      "home_games": 7,
+      "home_wins": 4,
+      "avg_margin_for_team": 1.47
+    },
+    {
       "team_abbr": "NYK",
       "games": 14,
       "wins": 5,
@@ -54,14 +82,34 @@
       "avg_margin_for_team": -5.57
     },
     {
-      "team_abbr": "MIA",
+      "team_abbr": "PHI",
       "games": 14,
-      "wins": 10,
-      "losses": 4,
-      "win_pct": 0.71,
-      "home_games": 9,
+      "wins": 9,
+      "losses": 5,
+      "win_pct": 0.64,
+      "home_games": 10,
       "home_wins": 7,
-      "avg_margin_for_team": 9.21
+      "avg_margin_for_team": -1.29
+    },
+    {
+      "team_abbr": "TOR",
+      "games": 14,
+      "wins": 4,
+      "losses": 10,
+      "win_pct": 0.29,
+      "home_games": 7,
+      "home_wins": 3,
+      "avg_margin_for_team": -2.86
+    },
+    {
+      "team_abbr": "WAS",
+      "games": 14,
+      "wins": 8,
+      "losses": 6,
+      "win_pct": 0.57,
+      "home_games": 11,
+      "home_wins": 7,
+      "avg_margin_for_team": 3.79
     },
     {
       "team_abbr": "NOP",
@@ -74,94 +122,84 @@
       "avg_margin_for_team": -1.54
     },
     {
-      "team_abbr": "SEA",
-      "games": 13,
-      "wins": 5,
-      "losses": 8,
-      "win_pct": 0.38,
-      "home_games": 6,
-      "home_wins": 3,
-      "avg_margin_for_team": 0.46
-    },
-    {
       "team_abbr": "IND",
-      "games": 12,
+      "games": 13,
       "wins": 8,
-      "losses": 4,
-      "win_pct": 0.67,
+      "losses": 5,
+      "win_pct": 0.62,
       "home_games": 6,
       "home_wins": 5,
-      "avg_margin_for_team": 4.75
-    },
-    {
-      "team_abbr": "PHI",
-      "games": 12,
-      "wins": 9,
-      "losses": 3,
-      "win_pct": 0.75,
-      "home_games": 9,
-      "home_wins": 7,
-      "avg_margin_for_team": 3.33
+      "avg_margin_for_team": 4.23
     },
     {
       "team_abbr": "BOS",
-      "games": 12,
-      "wins": 8,
+      "games": 13,
+      "wins": 9,
       "losses": 4,
-      "win_pct": 0.67,
+      "win_pct": 0.69,
       "home_games": 7,
       "home_wins": 5,
-      "avg_margin_for_team": 0.42
+      "avg_margin_for_team": 2.38
     },
     {
-      "team_abbr": "TOR",
+      "team_abbr": "ATL",
+      "games": 13,
+      "wins": 3,
+      "losses": 10,
+      "win_pct": 0.23,
+      "home_games": 5,
+      "home_wins": 1,
+      "avg_margin_for_team": -8.31
+    },
+    {
+      "team_abbr": "ORL",
+      "games": 12,
+      "wins": 7,
+      "losses": 5,
+      "win_pct": 0.58,
+      "home_games": 7,
+      "home_wins": 6,
+      "avg_margin_for_team": 2.25
+    },
+    {
+      "team_abbr": "POR",
       "games": 12,
       "wins": 4,
       "losses": 8,
       "win_pct": 0.33,
-      "home_games": 6,
-      "home_wins": 3,
-      "avg_margin_for_team": -2.25
+      "home_games": 4,
+      "home_wins": 1,
+      "avg_margin_for_team": -6.0
     },
     {
-      "team_abbr": "WAS",
+      "team_abbr": "CHA",
       "games": 12,
-      "wins": 6,
-      "losses": 6,
-      "win_pct": 0.5,
+      "wins": 3,
+      "losses": 9,
+      "win_pct": 0.25,
       "home_games": 9,
-      "home_wins": 5,
-      "avg_margin_for_team": 0.33
+      "home_wins": 3,
+      "avg_margin_for_team": -2.33
     },
     {
-      "team_abbr": "ORL",
+      "team_abbr": "CHI",
       "games": 11,
       "wins": 7,
       "losses": 4,
       "win_pct": 0.64,
-      "home_games": 7,
-      "home_wins": 6,
-      "avg_margin_for_team": 2.73
+      "home_games": 4,
+      "home_wins": 2,
+      "avg_margin_for_team": 0.09
     },
     {
-      "team_abbr": "ATL",
+      "team_abbr": "SAC",
       "games": 11,
-      "wins": 3,
-      "losses": 8,
-      "win_pct": 0.27,
-      "home_games": 5,
-      "home_wins": 1,
-      "avg_margin_for_team": -7.45
-    },
-    {
-      "team_abbr": "CHA",
-      "games": 11,
-      "wins": 3,
-      "losses": 8,
-      "win_pct": 0.27,
+      "wins": 5,
+      "losses": 6,
+      "win_pct": 0.45,
       "home_games": 8,
-      "home_wins": 3,
-      "avg_margin_for_team": -2.36
+      "home_wins": 5,
+      "avg_margin_for_team": 1.82
     },
     {
       "team_abbr": "LAC",
@@ -174,94 +212,84 @@
       "avg_margin_for_team": 7.4
     },
     {
-      "team_abbr": "POR",
+      "team_abbr": "BKN",
       "games": 10,
-      "wins": 3,
-      "losses": 7,
-      "win_pct": 0.3,
-      "home_games": 4,
-      "home_wins": 1,
-      "avg_margin_for_team": -8.2
-    },
-    {
-      "team_abbr": "CHI",
-      "games": 9,
       "wins": 5,
-      "losses": 4,
-      "win_pct": 0.56,
+      "losses": 5,
+      "win_pct": 0.5,
       "home_games": 3,
-      "home_wins": 1,
-      "avg_margin_for_team": -1.0
-    },
-    {
-      "team_abbr": "SAC",
-      "games": 9,
-      "wins": 3,
-      "losses": 6,
-      "win_pct": 0.33,
-      "home_games": 6,
       "home_wins": 3,
-      "avg_margin_for_team": 0.44
+      "avg_margin_for_team": -4.2
     },
     {
       "team_abbr": "MEM",
-      "games": 9,
+      "games": 10,
       "wins": 5,
-      "losses": 4,
-      "win_pct": 0.56,
-      "home_games": 8,
+      "losses": 5,
+      "win_pct": 0.5,
+      "home_games": 9,
       "home_wins": 5,
-      "avg_margin_for_team": 1.33
+      "avg_margin_for_team": 0.6
+    },
+    {
+      "team_abbr": "UTA",
+      "games": 9,
+      "wins": 6,
+      "losses": 3,
+      "win_pct": 0.67,
+      "home_games": 2,
+      "home_wins": 2,
+      "avg_margin_for_team": 1.0
     },
     {
       "team_abbr": "GSW",
-      "games": 8,
+      "games": 9,
       "wins": 1,
-      "losses": 7,
-      "win_pct": 0.12,
-      "home_games": 2,
+      "losses": 8,
+      "win_pct": 0.11,
+      "home_games": 3,
       "home_wins": 1,
-      "avg_margin_for_team": -7.25
+      "avg_margin_for_team": -8.0
     },
     {
-      "team_abbr": "BKN",
+      "team_abbr": "MIL",
+      "games": 9,
+      "wins": 4,
+      "losses": 5,
+      "win_pct": 0.44,
+      "home_games": 4,
+      "home_wins": 2,
+      "avg_margin_for_team": -1.67
+    },
+    {
+      "team_abbr": "MIN",
+      "games": 9,
+      "wins": 4,
+      "losses": 5,
+      "win_pct": 0.44,
+      "home_games": 3,
+      "home_wins": 2,
+      "avg_margin_for_team": -4.67
+    },
+    {
+      "team_abbr": "DEN",
       "games": 8,
       "wins": 4,
       "losses": 4,
       "win_pct": 0.5,
-      "home_games": 2,
-      "home_wins": 2,
-      "avg_margin_for_team": -4.62
+      "home_games": 3,
+      "home_wins": 1,
+      "avg_margin_for_team": 0.25
     },
     {
-      "team_abbr": "MIL",
+      "team_abbr": "LAL",
       "games": 8,
       "wins": 3,
       "losses": 5,
       "win_pct": 0.38,
-      "home_games": 3,
-      "home_wins": 1,
-      "avg_margin_for_team": -3.12
-    },
-    {
-      "team_abbr": "UTA",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 1,
-      "home_wins": 1,
-      "avg_margin_for_team": -0.43
-    },
-    {
-      "team_abbr": "LAL",
-      "games": 7,
-      "wins": 3,
-      "losses": 4,
-      "win_pct": 0.43,
       "home_games": 4,
       "home_wins": 2,
-      "avg_margin_for_team": -5.0
+      "avg_margin_for_team": -6.12
     },
     {
       "team_abbr": "HOU",
@@ -274,16 +302,6 @@
       "avg_margin_for_team": 6.0
     },
     {
-      "team_abbr": "MIN",
-      "games": 7,
-      "wins": 4,
-      "losses": 3,
-      "win_pct": 0.57,
-      "home_games": 3,
-      "home_wins": 2,
-      "avg_margin_for_team": -4.14
-    },
-    {
       "team_abbr": "PHX",
       "games": 6,
       "wins": 2,
@@ -292,16 +310,6 @@
       "home_games": 2,
       "home_wins": 1,
       "avg_margin_for_team": -3.33
-    },
-    {
-      "team_abbr": "DEN",
-      "games": 6,
-      "wins": 2,
-      "losses": 4,
-      "win_pct": 0.33,
-      "home_games": 2,
-      "home_wins": 0,
-      "avg_margin_for_team": -0.83
     },
     {
       "team_abbr": "SAS",
@@ -315,45 +323,45 @@
     },
     {
       "team_abbr": "DAL",
-      "games": 5,
+      "games": 6,
       "wins": 5,
-      "losses": 0,
-      "win_pct": 1.0,
-      "home_games": 4,
+      "losses": 1,
+      "win_pct": 0.83,
+      "home_games": 5,
       "home_wins": 4,
-      "avg_margin_for_team": 11.2
+      "avg_margin_for_team": 8.83
     },
     {
       "team_abbr": "DET",
-      "games": 5,
-      "wins": 4,
+      "games": 6,
+      "wins": 5,
       "losses": 1,
-      "win_pct": 0.8,
-      "home_games": 0,
-      "home_wins": 0,
-      "avg_margin_for_team": 4.8
+      "win_pct": 0.83,
+      "home_games": 1,
+      "home_wins": 1,
+      "avg_margin_for_team": 7.33
     },
     {
       "team_abbr": "CLE",
-      "games": 4,
+      "games": 5,
       "wins": 2,
-      "losses": 2,
-      "win_pct": 0.5,
+      "losses": 3,
+      "win_pct": 0.4,
       "home_games": 2,
       "home_wins": 1,
-      "avg_margin_for_team": 6.0
+      "avg_margin_for_team": 0.8
     }
   ],
   "whistle_profile": {
     "rs": {
-      "n": 139,
-      "n_boxscore": 139,
-      "avg_total_points": 197.34,
-      "avg_total_fta": 56.04,
-      "avg_total_pf": 47.33,
-      "home_win_pct": 0.6,
-      "avg_abs_margin": 10.63,
-      "ot_games": 10,
+      "n": 157,
+      "n_boxscore": 157,
+      "avg_total_points": 197.32,
+      "avg_total_fta": 56.59,
+      "avg_total_pf": 47.64,
+      "home_win_pct": 0.61,
+      "avg_abs_margin": 10.59,
+      "ot_games": 11,
       "ot_rate": 0.07,
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
@@ -517,6 +525,24 @@
       "player_slug": "pau-gasol"
     },
     {
+      "player_name": "Clifford Robinson",
+      "pts": 39,
+      "team_abbr": "POR",
+      "opp_abbr": "CHI",
+      "game_date": "1995-11-12",
+      "game_id": "151111004",
+      "player_slug": "clifford-robinson"
+    },
+    {
+      "player_name": "Mahmoud Abdul-Rauf",
+      "pts": 39,
+      "team_abbr": "DEN",
+      "opp_abbr": "DAL",
+      "game_date": "1995-11-25",
+      "game_id": "151124006",
+      "player_slug": "mahmoud-abdul-rauf"
+    },
+    {
       "player_name": "Allen Iverson",
       "pts": 38,
       "team_abbr": "PHI",
@@ -571,6 +597,15 @@
       "player_slug": "gilbert-arenas"
     },
     {
+      "player_name": "Jamal Mashburn",
+      "pts": 37,
+      "team_abbr": "DAL",
+      "opp_abbr": "DEN",
+      "game_date": "1995-11-25",
+      "game_id": "151124006",
+      "player_slug": "jamal-mashburn"
+    },
+    {
       "player_name": "Baron Davis",
       "pts": 36,
       "team_abbr": "NOH",
@@ -578,33 +613,6 @@
       "game_date": "2004-11-05",
       "game_id": "0020400024",
       "player_slug": "baron-davis"
-    },
-    {
-      "player_name": "Reggie Miller",
-      "pts": 36,
-      "team_abbr": "IND",
-      "opp_abbr": "POR",
-      "game_date": "2005-02-16",
-      "game_id": "0020400774",
-      "player_slug": "reggie-miller"
-    },
-    {
-      "player_name": "Ricky Davis",
-      "pts": 36,
-      "team_abbr": "BOS",
-      "opp_abbr": "ATL",
-      "game_date": "2005-04-01",
-      "game_id": "0020401069",
-      "player_slug": "ricky-davis"
-    },
-    {
-      "player_name": "Richard Jefferson",
-      "pts": 36,
-      "team_abbr": "NJN",
-      "opp_abbr": "SEA",
-      "game_date": "2006-01-28",
-      "game_id": "0020500638",
-      "player_slug": "richard-jefferson"
     }
   ],
   "player_swings": [

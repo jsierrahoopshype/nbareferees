@@ -11,19 +11,25 @@
       "espn",
       "nba"
     ],
-    "first_season": "2001-02",
+    "first_season": "1995-96",
     "last_season": "2025-26",
-    "games_total": 1467,
-    "games_rs": 1372,
+    "games_total": 1469,
+    "games_rs": 1374,
     "games_po": 94,
     "games_pi": 1,
     "finals_games": 1,
     "game7s": 3,
     "active": true,
     "quality_total": 168,
-    "seasons_active": 25,
-    "quality_per_season": 6.72,
+    "seasons_active": 26,
+    "quality_per_season": 6.46,
     "per_season": {
+      "1995-96": {
+        "rs": 2,
+        "po": 0,
+        "pi": 0,
+        "total": 2
+      },
       "2001-02": {
         "rs": 53,
         "po": 0,
@@ -268,6 +274,16 @@
       "avg_margin_for_team": 2.01
     },
     {
+      "team_abbr": "LAC",
+      "games": 100,
+      "wins": 52,
+      "losses": 48,
+      "win_pct": 0.52,
+      "home_games": 37,
+      "home_wins": 26,
+      "avg_margin_for_team": 0.27
+    },
+    {
       "team_abbr": "CHI",
       "games": 100,
       "wins": 50,
@@ -298,14 +314,14 @@
       "avg_margin_for_team": -3.96
     },
     {
-      "team_abbr": "LAC",
+      "team_abbr": "TOR",
       "games": 99,
       "wins": 52,
       "losses": 47,
       "win_pct": 0.53,
-      "home_games": 37,
-      "home_wins": 26,
-      "avg_margin_for_team": 0.45
+      "home_games": 52,
+      "home_wins": 31,
+      "avg_margin_for_team": 1.93
     },
     {
       "team_abbr": "NOP",
@@ -328,16 +344,6 @@
       "avg_margin_for_team": -0.74
     },
     {
-      "team_abbr": "TOR",
-      "games": 98,
-      "wins": 51,
-      "losses": 47,
-      "win_pct": 0.52,
-      "home_games": 52,
-      "home_wins": 31,
-      "avg_margin_for_team": 1.83
-    },
-    {
       "team_abbr": "MIA",
       "games": 97,
       "wins": 58,
@@ -346,6 +352,16 @@
       "home_games": 57,
       "home_wins": 37,
       "avg_margin_for_team": 1.53
+    },
+    {
+      "team_abbr": "MIN",
+      "games": 95,
+      "wins": 46,
+      "losses": 49,
+      "win_pct": 0.48,
+      "home_games": 53,
+      "home_wins": 25,
+      "avg_margin_for_team": -0.13
     },
     {
       "team_abbr": "GSW",
@@ -366,16 +382,6 @@
       "home_games": 44,
       "home_wins": 22,
       "avg_margin_for_team": -2.51
-    },
-    {
-      "team_abbr": "MIN",
-      "games": 94,
-      "wins": 45,
-      "losses": 49,
-      "win_pct": 0.48,
-      "home_games": 52,
-      "home_wins": 24,
-      "avg_margin_for_team": -0.32
     },
     {
       "team_abbr": "BKN",
@@ -439,13 +445,13 @@
     },
     {
       "team_abbr": "MEM",
-      "games": 84,
+      "games": 85,
       "wins": 47,
-      "losses": 37,
-      "win_pct": 0.56,
-      "home_games": 50,
+      "losses": 38,
+      "win_pct": 0.55,
+      "home_games": 51,
       "home_wins": 32,
-      "avg_margin_for_team": 1.04
+      "avg_margin_for_team": 0.88
     },
     {
       "team_abbr": "DAL",
@@ -490,21 +496,21 @@
   ],
   "whistle_profile": {
     "rs": {
-      "n": 1372,
-      "n_boxscore": 1372,
-      "avg_total_points": 207.23,
-      "avg_total_fta": 47.49,
-      "avg_total_pf": 40.67,
+      "n": 1374,
+      "n_boxscore": 1374,
+      "avg_total_points": 207.2,
+      "avg_total_fta": 47.5,
+      "avg_total_pf": 40.69,
       "home_win_pct": 0.6,
       "avg_abs_margin": 10.87,
       "ot_games": 59,
       "ot_rate": 0.04,
-      "avg_total_points_pctile": 52.78,
-      "avg_total_fta_pctile": 63.89,
-      "avg_total_pf_pctile": 48.15,
-      "avg_abs_margin_pctile": 25.0,
-      "home_win_pct_pctile": 69.44,
-      "ot_rate_pctile": 3.7
+      "avg_total_points_pctile": 59.84,
+      "avg_total_fta_pctile": 48.03,
+      "avg_total_pf_pctile": 38.58,
+      "avg_abs_margin_pctile": 24.41,
+      "home_win_pct_pctile": 62.99,
+      "ot_rate_pctile": 3.15
     },
     "po": {
       "n": 94,
@@ -516,12 +522,12 @@
       "avg_abs_margin": 13.54,
       "ot_games": 3,
       "ot_rate": 0.03,
-      "avg_total_points_pctile": 80.65,
-      "avg_total_fta_pctile": 29.03,
-      "avg_total_pf_pctile": 22.58,
-      "avg_abs_margin_pctile": 96.77,
-      "home_win_pct_pctile": 32.26,
-      "ot_rate_pctile": 12.9
+      "avg_total_points_pctile": 83.33,
+      "avg_total_fta_pctile": 25.0,
+      "avg_total_pf_pctile": 19.44,
+      "avg_abs_margin_pctile": 97.22,
+      "home_win_pct_pctile": 27.78,
+      "ot_rate_pctile": 13.89
     }
   },
   "top_performances": [
@@ -888,7 +894,7 @@
       "player_id": "1515",
       "name": "Anthony Parker",
       "n_games": 20,
-      "slug": "anthony-parker",
+      "slug": "anthony-parker-2",
       "pts_with_ref": 12.7,
       "pts_baseline": 10.07,
       "pts_swing": 2.63,

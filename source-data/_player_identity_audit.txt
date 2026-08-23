@@ -1,7 +1,7 @@
 Player identity audit (teams/players round)
 ============================================================
 
-Segments: 3808 | entities: 2635 | cross-era merges: 1171 | same-key splits kept: 41 | slug collisions: 41
+Segments: 4264 | entities: 3091 | cross-era merges: 1171 | same-key splits kept: 49 | slug collisions: 49
 
 CROSS-ERA MERGES (segments joined into one player):
 ------------------------------------------------------------
@@ -21,7 +21,7 @@ Aaron Holiday  [aaron-holiday]
     nba   id=1628988  2018-19..2022-23  (322 games)  "Aaron Holiday"
     espn  id=3922230  2023-24..2025-26  (206 games)  "Aaron Holiday"
 Aaron McKie  [aaron-mckie]
-    espn  id=539      2000-01..2002-03  (237 games)  "Aaron McKie"
+    espn  id=539      1994-95..2002-03  (686 games)  "Aaron McKie"
     nba   id=243      2003-04..2006-07  (172 games)  "Aaron McKie"
 Aaron Nesmith  [aaron-nesmith]
     nba   id=1630174  2020-21..2022-23  (191 games)  "Aaron Nesmith"
@@ -30,16 +30,16 @@ Aaron Wiggins  [aaron-wiggins]
     nba   id=1630598  2021-22..2022-23  (120 games)  "Aaron Wiggins"
     espn  id=4397183  2023-24..2025-26  (265 games)  "Aaron Wiggins"
 Aaron Williams  [aaron-williams]
-    espn  id=923      2000-01..2002-03  (284 games)  "Aaron Williams"
+    espn  id=923      1993-94..2002-03  (521 games)  "Aaron Williams"
     nba   id=1425     2003-04..2007-08  (241 games)  "Aaron Williams"
 Admiral Schofield  [admiral-schofield]
     nba   id=1629678  2019-20..2022-23  (108 games)  "Admiral Schofield"
     espn  id=3918423  2023-24..2023-24  (23 games)  "Admiral Schofield"
 Adonal Foyle  [adonal-foyle]
-    espn  id=254      2000-01..2002-03  (219 games)  "Adonal Foyle"
+    espn  id=254      1997-98..2002-03  (392 games)  "Adonal Foyle"
     nba   id=1502     2003-04..2008-09  (347 games)  "Adonal Foyle"
 Adrian Griffin  [adrian-griffin]
-    espn  id=285      2000-01..2002-03  (197 games)  "Adrian Griffin"
+    espn  id=285      1999-00..2002-03  (267 games)  "Adrian Griffin"
     nba   id=1559     2003-04..2007-08  (238 games)  "Adrian Griffin"
 AJ Green  [aj-green]
     nba   id=1631260  2022-23..2022-23  (35 games)  "AJ Green"
@@ -51,7 +51,7 @@ Al-Farouq Aminu  [al-farouq-aminu]
     nba   id=202329   2010-11..2020-21  (675 games)  "Al-Farouq Aminu"
     espn  id=4248     2012-13..2012-13  (76 games)  "Al-Farouq Aminu"
 Al Harrington  [al-harrington]
-    espn  id=308      2000-01..2012-13  (223 games)  "Al Harrington"
+    espn  id=308      1998-99..2012-13  (293 games)  "Al Harrington"
     nba   id=1733     2003-04..2013-14  (742 games)  "Al Harrington"
 Al Horford  [al-horford]
     nba   id=201143   2007-08..2022-23  (1100 games)  "Al Horford"
@@ -63,7 +63,7 @@ Alan Anderson  [alan-anderson]
     nba   id=101187   2005-06..2016-17  (283 games)  "Alan Anderson"
     espn  id=6569     2012-13..2012-13  (65 games)  "Alan Anderson"
 Alan Henderson  [alan-henderson]
-    espn  id=322      2000-01..2002-03  (181 games)  "Alan Henderson"
+    espn  id=322      1995-96..2002-03  (502 games)  "Alan Henderson"
     nba   id=673      2003-04..2006-07  (182 games)  "Alan Henderson"
 Alec Burks  [alec-burks]
     nba   id=202692   2011-12..2022-23  (634 games)  "Alec Burks"
@@ -81,10 +81,10 @@ Alexey Shved  [alexey-shved]
     espn  id=3882     2012-13..2012-13  (77 games)  "Alexey Shved"
     nba   id=203144   2013-14..2014-15  (105 games)  "Alexey Shved"
 Allan Houston  [allan-houston]
-    espn  id=349      2000-01..2002-03  (242 games)  "Allan Houston"
+    espn  id=349      1993-94..2002-03  (827 games)  "Allan Houston"
     nba   id=275      2003-04..2004-05  (70 games)  "Allan Houston"
 Allen Iverson  [allen-iverson]
-    espn  id=366      2000-01..2002-03  (245 games)  "Allen Iverson"
+    espn  id=366      1996-97..2002-03  (537 games)  "Allen Iverson"
     nba   id=947      2003-04..2009-10  (441 games)  "Allen Iverson"
 Alondes Williams  [alondes-williams]
     nba   id=1631214  2022-23..2022-23  (1 games)  "Alondes Williams"
@@ -93,7 +93,7 @@ Alonzo Gee  [alonzo-gee]
     nba   id=202087   2009-10..2016-17  (336 games)  "Alonzo Gee"
     espn  id=4232     2012-13..2012-13  (82 games)  "Alonzo Gee"
 Alonzo Mourning  [alonzo-mourning]
-    espn  id=580      2000-01..2001-02  (91 games)  "Alonzo Mourning"
+    espn  id=580      1993-94..2001-02  (582 games)  "Alonzo Mourning"
     nba   id=297      2003-04..2007-08  (235 games)  "Alonzo Mourning"
 Alperen Sengun  [alperen-sengun]
     nba   id=1630578  2021-22..2022-23  (147 games)  "Alperen Sengun"
@@ -102,10 +102,10 @@ Alton Ford  [alton-ford]
     espn  id=993      2001-02..2002-03  (70 games)  "Alton Ford"
     nba   id=2228     2003-04..2003-04  (9 games)  "Alton Ford"
 Alvin Williams  [alvin-williams]
-    espn  id=931      2000-01..2002-03  (259 games)  "Alvin Williams"
+    espn  id=931      1997-98..2002-03  (416 games)  "Alvin Williams"
     nba   id=1541     2003-04..2006-07  (59 games)  "Alvin Williams"
 Amal McCaskill  [amal-mccaskill]
-    espn  id=1039     2001-02..2002-03  (39 games)  "Amal McCaskill"
+    espn  id=1039     1996-97..2002-03  (58 games)  "Amal McCaskill"
     nba   id=1043     2003-04..2003-04  (59 games)  "Amal McCaskill"
 Amar'e Stoudemire  [amare-stoudemire]
     espn  id=1727     2002-03..2012-13  (121 games)  "Amar'e Stoudemire"
@@ -129,7 +129,7 @@ Andre Iguodala  [andre-iguodala]
     nba   id=2738     2004-05..2022-23  (1322 games)  "Andre Iguodala"
     espn  id=2386     2012-13..2012-13  (86 games)  "Andre Iguodala"
 Andre Miller  [andre-miller]
-    espn  id=557      2000-01..2012-13  (331 games)  "Andre Miller"
+    espn  id=557      1999-00..2012-13  (410 games)  "Andre Miller"
     nba   id=1889     2003-04..2015-16  (954 games)  "Andre Miller"
 Andrea Bargnani  [andrea-bargnani]
     nba   id=200745   2006-07..2015-16  (526 games)  "Andrea Bargnani"
@@ -141,7 +141,7 @@ Andrew Bogut  [andrew-bogut]
     nba   id=101106   2005-06..2018-19  (734 games)  "Andrew Bogut"
     espn  id=2747     2012-13..2012-13  (44 games)  "Andrew Bogut"
 Andrew DeClercq  [andrew-declercq]
-    espn  id=196      2000-01..2002-03  (218 games)  "Andrew DeClercq"
+    espn  id=196      1995-96..2002-03  (518 games)  "Andrew DeClercq"
     nba   id=692      2003-04..2004-05  (79 games)  "Andrew DeClercq"
 Andrew Goudelock  [andrew-goudelock]
     nba   id=202726   2011-12..2015-16  (54 games)  "Andrew Goudelock"
@@ -159,7 +159,7 @@ Andris Biedrins  [andris-biedrins]
     nba   id=2740     2004-05..2013-14  (474 games)  "Andris Biedrins"
     espn  id=2427     2012-13..2012-13  (56 games)  "Andris Biedrins"
 Anfernee Hardaway  [anfernee-hardaway]
-    espn  id=302      2000-01..2002-03  (148 games)  "Anfernee Hardaway"
+    espn  id=302      1993-94..2002-03  (625 games)  "Anfernee Hardaway"
     nba   id=358      2003-04..2007-08  (137 games)  "Anfernee Hardaway"
 Anfernee Simons  [anfernee-simons]
     nba   id=1629014  2018-19..2022-23  (288 games)  "Anfernee Simons"
@@ -168,10 +168,10 @@ Ansu Sesay  [ansu-sesay]
     espn  id=767      2001-02..2002-03  (58 games)  "Ansu Sesay"
     nba   id=1738     2003-04..2004-05  (73 games)  "Ansu Sesay"
 Antawn Jamison  [antawn-jamison]
-    espn  id=385      2000-01..2012-13  (326 games)  "Antawn Jamison"
+    espn  id=385      1998-99..2012-13  (415 games)  "Antawn Jamison"
     nba   id=1712     2003-04..2013-14  (707 games)  "Antawn Jamison"
 Anthony Carter  [anthony-carter]
-    espn  id=137      2000-01..2002-03  (173 games)  "Anthony Carter"
+    espn  id=137      1999-00..2002-03  (260 games)  "Anthony Carter"
     nba   id=1853     2003-04..2011-12  (403 games)  "Anthony Carter"
 Anthony Davis  [anthony-davis]
     espn  id=6583     2012-13..2025-26  (220 games)  "Anthony Davis"
@@ -183,16 +183,16 @@ Anthony Gill  [anthony-gill]
     nba   id=1630264  2020-21..2022-23  (133 games)  "Anthony Gill"
     espn  id=2581184  2023-24..2025-26  (156 games)  "Anthony Gill"
 Anthony Goldwire  [anthony-goldwire]
-    espn  id=275      2000-01..2002-03  (35 games)  "Anthony Goldwire"
+    espn  id=275      1995-96..2002-03  (213 games)  "Anthony Goldwire"
     nba   id=924      2003-04..2005-06  (47 games)  "Anthony Goldwire"
 Anthony Johnson  [anthony-johnson]
-    espn  id=396      2000-01..2002-03  (189 games)  "Anthony Johnson"
+    espn  id=396      1997-98..2002-03  (379 games)  "Anthony Johnson"
     nba   id=1533     2003-04..2009-10  (507 games)  "Anthony Johnson"
 Anthony Morrow  [anthony-morrow]
     nba   id=201627   2008-09..2016-17  (540 games)  "Anthony Morrow"
     espn  id=3474     2012-13..2012-13  (41 games)  "Anthony Morrow"
 Anthony Peeler  [anthony-peeler]
-    espn  id=642      2000-01..2002-03  (252 games)  "Anthony Peeler"
+    espn  id=642      1993-94..2002-03  (668 games)  "Anthony Peeler"
     nba   id=324      2003-04..2004-05  (133 games)  "Anthony Peeler"
 Anthony Randolph  [anthony-randolph]
     nba   id=201576   2008-09..2013-14  (213 games)  "Anthony Randolph"
@@ -201,16 +201,16 @@ Anthony Tolliver  [anthony-tolliver]
     nba   id=201229   2008-09..2020-21  (676 games)  "Anthony Tolliver"
     espn  id=3276     2012-13..2012-13  (68 games)  "Anthony Tolliver"
 Antoine Walker  [antoine-walker]
-    espn  id=881      2000-01..2002-03  (266 games)  "Antoine Walker"
+    espn  id=881      1996-97..2002-03  (550 games)  "Antoine Walker"
     nba   id=952      2003-04..2007-08  (380 games)  "Antoine Walker"
 Antonio Daniels  [antonio-daniels]
-    espn  id=183      2000-01..2002-03  (256 games)  "Antonio Daniels"
+    espn  id=183      1997-98..2002-03  (463 games)  "Antonio Daniels"
     nba   id=1498     2003-04..2010-11  (481 games)  "Antonio Daniels"
 Antonio Davis  [antonio-davis]
-    espn  id=189      2000-01..2002-03  (225 games)  "Antonio Davis"
+    espn  id=189      1993-94..2002-03  (789 games)  "Antonio Davis"
     nba   id=213      2003-04..2005-06  (202 games)  "Antonio Davis"
 Antonio McDyess  [antonio-mcdyess]
-    espn  id=530      2000-01..2001-02  (80 games)  "Antonio McDyess"
+    espn  id=530      1995-96..2001-02  (444 games)  "Antonio McDyess"
     nba   id=686      2003-04..2010-11  (651 games)  "Antonio McDyess"
 Armoni Brooks  [armoni-brooks]
     nba   id=1629717  2020-21..2021-22  (78 games)  "Armoni Brooks"
@@ -225,7 +225,7 @@ Arron Afflalo  [arron-afflalo]
     nba   id=201167   2007-08..2017-18  (733 games)  "Arron Afflalo"
     espn  id=3187     2012-13..2012-13  (64 games)  "Arron Afflalo"
 Austin Croshere  [austin-croshere]
-    espn  id=167      2000-01..2002-03  (219 games)  "Austin Croshere"
+    espn  id=167      1997-98..2002-03  (375 games)  "Austin Croshere"
     nba   id=1506     2003-04..2008-09  (345 games)  "Austin Croshere"
 Austin Daye  [austin-daye]
     nba   id=201948   2009-10..2014-15  (239 games)  "Austin Daye"
@@ -240,7 +240,7 @@ Avery Bradley  [avery-bradley]
     nba   id=202340   2010-11..2021-22  (643 games)  "Avery Bradley"
     espn  id=4240     2012-13..2012-13  (56 games)  "Avery Bradley"
 Avery Johnson  [avery-johnson]
-    espn  id=390      2000-01..2002-03  (187 games)  "Avery Johnson"
+    espn  id=390      1993-94..2002-03  (772 games)  "Avery Johnson"
     nba   id=422      2003-04..2003-04  (46 games)  "Avery Johnson"
 Ayo Dosunmu  [ayo-dosunmu]
     nba   id=1630245  2021-22..2022-23  (162 games)  "Ayo Dosunmu"
@@ -249,7 +249,7 @@ Bam Adebayo  [bam-adebayo]
     nba   id=1628389  2017-18..2022-23  (487 games)  "Bam Adebayo"
     espn  id=4066261  2023-24..2025-26  (237 games)  "Bam Adebayo"
 Baron Davis  [baron-davis]
-    espn  id=194      2000-01..2002-03  (236 games)  "Baron Davis"
+    espn  id=194      1999-00..2002-03  (320 games)  "Baron Davis"
     nba   id=1884     2003-04..2011-12  (561 games)  "Baron Davis"
 Ben Gordon  [ben-gordon]
     nba   id=2732     2004-05..2014-15  (692 games)  "Ben Gordon"
@@ -258,7 +258,7 @@ Ben Simmons  [ben-simmons]
     nba   id=1627732  2017-18..2022-23  (351 games)  "Ben Simmons"
     espn  id=3907387  2023-24..2024-25  (71 games)  "Ben Simmons"
 Ben Wallace  [ben-wallace]
-    espn  id=885      2000-01..2002-03  (260 games)  "Ben Wallace"
+    espn  id=885      1996-97..2002-03  (485 games)  "Ben Wallace"
     nba   id=1112     2003-04..2011-12  (712 games)  "Ben Wallace"
 Bennedict Mathurin  [bennedict-mathurin]
     nba   id=1631097  2022-23..2022-23  (78 games)  "Bennedict Mathurin"
@@ -270,7 +270,7 @@ Bernard James  [bernard-james]
     espn  id=6593     2012-13..2012-13  (46 games)  "Bernard James"
     nba   id=203108   2013-14..2014-15  (49 games)  "Bernard James"
 Bimbo Coles  [bimbo-coles]
-    espn  id=159      2000-01..2002-03  (135 games)  "Bimbo Coles"
+    espn  id=159      1993-94..2002-03  (595 games)  "Bimbo Coles"
     nba   id=902      2003-04..2003-04  (22 games)  "Bimbo Coles"
 Bismack Biyombo  [bismack-biyombo]
     nba   id=202687   2011-12..2022-23  (759 games)  "Bismack Biyombo"
@@ -282,16 +282,16 @@ Blake Wesley  [blake-wesley]
     nba   id=1631104  2022-23..2022-23  (37 games)  "Blake Wesley"
     espn  id=4683935  2023-24..2025-26  (154 games)  "Blake Wesley"
 Bo Outlaw  [bo-outlaw]
-    espn  id=623      2000-01..2002-03  (253 games)  "Bo Outlaw"
+    espn  id=623      1993-94..2002-03  (731 games)  "Bo Outlaw"
     nba   id=448      2003-04..2007-08  (201 games)  "Bo Outlaw"
 Bob Sura  [bob-sura]
-    espn  id=825      2000-01..2002-03  (186 games)  "Bob Sura"
+    espn  id=825      1995-96..2002-03  (515 games)  "Bob Sura"
     nba   id=682      2003-04..2004-05  (148 games)  "Bob Sura"
 Boban Marjanovic  [boban-marjanovic]
     nba   id=1626246  2015-16..2022-23  (348 games)  "Boban Marjanovic"
     espn  id=4376     2023-24..2023-24  (14 games)  "Boban Marjanovic"
 Bobby Jackson  [bobby-jackson]
-    espn  id=376      2000-01..2002-03  (258 games)  "Bobby Jackson"
+    espn  id=376      1997-98..2002-03  (451 games)  "Bobby Jackson"
     nba   id=1517     2003-04..2008-09  (356 games)  "Bobby Jackson"
 Bobby Portis  [bobby-portis]
     nba   id=1626171  2015-16..2022-23  (566 games)  "Bobby Portis"
@@ -312,7 +312,7 @@ Bones Hyland  [bones-hyland]
     nba   id=1630538  2021-22..2022-23  (135 games)  "Bones Hyland"
     espn  id=4592492  2023-24..2025-26  (148 games)  "Bones Hyland"
 Bonzi Wells  [bonzi-wells]
-    espn  id=901      2000-01..2002-03  (234 games)  "Bonzi Wells"
+    espn  id=901      1998-99..2002-03  (320 games)  "Bonzi Wells"
     nba   id=1719     2003-04..2007-08  (312 games)  "Bonzi Wells"
 Boris Diaw  [boris-diaw]
     nba   id=2564     2003-04..2016-17  (1072 games)  "Boris Diaw"
@@ -321,7 +321,7 @@ Bostjan Nachbar  [bostjan-nachbar]
     espn  id=1723     2002-03..2002-03  (16 games)  "Bostjan Nachbar"
     nba   id=2411     2003-04..2007-08  (320 games)  "Bostjan Nachbar"
 Brad Miller  [brad-miller]
-    espn  id=556      2000-01..2002-03  (217 games)  "Brad Miller"
+    espn  id=556      1998-99..2002-03  (312 games)  "Brad Miller"
     nba   id=1802     2003-04..2011-12  (598 games)  "Brad Miller"
 Bradley Beal  [bradley-beal]
     espn  id=6580     2012-13..2025-26  (172 games)  "Bradley Beal"
@@ -366,16 +366,16 @@ Brendan Haywood  [brendan-haywood]
     espn  id=1000     2001-02..2012-13  (204 games)  "Brendan Haywood"
     nba   id=2217     2003-04..2014-15  (660 games)  "Brendan Haywood"
 Brent Barry  [brent-barry]
-    espn  id=42       2000-01..2002-03  (228 games)  "Brent Barry"
+    espn  id=42       1995-96..2002-03  (548 games)  "Brent Barry"
     nba   id=699      2003-04..2008-09  (438 games)  "Brent Barry"
 Brevin Knight  [brevin-knight]
-    espn  id=440      2000-01..2002-03  (161 games)  "Brevin Knight"
+    espn  id=440      1997-98..2002-03  (345 games)  "Brevin Knight"
     nba   id=1510     2003-04..2008-09  (394 games)  "Brevin Knight"
 Brian Cardinal  [brian-cardinal]
     espn  id=130      2000-01..2002-03  (28 games)  "Brian Cardinal"
     nba   id=2073     2003-04..2011-12  (443 games)  "Brian Cardinal"
 Brian Grant  [brian-grant]
-    espn  id=280      2000-01..2002-03  (239 games)  "Brian Grant"
+    espn  id=280      1994-95..2002-03  (628 games)  "Brian Grant"
     nba   id=258      2003-04..2005-06  (179 games)  "Brian Grant"
 Brian Roberts  [brian-roberts]
     espn  id=6641     2012-13..2012-13  (78 games)  "Brian Roberts"
@@ -384,13 +384,13 @@ Brian Scalabrine  [brian-scalabrine]
     espn  id=1021     2001-02..2002-03  (100 games)  "Brian Scalabrine"
     nba   id=2243     2003-04..2011-12  (459 games)  "Brian Scalabrine"
 Brian Skinner  [brian-skinner]
-    espn  id=779      2000-01..2002-03  (189 games)  "Brian Skinner"
+    espn  id=779      1998-99..2002-03  (242 games)  "Brian Skinner"
     nba   id=1730     2003-04..2011-12  (386 games)  "Brian Skinner"
 Brook Lopez  [brook-lopez]
     nba   id=201572   2008-09..2022-23  (943 games)  "Brook Lopez"
     espn  id=3448     2012-13..2025-26  (328 games)  "Brook Lopez"
 Bruce Bowen  [bruce-bowen]
-    espn  id=83       2000-01..2002-03  (260 games)  "Bruce Bowen"
+    espn  id=83       1996-97..2002-03  (429 games)  "Bruce Bowen"
     nba   id=1477     2003-04..2008-09  (564 games)  "Bruce Bowen"
 Bruce Brown  [bruce-brown]
     nba   id=1628971  2018-19..2022-23  (389 games)  "Bruce Brown"
@@ -399,16 +399,16 @@ Bruno Fernando  [bruno-fernando]
     nba   id=1628981  2019-20..2022-23  (164 games)  "Bruno Fernando"
     espn  id=4277952  2023-24..2024-25  (63 games)  "Bruno Fernando"
 Bruno Sundov  [bruno-sundov]
-    espn  id=824      2000-01..2002-03  (63 games)  "Bruno Sundov"
+    espn  id=824      1998-99..2002-03  (80 games)  "Bruno Sundov"
     nba   id=1743     2003-04..2004-05  (26 games)  "Bruno Sundov"
 Bryce Drew  [bryce-drew]
-    espn  id=211      2000-01..2002-03  (125 games)  "Bryce Drew"
+    espn  id=211      1998-99..2002-03  (232 games)  "Bryce Drew"
     nba   id=1724     2003-04..2003-04  (15 games)  "Bryce Drew"
 Bryce McGowens  [bryce-mcgowens]
     nba   id=1631121  2022-23..2022-23  (46 games)  "Bryce McGowens"
     espn  id=4576086  2023-24..2025-26  (114 games)  "Bryce McGowens"
 Bryon Russell  [bryon-russell]
-    espn  id=742      2000-01..2002-03  (223 games)  "Bryon Russell"
+    espn  id=742      1993-94..2002-03  (779 games)  "Bryon Russell"
     nba   id=935      2003-04..2005-06  (152 games)  "Bryon Russell"
 Buddy Boeheim  [buddy-boeheim]
     nba   id=1631205  2022-23..2022-23  (10 games)  "Buddy Boeheim"
@@ -426,7 +426,7 @@ Cade Cunningham  [cade-cunningham]
     nba   id=1630595  2021-22..2022-23  (76 games)  "Cade Cunningham"
     espn  id=4432166  2023-24..2025-26  (216 games)  "Cade Cunningham"
 Calbert Cheaney  [calbert-cheaney]
-    espn  id=144      2000-01..2002-03  (163 games)  "Calbert Cheaney"
+    espn  id=144      1993-94..2002-03  (649 games)  "Calbert Cheaney"
     nba   id=384      2003-04..2005-06  (176 games)  "Calbert Cheaney"
 Caleb Houstan  [caleb-houstan]
     nba   id=1631216  2022-23..2022-23  (51 games)  "Caleb Houstan"
@@ -435,7 +435,7 @@ Caleb Martin  [caleb-martin]
     nba   id=1628997  2019-20..2022-23  (242 games)  "Caleb Martin"
     espn  id=3138160  2023-24..2025-26  (176 games)  "Caleb Martin"
 Calvin Booth  [calvin-booth]
-    espn  id=77       2000-01..2002-03  (127 games)  "Calvin Booth"
+    espn  id=77       1999-00..2002-03  (136 games)  "Calvin Booth"
     nba   id=1916     2003-04..2008-09  (239 games)  "Calvin Booth"
 Cam Reddish  [cam-reddish]
     nba   id=1629629  2019-20..2022-23  (177 games)  "Cam Reddish"
@@ -492,7 +492,7 @@ Charles Jenkins  [charles-jenkins]
     nba   id=202724   2011-12..2011-12  (51 games)  "Charles Jenkins"
     espn  id=6444     2012-13..2012-13  (59 games)  "Charles Jenkins"
 Charles Oakley  [charles-oakley]
-    espn  id=616      2000-01..2002-03  (189 games)  "Charles Oakley"
+    espn  id=616      1993-94..2002-03  (724 games)  "Charles Oakley"
     nba   id=891      2003-04..2003-04  (7 games)  "Charles Oakley"
 Charlie Brown Jr.  [charlie-brown-jr]
     nba   id=1629718  2019-20..2021-22  (41 games)  "Charlie Brown Jr."
@@ -501,16 +501,16 @@ Charlie Villanueva  [charlie-villanueva]
     nba   id=101111   2005-06..2015-16  (596 games)  "Charlie Villanueva"
     espn  id=2792     2012-13..2012-13  (69 games)  "Charlie Villanueva"
 Charlie Ward  [charlie-ward]
-    espn  id=888      2000-01..2002-03  (198 games)  "Charlie Ward"
+    espn  id=888      1994-95..2002-03  (610 games)  "Charlie Ward"
     nba   id=369      2003-04..2004-05  (90 games)  "Charlie Ward"
 Chase Budinger  [chase-budinger]
     nba   id=201978   2009-10..2015-16  (384 games)  "Chase Budinger"
     espn  id=3968     2012-13..2012-13  (23 games)  "Chase Budinger"
 Chauncey Billups  [chauncey-billups]
-    espn  id=63       2000-01..2012-13  (281 games)  "Chauncey Billups"
+    espn  id=63       1997-98..2012-13  (419 games)  "Chauncey Billups"
     nba   id=1497     2003-04..2013-14  (752 games)  "Chauncey Billups"
 Cherokee Parks  [cherokee-parks]
-    espn  id=637      2000-01..2002-03  (143 games)  "Cherokee Parks"
+    espn  id=637      1995-96..2002-03  (463 games)  "Cherokee Parks"
     nba   id=685      2003-04..2003-04  (12 games)  "Cherokee Parks"
 Chimezie Metu  [chimezie-metu]
     nba   id=1629002  2018-19..2022-23  (212 games)  "Chimezie Metu"
@@ -528,7 +528,7 @@ Chris Copeland  [chris-copeland]
     espn  id=6635     2012-13..2012-13  (65 games)  "Chris Copeland"
     nba   id=203142   2013-14..2015-16  (127 games)  "Chris Copeland"
 Chris Crawford  [chris-crawford]
-    espn  id=164      2000-01..2002-03  (60 games)  "Chris Crawford"
+    espn  id=164      1997-98..2002-03  (204 games)  "Chris Crawford"
     nba   id=1544     2003-04..2003-04  (56 games)  "Chris Crawford"
 Chris Douglas-Roberts  [chris-douglas-roberts]
     nba   id=201604   2008-09..2014-15  (220 games)  "Chris Douglas-Roberts"
@@ -563,10 +563,10 @@ Chris Singleton  [chris-singleton]
     nba   id=202698   2011-12..2013-14  (91 games)  "Chris Singleton"
     espn  id=6470     2012-13..2012-13  (57 games)  "Chris Singleton"
 Chris Webber  [chris-webber]
-    espn  id=897      2000-01..2002-03  (222 games)  "Chris Webber"
+    espn  id=897      1993-94..2002-03  (639 games)  "Chris Webber"
     nba   id=185      2003-04..2007-08  (268 games)  "Chris Webber"
 Chris Whitney  [chris-whitney]
-    espn  id=913      2000-01..2002-03  (201 games)  "Chris Whitney"
+    espn  id=913      1993-94..2002-03  (569 games)  "Chris Whitney"
     nba   id=43       2003-04..2003-04  (16 games)  "Chris Whitney"
 Chris Wilcox  [chris-wilcox]
     espn  id=1731     2002-03..2012-13  (110 games)  "Chris Wilcox"
@@ -581,7 +581,7 @@ Christian Koloko  [christian-koloko]
     nba   id=1631132  2022-23..2022-23  (58 games)  "Christian Koloko"
     espn  id=4431778  2024-25..2025-26  (64 games)  "Christian Koloko"
 Christian Laettner  [christian-laettner]
-    espn  id=453      2000-01..2002-03  (211 games)  "Christian Laettner"
+    espn  id=453      1993-94..2002-03  (720 games)  "Christian Laettner"
     nba   id=363      2003-04..2004-05  (110 games)  "Christian Laettner"
 Christian Wood  [christian-wood]
     nba   id=1626174  2015-16..2022-23  (289 games)  "Christian Wood"
@@ -590,7 +590,7 @@ Chuck Hayes  [chuck-hayes]
     nba   id=101236   2005-06..2015-16  (601 games)  "Chuck Hayes"
     espn  id=2834     2012-13..2012-13  (74 games)  "Chuck Hayes"
 Chucky Atkins  [chucky-atkins]
-    espn  id=26       2000-01..2002-03  (253 games)  "Chucky Atkins"
+    espn  id=26       1999-00..2002-03  (334 games)  "Chucky Atkins"
     nba   id=1088     2003-04..2009-10  (394 games)  "Chucky Atkins"
 Chuma Okeke  [chuma-okeke]
     nba   id=1629643  2020-21..2022-23  (142 games)  "Chuma Okeke"
@@ -602,7 +602,7 @@ CJ Miles  [cj-miles]
     nba   id=101139   2005-06..2021-22  (828 games)  "CJ Miles"
     espn  id=2778     2012-13..2012-13  (65 games)  "CJ Miles"
 Clifford Robinson  [clifford-robinson]
-    espn  id=714      2000-01..2002-03  (274 games)  "Clifford Robinson"
+    espn  id=714      1993-94..2002-03  (828 games)  "Clifford Robinson"
     nba   id=361      2003-04..2006-07  (291 games)  "Clifford Robinson"
 Clint Capela  [clint-capela]
     nba   id=203991   2014-15..2022-23  (623 games)  "Clint Capela"
@@ -635,13 +635,13 @@ Corey Kispert  [corey-kispert]
     nba   id=1630557  2021-22..2022-23  (151 games)  "Corey Kispert"
     espn  id=4280151  2023-24..2025-26  (204 games)  "Corey Kispert"
 Corey Maggette  [corey-maggette]
-    espn  id=497      2000-01..2012-13  (216 games)  "Corey Maggette"
+    espn  id=497      1999-00..2012-13  (292 games)  "Corey Maggette"
     nba   id=1894     2003-04..2011-12  (536 games)  "Corey Maggette"
 Corie Blount  [corie-blount]
-    espn  id=69       2000-01..2002-03  (198 games)  "Corie Blount"
+    espn  id=69       1993-94..2002-03  (617 games)  "Corie Blount"
     nba   id=916      2003-04..2003-04  (62 games)  "Corie Blount"
 Corliss Williamson  [corliss-williamson]
-    espn  id=936      2000-01..2002-03  (254 games)  "Corliss Williamson"
+    espn  id=936      1995-96..2002-03  (599 games)  "Corliss Williamson"
     nba   id=722      2003-04..2006-07  (283 games)  "Corliss Williamson"
 Cory Higgins  [cory-higgins]
     nba   id=202809   2011-12..2011-12  (38 games)  "Cory Higgins"
@@ -653,7 +653,7 @@ Courtney Lee  [courtney-lee]
     nba   id=201584   2008-09..2019-20  (779 games)  "Courtney Lee"
     espn  id=3445     2012-13..2012-13  (82 games)  "Courtney Lee"
 Cuttino Mobley  [cuttino-mobley]
-    espn  id=566      2000-01..2002-03  (228 games)  "Cuttino Mobley"
+    espn  id=566      1998-99..2002-03  (360 games)  "Cuttino Mobley"
     nba   id=1749     2003-04..2008-09  (401 games)  "Cuttino Mobley"
 D.J. Augustin  [d-j-augustin]
     nba   id=201571   2008-09..2021-22  (919 games)  "D.J. Augustin"
@@ -680,7 +680,7 @@ Dalano Banton  [dalano-banton]
     nba   id=1630625  2021-22..2022-23  (99 games)  "Dalano Banton"
     espn  id=4397885  2023-24..2025-26  (130 games)  "Dalano Banton"
 Dale Davis  [dale-davis]
-    espn  id=187      2000-01..2002-03  (249 games)  "Dale Davis"
+    espn  id=187      1993-94..2002-03  (836 games)  "Dale Davis"
     nba   id=905      2003-04..2006-07  (232 games)  "Dale Davis"
 Dalen Terry  [dalen-terry]
     nba   id=1631207  2022-23..2022-23  (38 games)  "Dalen Terry"
@@ -701,10 +701,10 @@ Damion Lee  [damion-lee]
     nba   id=1627814  2017-18..2022-23  (314 games)  "Damion Lee"
     espn  id=2595209  2024-25..2024-25  (25 games)  "Damion Lee"
 Damon Jones  [damon-jones]
-    espn  id=406      2000-01..2002-03  (197 games)  "Damon Jones"
+    espn  id=406      1998-99..2002-03  (274 games)  "Damon Jones"
     nba   id=1800     2003-04..2008-09  (427 games)  "Damon Jones"
 Damon Stoudamire  [damon-stoudamire]
-    espn  id=817      2000-01..2002-03  (229 games)  "Damon Stoudamire"
+    espn  id=817      1995-96..2002-03  (611 games)  "Damon Stoudamire"
     nba   id=757      2003-04..2007-08  (319 games)  "Damon Stoudamire"
 Damone Brown  [damone-brown]
     espn  id=983      2001-02..2002-03  (23 games)  "Damone Brown"
@@ -719,7 +719,7 @@ Dan Langhi  [dan-langhi]
     espn  id=458      2000-01..2002-03  (127 games)  "Dan Langhi"
     nba   id=2061     2003-04..2003-04  (6 games)  "Dan Langhi"
 Dana Barros  [dana-barros]
-    espn  id=40       2000-01..2001-02  (93 games)  "Dana Barros"
+    espn  id=40       1993-94..2001-02  (560 games)  "Dana Barros"
     nba   id=344      2003-04..2003-04  (2 games)  "Dana Barros"
 D'Angelo Russell  [dangelo-russell]
     nba   id=1626156  2015-16..2022-23  (522 games)  "D'Angelo Russell"
@@ -743,7 +743,7 @@ Danilo Gallinari  [danilo-gallinari]
     nba   id=201568   2008-09..2021-22  (705 games)  "Danilo Gallinari"
     espn  id=3428     2012-13..2023-24  (123 games)  "Danilo Gallinari"
 Danny Fortson  [danny-fortson]
-    espn  id=248      2000-01..2002-03  (100 games)  "Danny Fortson"
+    espn  id=248      1997-98..2002-03  (279 games)  "Danny Fortson"
     nba   id=1504     2003-04..2006-07  (166 games)  "Danny Fortson"
 Danny Granger  [danny-granger]
     nba   id=101122   2005-06..2014-15  (610 games)  "Danny Granger"
@@ -785,7 +785,7 @@ Darko Milicic  [darko-milicic]
     nba   id=2545     2003-04..2011-12  (488 games)  "Darko Milicic"
     espn  id=2171     2012-13..2012-13  (1 games)  "Darko Milicic"
 Darrell Armstrong  [darrell-armstrong]
-    espn  id=24       2000-01..2002-03  (254 games)  "Darrell Armstrong"
+    espn  id=24       1994-95..2002-03  (523 games)  "Darrell Armstrong"
     nba   id=353      2003-04..2007-08  (354 games)  "Darrell Armstrong"
 Darrell Arthur  [darrell-arthur]
     nba   id=201589   2008-09..2017-18  (457 games)  "Darrell Arthur"
@@ -794,10 +794,10 @@ Darren Collison  [darren-collison]
     nba   id=201954   2009-10..2021-22  (670 games)  "Darren Collison"
     espn  id=3973     2012-13..2012-13  (81 games)  "Darren Collison"
 Darrick Martin  [darrick-martin]
-    espn  id=514      2000-01..2001-02  (36 games)  "Darrick Martin"
+    espn  id=514      1994-95..2001-02  (403 games)  "Darrick Martin"
     nba   id=239      2003-04..2007-08  (133 games)  "Darrick Martin"
 Darvin Ham  [darvin-ham]
-    espn  id=291      2000-01..2002-03  (183 games)  "Darvin Ham"
+    espn  id=291      1996-97..2002-03  (328 games)  "Darvin Ham"
     nba   id=1032     2003-04..2004-05  (137 games)  "Darvin Ham"
 David Duke Jr.  [david-duke-jr]
     nba   id=1630561  2021-22..2022-23  (46 games)  "David Duke Jr."
@@ -809,7 +809,7 @@ David Roddy  [david-roddy]
     nba   id=1631223  2022-23..2022-23  (76 games)  "David Roddy"
     espn  id=4593041  2023-24..2025-26  (105 games)  "David Roddy"
 David Wesley  [david-wesley]
-    espn  id=904      2000-01..2002-03  (245 games)  "David Wesley"
+    espn  id=904      1993-94..2002-03  (737 games)  "David Wesley"
     nba   id=133      2003-04..2006-07  (261 games)  "David Wesley"
 David West  [david-west]
     nba   id=2561     2003-04..2017-18  (1060 games)  "David West"
@@ -875,10 +875,10 @@ Dennis Smith Jr.  [dennis-smith-jr]
     nba   id=1628372  2017-18..2022-23  (270 games)  "Dennis Smith Jr."
     espn  id=4065697  2023-24..2024-25  (57 games)  "Dennis Smith Jr."
 Derek Anderson  [derek-anderson]
-    espn  id=18       2000-01..2002-03  (239 games)  "Derek Anderson"
+    espn  id=18       1997-98..2002-03  (407 games)  "Derek Anderson"
     nba   id=1507     2003-04..2007-08  (219 games)  "Derek Anderson"
 Derek Fisher  [derek-fisher]
-    espn  id=246      2000-01..2012-13  (258 games)  "Derek Fisher"
+    espn  id=246      1996-97..2012-13  (596 games)  "Derek Fisher"
     nba   id=965      2003-04..2013-14  (945 games)  "Derek Fisher"
 Dereon Seabron  [dereon-seabron]
     nba   id=1631220  2022-23..2022-23  (5 games)  "Dereon Seabron"
@@ -890,10 +890,10 @@ Deron Williams  [deron-williams]
     nba   id=101114   2005-06..2016-17  (850 games)  "Deron Williams"
     espn  id=2798     2012-13..2012-13  (85 games)  "Deron Williams"
 Derrick Coleman  [derrick-coleman]
-    espn  id=156      2000-01..2002-03  (176 games)  "Derrick Coleman"
+    espn  id=156      1993-94..2002-03  (553 games)  "Derrick Coleman"
     nba   id=934      2003-04..2004-05  (39 games)  "Derrick Coleman"
 Derrick Dial  [derrick-dial]
-    espn  id=201      2000-01..2001-02  (65 games)  "Derrick Dial"
+    espn  id=201      1999-00..2001-02  (75 games)  "Derrick Dial"
     nba   id=1760     2003-04..2003-04  (9 games)  "Derrick Dial"
 Derrick Favors  [derrick-favors]
     nba   id=202324   2010-11..2021-22  (755 games)  "Derrick Favors"
@@ -923,7 +923,7 @@ Desmond Mason  [desmond-mason]
     espn  id=518      2000-01..2002-03  (244 games)  "Desmond Mason"
     nba   id=2046     2003-04..2009-10  (415 games)  "Desmond Mason"
 Devean George  [devean-george]
-    espn  id=267      2000-01..2002-03  (248 games)  "Devean George"
+    espn  id=267      1999-00..2002-03  (304 games)  "Devean George"
     nba   id=1904     2003-04..2009-10  (402 games)  "Devean George"
 Devin Booker  [devin-booker]
     nba   id=1626164  2015-16..2022-23  (573 games)  "Devin Booker"
@@ -950,19 +950,19 @@ Diante Garrett  [diante-garrett]
     espn  id=6663     2012-13..2012-13  (19 games)  "Diante Garrett"
     nba   id=203197   2013-14..2013-14  (71 games)  "Diante Garrett"
 Dikembe Mutombo  [dikembe-mutombo]
-    espn  id=588      2000-01..2002-03  (212 games)  "Dikembe Mutombo"
+    espn  id=588      1993-94..2002-03  (778 games)  "Dikembe Mutombo"
     nba   id=87       2003-04..2008-09  (357 games)  "Dikembe Mutombo"
 Dillon Brooks  [dillon-brooks]
     nba   id=1628415  2017-18..2022-23  (367 games)  "Dillon Brooks"
     espn  id=3155526  2023-24..2025-26  (216 games)  "Dillon Brooks"
 Dion Glover  [dion-glover]
-    espn  id=274      2000-01..2002-03  (194 games)  "Dion Glover"
+    espn  id=274      1999-00..2002-03  (222 games)  "Dion Glover"
     nba   id=1901     2003-04..2004-05  (76 games)  "Dion Glover"
 Dion Waiters  [dion-waiters]
     espn  id=6628     2012-13..2012-13  (61 games)  "Dion Waiters"
     nba   id=203079   2013-14..2019-20  (381 games)  "Dion Waiters"
 Dirk Nowitzki  [dirk-nowitzki]
-    espn  id=609      2000-01..2012-13  (326 games)  "Dirk Nowitzki"
+    espn  id=609      1998-99..2012-13  (452 games)  "Dirk Nowitzki"
     nba   id=1717     2003-04..2018-19  (1189 games)  "Dirk Nowitzki"
 Domantas Sabonis  [domantas-sabonis]
     nba   id=1627734  2016-17..2022-23  (514 games)  "Domantas Sabonis"
@@ -992,7 +992,7 @@ Donte DiVincenzo  [donte-divincenzo]
     nba   id=1628978  2018-19..2022-23  (299 games)  "Donte DiVincenzo"
     espn  id=3934673  2023-24..2025-26  (257 games)  "Donte DiVincenzo"
 Donyell Marshall  [donyell-marshall]
-    espn  id=512      2000-01..2002-03  (227 games)  "Donyell Marshall"
+    espn  id=512      1994-95..2002-03  (606 games)  "Donyell Marshall"
     nba   id=923      2003-04..2008-09  (385 games)  "Donyell Marshall"
 Dorell Wright  [dorell-wright]
     nba   id=2748     2004-05..2015-16  (490 games)  "Dorell Wright"
@@ -1004,13 +1004,13 @@ Doron Lamb  [doron-lamb]
     espn  id=6604     2012-13..2012-13  (47 games)  "Doron Lamb"
     nba   id=203117   2013-14..2013-14  (53 games)  "Doron Lamb"
 Doug Christie  [doug-christie]
-    espn  id=147      2000-01..2002-03  (278 games)  "Doug Christie"
+    espn  id=147      1993-94..2002-03  (694 games)  "Doug Christie"
     nba   id=57       2003-04..2006-07  (160 games)  "Doug Christie"
 Doug McDermott  [doug-mcdermott]
     nba   id=203926   2014-15..2022-23  (606 games)  "Doug McDermott"
     espn  id=2528588  2023-24..2025-26  (146 games)  "Doug McDermott"
 Doug Overton  [doug-overton]
-    espn  id=624      2000-01..2001-02  (49 games)  "Doug Overton"
+    espn  id=624      1993-94..2001-02  (400 games)  "Doug Overton"
     nba   id=77       2003-04..2003-04  (61 games)  "Doug Overton"
 Draymond Green  [draymond-green]
     espn  id=6589     2012-13..2025-26  (299 games)  "Draymond Green"
@@ -1049,7 +1049,7 @@ Earl Barron  [earl-barron]
     nba   id=2853     2005-06..2014-15  (129 games)  "Earl Barron"
     espn  id=2477     2012-13..2012-13  (12 games)  "Earl Barron"
 Earl Boykins  [earl-boykins]
-    espn  id=87       2000-01..2002-03  (146 games)  "Earl Boykins"
+    espn  id=87       1998-99..2002-03  (193 games)  "Earl Boykins"
     nba   id=1863     2003-04..2011-12  (468 games)  "Earl Boykins"
 Earl Clark  [earl-clark]
     nba   id=201947   2009-10..2014-15  (213 games)  "Earl Clark"
@@ -1070,10 +1070,10 @@ Eddie House  [eddie-house]
     espn  id=348      2000-01..2002-03  (173 games)  "Eddie House"
     nba   id=2067     2003-04..2010-11  (597 games)  "Eddie House"
 Eddie Jones  [eddie-jones]
-    espn  id=402      2000-01..2002-03  (195 games)  "Eddie Jones"
+    espn  id=402      1994-95..2002-03  (648 games)  "Eddie Jones"
     nba   id=224      2003-04..2007-08  (381 games)  "Eddie Jones"
 Eddie Robinson  [eddie-robinson]
-    espn  id=724      2000-01..2002-03  (168 games)  "Eddie Robinson"
+    espn  id=724      1999-00..2002-03  (237 games)  "Eddie Robinson"
     nba   id=1944     2003-04..2003-04  (51 games)  "Eddie Robinson"
 Eddy Curry  [eddy-curry]
     espn  id=990      2001-02..2012-13  (155 games)  "Eddy Curry"
@@ -1085,10 +1085,10 @@ Ekpe Udoh  [ekpe-udoh]
     nba   id=202327   2010-11..2018-19  (320 games)  "Ekpe Udoh"
     espn  id=4261     2012-13..2012-13  (80 games)  "Ekpe Udoh"
 Elden Campbell  [elden-campbell]
-    espn  id=127      2000-01..2002-03  (229 games)  "Elden Campbell"
+    espn  id=127      1993-94..2002-03  (782 games)  "Elden Campbell"
     nba   id=922      2003-04..2004-05  (129 games)  "Elden Campbell"
 Elton Brand  [elton-brand]
-    espn  id=91       2000-01..2012-13  (288 games)  "Elton Brand"
+    espn  id=91       1999-00..2012-13  (367 games)  "Elton Brand"
     nba   id=1882     2003-04..2015-16  (717 games)  "Elton Brand"
 Emeka Okafor  [emeka-okafor]
     nba   id=2731     2004-05..2017-18  (544 games)  "Emeka Okafor"
@@ -1106,25 +1106,25 @@ Eric Maynor  [eric-maynor]
     nba   id=201953   2009-10..2013-14  (226 games)  "Eric Maynor"
     espn  id=4001     2012-13..2012-13  (64 games)  "Eric Maynor"
 Eric Piatkowski  [eric-piatkowski]
-    espn  id=660      2000-01..2002-03  (215 games)  "Eric Piatkowski"
+    espn  id=660      1994-95..2002-03  (613 games)  "Eric Piatkowski"
     nba   id=15       2003-04..2007-08  (181 games)  "Eric Piatkowski"
 Eric Snow  [eric-snow]
-    espn  id=796      2000-01..2002-03  (226 games)  "Eric Snow"
+    espn  id=796      1995-96..2002-03  (559 games)  "Eric Snow"
     nba   id=727      2003-04..2007-08  (368 games)  "Eric Snow"
 Eric Williams  [eric-williams]
-    espn  id=929      2000-01..2002-03  (263 games)  "Eric Williams"
+    espn  id=929      1995-96..2002-03  (504 games)  "Eric Williams"
     nba   id=677      2003-04..2006-07  (175 games)  "Eric Williams"
 Erick Dampier  [erick-dampier]
-    espn  id=181      2000-01..2002-03  (198 games)  "Erick Dampier"
+    espn  id=181      1996-97..2002-03  (422 games)  "Erick Dampier"
     nba   id=956      2003-04..2011-12  (606 games)  "Erick Dampier"
 Erick Strickland  [erick-strickland]
-    espn  id=820      2000-01..2002-03  (219 games)  "Erick Strickland"
+    espn  id=820      1996-97..2002-03  (413 games)  "Erick Strickland"
     nba   id=1065     2003-04..2004-05  (108 games)  "Erick Strickland"
 Ersan Ilyasova  [ersan-ilyasova]
     nba   id=101141   2006-07..2020-21  (800 games)  "Ersan Ilyasova"
     espn  id=2767     2012-13..2012-13  (77 games)  "Ersan Ilyasova"
 Ervin Johnson  [ervin-johnson]
-    espn  id=393      2000-01..2002-03  (251 games)  "Ervin Johnson"
+    espn  id=393      1993-94..2002-03  (763 games)  "Ervin Johnson"
     nba   id=911      2003-04..2005-06  (148 games)  "Ervin Johnson"
 Etan Thomas  [etan-thomas]
     espn  id=851      2001-02..2002-03  (85 games)  "Etan Thomas"
@@ -1160,7 +1160,7 @@ Franz Wagner  [franz-wagner]
     nba   id=1630532  2021-22..2022-23  (159 games)  "Franz Wagner"
     espn  id=4566434  2023-24..2025-26  (185 games)  "Franz Wagner"
 Fred Hoiberg  [fred-hoiberg]
-    espn  id=339      2000-01..2002-03  (216 games)  "Fred Hoiberg"
+    espn  id=339      1995-96..2002-03  (390 games)  "Fred Hoiberg"
     nba   id=697      2003-04..2004-05  (173 games)  "Fred Hoiberg"
 Fred Jones  [fred-jones]
     espn  id=1718     2002-03..2002-03  (20 games)  "Fred Jones"
@@ -1187,13 +1187,13 @@ Gary Neal  [gary-neal]
     nba   id=202390   2010-11..2016-17  (308 games)  "Gary Neal"
     espn  id=4300     2012-13..2012-13  (89 games)  "Gary Neal"
 Gary Payton  [gary-payton]
-    espn  id=640      2000-01..2002-03  (252 games)  "Gary Payton"
+    espn  id=640      1993-94..2002-03  (847 games)  "Gary Payton"
     nba   id=56       2003-04..2006-07  (339 games)  "Gary Payton"
 Gary Payton II  [gary-payton-ii]
     nba   id=1627780  2016-17..2022-23  (188 games)  "Gary Payton II"
     espn  id=3134903  2023-24..2025-26  (193 games)  "Gary Payton II"
 Gary Trent  [gary-trent]
-    espn  id=858      2000-01..2002-03  (186 games)  "Gary Trent"
+    espn  id=858      1995-96..2002-03  (451 games)  "Gary Trent"
     nba   id=718      2003-04..2003-04  (81 games)  "Gary Trent"
 Gary Trent Jr.  [gary-trent-jr]
     nba   id=1629018  2018-19..2022-23  (281 games)  "Gary Trent Jr."
@@ -1202,7 +1202,7 @@ George Hill  [george-hill]
     nba   id=201588   2008-09..2022-23  (965 games)  "George Hill"
     espn  id=3438     2012-13..2012-13  (94 games)  "George Hill"
 George Lynch  [george-lynch]
-    espn  id=491      2000-01..2002-03  (232 games)  "George Lynch"
+    espn  id=491      1993-94..2002-03  (701 games)  "George Lynch"
     nba   id=248      2003-04..2004-05  (129 games)  "George Lynch"
 Georges Niang  [georges-niang]
     nba   id=1627777  2016-17..2022-23  (429 games)  "Georges Niang"
@@ -1226,10 +1226,10 @@ Glen Davis  [glen-davis]
     nba   id=201175   2007-08..2014-15  (576 games)  "Glen Davis"
     espn  id=3200     2012-13..2012-13  (34 games)  "Glen Davis"
 Glen Rice  [glen-rice]
-    espn  id=702      2000-01..2002-03  (163 games)  "Glen Rice"
+    espn  id=702      1993-94..2002-03  (714 games)  "Glen Rice"
     nba   id=779      2003-04..2003-04  (18 games)  "Glen Rice"
 Glenn Robinson  [glenn-robinson]
-    espn  id=717      2000-01..2002-03  (224 games)  "Glenn Robinson"
+    espn  id=717      1994-95..2002-03  (656 games)  "Glenn Robinson"
     nba   id=299      2003-04..2004-05  (64 games)  "Glenn Robinson"
 Goga Bitadze  [goga-bitadze]
     nba   id=1629048  2019-20..2022-23  (187 games)  "Goga Bitadze"
@@ -1244,7 +1244,7 @@ Gordon Hayward  [gordon-hayward]
     nba   id=202330   2010-11..2022-23  (741 games)  "Gordon Hayward"
     espn  id=4249     2012-13..2023-24  (130 games)  "Gordon Hayward"
 Grant Hill  [grant-hill]
-    espn  id=336      2000-01..2012-13  (79 games)  "Grant Hill"
+    espn  id=336      1994-95..2012-13  (526 games)  "Grant Hill"
     nba   id=255      2004-05..2011-12  (538 games)  "Grant Hill"
 Grant Williams  [grant-williams]
     nba   id=1629684  2019-20..2022-23  (349 games)  "Grant Williams"
@@ -1256,13 +1256,13 @@ Greg Brown III  [greg-brown-iii]
     nba   id=1630535  2021-22..2022-23  (64 games)  "Greg Brown III"
     espn  id=4432161  2023-24..2023-24  (7 games)  "Greg Brown III"
 Greg Buckner  [greg-buckner]
-    espn  id=111      2000-01..2002-03  (180 games)  "Greg Buckner"
+    espn  id=111      1999-00..2002-03  (227 games)  "Greg Buckner"
     nba   id=1761     2003-04..2008-09  (377 games)  "Greg Buckner"
 Greg Monroe  [greg-monroe]
     nba   id=202328   2010-11..2021-22  (594 games)  "Greg Monroe"
     espn  id=4260     2012-13..2012-13  (81 games)  "Greg Monroe"
 Greg Ostertag  [greg-ostertag]
-    espn  id=622      2000-01..2002-03  (250 games)  "Greg Ostertag"
+    espn  id=622      1995-96..2002-03  (638 games)  "Greg Ostertag"
     nba   id=731      2003-04..2005-06  (196 games)  "Greg Ostertag"
 Greg Smith  [greg-smith]
     nba   id=202962   2011-12..2015-16  (80 games)  "Greg Smith"
@@ -1298,13 +1298,13 @@ Herbert Jones  [herbert-jones]
     nba   id=1630529  2021-22..2022-23  (150 games)  "Herbert Jones"
     espn  id=4277813  2023-24..2025-26  (158 games)  "Herbert Jones"
 Horace Grant  [horace-grant]
-    espn  id=279      2000-01..2002-03  (173 games)  "Horace Grant"
+    espn  id=279      1993-94..2002-03  (693 games)  "Horace Grant"
     nba   id=270      2003-04..2003-04  (55 games)  "Horace Grant"
 Howard Eisley  [howard-eisley]
-    espn  id=220      2000-01..2002-03  (212 games)  "Howard Eisley"
+    espn  id=220      1994-95..2002-03  (689 games)  "Howard Eisley"
     nba   id=458      2003-04..2005-06  (173 games)  "Howard Eisley"
 Hubert Davis  [hubert-davis]
-    espn  id=188      2000-01..2002-03  (163 games)  "Hubert Davis"
+    espn  id=188      1993-94..2002-03  (659 games)  "Hubert Davis"
     nba   id=93       2003-04..2003-04  (17 games)  "Hubert Davis"
 Ian Mahinmi  [ian-mahinmi]
     nba   id=101133   2007-08..2019-20  (587 games)  "Ian Mahinmi"
@@ -1379,7 +1379,7 @@ Jacob Gilyard  [jacob-gilyard]
     nba   id=1631367  2022-23..2022-23  (1 games)  "Jacob Gilyard"
     espn  id=4278378  2023-24..2023-24  (41 games)  "Jacob Gilyard"
 Jacque Vaughn  [jacque-vaughn]
-    espn  id=874      2000-01..2002-03  (256 games)  "Jacque Vaughn"
+    espn  id=874      1997-98..2002-03  (407 games)  "Jacque Vaughn"
     nba   id=1521     2003-04..2008-09  (426 games)  "Jacque Vaughn"
 Jaden Hardy  [jaden-hardy]
     nba   id=1630702  2022-23..2022-23  (48 games)  "Jaden Hardy"
@@ -1400,7 +1400,7 @@ Jae'Sean Tate  [jaesean-tate]
     nba   id=1630256  2020-21..2022-23  (179 games)  "Jae'Sean Tate"
     espn  id=3136777  2023-24..2025-26  (168 games)  "Jae'Sean Tate"
 Jahidi White  [jahidi-white]
-    espn  id=911      2000-01..2002-03  (155 games)  "Jahidi White"
+    espn  id=911      1998-99..2002-03  (253 games)  "Jahidi White"
     nba   id=1751     2003-04..2004-05  (79 games)  "Jahidi White"
 Jahmi'us Ramsey  [jahmius-ramsey]
     nba   id=1630186  2020-21..2021-22  (32 games)  "Jahmi'us Ramsey"
@@ -1433,7 +1433,7 @@ Jalen McDaniels  [jalen-mcdaniels]
     nba   id=1629667  2019-20..2022-23  (206 games)  "Jalen McDaniels"
     espn  id=4066731  2023-24..2024-25  (54 games)  "Jalen McDaniels"
 Jalen Rose  [jalen-rose]
-    espn  id=738      2000-01..2002-03  (241 games)  "Jalen Rose"
+    espn  id=738      1994-95..2002-03  (728 games)  "Jalen Rose"
     nba   id=147      2003-04..2006-07  (249 games)  "Jalen Rose"
 Jalen Smith  [jalen-smith]
     nba   id=1630188  2020-21..2022-23  (152 games)  "Jalen Smith"
@@ -1457,7 +1457,7 @@ Jamal Crawford  [jamal-crawford]
     espn  id=165      2000-01..2012-13  (246 games)  "Jamal Crawford"
     nba   id=2037     2003-04..2019-20  (1155 games)  "Jamal Crawford"
 Jamal Mashburn  [jamal-mashburn]
-    espn  id=516      2000-01..2002-03  (211 games)  "Jamal Mashburn"
+    espn  id=516      1993-94..2002-03  (628 games)  "Jamal Mashburn"
     nba   id=469      2003-04..2003-04  (19 games)  "Jamal Mashburn"
 Jamal Murray  [jamal-murray]
     nba   id=1627750  2016-17..2022-23  (463 games)  "Jamal Murray"
@@ -1487,7 +1487,7 @@ James Jones  [james-jones]
     nba   id=2592     2003-04..2016-17  (790 games)  "James Jones"
     espn  id=2009     2012-13..2012-13  (47 games)  "James Jones"
 James Posey  [james-posey]
-    espn  id=671      2000-01..2002-03  (238 games)  "James Posey"
+    espn  id=671      1999-00..2002-03  (317 games)  "James Posey"
     nba   id=1899     2003-04..2010-11  (588 games)  "James Posey"
 James Wiseman  [james-wiseman]
     nba   id=1630164  2020-21..2022-23  (84 games)  "James Wiseman"
@@ -1547,7 +1547,7 @@ Jason Hart  [jason-hart]
     espn  id=312      2000-01..2001-02  (11 games)  "Jason Hart"
     nba   id=2078     2003-04..2009-10  (348 games)  "Jason Hart"
 Jason Kidd  [jason-kidd]
-    espn  id=429      2000-01..2012-13  (371 games)  "Jason Kidd"
+    espn  id=429      1994-95..2012-13  (802 games)  "Jason Kidd"
     nba   id=467      2003-04..2011-12  (735 games)  "Jason Kidd"
 Jason Maxiell  [jason-maxiell]
     nba   id=101131   2005-06..2014-15  (581 games)  "Jason Maxiell"
@@ -1562,13 +1562,13 @@ Jason Smith  [jason-smith]
     nba   id=201160   2007-08..2018-19  (591 games)  "Jason Smith"
     espn  id=3232     2012-13..2012-13  (51 games)  "Jason Smith"
 Jason Terry  [jason-terry]
-    espn  id=841      2000-01..2012-13  (326 games)  "Jason Terry"
+    espn  id=841      1999-00..2012-13  (405 games)  "Jason Terry"
     nba   id=1891     2003-04..2017-18  (1105 games)  "Jason Terry"
 Jason Thompson  [jason-thompson]
     nba   id=201574   2008-09..2015-16  (516 games)  "Jason Thompson"
     espn  id=3462     2012-13..2012-13  (82 games)  "Jason Thompson"
 Jason Williams  [jason-williams]
-    espn  id=933      2000-01..2002-03  (226 games)  "Jason Williams"
+    espn  id=933      1998-99..2002-03  (365 games)  "Jason Williams"
     nba   id=1715     2003-04..2010-11  (465 games)  "Jason Williams"
 JaVale McGee  [javale-mcgee]
     nba   id=201580   2008-09..2022-23  (852 games)  "JaVale McGee"
@@ -1610,13 +1610,13 @@ Jeff Dowtin Jr.  [jeff-dowtin-jr]
     nba   id=1630288  2021-22..2022-23  (34 games)  "Jeff Dowtin Jr."
     espn  id=4066786  2023-24..2024-25  (53 games)  "Jeff Dowtin Jr."
 Jeff Foster  [jeff-foster]
-    espn  id=250      2000-01..2002-03  (245 games)  "Jeff Foster"
+    espn  id=250      1999-00..2002-03  (263 games)  "Jeff Foster"
     nba   id=1902     2003-04..2011-12  (549 games)  "Jeff Foster"
 Jeff Green  [jeff-green]
     nba   id=201145   2007-08..2022-23  (1123 games)  "Jeff Green"
     espn  id=3209     2012-13..2025-26  (232 games)  "Jeff Green"
 Jeff McInnis  [jeff-mcinnis]
-    espn  id=535      2000-01..2002-03  (244 games)  "Jeff McInnis"
+    espn  id=535      1996-97..2002-03  (316 games)  "Jeff McInnis"
     nba   id=976      2003-04..2007-08  (266 games)  "Jeff McInnis"
 Jeff Teague  [jeff-teague]
     nba   id=201952   2009-10..2020-21  (827 games)  "Jeff Teague"
@@ -1628,7 +1628,7 @@ Jeffery Taylor  [jeffery-taylor]
     espn  id=6156     2012-13..2012-13  (77 games)  "Jeffery Taylor"
     nba   id=203106   2013-14..2014-15  (55 games)  "Jeffery Taylor"
 Jelani McCoy  [jelani-mccoy]
-    espn  id=525      2000-01..2002-03  (160 games)  "Jelani McCoy"
+    espn  id=525      1998-99..2002-03  (245 games)  "Jelani McCoy"
     nba   id=1741     2003-04..2007-08  (18 games)  "Jelani McCoy"
 Jerami Grant  [jerami-grant]
     nba   id=203924   2014-15..2022-23  (653 games)  "Jerami Grant"
@@ -1658,22 +1658,22 @@ Jericho Sims  [jericho-sims]
     nba   id=1630579  2021-22..2022-23  (93 games)  "Jericho Sims"
     espn  id=4277922  2023-24..2025-26  (175 games)  "Jericho Sims"
 Jermaine Jackson  [jermaine-jackson]
-    espn  id=380      2001-02..2002-03  (81 games)  "Jermaine Jackson"
+    espn  id=380      1999-00..2002-03  (87 games)  "Jermaine Jackson"
     nba   id=1983     2004-05..2005-06  (51 games)  "Jermaine Jackson"
 Jermaine O'Neal  [jermaine-oneal]
-    espn  id=615      2000-01..2012-13  (300 games)  "Jermaine O'Neal"
+    espn  id=615      1996-97..2012-13  (530 games)  "Jermaine O'Neal"
     nba   id=979      2003-04..2013-14  (571 games)  "Jermaine O'Neal"
 Jerome James  [jerome-james]
-    espn  id=383      2001-02..2002-03  (112 games)  "Jerome James"
+    espn  id=383      1998-99..2002-03  (129 games)  "Jerome James"
     nba   id=1744     2003-04..2008-09  (246 games)  "Jerome James"
 Jerome Moiso  [jerome-moiso]
     espn  id=570      2000-01..2002-03  (95 games)  "Jerome Moiso"
     nba   id=2040     2003-04..2004-05  (55 games)  "Jerome Moiso"
 Jerome Williams  [jerome-williams]
-    espn  id=930      2000-01..2002-03  (214 games)  "Jerome Williams"
+    espn  id=930      1996-97..2002-03  (461 games)  "Jerome Williams"
     nba   id=966      2003-04..2004-05  (147 games)  "Jerome Williams"
 Jerry Stackhouse  [jerry-stackhouse]
-    espn  id=802      2000-01..2012-13  (277 games)  "Jerry Stackhouse"
+    espn  id=802      1995-96..2012-13  (637 games)  "Jerry Stackhouse"
     nba   id=711      2003-04..2011-12  (382 games)  "Jerry Stackhouse"
 Jerryd Bayless  [jerryd-bayless]
     nba   id=201573   2008-09..2018-19  (521 games)  "Jerryd Bayless"
@@ -1682,7 +1682,7 @@ Jevon Carter  [jevon-carter]
     nba   id=1628975  2018-19..2022-23  (326 games)  "Jevon Carter"
     espn  id=3133635  2023-24..2025-26  (167 games)  "Jevon Carter"
 Jim Jackson  [jim-jackson]
-    espn  id=372      2000-01..2002-03  (187 games)  "Jim Jackson"
+    espn  id=372      1993-94..2002-03  (691 games)  "Jim Jackson"
     nba   id=754      2003-04..2005-06  (204 games)  "Jim Jackson"
 Jimmer Fredette  [jimmer-fredette]
     nba   id=202690   2011-12..2018-19  (172 games)  "Jimmer Fredette"
@@ -1715,7 +1715,7 @@ Joe Johnson  [joe-johnson]
     espn  id=1007     2001-02..2012-13  (244 games)  "Joe Johnson"
     nba   id=2207     2003-04..2021-22  (1153 games)  "Joe Johnson"
 Joe Smith  [joe-smith]
-    espn  id=788      2000-01..2002-03  (203 games)  "Joe Smith"
+    espn  id=788      1995-96..2002-03  (572 games)  "Joe Smith"
     nba   id=693      2003-04..2010-11  (514 games)  "Joe Smith"
 Joel Anthony  [joel-anthony]
     nba   id=201202   2007-08..2016-17  (480 games)  "Joel Anthony"
@@ -1757,7 +1757,7 @@ John Wall  [john-wall]
     nba   id=202322   2010-11..2022-23  (635 games)  "John Wall"
     espn  id=4237     2012-13..2012-13  (49 games)  "John Wall"
 John Wallace  [john-wallace]
-    espn  id=884      2000-01..2001-02  (86 games)  "John Wallace"
+    espn  id=884      1996-97..2001-02  (344 games)  "John Wallace"
     nba   id=961      2003-04..2003-04  (37 games)  "John Wallace"
 Johnny Davis  [johnny-davis]
     nba   id=1631098  2022-23..2022-23  (28 games)  "Johnny Davis"
@@ -1766,7 +1766,7 @@ Johnny Juzang  [johnny-juzang]
     nba   id=1630548  2022-23..2022-23  (18 games)  "Johnny Juzang"
     espn  id=4432817  2023-24..2025-26  (105 games)  "Johnny Juzang"
 Jon Barry  [jon-barry]
-    espn  id=41       2000-01..2002-03  (255 games)  "Jon Barry"
+    espn  id=41       1993-94..2002-03  (676 games)  "Jon Barry"
     nba   id=468      2003-04..2005-06  (158 games)  "Jon Barry"
 Jon Leuer  [jon-leuer]
     nba   id=202720   2011-12..2018-19  (357 games)  "Jon Leuer"
@@ -1778,7 +1778,7 @@ Jonas Valanciunas  [jonas-valanciunas]
     espn  id=6477     2012-13..2025-26  (301 games)  "Jonas Valanciunas"
     nba   id=202685   2013-14..2022-23  (766 games)  "Jonas Valanciunas"
 Jonathan Bender  [jonathan-bender]
-    espn  id=50       2000-01..2002-03  (197 games)  "Jonathan Bender"
+    espn  id=50       1999-00..2002-03  (229 games)  "Jonathan Bender"
     nba   id=1886     2003-04..2009-10  (71 games)  "Jonathan Bender"
 Jonathan Isaac  [jonathan-isaac]
     nba   id=1628371  2017-18..2022-23  (152 games)  "Jonathan Isaac"
@@ -1883,7 +1883,7 @@ Julyan Stone  [julyan-stone]
     nba   id=202933   2011-12..2017-18  (68 games)  "Julyan Stone"
     espn  id=6543     2012-13..2012-13  (6 games)  "Julyan Stone"
 Jumaine Jones  [jumaine-jones]
-    espn  id=407      2000-01..2002-03  (242 games)  "Jumaine Jones"
+    espn  id=407      1999-00..2002-03  (279 games)  "Jumaine Jones"
     nba   id=1908     2003-04..2006-07  (214 games)  "Jumaine Jones"
 Junior Harrington  [junior-harrington]
     espn  id=1816     2002-03..2002-03  (82 games)  "Junior Harrington"
@@ -1907,7 +1907,7 @@ Jusuf Nurkic  [jusuf-nurkic]
     nba   id=203994   2014-15..2022-23  (479 games)  "Jusuf Nurkic"
     espn  id=3102530  2023-24..2025-26  (172 games)  "Jusuf Nurkic"
 Juwan Howard  [juwan-howard]
-    espn  id=351      2000-01..2012-13  (257 games)  "Juwan Howard"
+    espn  id=351      1994-95..2012-13  (662 games)  "Juwan Howard"
     nba   id=436      2003-04..2011-12  (588 games)  "Juwan Howard"
 Kai Jones  [kai-jones]
     nba   id=1630539  2021-22..2022-23  (67 games)  "Kai Jones"
@@ -1919,7 +1919,7 @@ Karl-Anthony Towns  [karl-anthony-towns]
     nba   id=1626157  2015-16..2022-23  (527 games)  "Karl-Anthony Towns"
     espn  id=3136195  2023-24..2025-26  (263 games)  "Karl-Anthony Towns"
 Karl Malone  [karl-malone]
-    espn  id=501      2000-01..2002-03  (256 games)  "Karl Malone"
+    espn  id=501      1993-94..2002-03  (881 games)  "Karl Malone"
     nba   id=252      2003-04..2003-04  (63 games)  "Karl Malone"
 Kawhi Leonard  [kawhi-leonard]
     nba   id=202695   2011-12..2022-23  (686 games)  "Kawhi Leonard"
@@ -1937,7 +1937,7 @@ Keith Bogans  [keith-bogans]
     nba   id=2586     2003-04..2013-14  (631 games)  "Keith Bogans"
     espn  id=1995     2012-13..2012-13  (76 games)  "Keith Bogans"
 Keith Van Horn  [keith-van-horn]
-    espn  id=869      2000-01..2002-03  (236 games)  "Keith Van Horn"
+    espn  id=869      1997-98..2002-03  (419 games)  "Keith Van Horn"
     nba   id=1496     2003-04..2005-06  (195 games)  "Keith Van Horn"
 Keldon Johnson  [keldon-johnson]
     nba   id=1629640  2019-20..2022-23  (224 games)  "Keldon Johnson"
@@ -1949,7 +1949,7 @@ Kelly Oubre Jr.  [kelly-oubre-jr]
     nba   id=1626162  2015-16..2022-23  (545 games)  "Kelly Oubre Jr."
     espn  id=3133603  2023-24..2025-26  (197 games)  "Kelly Oubre Jr."
 Kelvin Cato  [kelvin-cato]
-    espn  id=139      2000-01..2002-03  (183 games)  "Kelvin Cato"
+    espn  id=139      1997-98..2002-03  (375 games)  "Kelvin Cato"
     nba   id=1509     2003-04..2006-07  (181 games)  "Kelvin Cato"
 Kemba Walker  [kemba-walker]
     nba   id=202689   2011-12..2022-23  (699 games)  "Kemba Walker"
@@ -1958,7 +1958,7 @@ Kendall Brown  [kendall-brown]
     nba   id=1631112  2022-23..2022-23  (6 games)  "Kendall Brown"
     espn  id=4433254  2023-24..2024-25  (24 games)  "Kendall Brown"
 Kendall Gill  [kendall-gill]
-    espn  id=269      2000-01..2002-03  (184 games)  "Kendall Gill"
+    espn  id=269      1993-94..2002-03  (681 games)  "Kendall Gill"
     nba   id=383      2003-04..2004-05  (70 games)  "Kendall Gill"
 Kendall Marshall  [kendall-marshall]
     espn  id=6607     2012-13..2012-13  (48 games)  "Kendall Marshall"
@@ -1973,10 +1973,10 @@ Kenneth Lofton Jr.  [kenneth-lofton-jr]
     nba   id=1631254  2022-23..2022-23  (28 games)  "Kenneth Lofton Jr."
     espn  id=4585610  2023-24..2023-24  (21 games)  "Kenneth Lofton Jr."
 Kenny Anderson  [kenny-anderson]
-    espn  id=15       2000-01..2002-03  (191 games)  "Kenny Anderson"
+    espn  id=15       1993-94..2002-03  (675 games)  "Kenny Anderson"
     nba   id=72       2003-04..2004-05  (91 games)  "Kenny Anderson"
 Kenny Thomas  [kenny-thomas]
-    espn  id=849      2000-01..2002-03  (224 games)  "Kenny Thomas"
+    espn  id=849      1999-00..2002-03  (294 games)  "Kenny Thomas"
     nba   id=1903     2003-04..2009-10  (353 games)  "Kenny Thomas"
 Kenrich Williams  [kenrich-williams]
     nba   id=1629026  2018-19..2022-23  (253 games)  "Kenrich Williams"
@@ -1991,7 +1991,7 @@ Kenyon Martin  [kenyon-martin]
     espn  id=515      2000-01..2012-13  (288 games)  "Kenyon Martin"
     nba   id=2030     2003-04..2014-15  (579 games)  "Kenyon Martin"
 Keon Clark  [keon-clark]
-    espn  id=149      2000-01..2002-03  (270 games)  "Keon Clark"
+    espn  id=149      1998-99..2002-03  (377 games)  "Keon Clark"
     nba   id=1721     2003-04..2003-04  (2 games)  "Keon Clark"
 Keon Ellis  [keon-ellis]
     nba   id=1631165  2022-23..2022-23  (16 games)  "Keon Ellis"
@@ -2000,7 +2000,7 @@ Keon Johnson  [keon-johnson]
     nba   id=1630553  2021-22..2022-23  (77 games)  "Keon Johnson"
     espn  id=4432192  2023-24..2024-25  (84 games)  "Keon Johnson"
 Kerry Kittles  [kerry-kittles]
-    espn  id=437      2001-02..2002-03  (187 games)  "Kerry Kittles"
+    espn  id=437      1996-97..2002-03  (456 games)  "Kerry Kittles"
     nba   id=954      2003-04..2004-05  (104 games)  "Kerry Kittles"
 Kessler Edwards  [kessler-edwards]
     nba   id=1630556  2021-22..2022-23  (92 games)  "Kessler Edwards"
@@ -2009,7 +2009,7 @@ Kevin Durant  [kevin-durant]
     nba   id=201142   2007-08..2022-23  (1060 games)  "Kevin Durant"
     espn  id=3202     2012-13..2025-26  (312 games)  "Kevin Durant"
 Kevin Garnett  [kevin-garnett]
-    espn  id=261      2000-01..2012-13  (331 games)  "Kevin Garnett"
+    espn  id=261      1995-96..2012-13  (713 games)  "Kevin Garnett"
     nba   id=708      2003-04..2015-16  (891 games)  "Kevin Garnett"
 Kevin Huerter  [kevin-huerter]
     nba   id=1628989  2018-19..2022-23  (379 games)  "Kevin Huerter"
@@ -2024,7 +2024,7 @@ Kevin Martin  [kevin-martin]
     nba   id=2755     2004-05..2015-16  (642 games)  "Kevin Martin"
     espn  id=2394     2012-13..2012-13  (88 games)  "Kevin Martin"
 Kevin Ollie  [kevin-ollie]
-    espn  id=620      2000-01..2002-03  (254 games)  "Kevin Ollie"
+    espn  id=620      1997-98..2002-03  (346 games)  "Kevin Ollie"
     nba   id=1563     2003-04..2009-10  (350 games)  "Kevin Ollie"
 Kevin Porter Jr.  [kevin-porter-jr]
     nba   id=1629645  2019-20..2022-23  (196 games)  "Kevin Porter Jr."
@@ -2033,7 +2033,7 @@ Kevin Seraphin  [kevin-seraphin]
     nba   id=202338   2010-11..2016-17  (358 games)  "Kevin Seraphin"
     espn  id=4289     2012-13..2012-13  (79 games)  "Kevin Seraphin"
 Kevin Willis  [kevin-willis]
-    espn  id=937      2000-01..2002-03  (219 games)  "Kevin Willis"
+    espn  id=937      1993-94..2002-03  (749 games)  "Kevin Willis"
     nba   id=788      2003-04..2006-07  (89 games)  "Kevin Willis"
 Kevon Harris  [kevon-harris]
     nba   id=1630284  2022-23..2022-23  (34 games)  "Kevon Harris"
@@ -2063,7 +2063,7 @@ Klay Thompson  [klay-thompson]
     nba   id=202691   2011-12..2022-23  (780 games)  "Klay Thompson"
     espn  id=6475     2012-13..2025-26  (316 games)  "Klay Thompson"
 Kobe Bryant  [kobe-bryant]
-    espn  id=110      2000-01..2012-13  (350 games)  "Kobe Bryant"
+    espn  id=110      1996-97..2012-13  (664 games)  "Kobe Bryant"
     nba   id=977      2003-04..2015-16  (888 games)  "Kobe Bryant"
 Kobi Simmons  [kobi-simmons]
     nba   id=1628424  2017-18..2022-23  (38 games)  "Kobi Simmons"
@@ -2081,7 +2081,7 @@ Kristaps Porzingis  [kristaps-porzingis]
     nba   id=204001   2015-16..2022-23  (412 games)  "Kristaps Porzingis"
     espn  id=3102531  2023-24..2025-26  (151 games)  "Kristaps Porzingis"
 Kurt Thomas  [kurt-thomas]
-    espn  id=846      2000-01..2012-13  (284 games)  "Kurt Thomas"
+    espn  id=846      1995-96..2012-13  (548 games)  "Kurt Thomas"
     nba   id=703      2003-04..2011-12  (655 games)  "Kurt Thomas"
 Kwame Brown  [kwame-brown]
     espn  id=981      2001-02..2012-13  (159 games)  "Kwame Brown"
@@ -2108,7 +2108,7 @@ Kyrie Irving  [kyrie-irving]
     nba   id=202681   2011-12..2022-23  (686 games)  "Kyrie Irving"
     espn  id=6442     2012-13..2024-25  (190 games)  "Kyrie Irving"
 Lamar Odom  [lamar-odom]
-    espn  id=617      2000-01..2012-13  (242 games)  "Lamar Odom"
+    espn  id=617      1999-00..2012-13  (314 games)  "Lamar Odom"
     nba   id=1885     2003-04..2011-12  (744 games)  "Lamar Odom"
 Lamar Stevens  [lamar-stevens]
     nba   id=1630205  2020-21..2022-23  (167 games)  "Lamar Stevens"
@@ -2120,7 +2120,7 @@ LaMelo Ball  [lamelo-ball]
     nba   id=1630163  2020-21..2022-23  (162 games)  "LaMelo Ball"
     espn  id=4432816  2023-24..2025-26  (143 games)  "LaMelo Ball"
 Lamond Murray  [lamond-murray]
-    espn  id=586      2000-01..2001-02  (148 games)  "Lamond Murray"
+    espn  id=586      1994-95..2001-02  (580 games)  "Lamond Murray"
     nba   id=441      2003-04..2005-06  (152 games)  "Lamond Murray"
 Lance Stephenson  [lance-stephenson]
     nba   id=202362   2010-11..2021-22  (514 games)  "Lance Stephenson"
@@ -2135,7 +2135,7 @@ Landry Shamet  [landry-shamet]
     nba   id=1629013  2018-19..2022-23  (355 games)  "Landry Shamet"
     espn  id=3914044  2023-24..2025-26  (177 games)  "Landry Shamet"
 Larry Hughes  [larry-hughes]
-    espn  id=356      2000-01..2002-03  (190 games)  "Larry Hughes"
+    espn  id=356      1998-99..2002-03  (329 games)  "Larry Hughes"
     nba   id=1716     2003-04..2011-12  (437 games)  "Larry Hughes"
 Larry Nance Jr.  [larry-nance-jr]
     nba   id=1626204  2015-16..2022-23  (487 games)  "Larry Nance Jr."
@@ -2144,7 +2144,7 @@ Larry Sanders  [larry-sanders]
     nba   id=202336   2010-11..2016-17  (167 games)  "Larry Sanders"
     espn  id=4265     2012-13..2012-13  (75 games)  "Larry Sanders"
 Latrell Sprewell  [latrell-sprewell]
-    espn  id=800      2000-01..2002-03  (237 games)  "Latrell Sprewell"
+    espn  id=800      1993-94..2002-03  (716 games)  "Latrell Sprewell"
     nba   id=84       2003-04..2004-05  (180 games)  "Latrell Sprewell"
 Lauri Markkanen  [lauri-markkanen]
     nba   id=1628374  2017-18..2022-23  (348 games)  "Lauri Markkanen"
@@ -2153,7 +2153,7 @@ Lavoy Allen  [lavoy-allen]
     nba   id=202730   2011-12..2016-17  (334 games)  "Lavoy Allen"
     espn  id=6424     2012-13..2012-13  (79 games)  "Lavoy Allen"
 Lawrence Funderburke  [lawrence-funderburke]
-    espn  id=259      2000-01..2002-03  (158 games)  "Lawrence Funderburke"
+    espn  id=259      1997-98..2002-03  (338 games)  "Lawrence Funderburke"
     nba   id=1444     2004-05..2004-05  (7 games)  "Lawrence Funderburke"
 Lazar Hayward  [lazar-hayward]
     nba   id=202351   2010-11..2011-12  (73 games)  "Lazar Hayward"
@@ -2180,7 +2180,7 @@ Lindell Wigginton  [lindell-wigginton]
     nba   id=1629623  2021-22..2022-23  (26 games)  "Lindell Wigginton"
     espn  id=4277887  2023-24..2023-24  (3 games)  "Lindell Wigginton"
 Lindsey Hunter  [lindsey-hunter]
-    espn  id=359      2000-01..2002-03  (224 games)  "Lindsey Hunter"
+    espn  id=359      1993-94..2002-03  (722 games)  "Lindsey Hunter"
     nba   id=283      2003-04..2009-10  (334 games)  "Lindsey Hunter"
 Lindy Waters III  [lindy-waters-iii]
     nba   id=1630322  2021-22..2022-23  (66 games)  "Lindy Waters III"
@@ -2195,7 +2195,7 @@ Loren Woods  [loren-woods]
     espn  id=1029     2001-02..2002-03  (100 games)  "Loren Woods"
     nba   id=2254     2003-04..2007-08  (119 games)  "Loren Woods"
 Lorenzen Wright  [lorenzen-wright]
-    espn  id=959      2000-01..2002-03  (184 games)  "Lorenzen Wright"
+    espn  id=959      1996-97..2002-03  (452 games)  "Lorenzen Wright"
     nba   id=953      2003-04..2008-09  (333 games)  "Lorenzen Wright"
 Lou Amundson  [lou-amundson]
     nba   id=200811   2006-07..2015-16  (418 games)  "Lou Amundson"
@@ -2207,7 +2207,7 @@ Luc Mbah a Moute  [luc-mbah-a-moute]
     nba   id=201601   2008-09..2019-20  (659 games)  "Luc Mbah a Moute"
     espn  id=3451     2012-13..2012-13  (62 games)  "Luc Mbah a Moute"
 Lucious Harris  [lucious-harris]
-    espn  id=309      2000-01..2002-03  (264 games)  "Lucious Harris"
+    espn  id=309      1993-94..2002-03  (693 games)  "Lucious Harris"
     nba   id=446      2003-04..2004-05  (153 games)  "Lucious Harris"
 Luguentz Dort  [luguentz-dort]
     nba   id=1629652  2019-20..2022-23  (219 games)  "Luguentz Dort"
@@ -2276,7 +2276,7 @@ Malik Monk  [malik-monk]
     nba   id=1628370  2017-18..2022-23  (393 games)  "Malik Monk"
     espn  id=4066262  2023-24..2025-26  (199 games)  "Malik Monk"
 Malik Rose  [malik-rose]
-    espn  id=739      2000-01..2002-03  (264 games)  "Malik Rose"
+    espn  id=739      1996-97..2002-03  (519 games)  "Malik Rose"
     nba   id=990      2003-04..2008-09  (374 games)  "Malik Rose"
 Mamadi Diakite  [mamadi-diakite]
     nba   id=1629603  2020-21..2022-23  (56 games)  "Mamadi Diakite"
@@ -2300,7 +2300,7 @@ Marco Belinelli  [marco-belinelli]
     nba   id=201158   2007-08..2019-20  (840 games)  "Marco Belinelli"
     espn  id=3190     2012-13..2012-13  (85 games)  "Marco Belinelli"
 Marcus Camby  [marcus-camby]
-    espn  id=125      2000-01..2012-13  (153 games)  "Marcus Camby"
+    espn  id=125      1996-97..2012-13  (420 games)  "Marcus Camby"
     nba   id=948      2003-04..2011-12  (628 games)  "Marcus Camby"
 Marcus Fizer  [marcus-fizer]
     espn  id=247      2000-01..2002-03  (187 games)  "Marcus Fizer"
@@ -2327,13 +2327,13 @@ Mark Blount  [mark-blount]
     espn  id=70       2000-01..2002-03  (203 games)  "Mark Blount"
     nba   id=1548     2003-04..2008-09  (424 games)  "Mark Blount"
 Mark Jackson  [mark-jackson]
-    espn  id=370      2000-01..2002-03  (257 games)  "Mark Jackson"
+    espn  id=370      1993-94..2002-03  (865 games)  "Mark Jackson"
     nba   id=349      2003-04..2003-04  (47 games)  "Mark Jackson"
 Mark Madsen  [mark-madsen]
     espn  id=496      2000-01..2002-03  (213 games)  "Mark Madsen"
     nba   id=2058     2003-04..2008-09  (287 games)  "Mark Madsen"
 Mark Pope  [mark-pope]
-    espn  id=667      2000-01..2001-02  (114 games)  "Mark Pope"
+    espn  id=667      1997-98..2001-02  (153 games)  "Mark Pope"
     nba   id=998      2003-04..2004-05  (13 games)  "Mark Pope"
 Mark Williams  [mark-williams]
     nba   id=1631109  2022-23..2022-23  (43 games)  "Mark Williams"
@@ -2390,7 +2390,7 @@ Matt Carroll  [matt-carroll]
     nba   id=2679     2003-04..2011-12  (463 games)  "Matt Carroll"
     espn  id=2211     2012-13..2012-13  (2 games)  "Matt Carroll"
 Matt Harpring  [matt-harpring]
-    espn  id=306      2000-01..2002-03  (225 games)  "Matt Harpring"
+    espn  id=306      1998-99..2002-03  (281 games)  "Matt Harpring"
     nba   id=1723     2003-04..2008-09  (430 games)  "Matt Harpring"
 Matt Ryan  [matt-ryan]
     nba   id=1630346  2021-22..2022-23  (35 games)  "Matt Ryan"
@@ -2399,7 +2399,7 @@ Maurice Harkless  [maurice-harkless]
     espn  id=6591     2012-13..2012-13  (76 games)  "Maurice Harkless"
     nba   id=203090   2013-14..2021-22  (578 games)  "Maurice Harkless"
 Maurice Taylor  [maurice-taylor]
-    espn  id=837      2000-01..2002-03  (137 games)  "Maurice Taylor"
+    espn  id=837      1997-98..2002-03  (312 games)  "Maurice Taylor"
     nba   id=1508     2003-04..2006-07  (224 games)  "Maurice Taylor"
 Max Christie  [max-christie]
     nba   id=1631108  2022-23..2022-23  (50 games)  "Max Christie"
@@ -2420,7 +2420,7 @@ Mengke Bateer  [mengke-bateer]
     espn  id=1450     2001-02..2002-03  (40 games)  "Mengke Bateer"
     nba   id=2370     2003-04..2003-04  (7 games)  "Mengke Bateer"
 Metta World Peace  [metta-world-peace]
-    espn  id=25       2000-01..2012-13  (291 games)  "Metta World Peace"
+    espn  id=25       1999-00..2012-13  (363 games)  "Metta World Peace"
     nba   id=1897     2003-04..2016-17  (710 games)  "Metta World Peace"
 Meyers Leonard  [meyers-leonard]
     espn  id=6605     2012-13..2012-13  (69 games)  "Meyers Leonard"
@@ -2435,19 +2435,19 @@ Michael Bradley  [michael-bradley]
     espn  id=979      2001-02..2002-03  (96 games)  "Michael Bradley"
     nba   id=2214     2003-04..2005-06  (80 games)  "Michael Bradley"
 Michael Curry  [michael-curry]
-    espn  id=176      2000-01..2002-03  (253 games)  "Michael Curry"
+    espn  id=176      1993-94..2002-03  (611 games)  "Michael Curry"
     nba   id=688      2003-04..2004-05  (88 games)  "Michael Curry"
 Michael Doleac  [michael-doleac]
-    espn  id=207      2000-01..2002-03  (198 games)  "Michael Doleac"
+    espn  id=207      1998-99..2002-03  (329 games)  "Michael Doleac"
     nba   id=1720     2003-04..2007-08  (278 games)  "Michael Doleac"
 Michael Finley  [michael-finley]
-    espn  id=242      2000-01..2002-03  (258 games)  "Michael Finley"
+    espn  id=242      1995-96..2002-03  (633 games)  "Michael Finley"
     nba   id=714      2003-04..2009-10  (582 games)  "Michael Finley"
 Michael Kidd-Gilchrist  [michael-kidd-gilchrist]
     espn  id=6601     2012-13..2012-13  (78 games)  "Michael Kidd-Gilchrist"
     nba   id=203077   2013-14..2019-20  (378 games)  "Michael Kidd-Gilchrist"
 Michael Olowokandi  [michael-olowokandi]
-    espn  id=621      2000-01..2002-03  (201 games)  "Michael Olowokandi"
+    espn  id=621      1998-99..2002-03  (320 games)  "Michael Olowokandi"
     nba   id=1709     2003-04..2006-07  (192 games)  "Michael Olowokandi"
 Michael Porter Jr.  [michael-porter-jr]
     nba   id=1629008  2019-20..2022-23  (236 games)  "Michael Porter Jr."
@@ -2456,10 +2456,10 @@ Michael Redd  [michael-redd]
     espn  id=692      2000-01..2002-03  (162 games)  "Michael Redd"
     nba   id=2072     2003-04..2011-12  (479 games)  "Michael Redd"
 Michael Ruffin  [michael-ruffin]
-    espn  id=741      2000-01..2001-02  (60 games)  "Michael Ruffin"
+    espn  id=741      1999-00..2001-02  (129 games)  "Michael Ruffin"
     nba   id=1913     2003-04..2008-09  (297 games)  "Michael Ruffin"
 Michael Stewart  [michael-stewart]
-    espn  id=810      2000-01..2002-03  (88 games)  "Michael Stewart"
+    espn  id=810      1997-98..2002-03  (250 games)  "Michael Stewart"
     nba   id=1565     2003-04..2004-05  (38 games)  "Michael Stewart"
 Mickael Pietrus  [mickael-pietrus]
     nba   id=2554     2003-04..2011-12  (607 games)  "Mickael Pietrus"
@@ -2468,7 +2468,7 @@ Mikal Bridges  [mikal-bridges]
     nba   id=1628969  2018-19..2022-23  (431 games)  "Mikal Bridges"
     espn  id=3147657  2023-24..2025-26  (284 games)  "Mikal Bridges"
 Mike Bibby  [mike-bibby]
-    espn  id=61       2000-01..2002-03  (245 games)  "Mike Bibby"
+    espn  id=61       1998-99..2002-03  (373 games)  "Mike Bibby"
     nba   id=1710     2003-04..2011-12  (723 games)  "Mike Bibby"
 Mike Conley  [mike-conley]
     nba   id=201144   2007-08..2022-23  (1008 games)  "Mike Conley"
@@ -2492,7 +2492,7 @@ Mike Wilks  [mike-wilks]
     espn  id=1913     2002-03..2002-03  (50 games)  "Mike Wilks"
     nba   id=2366     2003-04..2009-10  (189 games)  "Mike Wilks"
 Mikki Moore  [mikki-moore]
-    espn  id=575      2000-01..2002-03  (120 games)  "Mikki Moore"
+    espn  id=575      1998-99..2002-03  (152 games)  "Mikki Moore"
     nba   id=1630     2003-04..2011-12  (436 games)  "Mikki Moore"
 Miles Bridges  [miles-bridges]
     nba   id=1628970  2018-19..2021-22  (291 games)  "Miles Bridges"
@@ -2504,13 +2504,13 @@ Miles Plumlee  [miles-plumlee]
     espn  id=6616     2012-13..2012-13  (14 games)  "Miles Plumlee"
     nba   id=203101   2013-14..2018-19  (333 games)  "Miles Plumlee"
 Milt Palacio  [milt-palacio]
-    espn  id=632      2000-01..2002-03  (207 games)  "Milt Palacio"
+    espn  id=632      1999-00..2002-03  (259 games)  "Milt Palacio"
     nba   id=1960     2003-04..2005-06  (210 games)  "Milt Palacio"
 Mirza Teletovic  [mirza-teletovic]
     espn  id=4385     2012-13..2012-13  (54 games)  "Mirza Teletovic"
     nba   id=203141   2013-14..2017-18  (289 games)  "Mirza Teletovic"
 Mitchell Butler  [mitchell-butler]
-    espn  id=121      2001-02..2001-02  (11 games)  "Mitchell Butler"
+    espn  id=121      1993-94..2001-02  (319 games)  "Mitchell Butler"
     nba   id=348      2003-04..2003-04  (41 games)  "Mitchell Butler"
 Mitchell Robinson  [mitchell-robinson]
     nba   id=1629011  2018-19..2022-23  (300 games)  "Mitchell Robinson"
@@ -2528,7 +2528,7 @@ Monte Morris  [monte-morris]
     nba   id=1628420  2017-18..2022-23  (390 games)  "Monte Morris"
     espn  id=3059310  2023-24..2025-26  (93 games)  "Monte Morris"
 Moochie Norris  [moochie-norris]
-    espn  id=608      2000-01..2002-03  (246 games)  "Moochie Norris"
+    espn  id=608      1996-97..2002-03  (294 games)  "Moochie Norris"
     nba   id=983      2003-04..2005-06  (151 games)  "Moochie Norris"
 Moritz Wagner  [moritz-wagner]
     nba   id=1629021  2018-19..2022-23  (253 games)  "Moritz Wagner"
@@ -2570,7 +2570,7 @@ Naz Reid  [naz-reid]
     nba   id=1629675  2019-20..2022-23  (250 games)  "Naz Reid"
     espn  id=4396971  2023-24..2025-26  (281 games)  "Naz Reid"
 Nazr Mohammed  [nazr-mohammed]
-    espn  id=568      2000-01..2012-13  (250 games)  "Nazr Mohammed"
+    espn  id=568      1998-99..2012-13  (306 games)  "Nazr Mohammed"
     nba   id=1737     2003-04..2015-16  (778 games)  "Nazr Mohammed"
 Neemias Queta  [neemias-queta]
     nba   id=1629674  2021-22..2022-23  (20 games)  "Neemias Queta"
@@ -2588,7 +2588,7 @@ Nick Richards  [nick-richards]
     nba   id=1630208  2020-21..2022-23  (133 games)  "Nick Richards"
     espn  id=4278076  2023-24..2025-26  (172 games)  "Nick Richards"
 Nick Van Exel  [nick-van-exel]
-    espn  id=868      2000-01..2002-03  (244 games)  "Nick Van Exel"
+    espn  id=868      1993-94..2002-03  (784 games)  "Nick Van Exel"
     nba   id=89       2003-04..2005-06  (157 games)  "Nick Van Exel"
 Nick Young  [nick-young]
     nba   id=201156   2007-08..2018-19  (696 games)  "Nick Young"
@@ -2660,7 +2660,7 @@ Oshae Brissett  [oshae-brissett]
     nba   id=1629052  2019-20..2022-23  (172 games)  "Oshae Brissett"
     espn  id=4278031  2023-24..2024-25  (75 games)  "Oshae Brissett"
 Othella Harrington  [othella-harrington]
-    espn  id=307      2000-01..2002-03  (230 games)  "Othella Harrington"
+    espn  id=307      1996-97..2002-03  (480 games)  "Othella Harrington"
     nba   id=970      2003-04..2007-08  (252 games)  "Othella Harrington"
 Otto Porter Jr.  [otto-porter-jr]
     nba   id=203490   2013-14..2022-23  (562 games)  "Otto Porter Jr."
@@ -2669,7 +2669,7 @@ Ousmane Dieng  [ousmane-dieng]
     nba   id=1631172  2022-23..2022-23  (39 games)  "Ousmane Dieng"
     espn  id=4997526  2023-24..2025-26  (140 games)  "Ousmane Dieng"
 P.J. Brown  [p-j-brown]
-    espn  id=99       2000-01..2002-03  (261 games)  "P.J. Brown"
+    espn  id=99       1993-94..2002-03  (815 games)  "P.J. Brown"
     nba   id=136      2003-04..2007-08  (369 games)  "P.J. Brown"
 P.J. Tucker  [p-j-tucker]
     nba   id=200782   2006-07..2022-23  (875 games)  "P.J. Tucker"
@@ -2690,7 +2690,7 @@ Pat Connaughton  [pat-connaughton]
     nba   id=1626192  2015-16..2022-23  (555 games)  "Pat Connaughton"
     espn  id=2578239  2023-24..2025-26  (170 games)  "Pat Connaughton"
 Pat Garrity  [pat-garrity]
-    espn  id=264      2000-01..2002-03  (253 games)  "Pat Garrity"
+    espn  id=264      1998-99..2002-03  (376 games)  "Pat Garrity"
     nba   id=1727     2003-04..2007-08  (196 games)  "Pat Garrity"
 Patrick Baldwin Jr.  [patrick-baldwin-jr]
     nba   id=1631116  2022-23..2022-23  (34 games)  "Patrick Baldwin Jr."
@@ -2717,7 +2717,7 @@ Paul Millsap  [paul-millsap]
     nba   id=200794   2006-07..2021-22  (1137 games)  "Paul Millsap"
     espn  id=3015     2012-13..2012-13  (78 games)  "Paul Millsap"
 Paul Pierce  [paul-pierce]
-    espn  id=662      2000-01..2012-13  (352 games)  "Paul Pierce"
+    espn  id=662      1998-99..2012-13  (471 games)  "Paul Pierce"
     nba   id=1718     2003-04..2016-17  (1040 games)  "Paul Pierce"
 Paul Reed  [paul-reed]
     nba   id=1630194  2020-21..2022-23  (159 games)  "Paul Reed"
@@ -2729,7 +2729,7 @@ Payton Pritchard  [payton-pritchard]
     nba   id=1630202  2020-21..2022-23  (224 games)  "Payton Pritchard"
     espn  id=4066354  2023-24..2025-26  (278 games)  "Payton Pritchard"
 Peja Stojakovic  [peja-stojakovic]
-    espn  id=813      2000-01..2002-03  (248 games)  "Peja Stojakovic"
+    espn  id=813      1998-99..2002-03  (378 games)  "Peja Stojakovic"
     nba   id=978      2003-04..2010-11  (517 games)  "Peja Stojakovic"
 Peyton Watson  [peyton-watson]
     nba   id=1631212  2022-23..2022-23  (28 games)  "Peyton Watson"
@@ -2738,7 +2738,7 @@ PJ Dozier  [pj-dozier]
     nba   id=1628408  2017-18..2022-23  (136 games)  "PJ Dozier"
     espn  id=3923250  2024-25..2024-25  (9 games)  "PJ Dozier"
 Popeye Jones  [popeye-jones]
-    espn  id=401      2000-01..2002-03  (153 games)  "Popeye Jones"
+    espn  id=401      1993-94..2002-03  (527 games)  "Popeye Jones"
     nba   id=461      2003-04..2003-04  (5 games)  "Popeye Jones"
 Precious Achiuwa  [precious-achiuwa]
     nba   id=1630173  2020-21..2022-23  (198 games)  "Precious Achiuwa"
@@ -2762,7 +2762,7 @@ Quincy Acy  [quincy-acy]
     espn  id=6576     2012-13..2012-13  (29 games)  "Quincy Acy"
     nba   id=203112   2013-14..2018-19  (308 games)  "Quincy Acy"
 Quincy Lewis  [quincy-lewis]
-    espn  id=470      2000-01..2001-02  (76 games)  "Quincy Lewis"
+    espn  id=470      1999-00..2001-02  (154 games)  "Quincy Lewis"
     nba   id=1900     2003-04..2003-04  (14 games)  "Quincy Lewis"
 Quincy Miller  [quincy-miller]
     espn  id=6611     2012-13..2012-13  (7 games)  "Quincy Miller"
@@ -2777,10 +2777,10 @@ R.J. Hampton  [r-j-hampton]
     nba   id=1630181  2020-21..2022-23  (162 games)  "R.J. Hampton"
     espn  id=4590530  2023-24..2023-24  (8 games)  "R.J. Hampton"
 Raef LaFrentz  [raef-lafrentz]
-    espn  id=454      2000-01..2002-03  (253 games)  "Raef LaFrentz"
+    espn  id=454      1998-99..2002-03  (344 games)  "Raef LaFrentz"
     nba   id=1711     2003-04..2007-08  (252 games)  "Raef LaFrentz"
 Rafer Alston  [rafer-alston]
-    espn  id=11       2000-01..2002-03  (138 games)  "Rafer Alston"
+    espn  id=11       1999-00..2002-03  (168 games)  "Rafer Alston"
     nba   id=1747     2003-04..2009-10  (557 games)  "Rafer Alston"
 RaiQuan Gray  [raiquan-gray]
     nba   id=1630564  2022-23..2022-23  (1 games)  "RaiQuan Gray"
@@ -2798,22 +2798,22 @@ Randy Foye  [randy-foye]
     nba   id=200751   2006-07..2016-17  (697 games)  "Randy Foye"
     espn  id=3003     2012-13..2012-13  (82 games)  "Randy Foye"
 Randy Livingston  [randy-livingston]
-    espn  id=476      2000-01..2002-03  (23 games)  "Randy Livingston"
+    espn  id=476      1996-97..2002-03  (189 games)  "Randy Livingston"
     nba   id=988      2003-04..2006-07  (30 games)  "Randy Livingston"
 Rashard Lewis  [rashard-lewis]
-    espn  id=469      2000-01..2012-13  (295 games)  "Rashard Lewis"
+    espn  id=469      1998-99..2012-13  (401 games)  "Rashard Lewis"
     nba   id=1740     2003-04..2013-14  (740 games)  "Rashard Lewis"
 Rasheed Wallace  [rasheed-wallace]
-    espn  id=883      2000-01..2012-13  (264 games)  "Rasheed Wallace"
+    espn  id=883      1995-96..2012-13  (631 games)  "Rasheed Wallace"
     nba   id=739      2003-04..2009-10  (633 games)  "Rasheed Wallace"
 Rasho Nesterovic  [rasho-nesterovic]
-    espn  id=598      2000-01..2002-03  (245 games)  "Rasho Nesterovic"
+    espn  id=598      1998-99..2002-03  (335 games)  "Rasho Nesterovic"
     nba   id=1725     2003-04..2009-10  (530 games)  "Rasho Nesterovic"
 Rasual Butler  [rasual-butler]
     espn  id=1767     2002-03..2002-03  (72 games)  "Rasual Butler"
     nba   id=2446     2003-04..2015-16  (780 games)  "Rasual Butler"
 Ray Allen  [ray-allen]
-    espn  id=9        2000-01..2012-13  (342 games)  "Ray Allen"
+    espn  id=9        1996-97..2012-13  (644 games)  "Ray Allen"
     nba   id=951      2003-04..2013-14  (820 games)  "Ray Allen"
 Raymond Felton  [raymond-felton]
     nba   id=101109   2005-06..2018-19  (938 games)  "Raymond Felton"
@@ -2828,13 +2828,13 @@ Reggie Jackson  [reggie-jackson]
     nba   id=202704   2011-12..2022-23  (765 games)  "Reggie Jackson"
     espn  id=6443     2012-13..2024-25  (206 games)  "Reggie Jackson"
 Reggie Miller  [reggie-miller]
-    espn  id=552      2000-01..2002-03  (245 games)  "Reggie Miller"
+    espn  id=552      1993-94..2002-03  (855 games)  "Reggie Miller"
     nba   id=397      2003-04..2004-05  (175 games)  "Reggie Miller"
-Reggie Williams  [reggie-williams]
+Reggie Williams  [reggie-williams-2]
     nba   id=202130   2009-10..2016-17  (166 games)  "Reggie Williams"
     espn  id=4229     2012-13..2012-13  (40 games)  "Reggie Williams"
 Richard Hamilton  [richard-hamilton]
-    espn  id=294      2000-01..2012-13  (294 games)  "Richard Hamilton"
+    espn  id=294      1999-00..2012-13  (362 games)  "Richard Hamilton"
     nba   id=1888     2003-04..2011-12  (668 games)  "Richard Hamilton"
 Richard Jefferson  [richard-jefferson]
     espn  id=1006     2001-02..2012-13  (262 games)  "Richard Jefferson"
@@ -2843,13 +2843,13 @@ Richaun Holmes  [richaun-holmes]
     nba   id=1626158  2015-16..2022-23  (421 games)  "Richaun Holmes"
     espn  id=2993370  2023-24..2024-25  (71 games)  "Richaun Holmes"
 Rick Brunson  [rick-brunson]
-    espn  id=106      2000-01..2002-03  (106 games)  "Rick Brunson"
+    espn  id=106      1997-98..2002-03  (208 games)  "Rick Brunson"
     nba   id=1594     2003-04..2005-06  (147 games)  "Rick Brunson"
 Rick Fox  [rick-fox]
-    espn  id=252      2000-01..2002-03  (274 games)  "Rick Fox"
+    espn  id=252      1993-94..2002-03  (814 games)  "Rick Fox"
     nba   id=296      2003-04..2003-04  (54 games)  "Rick Fox"
 Ricky Davis  [ricky-davis]
-    espn  id=193      2000-01..2002-03  (168 games)  "Ricky Davis"
+    espn  id=193      1998-99..2002-03  (261 games)  "Ricky Davis"
     nba   id=1729     2003-04..2009-10  (485 games)  "Ricky Davis"
 Ricky Rubio  [ricky-rubio]
     nba   id=201937   2011-12..2022-23  (655 games)  "Ricky Rubio"
@@ -2864,16 +2864,16 @@ Robert Covington  [robert-covington]
     nba   id=203496   2013-14..2022-23  (615 games)  "Robert Covington"
     espn  id=2490620  2023-24..2023-24  (29 games)  "Robert Covington"
 Robert Horry  [robert-horry]
-    espn  id=347      2000-01..2002-03  (282 games)  "Robert Horry"
+    espn  id=347      1993-94..2002-03  (841 games)  "Robert Horry"
     nba   id=109      2003-04..2007-08  (398 games)  "Robert Horry"
 Robert Pack  [robert-pack]
-    espn  id=628      2000-01..2002-03  (125 games)  "Robert Pack"
+    espn  id=628      1993-94..2002-03  (394 games)  "Robert Pack"
     nba   id=123      2003-04..2003-04  (26 games)  "Robert Pack"
 Robert Sacre  [robert-sacre]
     espn  id=6620     2012-13..2012-13  (34 games)  "Robert Sacre"
     nba   id=203135   2013-14..2015-16  (157 games)  "Robert Sacre"
 Robert Traylor  [robert-traylor]
-    espn  id=857      2000-01..2002-03  (214 games)  "Robert Traylor"
+    espn  id=857      1998-99..2002-03  (309 games)  "Robert Traylor"
     nba   id=1714     2003-04..2004-05  (149 games)  "Robert Traylor"
 Robert Williams III  [robert-williams-iii]
     nba   id=1629057  2018-19..2022-23  (265 games)  "Robert Williams III"
@@ -2882,13 +2882,13 @@ Robin Lopez  [robin-lopez]
     nba   id=201577   2008-09..2022-23  (932 games)  "Robin Lopez"
     espn  id=3447     2012-13..2023-24  (98 games)  "Robin Lopez"
 Rod Strickland  [rod-strickland]
-    espn  id=818      2000-01..2002-03  (185 games)  "Rod Strickland"
+    espn  id=818      1993-94..2002-03  (679 games)  "Rod Strickland"
     nba   id=393      2003-04..2004-05  (77 games)  "Rod Strickland"
 Rodney Buford  [rodney-buford]
-    espn  id=114      2000-01..2001-02  (121 games)  "Rodney Buford"
+    espn  id=114      1999-00..2001-02  (154 games)  "Rodney Buford"
     nba   id=1934     2003-04..2004-05  (94 games)  "Rodney Buford"
 Rodney Rogers  [rodney-rogers]
-    espn  id=729      2000-01..2002-03  (268 games)  "Rodney Rogers"
+    espn  id=729      1993-94..2002-03  (802 games)  "Rodney Rogers"
     nba   id=915      2003-04..2004-05  (142 games)  "Rodney Rogers"
 Rodney Stuckey  [rodney-stuckey]
     nba   id=201155   2007-08..2016-17  (603 games)  "Rodney Stuckey"
@@ -2906,7 +2906,7 @@ Ron Harper Jr.  [ron-harper-jr]
     nba   id=1631199  2022-23..2022-23  (9 games)  "Ron Harper Jr."
     espn  id=4397251  2023-24..2025-26  (39 games)  "Ron Harper Jr."
 Ron Mercer  [ron-mercer]
-    espn  id=546      2000-01..2002-03  (199 games)  "Ron Mercer"
+    espn  id=546      1997-98..2002-03  (387 games)  "Ron Mercer"
     nba   id=1500     2003-04..2004-05  (57 games)  "Ron Mercer"
 Ronnie Brewer  [ronnie-brewer]
     nba   id=200758   2006-07..2013-14  (488 games)  "Ronnie Brewer"
@@ -2930,7 +2930,7 @@ Ruben Boumtje-Boumtje  [ruben-boumtje-boumtje]
     espn  id=977      2001-02..2002-03  (38 games)  "Ruben Boumtje-Boumtje"
     nba   id=2257     2003-04..2003-04  (9 games)  "Ruben Boumtje-Boumtje"
 Ruben Patterson  [ruben-patterson]
-    espn  id=638      2000-01..2002-03  (239 games)  "Ruben Patterson"
+    espn  id=638      1998-99..2002-03  (351 games)  "Ruben Patterson"
     nba   id=1739     2003-04..2007-08  (315 games)  "Ruben Patterson"
 Rudy Gay  [rudy-gay]
     nba   id=200752   2006-07..2022-23  (1064 games)  "Rudy Gay"
@@ -2945,7 +2945,7 @@ Russell Westbrook  [russell-westbrook]
     nba   id=201566   2008-09..2022-23  (1126 games)  "Russell Westbrook"
     espn  id=3468     2012-13..2025-26  (310 games)  "Russell Westbrook"
 Rusty LaRue  [rusty-larue]
-    espn  id=459      2001-02..2001-02  (38 games)  "Rusty LaRue"
+    espn  id=459      1997-98..2001-02  (99 games)  "Rusty LaRue"
     nba   id=1601     2003-04..2003-04  (4 games)  "Rusty LaRue"
 Ryan Anderson  [ryan-anderson]
     nba   id=201583   2008-09..2019-20  (614 games)  "Ryan Anderson"
@@ -2954,7 +2954,7 @@ Ryan Arcidiacono  [ryan-arcidiacono]
     nba   id=1627853  2017-18..2022-23  (237 games)  "Ryan Arcidiacono"
     espn  id=2991047  2023-24..2023-24  (20 games)  "Ryan Arcidiacono"
 Ryan Bowen  [ryan-bowen]
-    espn  id=84       2000-01..2002-03  (195 games)  "Ryan Bowen"
+    espn  id=84       1999-00..2002-03  (245 games)  "Ryan Bowen"
     nba   id=1763     2003-04..2009-10  (282 games)  "Ryan Bowen"
 Ryan Hollins  [ryan-hollins]
     nba   id=200797   2006-07..2015-16  (489 games)  "Ryan Hollins"
@@ -2972,7 +2972,7 @@ Saddiq Bey  [saddiq-bey]
     nba   id=1630180  2020-21..2022-23  (235 games)  "Saddiq Bey"
     espn  id=4397136  2023-24..2025-26  (135 games)  "Saddiq Bey"
 Sam Cassell  [sam-cassell]
-    espn  id=138      2000-01..2002-03  (247 games)  "Sam Cassell"
+    espn  id=138      1993-94..2002-03  (741 games)  "Sam Cassell"
     nba   id=208      2003-04..2007-08  (368 games)  "Sam Cassell"
 Sam Hauser  [sam-hauser]
     nba   id=1630573  2021-22..2022-23  (128 games)  "Sam Hauser"
@@ -2984,7 +2984,7 @@ Sam Young  [sam-young]
     nba   id=201970   2009-10..2011-12  (208 games)  "Sam Young"
     espn  id=4020     2012-13..2012-13  (71 games)  "Sam Young"
 Samaki Walker  [samaki-walker]
-    espn  id=882      2000-01..2002-03  (237 games)  "Samaki Walker"
+    espn  id=882      1996-97..2002-03  (433 games)  "Samaki Walker"
     nba   id=955      2003-04..2005-06  (58 games)  "Samaki Walker"
 Samardo Samuels  [samardo-samuels]
     nba   id=202396   2010-11..2011-12  (91 games)  "Samardo Samuels"
@@ -3002,19 +3002,19 @@ Sasha Pavlovic  [sasha-pavlovic]
     nba   id=2562     2003-04..2011-12  (577 games)  "Sasha Pavlovic"
     espn  id=2172     2012-13..2012-13  (39 games)  "Sasha Pavlovic"
 Scot Pollard  [scot-pollard]
-    espn  id=664      2000-01..2002-03  (211 games)  "Scot Pollard"
+    espn  id=664      1997-98..2002-03  (344 games)  "Scot Pollard"
     nba   id=1513     2003-04..2007-08  (216 games)  "Scot Pollard"
 Scott Padgett  [scott-padgett]
-    espn  id=630      2000-01..2002-03  (192 games)  "Scott Padgett"
+    espn  id=630      1999-00..2002-03  (243 games)  "Scott Padgett"
     nba   id=1909     2003-04..2006-07  (228 games)  "Scott Padgett"
 Scott Williams  [scott-williams]
-    espn  id=919      2000-01..2002-03  (196 games)  "Scott Williams"
+    espn  id=919      1993-94..2002-03  (533 games)  "Scott Williams"
     nba   id=281      2003-04..2004-05  (65 games)  "Scott Williams"
 Scottie Barnes  [scottie-barnes]
     nba   id=1630567  2021-22..2022-23  (155 games)  "Scottie Barnes"
     espn  id=4433134  2023-24..2025-26  (212 games)  "Scottie Barnes"
 Scottie Pippen  [scottie-pippen]
-    espn  id=663      2000-01..2002-03  (202 games)  "Scottie Pippen"
+    espn  id=663      1993-94..2002-03  (776 games)  "Scottie Pippen"
     nba   id=937      2003-04..2003-04  (23 games)  "Scottie Pippen"
 Scotty Pippen Jr.  [scotty-pippen-jr]
     nba   id=1630590  2022-23..2022-23  (6 games)  "Scotty Pippen Jr."
@@ -3023,10 +3023,10 @@ Sean Lampley  [sean-lampley]
     espn  id=1010     2002-03..2002-03  (37 games)  "Sean Lampley"
     nba   id=2253     2003-04..2003-04  (10 games)  "Sean Lampley"
 Sean Marks  [sean-marks]
-    espn  id=511      2001-02..2002-03  (45 games)  "Sean Marks"
+    espn  id=511      1998-99..2002-03  (58 games)  "Sean Marks"
     nba   id=1752     2004-05..2010-11  (179 games)  "Sean Marks"
 Sean Rooks  [sean-rooks]
-    espn  id=737      2000-01..2002-03  (213 games)  "Sean Rooks"
+    espn  id=737      1993-94..2002-03  (647 games)  "Sean Rooks"
     nba   id=399      2003-04..2003-04  (55 games)  "Sean Rooks"
 Sebastian Telfair  [sebastian-telfair]
     nba   id=2742     2004-05..2014-15  (505 games)  "Sebastian Telfair"
@@ -3047,10 +3047,10 @@ Shake Milton  [shake-milton]
     nba   id=1629003  2018-19..2022-23  (288 games)  "Shake Milton"
     espn  id=3915195  2023-24..2024-25  (111 games)  "Shake Milton"
 Shammond Williams  [shammond-williams]
-    espn  id=934      2000-01..2002-03  (200 games)  "Shammond Williams"
+    espn  id=934      1998-99..2002-03  (249 games)  "Shammond Williams"
     nba   id=1742     2003-04..2006-07  (90 games)  "Shammond Williams"
 Shandon Anderson  [shandon-anderson]
-    espn  id=17       2000-01..2002-03  (246 games)  "Shandon Anderson"
+    espn  id=17       1996-97..2002-03  (566 games)  "Shandon Anderson"
     nba   id=1000     2003-04..2005-06  (206 games)  "Shandon Anderson"
 Shane Battier  [shane-battier]
     espn  id=976      2001-02..2012-13  (250 games)  "Shane Battier"
@@ -3062,10 +3062,10 @@ Shaquille Harrison  [shaquille-harrison]
     nba   id=1627885  2017-18..2022-23  (197 games)  "Shaquille Harrison"
     espn  id=2991274  2023-24..2023-24  (4 games)  "Shaquille Harrison"
 Shaquille O'Neal  [shaquille-oneal]
-    espn  id=614      2000-01..2002-03  (250 games)  "Shaquille O'Neal"
+    espn  id=614      1993-94..2002-03  (788 games)  "Shaquille O'Neal"
     nba   id=406      2003-04..2010-11  (522 games)  "Shaquille O'Neal"
 Shareef Abdur-Rahim  [shareef-abdur-rahim]
-    espn  id=3        2000-01..2002-03  (239 games)  "Shareef Abdur-Rahim"
+    espn  id=3        1996-97..2002-03  (524 games)  "Shareef Abdur-Rahim"
     nba   id=949      2003-04..2007-08  (297 games)  "Shareef Abdur-Rahim"
 Shaun Livingston  [shaun-livingston]
     nba   id=2733     2004-05..2018-19  (881 games)  "Shaun Livingston"
@@ -3074,10 +3074,10 @@ Shavlik Randolph  [shavlik-randolph]
     nba   id=101183   2005-06..2014-15  (132 games)  "Shavlik Randolph"
     espn  id=2810     2012-13..2012-13  (17 games)  "Shavlik Randolph"
 Shawn Bradley  [shawn-bradley]
-    espn  id=88       2000-01..2002-03  (252 games)  "Shawn Bradley"
+    espn  id=88       1993-94..2002-03  (722 games)  "Shawn Bradley"
     nba   id=762      2003-04..2004-05  (152 games)  "Shawn Bradley"
 Shawn Marion  [shawn-marion]
-    espn  id=510      2000-01..2012-13  (318 games)  "Shawn Marion"
+    espn  id=510      1999-00..2012-13  (376 games)  "Shawn Marion"
     nba   id=1890     2003-04..2014-15  (874 games)  "Shawn Marion"
 Shelvin Mack  [shelvin-mack]
     nba   id=202714   2011-12..2018-19  (451 games)  "Shelvin Mack"
@@ -3107,7 +3107,7 @@ Spencer Hawes  [spencer-hawes]
     nba   id=201150   2007-08..2016-17  (636 games)  "Spencer Hawes"
     espn  id=3211     2012-13..2012-13  (82 games)  "Spencer Hawes"
 Stacey Augmon  [stacey-augmon]
-    espn  id=27       2000-01..2002-03  (228 games)  "Stacey Augmon"
+    espn  id=27       1993-94..2002-03  (749 games)  "Stacey Augmon"
     nba   id=278      2003-04..2005-06  (167 games)  "Stacey Augmon"
 Stanley Umude  [stanley-umude]
     nba   id=1630649  2022-23..2022-23  (1 games)  "Stanley Umude"
@@ -3119,16 +3119,16 @@ Stephen Jackson  [stephen-jackson]
     espn  id=378      2000-01..2012-13  (259 games)  "Stephen Jackson"
     nba   id=1536     2003-04..2013-14  (665 games)  "Stephen Jackson"
 Stephon Marbury  [stephon-marbury]
-    espn  id=509      2000-01..2002-03  (236 games)  "Stephon Marbury"
+    espn  id=509      1996-97..2002-03  (514 games)  "Stephon Marbury"
     nba   id=950      2003-04..2008-09  (362 games)  "Stephon Marbury"
 Steve Blake  [steve-blake]
     nba   id=2581     2003-04..2015-16  (876 games)  "Steve Blake"
     espn  id=1994     2012-13..2012-13  (47 games)  "Steve Blake"
 Steve Francis  [steve-francis]
-    espn  id=255      2000-01..2002-03  (218 games)  "Steve Francis"
+    espn  id=255      1999-00..2002-03  (293 games)  "Steve Francis"
     nba   id=1883     2003-04..2007-08  (286 games)  "Steve Francis"
 Steve Nash  [steve-nash]
-    espn  id=592      2000-01..2012-13  (324 games)  "Steve Nash"
+    espn  id=592      1996-97..2012-13  (566 games)  "Steve Nash"
     nba   id=959      2003-04..2013-14  (748 games)  "Steve Nash"
 Steve Novak  [steve-novak]
     nba   id=200779   2006-07..2016-17  (399 games)  "Steve Novak"
@@ -3206,7 +3206,7 @@ Theo Maledon  [theo-maledon]
     nba   id=1630177  2020-21..2022-23  (160 games)  "Theo Maledon"
     espn  id=4683027  2023-24..2023-24  (17 games)  "Theo Maledon"
 Theo Ratliff  [theo-ratliff]
-    espn  id=687      2000-01..2002-03  (137 games)  "Theo Ratliff"
+    espn  id=687      1995-96..2002-03  (496 games)  "Theo Ratliff"
     nba   id=689      2003-04..2010-11  (359 games)  "Theo Ratliff"
 Thomas Bryant  [thomas-bryant]
     nba   id=1628418  2017-18..2022-23  (230 games)  "Thomas Bryant"
@@ -3221,13 +3221,13 @@ Tierre Brown  [tierre-brown]
     espn  id=1057     2001-02..2002-03  (55 games)  "Tierre Brown"
     nba   id=2357     2003-04..2004-05  (79 games)  "Tierre Brown"
 Tim Duncan  [tim-duncan]
-    espn  id=215      2000-01..2012-13  (380 games)  "Tim Duncan"
+    espn  id=215      1997-98..2012-13  (612 games)  "Tim Duncan"
     nba   id=1495     2003-04..2015-16  (1017 games)  "Tim Duncan"
 Tim Hardaway Jr.  [tim-hardaway-jr]
     nba   id=203501   2013-14..2022-23  (685 games)  "Tim Hardaway Jr."
     espn  id=2528210  2023-24..2025-26  (262 games)  "Tim Hardaway Jr."
 Tim Thomas  [tim-thomas]
-    espn  id=847      2000-01..2002-03  (249 games)  "Tim Thomas"
+    espn  id=847      1997-98..2002-03  (462 games)  "Tim Thomas"
     nba   id=1501     2003-04..2009-10  (390 games)  "Tim Thomas"
 Timofey Mozgov  [timofey-mozgov]
     nba   id=202389   2010-11..2017-18  (453 games)  "Timofey Mozgov"
@@ -3236,28 +3236,28 @@ Tobias Harris  [tobias-harris]
     nba   id=202699   2011-12..2022-23  (827 games)  "Tobias Harris"
     espn  id=6440     2012-13..2025-26  (288 games)  "Tobias Harris"
 Tom Gugliotta  [tom-gugliotta]
-    espn  id=287      2000-01..2002-03  (135 games)  "Tom Gugliotta"
+    espn  id=287      1993-94..2002-03  (591 games)  "Tom Gugliotta"
     nba   id=339      2003-04..2004-05  (102 games)  "Tom Gugliotta"
 Toney Douglas  [toney-douglas]
     nba   id=201962   2009-10..2016-17  (338 games)  "Toney Douglas"
     espn  id=3979     2012-13..2012-13  (71 games)  "Toney Douglas"
 Toni Kukoc  [toni-kukoc]
-    espn  id=446      2000-01..2002-03  (194 games)  "Toni Kukoc"
+    espn  id=446      1993-94..2002-03  (736 games)  "Toni Kukoc"
     nba   id=389      2003-04..2005-06  (196 games)  "Toni Kukoc"
 Tony Allen  [tony-allen]
     nba   id=2754     2004-05..2017-18  (838 games)  "Tony Allen"
     espn  id=2367     2012-13..2012-13  (94 games)  "Tony Allen"
 Tony Battie  [tony-battie]
-    espn  id=45       2000-01..2002-03  (207 games)  "Tony Battie"
+    espn  id=45       1997-98..2002-03  (399 games)  "Tony Battie"
     nba   id=1499     2003-04..2011-12  (489 games)  "Tony Battie"
 Tony Bradley  [tony-bradley]
     nba   id=1628396  2017-18..2022-23  (188 games)  "Tony Bradley"
     espn  id=4065673  2024-25..2025-26  (70 games)  "Tony Bradley"
 Tony Delk  [tony-delk]
-    espn  id=198      2000-01..2002-03  (240 games)  "Tony Delk"
+    espn  id=198      1996-97..2002-03  (467 games)  "Tony Delk"
     nba   id=960      2003-04..2005-06  (114 games)  "Tony Delk"
 Tony Massenburg  [tony-massenburg]
-    espn  id=519      2000-01..2002-03  (188 games)  "Tony Massenburg"
+    espn  id=519      1994-95..2002-03  (512 games)  "Tony Massenburg"
     nba   id=763      2003-04..2004-05  (129 games)  "Tony Massenburg"
 Tony Parker  [tony-parker]
     espn  id=1015     2001-02..2012-13  (280 games)  "Tony Parker"
@@ -3272,16 +3272,16 @@ Torrey Craig  [torrey-craig]
     nba   id=1628470  2017-18..2022-23  (454 games)  "Torrey Craig"
     espn  id=2528693  2023-24..2024-25  (86 games)  "Torrey Craig"
 Tracy McGrady  [tracy-mcgrady]
-    espn  id=532      2000-01..2012-13  (249 games)  "Tracy McGrady"
+    espn  id=532      1997-98..2012-13  (441 games)  "Tracy McGrady"
     nba   id=1503     2003-04..2011-12  (544 games)  "Tracy McGrady"
 Tracy Murray  [tracy-murray]
-    espn  id=585      2000-01..2002-03  (125 games)  "Tracy Murray"
+    espn  id=585      1993-94..2002-03  (605 games)  "Tracy Murray"
     nba   id=145      2003-04..2003-04  (7 games)  "Tracy Murray"
 Trae Young  [trae-young]
     nba   id=1629027  2018-19..2022-23  (380 games)  "Trae Young"
     espn  id=4277905  2023-24..2025-26  (148 games)  "Trae Young"
 Travis Best  [travis-best]
-    espn  id=58       2000-01..2002-03  (228 games)  "Travis Best"
+    espn  id=58       1995-96..2002-03  (628 games)  "Travis Best"
     nba   id=696      2003-04..2004-05  (141 games)  "Travis Best"
 Travis Leslie  [travis-leslie]
     nba   id=202727   2011-12..2011-12  (10 games)  "Travis Leslie"
@@ -3329,7 +3329,7 @@ Troy Brown Jr.  [troy-brown-jr]
     nba   id=1628972  2018-19..2022-23  (312 games)  "Troy Brown Jr."
     espn  id=4278508  2023-24..2023-24  (59 games)  "Troy Brown Jr."
 Troy Hudson  [troy-hudson]
-    espn  id=353      2000-01..2002-03  (249 games)  "Troy Hudson"
+    espn  id=353      1997-98..2002-03  (340 games)  "Troy Hudson"
     nba   id=1607     2003-04..2007-08  (187 games)  "Troy Hudson"
 Troy Murphy  [troy-murphy]
     espn  id=1013     2001-02..2012-13  (175 games)  "Troy Murphy"
@@ -3365,10 +3365,10 @@ Tyrese Maxey  [tyrese-maxey]
     nba   id=1630178  2020-21..2022-23  (231 games)  "Tyrese Maxey"
     espn  id=4431678  2023-24..2025-26  (211 games)  "Tyrese Maxey"
 Tyrone Hill  [tyrone-hill]
-    espn  id=334      2000-01..2002-03  (185 games)  "Tyrone Hill"
+    espn  id=334      1993-94..2002-03  (616 games)  "Tyrone Hill"
     nba   id=238      2003-04..2003-04  (5 games)  "Tyrone Hill"
 Tyronn Lue  [tyronn-lue]
-    espn  id=489      2000-01..2002-03  (194 games)  "Tyronn Lue"
+    espn  id=489      1998-99..2002-03  (220 games)  "Tyronn Lue"
     nba   id=1731     2003-04..2008-09  (350 games)  "Tyronn Lue"
 Tyrus Thomas  [tyrus-thomas]
     nba   id=200748   2006-07..2014-15  (397 games)  "Tyrus Thomas"
@@ -3401,10 +3401,10 @@ Victor Oladipo  [victor-oladipo]
     nba   id=203506   2013-14..2022-23  (537 games)  "Victor Oladipo"
     espn  id=2527963  2023-24..2023-24  (1 games)  "Victor Oladipo"
 Vin Baker  [vin-baker]
-    espn  id=34       2000-01..2002-03  (191 games)  "Vin Baker"
+    espn  id=34       1993-94..2002-03  (722 games)  "Vin Baker"
     nba   id=452      2003-04..2005-06  (93 games)  "Vin Baker"
 Vince Carter  [vince-carter]
-    espn  id=136      2000-01..2012-13  (271 games)  "Vince Carter"
+    espn  id=136      1998-99..2012-13  (403 games)  "Vince Carter"
     nba   id=1713     2003-04..2019-20  (1212 games)  "Vince Carter"
 Vince Williams Jr.  [vince-williams-jr]
     nba   id=1631246  2022-23..2022-23  (15 games)  "Vince Williams Jr."
@@ -3413,31 +3413,31 @@ Vit Krejci  [vit-krejci]
     nba   id=1630249  2021-22..2022-23  (59 games)  "Vit Krejci"
     espn  id=4578893  2023-24..2025-26  (150 games)  "Vit Krejci"
 Vitaly Potapenko  [vitaly-potapenko]
-    espn  id=674      2000-01..2002-03  (187 games)  "Vitaly Potapenko"
+    espn  id=674      1996-97..2002-03  (474 games)  "Vitaly Potapenko"
     nba   id=958      2003-04..2006-07  (139 games)  "Vitaly Potapenko"
 Vlade Divac  [vlade-divac]
-    espn  id=205      2000-01..2002-03  (277 games)  "Vlade Divac"
+    espn  id=205      1993-94..2002-03  (825 games)  "Vlade Divac"
     nba   id=124      2003-04..2004-05  (108 games)  "Vlade Divac"
 Vladimir Radmanovic  [vladimir-radmanovic]
     espn  id=1016     2001-02..2012-13  (165 games)  "Vladimir Radmanovic"
     nba   id=2209     2003-04..2011-12  (608 games)  "Vladimir Radmanovic"
 Vladimir Stepania  [vladimir-stepania]
-    espn  id=805      2000-01..2002-03  (175 games)  "Vladimir Stepania"
+    espn  id=805      1998-99..2002-03  (228 games)  "Vladimir Stepania"
     nba   id=1735     2003-04..2003-04  (42 games)  "Vladimir Stepania"
 Vlatko Cancar  [vlatko-cancar]
     nba   id=1628427  2019-20..2022-23  (142 games)  "Vlatko Cancar"
     espn  id=4230557  2024-25..2024-25  (17 games)  "Vlatko Cancar"
 Voshon Lenard  [voshon-lenard]
-    espn  id=465      2000-01..2002-03  (214 games)  "Voshon Lenard"
+    espn  id=465      1995-96..2002-03  (483 games)  "Voshon Lenard"
     nba   id=702      2003-04..2005-06  (107 games)  "Voshon Lenard"
 Walker Kessler  [walker-kessler]
     nba   id=1631117  2022-23..2022-23  (74 games)  "Walker Kessler"
     espn  id=4433136  2023-24..2025-26  (127 games)  "Walker Kessler"
 Wally Szczerbiak  [wally-szczerbiak]
-    espn  id=831      2000-01..2002-03  (229 games)  "Wally Szczerbiak"
+    espn  id=831      1999-00..2002-03  (305 games)  "Wally Szczerbiak"
     nba   id=1887     2003-04..2008-09  (399 games)  "Wally Szczerbiak"
 Walter McCarty  [walter-mccarty]
-    espn  id=522      2000-01..2002-03  (222 games)  "Walter McCarty"
+    espn  id=522      1996-97..2002-03  (431 games)  "Walter McCarty"
     nba   id=962      2003-04..2005-06  (197 games)  "Walter McCarty"
 Wayne Ellington  [wayne-ellington]
     nba   id=201961   2009-10..2021-22  (703 games)  "Wayne Ellington"
@@ -3458,7 +3458,7 @@ Wesley Matthews  [wesley-matthews]
     nba   id=202083   2009-10..2022-23  (947 games)  "Wesley Matthews"
     espn  id=4032     2012-13..2023-24  (106 games)  "Wesley Matthews"
 Wesley Person  [wesley-person]
-    espn  id=655      2000-01..2002-03  (188 games)  "Wesley Person"
+    espn  id=655      1994-95..2002-03  (651 games)  "Wesley Person"
     nba   id=445      2003-04..2004-05  (103 games)  "Wesley Person"
 Will Barton  [will-barton]
     espn  id=6579     2012-13..2012-13  (73 games)  "Will Barton"
@@ -3518,38 +3518,47 @@ Zion Williamson  [zion-williamson]
     nba   id=1629627  2019-20..2022-23  (114 games)  "Zion Williamson"
     espn  id=4395628  2023-24..2025-26  (163 games)  "Zion Williamson"
 Zydrunas Ilgauskas  [zydrunas-ilgauskas]
-    espn  id=362      2000-01..2002-03  (167 games)  "Zydrunas Ilgauskas"
+    espn  id=362      1997-98..2002-03  (256 games)  "Zydrunas Ilgauskas"
     nba   id=980      2003-04..2010-11  (652 games)  "Zydrunas Ilgauskas"
 
 SAME-KEY PAIRS LEFT UNMERGED (gap > 1 season or same-era):
 ------------------------------------------------------------
+key=aleksandar-radojevic
+    espn  id=683      1999-00..1999-00  -> entity [aleksandar-radojevic]
+    nba   id=1893     2004-05..2004-05  -> entity [aleksandar-radojevic-2]
 key=anthony-miller
-    espn  id=554      2000-01..2000-01  -> entity [anthony-miller]
+    espn  id=554      1994-95..2000-01  -> entity [anthony-miller]
     nba   id=292      2004-05..2004-05  -> entity [anthony-miller-2]
+key=anthony-parker
+    espn  id=635      1997-98..1999-00  -> entity [anthony-parker]
+    nba   id=1515     2006-07..2011-12  -> entity [anthony-parker-2]
 key=ashton-hagans
     nba   id=1630204  2020-21..2020-21  -> entity [ashton-hagans]
     espn  id=4395722  2023-24..2023-24  -> entity [ashton-hagans-2]
 key=brandon-williams
-    espn  id=932      2002-03..2002-03  -> entity [brandon-williams]
+    espn  id=932      1997-98..2002-03  -> entity [brandon-williams]
     nba   id=1630314  2021-22..2021-22  -> entity [brandon-williams-2]
     espn  id=4397040  2023-24..2025-26  -> entity [brandon-williams-2]
 key=charlie-bell
     espn  id=1034     2001-02..2001-02  -> entity [charlie-bell]
     nba   id=2294     2005-06..2010-11  -> entity [charlie-bell-2]
+key=chris-smith
+    espn  id=3493     1993-94..1994-95  -> entity [chris-smith]
+    nba   id=203147   2013-14..2013-14  -> entity [chris-smith-2]
 key=cory-alexander
-    espn  id=6        2000-01..2000-01  -> entity [cory-alexander]
+    espn  id=6        1995-96..2000-01  -> entity [cory-alexander]
     nba   id=724      2004-05..2004-05  -> entity [cory-alexander-2]
 key=dante-exum
     nba   id=203957   2014-15..2020-21  -> entity [dante-exum]
     espn  id=3102528  2023-24..2024-25  -> entity [dante-exum-2]
 key=dee-brown
-    espn  id=97       2000-01..2001-02  -> entity [dee-brown]
+    espn  id=97       1993-94..2001-02  -> entity [dee-brown]
     nba   id=200793   2006-07..2008-09  -> entity [dee-brown-2]
 key=elfrid-payton
     nba   id=203901   2014-15..2021-22  -> entity [elfrid-payton]
     espn  id=2583639  2024-25..2024-25  -> entity [elfrid-payton-2]
 key=glen-rice
-    espn  id=702      2000-01..2002-03  -> entity [glen-rice]
+    espn  id=702      1993-94..2002-03  -> entity [glen-rice]
     nba   id=779      2003-04..2003-04  -> entity [glen-rice]
     nba   id=203318   2013-14..2014-15  -> entity [glen-rice-2]
 key=guerschon-yabusele
@@ -3567,6 +3576,9 @@ key=james-white
 key=jerome-robinson
     nba   id=1629010  2018-19..2020-21  -> entity [jerome-robinson]
     espn  id=3943606  2023-24..2023-24  -> entity [jerome-robinson-2]
+key=john-thomas
+    espn  id=848      1997-98..1999-00  -> entity [john-thomas]
+    nba   id=1519     2004-05..2005-06  -> entity [john-thomas-2]
 key=jontay-porter
     nba   id=1629007  2020-21..2020-21  -> entity [jontay-porter]
     espn  id=4278103  2023-24..2023-24  -> entity [jontay-porter-2]
@@ -3577,7 +3589,7 @@ key=kennedy-chandler
     nba   id=1631113  2022-23..2022-23  -> entity [kennedy-chandler]
     espn  id=4432646  2025-26..2025-26  -> entity [kennedy-chandler-2]
 key=laron-profit
-    espn  id=681      2000-01..2000-01  -> entity [laron-profit]
+    espn  id=681      1999-00..2000-01  -> entity [laron-profit]
     nba   id=1919     2004-05..2005-06  -> entity [laron-profit-2]
 key=lonzo-ball
     nba   id=1628366  2017-18..2021-22  -> entity [lonzo-ball]
@@ -3605,20 +3617,33 @@ key=mike-james
     nba   id=2229     2003-04..2013-14  -> entity [mike-james]
     nba   id=1628455  2017-18..2020-21  -> entity [mike-james-2]
 key=obinna-ekezie
-    espn  id=221      2000-01..2001-02  -> entity [obinna-ekezie]
+    espn  id=221      1999-00..2001-02  -> entity [obinna-ekezie]
     nba   id=1918     2004-05..2004-05  -> entity [obinna-ekezie-2]
 key=olden-polynice
-    espn  id=665      2000-01..2000-01  -> entity [olden-polynice]
+    espn  id=665      1993-94..2000-01  -> entity [olden-polynice]
     nba   id=178      2003-04..2003-04  -> entity [olden-polynice-2]
+key=oliver-miller
+    espn  id=553      1993-94..1999-00  -> entity [oliver-miller]
+    nba   id=932      2003-04..2003-04  -> entity [oliver-miller-2]
 key=pat-burke
     espn  id=1859     2002-03..2002-03  -> entity [pat-burke]
     nba   id=2469     2005-06..2006-07  -> entity [pat-burke-2]
 key=patrick-ewing
-    espn  id=237      2000-01..2001-02  -> entity [patrick-ewing]
+    espn  id=237      1993-94..2001-02  -> entity [patrick-ewing]
     nba   id=201607   2010-11..2010-11  -> entity [patrick-ewing-2]
+key=paul-grant
+    espn  id=281      1998-99..1998-99  -> entity [paul-grant]
+    nba   id=1514     2003-04..2003-04  -> entity [paul-grant-2]
+key=reggie-williams
+    espn  id=3540     1993-94..1996-97  -> entity [reggie-williams]
+    nba   id=202130   2009-10..2016-17  -> entity [reggie-williams-2]
+    espn  id=4229     2012-13..2012-13  -> entity [reggie-williams-2]
 key=scott-machado
     espn  id=6644     2012-13..2012-13  -> entity [scott-machado]
     nba   id=203159   2018-19..2018-19  -> entity [scott-machado-2]
+key=shane-heal
+    espn  id=2337     1996-97..1996-97  -> entity [shane-heal]
+    nba   id=1049     2003-04..2003-04  -> entity [shane-heal-2]
 key=sharife-cooper
     nba   id=1630536  2021-22..2021-22  -> entity [sharife-cooper]
     espn  id=4432173  2025-26..2025-26  -> entity [sharife-cooper-2]
@@ -3654,23 +3679,31 @@ SLUG COLLISIONS (distinct players sharing a base slug):
 ------------------------------------------------------------
     ken-johnson-2  "Ken Johnson"  segs=['espn:1972']
     olden-polynice-2  "Olden Polynice"  segs=['nba:178']
+    oliver-miller-2  "Oliver Miller"  segs=['nba:932']
+    paul-grant-2  "Paul Grant"  segs=['nba:1514']
+    shane-heal-2  "Shane Heal"  segs=['nba:1049']
+    aleksandar-radojevic-2  "Aleksandar Radojevic"  segs=['nba:1893']
     anthony-miller-2  "Anthony Miller"  segs=['nba:292']
     cory-alexander-2  "Cory Alexander"  segs=['nba:724']
+    john-thomas-2  "John Thomas"  segs=['nba:1519']
     laron-profit-2  "Laron Profit"  segs=['nba:1919']
     maurice-evans-2  "Maurice Evans"  segs=['nba:2230']
     obinna-ekezie-2  "Obinna Ekezie"  segs=['nba:1918']
     charlie-bell-2  "Charlie Bell"  segs=['nba:2294']
     pat-burke-2  "Pat Burke"  segs=['nba:2469']
     terence-morris-2  "Terence Morris"  segs=['nba:2242']
+    anthony-parker-2  "Anthony Parker"  segs=['nba:1515']
     dee-brown-2  "Dee Brown"  segs=['nba:200793']
     maceo-baston-2  "Maceo Baston"  segs=['nba:1766']
     steven-smith-2  "Steven Smith"  segs=['nba:200848']
     marcus-williams-2  "Marcus Williams"  segs=['nba:201173']
     will-solomon-2  "Will Solomon"  segs=['nba:2226']
+    reggie-williams-2  "Reggie Williams"  segs=['espn:4229', 'nba:202130']
     patrick-ewing-2  "Patrick Ewing"  segs=['nba:201607']
     james-white-2  "James White"  segs=['espn:3037']
     mickael-gelabale-2  "Mickael Gelabale"  segs=['espn:2756']
     will-conroy-2  "Will Conroy"  segs=['espn:2827']
+    chris-smith-2  "Chris Smith"  segs=['nba:203147']
     glen-rice-2  "Glen Rice"  segs=['nba:203318']
     tony-mitchell-2  "Tony Mitchell"  segs=['nba:203502']
     mike-james-2  "Mike James"  segs=['nba:1628455']

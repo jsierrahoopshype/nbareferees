@@ -57,7 +57,7 @@ SRC = os.path.join(REPO, "source-data")
 DATA = os.path.join(REPO, "data")
 OVERRIDE_CSV = os.path.join(DATA, "referee_identity_overrides.csv")
 
-SEASON_FLOOR_YEAR = 2000          # 2000-01 is the first in-scope season
+SEASON_FLOOR_YEAR = 1993          # 1993-94 is the first in-scope season (ESPN 1990s backfill)
 CURRENT_SEASON = "2025-26"        # "active" == worked this season
 OT_MIN_THRESHOLD = 505            # total player-minutes/game; clean gap in data at 505
 SWING_MIN_GAMES = 15              # min games under a ref to report a player swing
@@ -88,8 +88,9 @@ WHISTLE_STATS = [
 ]
 # Officiating "quality score" (DASHBOARD_SPEC §2): weight each game a ref
 # worked with known round by how deep into the playoffs it was, per BUILD_SPEC
-# round labels (label_rounds) -- this includes the 13 2000-01 games with round
-# kept but game_num nulled, since round is all this needs.
+# round labels (label_rounds) -- this includes every game in
+# ESPN_GAME_NUM_UNRECOVERABLE with round kept but game_num nulled, since
+# round is all this needs.
 QUALITY_POINTS = {1: 1, 2: 2, 3: 4, 4: 8}
 QUALITY_MIN_SEASONS = 3           # min seasons_active for the PER-SEASON ranking only
 # Subset of WHISTLE_STATS eligible for a spotlight "signature line" (DASHBOARD_
@@ -192,8 +193,8 @@ def load_games():
     gm["yr"] = gm["season"].map(season_start_year)
     before = len(gm)
     gm = gm[gm["yr"] >= SEASON_FLOOR_YEAR].copy()
-    print("games: %d rows (dropped %d pre-%d-01 rows)"
-          % (len(gm), before - len(gm), SEASON_FLOOR_YEAR))
+    print("games: %d rows (dropped %d rows before the %d-%02d season)"
+          % (len(gm), before - len(gm), SEASON_FLOOR_YEAR, (SEASON_FLOOR_YEAR + 1) % 100))
     gm["era"] = gm["game_id"].map(lambda g: "espn" if is_espn_scheme(g) else "nba")
     gm["home_team_abbr"] = gm["home_team_abbr"].map(nba_tricodes.to_nba_tricode)
     gm["away_team_abbr"] = gm["away_team_abbr"].map(nba_tricodes.to_nba_tricode)
@@ -1537,15 +1538,16 @@ def build_leaderboards(referees_index):
 DASHBOARD_CURIOSITIES = [
     "This database spans two different data-collection eras -- Kaggle's nbadb "
     "warehouse and ESPN's public API -- reconciled into one continuous record "
-    "back to the 2000-01 season.",
+    "back to the 1993-94 season.",
     "Four historical franchises' games are folded into their modern "
     "successor's team page: the Vancouver Grizzlies into Memphis, the New "
     "Jersey Nets into Brooklyn, and both New Orleans Hornets eras into the "
     "Pelicans.",
     "The Seattle SuperSonics keep their own separate page -- per the 2008 "
     "relocation settlement, the Thunder don't claim that franchise's history.",
-    "Four 2000-01 playoff series are missing games entirely from the "
-    "historical record, including a Finals with only one game on file.",
+    "Five playoff series across two seasons (2000-01 and 1995-96) are "
+    "missing games entirely from the historical record, including a Finals "
+    "with only one game on file.",
     "Alternate officials count too: when a game lists more than three names, "
     "only the first three (as originally recorded) are treated as having "
     "actually worked it.",
