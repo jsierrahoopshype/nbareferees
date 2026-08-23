@@ -99,6 +99,21 @@ SPOTLIGHT_STAT_KEYS = ["home_win_pct", "avg_total_fta", "avg_total_pf", "ot_rate
 TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on team pages
 PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
 
+# ---- Tier C (docs/TIER_C_SPEC.md) ------------------------------------------
+CREW_TOP_N = 40                   # full /crews/ page length; index widget shows CREW_TOP_N[:5]
+SWINGS_ALL_CAP = 250              # top/bottom N pairs kept in data/swings_all.json
+ERA_LEADERS_TOP_N = 25            # per (decade, category) leader list length
+# Decade buckets for era_leaders: (label, start_year, end_year, partial). 1990s
+# is explicitly partial -- the dataset only goes back to 1993-94, not 1990-91.
+# 2020s is also incomplete in a trivial sense (still in progress) but the spec
+# only asks to flag the 1990s case, so that's the only one labeled partial.
+DECADES = [
+    ("1990s", 1993, 1999, True),
+    ("2000s", 2000, 2009, False),
+    ("2010s", 2010, 2019, False),
+    ("2020s", 2020, 2029, False),
+]
+
 ALLOWED_TRICODES = nba_tricodes.VALID_TRICODES | nba_tricodes.HISTORICAL_TRICODES
 NAME_SUFFIXES = {"jr", "sr", "ii", "iii", "iv", "v"}
 
@@ -124,6 +139,17 @@ def is_espn_scheme(game_id):
 def season_start_year(season):
     """'2015-16' -> 2015."""
     return int(str(season)[:4])
+
+
+def season_decade(season):
+    """'1996-97' -> '1990s'; None if the season falls outside every configured
+    DECADES bucket (shouldn't happen given SEASON_FLOOR_YEAR, but a season
+    beyond the last configured decade end_year would fall through here)."""
+    yr = season_start_year(season)
+    for label, lo, hi, _partial in DECADES:
+        if lo <= yr <= hi:
+            return label
+    return None
 
 
 def norm_ref_key(name):
@@ -802,13 +828,35 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
     referees_index = []
     all_swings = []          # master (ref, player-segment) swing rows for player pages
     all_team_records = []    # master (ref, team) rows for team pages
-    used_slugs = {}
     # Clean the output dir first so referees dropped by an override merge don't
     # linger as stale/orphaned files from a previous build.
     ref_dir = os.path.join(DATA, "referees")
     os.makedirs(ref_dir, exist_ok=True)
     for old in glob.glob(os.path.join(ref_dir, "*.json")):
         os.remove(old)
+
+    # Tier C per-referee game logs (docs/TIER_C_SPEC.md section 3): a separate
+    # output dir, kept out of data/referees/{id}.json so the main per-referee
+    # page's JSON doesn't balloon for the busiest officials (1,700+ games).
+    game_log_dir = os.path.join(DATA, "referee_games")
+    os.makedirs(game_log_dir, exist_ok=True)
+    for old in glob.glob(os.path.join(game_log_dir, "*.json")):
+        os.remove(old)
+
+    # Slugs are assigned in ONE pass, upfront, keyed only on ref_key -- not
+    # interleaved with the main per-referee loop below. The game-log crew
+    # links need every OTHER referee's slug while building THIS referee's
+    # entry, which the old interleaved assignment couldn't guarantee (a
+    # later-alphabetical ref_key wouldn't have a slug yet).
+    used_slugs = {}
+    slug_of = {rk: slugify_unique(display[rk], rk, used_slugs) for rk in sorted(ref_games)}
+
+    # game_id -> sorted list of ref_keys who officiated it (post-trim, so this
+    # is exactly the real crew -- 1, 2, or 3 names depending on era coverage).
+    # Built once here rather than via build_game_crew() (which needs the final
+    # referees_index/slugs this function itself produces -- a chicken-and-egg
+    # problem solved the same way as the slug pre-pass above).
+    game_to_crew = off.groupby("game_id")["ref_key"].apply(lambda s: sorted(set(s))).to_dict()
 
     for ref_key in sorted(ref_games):
         gids = ref_games[ref_key]
@@ -817,7 +865,7 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
         if gsub.empty:
             continue
 
-        slug = slugify_unique(display[ref_key], ref_key, used_slugs)
+        slug = slug_of[ref_key]
         seasons = sorted(gsub["season"].unique())
         kinds = gsub["kind"]
 
@@ -1033,7 +1081,7 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             rnd = int(g["po_round"]) if pd.notna(g["po_round"]) else None
             gnum = int(g["po_game_num"]) if pd.notna(g["po_game_num"]) else None
             notable.append({
-                "game_id": gid, "date": g["game_date"],
+                "game_id": gid, "date": g["game_date"], "season": g["season"],
                 "matchup": "%s@%s" % (g["away_team_abbr"], g["home_team_abbr"]),
                 "result": "%s %d, %s %d" % (
                     g["home_team_abbr"], int(g["home_pts"]) if pd.notna(g["home_pts"]) else 0,
@@ -1042,6 +1090,45 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
                 "game_num": gnum,
             })
         notable.sort(key=lambda r: r["date"], reverse=True)
+
+        # ---- Tier C: full per-game log, grouped by season (docs/TIER_C_SPEC.md
+        # section 3) -- every game this referee worked, not just Finals/G7s.
+        # Written to its own file (game_log_dir), not embedded in ref_doc.
+        log_by_season = defaultdict(list)
+        for gid, g in gsub.iterrows():
+            kind = g["kind"]
+            rnd = int(g["po_round"]) if pd.notna(g["po_round"]) else None
+            if kind == "RS":
+                round_label = "Regular Season"
+            elif kind == "PI":
+                round_label = "Play-In"
+            elif rnd == 4:
+                round_label = "Finals"
+            elif rnd:
+                round_label = "Round %d" % rnd
+            else:
+                round_label = "Playoffs"
+            co_officials = [{"name": display[k], "slug": slug_of[k]}
+                            for k in game_to_crew.get(gid, []) if k != ref_key]
+            log_by_season[g["season"]].append({
+                "game_id": gid, "date": g["game_date"],
+                "home_team_abbr": g["home_team_abbr"], "away_team_abbr": g["away_team_abbr"],
+                "home_pts": int(g["home_pts"]) if pd.notna(g["home_pts"]) else None,
+                "away_pts": int(g["away_pts"]) if pd.notna(g["away_pts"]) else None,
+                "round_label": round_label,
+                "co_officials": co_officials,
+            })
+        by_season_log = [
+            {"season": s, "games": sorted(log_by_season[s], key=lambda r: r["date"], reverse=True)}
+            for s in sorted(log_by_season, reverse=True)
+        ]
+        game_log_doc = {
+            "official_id": ref_key, "name": display[ref_key], "slug": slug,
+            "games_total": n_total, "by_season": by_season_log,
+        }
+        assert_no_nan(game_log_doc, "game_log[%s]" % ref_key)
+        with open(os.path.join(game_log_dir, "%s.json" % ref_key), "w", encoding="utf-8") as fh:
+            json.dump(game_log_doc, fh, ensure_ascii=False, indent=2)
 
         # ---- officiating quality score (DASHBOARD_SPEC section 2) -----------
         # Every game with a known round (label_rounds) is weighted by how deep
@@ -1530,6 +1617,224 @@ def build_leaderboards(referees_index):
 
 
 # ----------------------------------------------------------------------------
+# Tier C: informational density (docs/TIER_C_SPEC.md)
+# ----------------------------------------------------------------------------
+def build_crews(off_ref, gm, game_tot, ref_lookup):
+    """Every unique trio of canonical referees who worked a game together
+    (crew-of-3 only -- alternates are already excluded by the first-3-by-
+    row-order rule upstream, so a game's distinct ref_keys ARE the real crew
+    when there are exactly 3). Returns the top CREW_TOP_N trios by games
+    together; the index widget takes the first 5 of this same list."""
+    hr("SECTION 9  Crew chemistry (Tier C)")
+    gmeta = gm.set_index("game_id")
+    got = game_tot.set_index("game_id")
+
+    trio_games = defaultdict(list)
+    for gid, grp in off_ref.groupby("game_id"):
+        crew = tuple(sorted(set(grp["ref_key"])))
+        if len(crew) == 3:
+            trio_games[crew].append(gid)
+
+    rows = []
+    for crew, gids in trio_games.items():
+        refs = [{"name": ref_lookup[k][0], "slug": ref_lookup[k][1]} for k in crew if k in ref_lookup]
+        if len(refs) != 3:
+            continue
+        sub = gmeta.reindex(gids)
+        sub = sub[sub["season"].notna()]
+        if sub.empty:
+            continue
+        seasons = sorted(sub["season"].unique())
+        avg_pts = clean_num((sub["home_pts"] + sub["away_pts"]).mean())
+        box = got.reindex(sub.index)
+        box = box[box["n_teams"] == 2]
+        avg_fta = clean_num(box["box_fta"].mean()) if len(box) else None
+        rows.append({
+            "refs": refs, "games": len(sub),
+            "first_season": seasons[0], "last_season": seasons[-1],
+            "avg_total_points": avg_pts, "pts_n": len(sub),
+            "avg_total_fta": avg_fta, "fta_n": len(box),
+        })
+    rows.sort(key=lambda r: -r["games"])
+    top = rows[:CREW_TOP_N]
+    print("crew-of-3 trios found: %d distinct ; top trio: %s games together"
+          % (len(rows), top[0]["games"] if top else 0))
+    return top
+
+
+def build_team_officials(team_index):
+    """For each canonical franchise, the official who has worked the most of
+    that team's games -- frequency only (deliberately not a win-rate extreme;
+    see docs/TIER_C_SPEC.md for why). Reads back the team JSON build_team_pages
+    just wrote, whose ref_records are already sorted by -games and gated at
+    TEAM_REF_MIN_GAMES, so ref_records[0] (if any) IS this by construction."""
+    hr("SECTION 9  Team officials (Tier C)")
+    rows = []
+    for t in team_index:
+        doc = json.load(open(os.path.join(DATA, "teams", "%s.json" % t["slug"]), encoding="utf-8"))
+        recs = doc["ref_records"]
+        if not recs:
+            continue
+        top = recs[0]
+        rows.append({
+            "tricode": t["tricode"], "team_name": t["name"], "team_slug": t["slug"],
+            "ref_name": top["ref_name"], "ref_slug": top["ref_slug"],
+            "games": top["games"], "n": top["games"],
+        })
+    rows.sort(key=lambda r: r["team_name"])
+    print("team_officials: %d/%d teams have a qualifying most-frequent official "
+          "(min %d games)" % (len(rows), len(team_index), TEAM_REF_MIN_GAMES))
+    return rows
+
+
+def build_debuts_farewells(referees_index):
+    """Per season: referees whose first game in the dataset falls in that
+    season, and whose last game falls in that season. CURRENT_SEASON never
+    contributes a farewell entry -- those referees are presumably still
+    active, so labeling them a "farewell" would be a real (not descriptive)
+    claim this site doesn't have grounds to make. Sorted most-recent-season
+    first, matching every other "history" list on the site."""
+    hr("SECTION 9  Debuts & farewells (Tier C)")
+    by_season = defaultdict(lambda: {"debuts": [], "farewells": []})
+    for r in referees_index:
+        by_season[r["first_season"]]["debuts"].append({"name": r["name"], "slug": r["slug"]})
+        if r["last_season"] != CURRENT_SEASON:
+            by_season[r["last_season"]]["farewells"].append({"name": r["name"], "slug": r["slug"]})
+    for s in by_season.values():
+        s["debuts"].sort(key=lambda x: x["name"])
+        s["farewells"].sort(key=lambda x: x["name"])
+    out = [{"season": s, "debuts": by_season[s]["debuts"], "farewells": by_season[s]["farewells"]}
+           for s in sorted(by_season, reverse=True)]
+    n_debuts = sum(len(s["debuts"]) for s in out)
+    n_farewells = sum(len(s["farewells"]) for s in out)
+    print("debuts_farewells: %d season(s) ; %d total debuts ; %d total farewells "
+          "(farewells always omitted for %s, the current season)"
+          % (len(out), n_debuts, n_farewells, CURRENT_SEASON))
+    return out
+
+
+def build_era_leaders(referees_index, details):
+    """By decade (DECADES): leaders in total games, playoff games, and Finals
+    games. Total/playoff games are summed from each ref's per_season (already
+    computed in aggregate()); Finals games are counted from each ref's
+    notable_games (round=='Finals' is already exactly the po_round==4 games --
+    see aggregate()'s notable-games loop -- and now carries a 'season' field
+    added specifically so this can bucket them by decade without re-deriving
+    a season from a bare date)."""
+    hr("SECTION 9  Era leaders (Tier C)")
+    name_of = {r["official_id"]: r["name"] for r in referees_index}
+    slug_of = {r["official_id"]: r["slug"] for r in referees_index}
+    per_decade = {label: defaultdict(lambda: {"total": 0, "po": 0, "finals": 0})
+                 for label, *_ in DECADES}
+
+    for r in referees_index:
+        off_id = r["official_id"]
+        doc = details[off_id]
+        for season, counts in doc["summary"]["per_season"].items():
+            label = season_decade(season)
+            if label is None:
+                continue
+            acc = per_decade[label][off_id]
+            acc["total"] += counts["total"]
+            acc["po"] += counts["po"]
+        for g in doc["notable_games"]:
+            if g.get("round") != "Finals":
+                continue
+            label = season_decade(g["season"])
+            if label is None:
+                continue
+            per_decade[label][off_id]["finals"] += 1
+
+    era_leaders = {}
+    for label, lo, hi, partial in DECADES:
+        accs = per_decade[label]
+
+        def top_list(field, accs=accs):
+            rows = [{"official_id": oid, "name": name_of[oid], "slug": slug_of[oid], "value": a[field]}
+                    for oid, a in accs.items() if a[field] > 0]
+            rows.sort(key=lambda x: -x["value"])
+            return rows[:ERA_LEADERS_TOP_N]
+
+        era_leaders[label] = {
+            "label": label, "partial": partial,
+            "season_range": "%d-%02d through %d-%02d" % (lo, (lo + 1) % 100, hi, (hi + 1) % 100),
+            "total_games": top_list("total"),
+            "playoff_games": top_list("po"),
+            "finals_games": top_list("finals"),
+        }
+        print("  %-6s (%s%s): total leader=%s(%d)  playoff leader=%s(%d)  finals leader=%s(%d)"
+              % (label, era_leaders[label]["season_range"], " partial" if partial else "",
+                 era_leaders[label]["total_games"][0]["name"] if era_leaders[label]["total_games"] else "—",
+                 era_leaders[label]["total_games"][0]["value"] if era_leaders[label]["total_games"] else 0,
+                 era_leaders[label]["playoff_games"][0]["name"] if era_leaders[label]["playoff_games"] else "—",
+                 era_leaders[label]["playoff_games"][0]["value"] if era_leaders[label]["playoff_games"] else 0,
+                 era_leaders[label]["finals_games"][0]["name"] if era_leaders[label]["finals_games"] else "—",
+                 era_leaders[label]["finals_games"][0]["value"] if era_leaders[label]["finals_games"] else 0))
+    return era_leaders
+
+
+def build_swings_all(all_swings):
+    """Every (player, referee) pair already meeting SWING_MIN_GAMES (n>=15 --
+    the same gate used everywhere else on the site), sorted by signed points
+    swing. Kept in its own file, capped at the top/bottom SWINGS_ALL_CAP, since
+    the full all_swings list (tens of thousands of rows) is far too large to
+    ship whole (docs/TIER_C_SPEC.md)."""
+    hr("Swings, all qualifying pairs (Tier C)")
+    rows = sorted(all_swings, key=lambda r: -(r["pts_swing"] or 0))
+
+    def proj(r):
+        return {
+            "player_name": r["name"], "player_slug": r["slug"],
+            "ref_name": r["ref_name"], "ref_slug": r["ref_slug"],
+            "n_games": r["n_games"],
+            "pts_with_ref": r["pts_with_ref"], "pts_baseline": r["pts_baseline"],
+            "pts_swing": r["pts_swing"],
+        }
+    top = [proj(r) for r in rows[:SWINGS_ALL_CAP]]
+    tail = rows[-SWINGS_ALL_CAP:] if len(rows) > SWINGS_ALL_CAP else []
+    bottom = [proj(r) for r in reversed(tail)]   # most-negative first
+    out = {"top": top, "bottom": bottom, "total_pairs": len(rows)}
+    assert_no_nan(out, "swings_all")
+    with open(os.path.join(DATA, "swings_all.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=2)
+    print("wrote data/swings_all.json (top=%d, bottom=%d, of %d total qualifying pairs)"
+          % (len(top), len(bottom), len(rows)))
+    return out
+
+
+def qa_game_logs(referees_index):
+    """Tier C QA: every referee's game-log row count must equal games_total,
+    and every co-official slug in every game log must resolve to a real
+    referee page."""
+    hr("SECTION 9  Game-log QA (Tier C)")
+    known_slugs = {r["slug"] for r in referees_index}
+    failures = []
+    for r in referees_index:
+        path = os.path.join(DATA, "referee_games", "%s.json" % r["official_id"])
+        doc = json.load(open(path, encoding="utf-8"))
+        logged = sum(len(s["games"]) for s in doc["by_season"])
+        if logged != r["games_total"]:
+            failures.append("game-log count mismatch: %s logged=%d games_total=%d"
+                            % (r["official_id"], logged, r["games_total"]))
+        for s in doc["by_season"]:
+            for g in s["games"]:
+                for co in g["co_officials"]:
+                    if co["slug"] not in known_slugs:
+                        failures.append("game-log co-official slug not in referees_index: "
+                                        "%s (ref=%s game=%s)" % (co["slug"], r["official_id"], g["game_id"]))
+    print("[hard] game-log row count matches games_total for all %d referees: %s"
+          % (len(referees_index), not any("mismatch" in f for f in failures)))
+    print("[hard] every co-official slug across all game logs resolves to a real referee: %s"
+          % (not any("co-official slug" in f for f in failures)))
+    if failures:
+        hr("GAME-LOG QA: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[game-log QA checks all passed]")
+
+
+# ----------------------------------------------------------------------------
 # frontpage dashboard (DASHBOARD_SPEC section 1)
 # ----------------------------------------------------------------------------
 # 3-5 fixed, factual curiosity entries for the history strip -- genuinely true
@@ -1555,7 +1860,7 @@ DASHBOARD_CURIOSITIES = [
 
 
 def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderboards,
-                    seg_to_entity):
+                    seg_to_entity, crews, team_officials, debuts_farewells, era_leaders):
     hr("SECTION 9  Frontpage dashboard")
 
     # ---- spotlight --------------------------------------------------------
@@ -1728,24 +2033,34 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
         "records": records,
         "history": history,
         "date_index": date_index,
+        # Tier C (docs/TIER_C_SPEC.md)
+        "crews": crews,
+        "team_officials": team_officials,
+        "debuts_farewells": debuts_farewells,
+        "era_leaders": era_leaders,
     }
     assert_no_nan(dashboard, "dashboard")
     with open(os.path.join(DATA, "dashboard.json"), "w", encoding="utf-8") as fh:
         json.dump(dashboard, fh, ensure_ascii=False, indent=2)
     print("wrote data/dashboard.json (%d spotlight, %d records, %d top-scoring, "
-          "trio=%s, %d curiosities)"
+          "trio=%s, %d curiosities, %d crews, %d team_officials, %d debuts_farewells "
+          "seasons, %d era_leaders decades)"
           % (len(spotlight), len(records), len(top_scoring_games),
-             "yes" if top_trio else "no", len(DASHBOARD_CURIOSITIES)))
+             "yes" if top_trio else "no", len(DASHBOARD_CURIOSITIES),
+             len(crews), len(team_officials), len(debuts_farewells), len(era_leaders)))
     return dashboard
 
 
-def qa_dashboard(dashboard, referees_index):
+def qa_dashboard(dashboard, referees_index, team_index):
     """DASHBOARD_SPEC section 5: no NaN (already asserted in build_dashboard),
     every slug resolves to a real referee, every records/history entry carries
-    n or count."""
+    n or count. Also covers the Tier C structures (docs/TIER_C_SPEC.md section
+    4): every slug in crews/team_officials/debuts_farewells/era_leaders must
+    resolve to a real referee (or, for team_officials, a real team) page."""
     hr("SECTION 9  Dashboard QA")
     failures = []
     known_slugs = {r["slug"] for r in referees_index}
+    known_team_slugs = {t["slug"] for t in team_index}
 
     bad_spot = [s["slug"] for s in dashboard["spotlight"] if s["slug"] not in known_slugs]
     if bad_spot:
@@ -1778,6 +2093,54 @@ def qa_dashboard(dashboard, referees_index):
     print("[hard] top_scoring_games: %d, top_crew_trio present: %s"
           % (len(dashboard["history"]["top_scoring_games"]), bool(trio)))
     print("[hard] date_index: %d calendar-date entries" % len(dashboard["date_index"]))
+
+    # ---- Tier C ------------------------------------------------------------
+    bad_crew = []
+    for c in dashboard["crews"]:
+        for rf in c["refs"]:
+            if rf["slug"] not in known_slugs:
+                bad_crew.append(rf["slug"])
+        if not c.get("games"):
+            failures.append("crews entry missing a games count: %s" % c["refs"])
+    if bad_crew:
+        failures.append("crews slugs not in referees_index: %s" % bad_crew[:5])
+    print("[hard] crews: %d trios, all ref slugs resolve: %s" % (len(dashboard["crews"]), not bad_crew))
+
+    bad_to_ref = [t["ref_slug"] for t in dashboard["team_officials"] if t["ref_slug"] not in known_slugs]
+    bad_to_team = [t["team_slug"] for t in dashboard["team_officials"] if t["team_slug"] not in known_team_slugs]
+    if bad_to_ref:
+        failures.append("team_officials ref slugs not in referees_index: %s" % bad_to_ref[:5])
+    if bad_to_team:
+        failures.append("team_officials team slugs not in teams.json: %s" % bad_to_team[:5])
+    print("[hard] team_officials: %d teams, all ref+team slugs resolve: %s"
+          % (len(dashboard["team_officials"]), not (bad_to_ref or bad_to_team)))
+
+    bad_df = []
+    for s in dashboard["debuts_farewells"]:
+        for r in s["debuts"] + s["farewells"]:
+            if r["slug"] not in known_slugs:
+                bad_df.append(r["slug"])
+    current_farewells = next((s["farewells"] for s in dashboard["debuts_farewells"]
+                              if s["season"] == CURRENT_SEASON), [])
+    if bad_df:
+        failures.append("debuts_farewells slugs not in referees_index: %s" % bad_df[:5])
+    if current_farewells:
+        failures.append("farewells present for the current season %s (should always be "
+                        "empty): %s" % (CURRENT_SEASON, current_farewells))
+    print("[hard] debuts_farewells: %d seasons, all slugs resolve: %s, %s farewells for "
+          "current season: %s" % (len(dashboard["debuts_farewells"]), not bad_df,
+                                  CURRENT_SEASON, len(current_farewells)))
+
+    bad_era = []
+    for label, era in dashboard["era_leaders"].items():
+        for cat in ("total_games", "playoff_games", "finals_games"):
+            for row in era[cat]:
+                if row["slug"] not in known_slugs:
+                    bad_era.append((label, cat, row["slug"]))
+    if bad_era:
+        failures.append("era_leaders slugs not in referees_index: %s" % bad_era[:5])
+    print("[hard] era_leaders: %d decades, all slugs resolve: %s"
+          % (len(dashboard["era_leaders"]), not bad_era))
 
     if failures:
         hr("DASHBOARD QA: FAILED")
@@ -1943,11 +2306,21 @@ def main():
     player_index = build_player_pages(all_swings, entities, seg_to_entity, pl, gm, game_crew)
 
     leaderboards, details = build_leaderboards(referees_index)
+
+    # Tier C (docs/TIER_C_SPEC.md)
+    crews = build_crews(off_ref, gm, game_tot, ref_lookup)
+    team_officials = build_team_officials(team_index)
+    debuts_farewells = build_debuts_farewells(referees_index)
+    era_leaders = build_era_leaders(referees_index, details)
+    build_swings_all(all_swings)
+
     dashboard = build_dashboard(referees_index, details, gm, pl, game_crew, off_ref,
-                                leaderboards, seg_to_entity)
+                                leaderboards, seg_to_entity, crews, team_officials,
+                                debuts_farewells, era_leaders)
     qa_gate(off_raw, gm, off_trimmed, referees_index, details)
     qa_teams_players(referees_index, team_index, player_index)
-    qa_dashboard(dashboard, referees_index)
+    qa_dashboard(dashboard, referees_index, team_index)
+    qa_game_logs(referees_index)
     spot_checks(referees_index, details)
     dashboard_spot_checks(referees_index, details, dashboard)
 
