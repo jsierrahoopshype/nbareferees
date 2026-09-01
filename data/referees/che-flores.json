@@ -369,6 +369,22 @@
       "avg_abs_margin": 13.02,
       "ot_games": 10,
       "ot_rate": 0.06,
+      "expected": {
+        "avg_total_points": 228.31,
+        "avg_total_fta": 45.26,
+        "avg_total_pf": 38.73,
+        "avg_abs_margin": 12.48,
+        "home_win_pct": 0.55,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": 0.45,
+        "avg_total_fta": 0.15,
+        "avg_total_pf": -0.23,
+        "avg_abs_margin": 0.54,
+        "home_win_pct": -0.07,
+        "ot_rate": 0.01
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -386,6 +402,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -394,6 +426,208 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2025-26",
+      "games_rs": 47,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 233.0,
+            "league": 230.47,
+            "diff": 2.53
+          },
+          "avg_total_fta": {
+            "value": 46.6,
+            "league": 46.91,
+            "diff": -0.31
+          },
+          "avg_total_pf": {
+            "value": 39.09,
+            "league": 39.67,
+            "diff": -0.58
+          },
+          "avg_abs_margin": {
+            "value": 13.13,
+            "league": 13.23,
+            "diff": -0.1
+          },
+          "home_win_pct": {
+            "value": 0.57,
+            "league": 0.55,
+            "diff": 0.02
+          },
+          "ot_rate": {
+            "value": 0.06,
+            "league": 0.04,
+            "diff": 0.02
+          }
+        }
+      }
+    },
+    {
+      "season": "2024-25",
+      "games_rs": 31,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 227.84,
+            "league": 226.69,
+            "diff": 1.15
+          },
+          "avg_total_fta": {
+            "value": 42.58,
+            "league": 43.34,
+            "diff": -0.76
+          },
+          "avg_total_pf": {
+            "value": 36.71,
+            "league": 37.19,
+            "diff": -0.48
+          },
+          "avg_abs_margin": {
+            "value": 13.19,
+            "league": 12.7,
+            "diff": 0.49
+          },
+          "home_win_pct": {
+            "value": 0.52,
+            "league": 0.54,
+            "diff": -0.02
+          },
+          "ot_rate": {
+            "value": 0.1,
+            "league": 0.05,
+            "diff": 0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2023-24",
+      "games_rs": 33,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 227.45,
+            "league": 228.06,
+            "diff": -0.61
+          },
+          "avg_total_fta": {
+            "value": 44.24,
+            "league": 43.42,
+            "diff": 0.82
+          },
+          "avg_total_pf": {
+            "value": 36.61,
+            "league": 37.44,
+            "diff": -0.83
+          },
+          "avg_abs_margin": {
+            "value": 13.03,
+            "league": 12.56,
+            "diff": 0.47
+          },
+          "home_win_pct": {
+            "value": 0.42,
+            "league": 0.54,
+            "diff": -0.12
+          },
+          "ot_rate": {
+            "value": 0.06,
+            "league": 0.05,
+            "diff": 0.01
+          }
+        }
+      }
+    },
+    {
+      "season": "2022-23",
+      "games_rs": 33,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 225.55,
+            "league": 229.37,
+            "diff": -3.82
+          },
+          "avg_total_fta": {
+            "value": 44.45,
+            "league": 47.06,
+            "diff": -2.61
+          },
+          "avg_total_pf": {
+            "value": 39.27,
+            "league": 39.96,
+            "diff": -0.69
+          },
+          "avg_abs_margin": {
+            "value": 13.24,
+            "league": 11.18,
+            "diff": 2.06
+          },
+          "home_win_pct": {
+            "value": 0.45,
+            "league": 0.58,
+            "diff": -0.13
+          },
+          "ot_rate": {
+            "value": 0.03,
+            "league": 0.06,
+            "diff": -0.03
+          }
+        }
+      }
+    },
+    {
+      "season": "2021-22",
+      "games_rs": 11,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 226.82,
+            "league": 221.23,
+            "diff": 5.59
+          },
+          "avg_total_fta": {
+            "value": 54.73,
+            "league": 43.72,
+            "diff": 11.01
+          },
+          "avg_total_pf": {
+            "value": 44.45,
+            "league": 39.27,
+            "diff": 5.18
+          },
+          "avg_abs_margin": {
+            "value": 11.36,
+            "league": 12.37,
+            "diff": -1.01
+          },
+          "home_win_pct": {
+            "value": 0.27,
+            "league": 0.54,
+            "diff": -0.27
+          },
+          "ot_rate": {
+            "value": 0.09,
+            "league": 0.05,
+            "diff": 0.04
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Joel Embiid",

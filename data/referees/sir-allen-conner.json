@@ -182,6 +182,22 @@
       "avg_abs_margin": 12.3,
       "ot_games": 1,
       "ot_rate": 0.1,
+      "expected": {
+        "avg_total_points": 193.5,
+        "avg_total_fta": 43.03,
+        "avg_total_pf": 37.71,
+        "avg_abs_margin": 11.08,
+        "home_win_pct": 0.6,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": -1.4,
+        "avg_total_fta": 2.57,
+        "avg_total_pf": 2.09,
+        "avg_abs_margin": 1.22,
+        "home_win_pct": 0.3,
+        "ot_rate": 0.04
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -199,6 +215,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -207,6 +239,88 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2012-13",
+      "games_rs": 3,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 173.67,
+            "league": 195.8,
+            "diff": -22.13
+          },
+          "avg_total_fta": {
+            "value": 36.67,
+            "league": 38.63,
+            "diff": -1.96
+          },
+          "avg_total_pf": {
+            "value": 33.67,
+            "league": 34.38,
+            "diff": -0.71
+          },
+          "avg_abs_margin": {
+            "value": 7.67,
+            "league": 10.96,
+            "diff": -3.29
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.61,
+            "diff": 0.39
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2011-12",
+      "games_rs": 7,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 200.0,
+            "league": 192.52,
+            "diff": 7.48
+          },
+          "avg_total_fta": {
+            "value": 49.43,
+            "league": 44.92,
+            "diff": 4.51
+          },
+          "avg_total_pf": {
+            "value": 42.43,
+            "league": 39.14,
+            "diff": 3.29
+          },
+          "avg_abs_margin": {
+            "value": 14.29,
+            "league": 11.13,
+            "diff": 3.16
+          },
+          "home_win_pct": {
+            "value": 0.86,
+            "league": 0.59,
+            "diff": 0.27
+          },
+          "ot_rate": {
+            "value": 0.14,
+            "league": 0.06,
+            "diff": 0.08
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "John Wall",

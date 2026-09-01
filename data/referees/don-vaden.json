@@ -397,12 +397,28 @@
       "avg_abs_margin": 10.41,
       "ot_games": 26,
       "ot_rate": 0.05,
-      "avg_total_points_pctile": 17.32,
-      "avg_total_fta_pctile": 90.55,
-      "avg_total_pf_pctile": 94.49,
-      "avg_abs_margin_pctile": 7.87,
-      "home_win_pct_pctile": 73.23,
-      "ot_rate_pctile": 29.92
+      "expected": {
+        "avg_total_points": 192.47,
+        "avg_total_fta": 51.1,
+        "avg_total_pf": 44.85,
+        "avg_abs_margin": 10.79,
+        "home_win_pct": 0.59,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": 2.55,
+        "avg_total_fta": 1.18,
+        "avg_total_pf": 1.14,
+        "avg_abs_margin": -0.38,
+        "home_win_pct": 0.01,
+        "ot_rate": -0.01
+      },
+      "avg_total_points_pctile": 88.98,
+      "avg_total_fta_pctile": 85.83,
+      "avg_total_pf_pctile": 91.34,
+      "avg_abs_margin_pctile": 19.69,
+      "home_win_pct_pctile": 70.08,
+      "ot_rate_pctile": 21.26
     },
     "po": {
       "n": 46,
@@ -414,6 +430,22 @@
       "avg_abs_margin": 10.61,
       "ot_games": 2,
       "ot_rate": 0.04,
+      "expected": {
+        "avg_total_points": 186.63,
+        "avg_total_fta": 53.52,
+        "avg_total_pf": 47.58,
+        "avg_abs_margin": 10.35,
+        "home_win_pct": 0.63,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": 0.76,
+        "avg_total_fta": -0.19,
+        "avg_total_pf": 0.66,
+        "avg_abs_margin": 0.26,
+        "home_win_pct": 0.15,
+        "ot_rate": -0.02
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -422,6 +454,664 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2002-03",
+      "games_rs": 49,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 189.0,
+            "league": 190.15,
+            "diff": -1.15
+          },
+          "avg_total_fta": {
+            "value": 50.22,
+            "league": 48.87,
+            "diff": 1.35
+          },
+          "avg_total_pf": {
+            "value": 45.82,
+            "league": 43.51,
+            "diff": 2.31
+          },
+          "avg_abs_margin": {
+            "value": 10.22,
+            "league": 10.73,
+            "diff": -0.51
+          },
+          "home_win_pct": {
+            "value": 0.69,
+            "league": 0.63,
+            "diff": 0.06
+          },
+          "ot_rate": {
+            "value": 0.04,
+            "league": 0.07,
+            "diff": -0.03
+          }
+        }
+      }
+    },
+    {
+      "season": "2001-02",
+      "games_rs": 59,
+      "games_po": 9,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 191.29,
+            "league": 190.78,
+            "diff": 0.51
+          },
+          "avg_total_fta": {
+            "value": 52.05,
+            "league": 47.65,
+            "diff": 4.4
+          },
+          "avg_total_pf": {
+            "value": 46.17,
+            "league": 42.47,
+            "diff": 3.7
+          },
+          "avg_abs_margin": {
+            "value": 9.12,
+            "league": 10.81,
+            "diff": -1.69
+          },
+          "home_win_pct": {
+            "value": 0.58,
+            "league": 0.59,
+            "diff": -0.01
+          },
+          "ot_rate": {
+            "value": 0.03,
+            "league": 0.06,
+            "diff": -0.03
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 183.78,
+            "league": 188.46,
+            "diff": -4.68
+          },
+          "avg_total_fta": {
+            "value": 48.78,
+            "league": 53.38,
+            "diff": -4.6
+          },
+          "avg_total_pf": {
+            "value": 47.44,
+            "league": 47.52,
+            "diff": -0.08
+          },
+          "avg_abs_margin": {
+            "value": 13.11,
+            "league": 9.0,
+            "diff": 4.11
+          },
+          "home_win_pct": {
+            "value": 0.56,
+            "league": 0.59,
+            "diff": -0.03
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.07,
+            "diff": -0.07
+          }
+        }
+      }
+    },
+    {
+      "season": "2000-01",
+      "games_rs": 62,
+      "games_po": 7,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 188.73,
+            "league": 189.46,
+            "diff": -0.73
+          },
+          "avg_total_fta": {
+            "value": 50.15,
+            "league": 49.74,
+            "diff": 0.41
+          },
+          "avg_total_pf": {
+            "value": 44.92,
+            "league": 44.7,
+            "diff": 0.22
+          },
+          "avg_abs_margin": {
+            "value": 10.24,
+            "league": 10.59,
+            "diff": -0.35
+          },
+          "home_win_pct": {
+            "value": 0.63,
+            "league": 0.6,
+            "diff": 0.03
+          },
+          "ot_rate": {
+            "value": 0.08,
+            "league": 0.07,
+            "diff": 0.01
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 189.43,
+            "league": 186.38,
+            "diff": 3.05
+          },
+          "avg_total_fta": {
+            "value": 53.14,
+            "league": 51.75,
+            "diff": 1.39
+          },
+          "avg_total_pf": {
+            "value": 45.0,
+            "league": 45.34,
+            "diff": -0.34
+          },
+          "avg_abs_margin": {
+            "value": 11.43,
+            "league": 11.23,
+            "diff": 0.2
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.56,
+            "diff": 0.44
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.02,
+            "diff": -0.02
+          }
+        }
+      }
+    },
+    {
+      "season": "1999-00",
+      "games_rs": 66,
+      "games_po": 8,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 195.88,
+            "league": 182.95,
+            "diff": 12.93
+          },
+          "avg_total_fta": {
+            "value": 53.8,
+            "league": 50.59,
+            "diff": 3.21
+          },
+          "avg_total_pf": {
+            "value": 49.18,
+            "league": 46.63,
+            "diff": 2.55
+          },
+          "avg_abs_margin": {
+            "value": 11.18,
+            "league": 10.23,
+            "diff": 0.95
+          },
+          "home_win_pct": {
+            "value": 0.65,
+            "league": 0.57,
+            "diff": 0.08
+          },
+          "ot_rate": {
+            "value": 0.06,
+            "league": 0.05,
+            "diff": 0.01
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 172.62,
+            "league": 183.46,
+            "diff": -10.84
+          },
+          "avg_total_fta": {
+            "value": 52.38,
+            "league": 52.79,
+            "diff": -0.41
+          },
+          "avg_total_pf": {
+            "value": 48.62,
+            "league": 48.48,
+            "diff": 0.14
+          },
+          "avg_abs_margin": {
+            "value": 7.88,
+            "league": 9.83,
+            "diff": -1.95
+          },
+          "home_win_pct": {
+            "value": 0.75,
+            "league": 0.71,
+            "diff": 0.04
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.04,
+            "diff": -0.04
+          }
+        }
+      }
+    },
+    {
+      "season": "1998-99",
+      "games_rs": 35,
+      "games_po": 5,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 185.57,
+            "league": 172.58,
+            "diff": 12.99
+          },
+          "avg_total_fta": {
+            "value": 50.34,
+            "league": 51.56,
+            "diff": -1.22
+          },
+          "avg_total_pf": {
+            "value": 44.09,
+            "league": 44.41,
+            "diff": -0.32
+          },
+          "avg_abs_margin": {
+            "value": 10.71,
+            "league": 9.89,
+            "diff": 0.82
+          },
+          "home_win_pct": {
+            "value": 0.54,
+            "league": 0.58,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.06,
+            "league": 0.06,
+            "diff": 0.0
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 180.8,
+            "league": 175.55,
+            "diff": 5.25
+          },
+          "avg_total_fta": {
+            "value": 58.2,
+            "league": 52.94,
+            "diff": 5.26
+          },
+          "avg_total_pf": {
+            "value": 53.4,
+            "league": 48.67,
+            "diff": 4.73
+          },
+          "avg_abs_margin": {
+            "value": 11.6,
+            "league": 10.09,
+            "diff": 1.51
+          },
+          "home_win_pct": {
+            "value": 0.8,
+            "league": 0.6,
+            "diff": 0.2
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "1997-98",
+      "games_rs": 18,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 200.83,
+            "league": 191.15,
+            "diff": 9.68
+          },
+          "avg_total_fta": {
+            "value": 62.33,
+            "league": 52.56,
+            "diff": 9.77
+          },
+          "avg_total_pf": {
+            "value": 50.89,
+            "league": 44.82,
+            "diff": 6.07
+          },
+          "avg_abs_margin": {
+            "value": 8.83,
+            "league": 11.11,
+            "diff": -2.28
+          },
+          "home_win_pct": {
+            "value": 0.56,
+            "league": 0.6,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.11,
+            "league": 0.06,
+            "diff": 0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "1996-97",
+      "games_rs": 66,
+      "games_po": 6,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 196.86,
+            "league": 193.85,
+            "diff": 3.01
+          },
+          "avg_total_fta": {
+            "value": 51.06,
+            "league": 50.72,
+            "diff": 0.34
+          },
+          "avg_total_pf": {
+            "value": 43.73,
+            "league": 44.27,
+            "diff": -0.54
+          },
+          "avg_abs_margin": {
+            "value": 11.5,
+            "league": 10.94,
+            "diff": 0.56
+          },
+          "home_win_pct": {
+            "value": 0.53,
+            "league": 0.57,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.03,
+            "league": 0.07,
+            "diff": -0.04
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 200.83,
+            "league": 188.34,
+            "diff": 12.49
+          },
+          "avg_total_fta": {
+            "value": 46.2,
+            "league": 53.62,
+            "diff": -7.42
+          },
+          "avg_total_pf": {
+            "value": 45.8,
+            "league": 46.44,
+            "diff": -0.64
+          },
+          "avg_abs_margin": {
+            "value": 9.17,
+            "league": 10.31,
+            "diff": -1.14
+          },
+          "home_win_pct": {
+            "value": 0.83,
+            "league": 0.7,
+            "diff": 0.13
+          },
+          "ot_rate": {
+            "value": 0.2,
+            "league": 0.05,
+            "diff": 0.15
+          }
+        }
+      }
+    },
+    {
+      "season": "1995-96",
+      "games_rs": 47,
+      "games_po": 5,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 198.4,
+            "league": 199.0,
+            "diff": -0.6
+          },
+          "avg_total_fta": {
+            "value": 50.89,
+            "league": 52.84,
+            "diff": -1.95
+          },
+          "avg_total_pf": {
+            "value": 45.19,
+            "league": 46.13,
+            "diff": -0.94
+          },
+          "avg_abs_margin": {
+            "value": 9.72,
+            "league": 10.94,
+            "diff": -1.22
+          },
+          "home_win_pct": {
+            "value": 0.64,
+            "league": 0.6,
+            "diff": 0.04
+          },
+          "ot_rate": {
+            "value": 0.02,
+            "league": 0.05,
+            "diff": -0.03
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 192.8,
+            "league": 187.72,
+            "diff": 5.08
+          },
+          "avg_total_fta": {
+            "value": 50.0,
+            "league": 53.03,
+            "diff": -3.03
+          },
+          "avg_total_pf": {
+            "value": 43.4,
+            "league": 47.06,
+            "diff": -3.66
+          },
+          "avg_abs_margin": {
+            "value": 10.4,
+            "league": 12.85,
+            "diff": -2.45
+          },
+          "home_win_pct": {
+            "value": 0.8,
+            "league": 0.67,
+            "diff": 0.13
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.08,
+            "diff": -0.08
+          }
+        }
+      }
+    },
+    {
+      "season": "1994-95",
+      "games_rs": 65,
+      "games_po": 4,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 202.75,
+            "league": 202.78,
+            "diff": -0.03
+          },
+          "avg_total_fta": {
+            "value": 54.05,
+            "league": 54.05,
+            "diff": 0.0
+          },
+          "avg_total_pf": {
+            "value": 47.55,
+            "league": 46.82,
+            "diff": 0.73
+          },
+          "avg_abs_margin": {
+            "value": 9.98,
+            "league": 11.09,
+            "diff": -1.11
+          },
+          "home_win_pct": {
+            "value": 0.58,
+            "league": 0.6,
+            "diff": -0.02
+          },
+          "ot_rate": {
+            "value": 0.08,
+            "league": 0.06,
+            "diff": 0.02
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 201.5,
+            "league": 198.53,
+            "diff": 2.97
+          },
+          "avg_total_fta": {
+            "value": 70.5,
+            "league": 58.76,
+            "diff": 11.74
+          },
+          "avg_total_pf": {
+            "value": 57.0,
+            "league": 50.72,
+            "diff": 6.28
+          },
+          "avg_abs_margin": {
+            "value": 11.0,
+            "league": 10.64,
+            "diff": 0.36
+          },
+          "home_win_pct": {
+            "value": 0.75,
+            "league": 0.56,
+            "diff": 0.19
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.08,
+            "diff": -0.08
+          }
+        }
+      }
+    },
+    {
+      "season": "1993-94",
+      "games_rs": 65,
+      "games_po": 2,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 199.52,
+            "league": 202.96,
+            "diff": -3.44
+          },
+          "avg_total_fta": {
+            "value": 53.3,
+            "league": 53.25,
+            "diff": 0.05
+          },
+          "avg_total_pf": {
+            "value": 44.67,
+            "league": 44.32,
+            "diff": 0.35
+          },
+          "avg_abs_margin": {
+            "value": 11.22,
+            "league": 11.45,
+            "diff": -0.23
+          },
+          "home_win_pct": {
+            "value": 0.57,
+            "league": 0.61,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.02,
+            "league": 0.04,
+            "diff": -0.02
+          }
+        },
+        "po": {
+          "avg_total_points": {
+            "value": 190.0,
+            "league": 187.99,
+            "diff": 2.01
+          },
+          "avg_total_fta": {
+            "value": 58.0,
+            "league": 55.13,
+            "diff": 2.87
+          },
+          "avg_total_pf": {
+            "value": 49.5,
+            "league": 47.88,
+            "diff": 1.62
+          },
+          "avg_abs_margin": {
+            "value": 9.0,
+            "league": 9.36,
+            "diff": -0.36
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.71,
+            "diff": 0.29
+          },
+          "ot_rate": {
+            "value": 0.5,
+            "league": 0.09,
+            "diff": 0.41
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Michael Jordan",

@@ -161,6 +161,22 @@
       "avg_abs_margin": 8.0,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 198.47,
+        "avg_total_fta": 42.29,
+        "avg_total_pf": 37.39,
+        "avg_abs_margin": 10.95,
+        "home_win_pct": 0.6,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": 7.82,
+        "avg_total_fta": 0.57,
+        "avg_total_pf": 4.47,
+        "avg_abs_margin": -2.95,
+        "home_win_pct": -0.31,
+        "ot_rate": -0.05
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -178,6 +194,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -186,6 +218,88 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2013-14",
+      "games_rs": 3,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 214.33,
+            "league": 202.02,
+            "diff": 12.31
+          },
+          "avg_total_fta": {
+            "value": 44.33,
+            "league": 47.18,
+            "diff": -2.85
+          },
+          "avg_total_pf": {
+            "value": 46.33,
+            "league": 41.4,
+            "diff": 4.93
+          },
+          "avg_abs_margin": {
+            "value": 5.67,
+            "league": 10.93,
+            "diff": -5.26
+          },
+          "home_win_pct": {
+            "value": 0.33,
+            "league": 0.58,
+            "diff": -0.25
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.06,
+            "diff": -0.06
+          }
+        }
+      }
+    },
+    {
+      "season": "2012-13",
+      "games_rs": 4,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 200.25,
+            "league": 195.8,
+            "diff": 4.45
+          },
+          "avg_total_fta": {
+            "value": 41.75,
+            "league": 38.63,
+            "diff": 3.12
+          },
+          "avg_total_pf": {
+            "value": 38.5,
+            "league": 34.38,
+            "diff": 4.12
+          },
+          "avg_abs_margin": {
+            "value": 9.75,
+            "league": 10.96,
+            "diff": -1.21
+          },
+          "home_win_pct": {
+            "value": 0.25,
+            "league": 0.61,
+            "diff": -0.36
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Stephen Curry",

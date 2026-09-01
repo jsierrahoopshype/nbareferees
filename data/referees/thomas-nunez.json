@@ -63,6 +63,22 @@
       "avg_abs_margin": 16.0,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 194.4,
+        "avg_total_fta": 52.11,
+        "avg_total_pf": 45.26,
+        "avg_abs_margin": 10.32,
+        "home_win_pct": 0.6,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": -2.4,
+        "avg_total_fta": 1.89,
+        "avg_total_pf": -4.26,
+        "avg_abs_margin": 5.68,
+        "home_win_pct": 0.4,
+        "ot_rate": -0.06
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -80,6 +96,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -88,6 +120,48 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2004-05",
+      "games_rs": 1,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 192.0,
+            "league": 194.4,
+            "diff": -2.4
+          },
+          "avg_total_fta": {
+            "value": 54.0,
+            "league": 52.11,
+            "diff": 1.89
+          },
+          "avg_total_pf": {
+            "value": 41.0,
+            "league": 45.26,
+            "diff": -4.26
+          },
+          "avg_abs_margin": {
+            "value": 16.0,
+            "league": 10.32,
+            "diff": 5.68
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.6,
+            "diff": 0.4
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.06,
+            "diff": -0.06
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Antoine Walker",

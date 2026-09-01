@@ -209,6 +209,22 @@
       "avg_abs_margin": 10.4,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 212.22,
+        "avg_total_fta": 44.21,
+        "avg_total_pf": 39.73,
+        "avg_abs_margin": 11.19,
+        "home_win_pct": 0.58,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": -0.42,
+        "avg_total_fta": 5.49,
+        "avg_total_pf": 3.37,
+        "avg_abs_margin": -0.79,
+        "home_win_pct": 0.12,
+        "ot_rate": -0.05
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -226,6 +242,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -234,6 +266,88 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2017-18",
+      "games_rs": 7,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 214.86,
+            "league": 212.67,
+            "diff": 2.19
+          },
+          "avg_total_fta": {
+            "value": 51.71,
+            "league": 43.35,
+            "diff": 8.36
+          },
+          "avg_total_pf": {
+            "value": 43.71,
+            "league": 39.7,
+            "diff": 4.01
+          },
+          "avg_abs_margin": {
+            "value": 9.71,
+            "league": 11.13,
+            "diff": -1.42
+          },
+          "home_win_pct": {
+            "value": 0.57,
+            "league": 0.58,
+            "diff": -0.01
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2016-17",
+      "games_rs": 3,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 204.67,
+            "league": 211.18,
+            "diff": -6.51
+          },
+          "avg_total_fta": {
+            "value": 45.0,
+            "league": 46.22,
+            "diff": -1.22
+          },
+          "avg_total_pf": {
+            "value": 41.67,
+            "league": 39.8,
+            "diff": 1.87
+          },
+          "avg_abs_margin": {
+            "value": 12.0,
+            "league": 11.32,
+            "diff": 0.68
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.58,
+            "diff": 0.42
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.06,
+            "diff": -0.06
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Giannis Antetokounmpo",

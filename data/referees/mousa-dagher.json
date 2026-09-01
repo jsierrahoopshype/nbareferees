@@ -387,12 +387,28 @@
       "avg_abs_margin": 11.74,
       "ot_games": 16,
       "ot_rate": 0.05,
-      "avg_total_points_pctile": 95.28,
-      "avg_total_fta_pctile": 17.32,
-      "avg_total_pf_pctile": 29.92,
-      "avg_abs_margin_pctile": 76.38,
-      "home_win_pct_pctile": 2.36,
-      "ot_rate_pctile": 19.69
+      "expected": {
+        "avg_total_points": 226.23,
+        "avg_total_fta": 44.98,
+        "avg_total_pf": 39.17,
+        "avg_abs_margin": 12.28,
+        "home_win_pct": 0.55,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": 0.26,
+        "avg_total_fta": 0.09,
+        "avg_total_pf": 0.9,
+        "avg_abs_margin": -0.54,
+        "home_win_pct": -0.03,
+        "ot_rate": 0.0
+      },
+      "avg_total_points_pctile": 33.86,
+      "avg_total_fta_pctile": 52.76,
+      "avg_total_pf_pctile": 84.25,
+      "avg_abs_margin_pctile": 10.24,
+      "home_win_pct_pctile": 3.94,
+      "ot_rate_pctile": 39.37
     },
     "po": {
       "n": 0,
@@ -404,6 +420,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -412,6 +444,328 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2025-26",
+      "games_rs": 56,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 233.39,
+            "league": 230.47,
+            "diff": 2.92
+          },
+          "avg_total_fta": {
+            "value": 48.3,
+            "league": 46.91,
+            "diff": 1.39
+          },
+          "avg_total_pf": {
+            "value": 42.43,
+            "league": 39.67,
+            "diff": 2.76
+          },
+          "avg_abs_margin": {
+            "value": 11.29,
+            "league": 13.23,
+            "diff": -1.94
+          },
+          "home_win_pct": {
+            "value": 0.48,
+            "league": 0.55,
+            "diff": -0.07
+          },
+          "ot_rate": {
+            "value": 0.09,
+            "league": 0.04,
+            "diff": 0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2024-25",
+      "games_rs": 57,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 225.18,
+            "league": 226.69,
+            "diff": -1.51
+          },
+          "avg_total_fta": {
+            "value": 42.89,
+            "league": 43.34,
+            "diff": -0.45
+          },
+          "avg_total_pf": {
+            "value": 37.6,
+            "league": 37.19,
+            "diff": 0.41
+          },
+          "avg_abs_margin": {
+            "value": 12.79,
+            "league": 12.7,
+            "diff": 0.09
+          },
+          "home_win_pct": {
+            "value": 0.49,
+            "league": 0.54,
+            "diff": -0.05
+          },
+          "ot_rate": {
+            "value": 0.07,
+            "league": 0.05,
+            "diff": 0.02
+          }
+        }
+      }
+    },
+    {
+      "season": "2023-24",
+      "games_rs": 46,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 227.52,
+            "league": 228.06,
+            "diff": -0.54
+          },
+          "avg_total_fta": {
+            "value": 42.54,
+            "league": 43.42,
+            "diff": -0.88
+          },
+          "avg_total_pf": {
+            "value": 37.5,
+            "league": 37.44,
+            "diff": 0.06
+          },
+          "avg_abs_margin": {
+            "value": 13.96,
+            "league": 12.56,
+            "diff": 1.4
+          },
+          "home_win_pct": {
+            "value": 0.5,
+            "league": 0.54,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2022-23",
+      "games_rs": 43,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 228.35,
+            "league": 229.37,
+            "diff": -1.02
+          },
+          "avg_total_fta": {
+            "value": 46.26,
+            "league": 47.06,
+            "diff": -0.8
+          },
+          "avg_total_pf": {
+            "value": 40.35,
+            "league": 39.96,
+            "diff": 0.39
+          },
+          "avg_abs_margin": {
+            "value": 9.19,
+            "league": 11.18,
+            "diff": -1.99
+          },
+          "home_win_pct": {
+            "value": 0.56,
+            "league": 0.58,
+            "diff": -0.02
+          },
+          "ot_rate": {
+            "value": 0.05,
+            "league": 0.06,
+            "diff": -0.01
+          }
+        }
+      }
+    },
+    {
+      "season": "2021-22",
+      "games_rs": 41,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 223.73,
+            "league": 221.23,
+            "diff": 2.5
+          },
+          "avg_total_fta": {
+            "value": 46.32,
+            "league": 43.72,
+            "diff": 2.6
+          },
+          "avg_total_pf": {
+            "value": 41.71,
+            "league": 39.27,
+            "diff": 2.44
+          },
+          "avg_abs_margin": {
+            "value": 10.46,
+            "league": 12.37,
+            "diff": -1.91
+          },
+          "home_win_pct": {
+            "value": 0.63,
+            "league": 0.54,
+            "diff": 0.09
+          },
+          "ot_rate": {
+            "value": 0.07,
+            "league": 0.05,
+            "diff": 0.02
+          }
+        }
+      }
+    },
+    {
+      "season": "2020-21",
+      "games_rs": 40,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 223.72,
+            "league": 224.18,
+            "diff": -0.46
+          },
+          "avg_total_fta": {
+            "value": 42.12,
+            "league": 43.64,
+            "diff": -1.52
+          },
+          "avg_total_pf": {
+            "value": 37.67,
+            "league": 38.58,
+            "diff": -0.91
+          },
+          "avg_abs_margin": {
+            "value": 14.18,
+            "league": 12.18,
+            "diff": 2.0
+          },
+          "home_win_pct": {
+            "value": 0.42,
+            "league": 0.54,
+            "diff": -0.12
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2019-20",
+      "games_rs": 28,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 225.25,
+            "league": 223.6,
+            "diff": 1.65
+          },
+          "avg_total_fta": {
+            "value": 45.54,
+            "league": 46.22,
+            "diff": -0.68
+          },
+          "avg_total_pf": {
+            "value": 42.36,
+            "league": 41.55,
+            "diff": 0.81
+          },
+          "avg_abs_margin": {
+            "value": 10.32,
+            "league": 11.41,
+            "diff": -1.09
+          },
+          "home_win_pct": {
+            "value": 0.57,
+            "league": 0.55,
+            "diff": 0.02
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.07,
+            "diff": -0.07
+          }
+        }
+      }
+    },
+    {
+      "season": "2018-19",
+      "games_rs": 32,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 220.88,
+            "league": 222.42,
+            "diff": -1.54
+          },
+          "avg_total_fta": {
+            "value": 47.03,
+            "league": 46.14,
+            "diff": 0.89
+          },
+          "avg_total_pf": {
+            "value": 42.59,
+            "league": 41.81,
+            "diff": 0.78
+          },
+          "avg_abs_margin": {
+            "value": 10.75,
+            "league": 11.74,
+            "diff": -0.99
+          },
+          "home_win_pct": {
+            "value": 0.56,
+            "league": 0.59,
+            "diff": -0.03
+          },
+          "ot_rate": {
+            "value": 0.06,
+            "league": 0.05,
+            "diff": 0.01
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Giannis Antetokounmpo",

@@ -73,6 +73,22 @@
       "avg_abs_margin": 16.0,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 230.47,
+        "avg_total_fta": 46.91,
+        "avg_total_pf": 39.67,
+        "avg_abs_margin": 13.23,
+        "home_win_pct": 0.55,
+        "ot_rate": 0.04
+      },
+      "differential": {
+        "avg_total_points": 10.53,
+        "avg_total_fta": 2.09,
+        "avg_total_pf": 3.83,
+        "avg_abs_margin": 2.77,
+        "home_win_pct": -0.55,
+        "ot_rate": -0.04
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -90,6 +106,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -98,6 +130,48 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2025-26",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 241.0,
+            "league": 230.47,
+            "diff": 10.53
+          },
+          "avg_total_fta": {
+            "value": 49.0,
+            "league": 46.91,
+            "diff": 2.09
+          },
+          "avg_total_pf": {
+            "value": 43.5,
+            "league": 39.67,
+            "diff": 3.83
+          },
+          "avg_abs_margin": {
+            "value": 16.0,
+            "league": 13.23,
+            "diff": 2.77
+          },
+          "home_win_pct": {
+            "value": 0.0,
+            "league": 0.55,
+            "diff": -0.55
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.04,
+            "diff": -0.04
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Anthony Edwards",

@@ -83,6 +83,22 @@
       "avg_abs_margin": 11.5,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 200.03,
+        "avg_total_fta": 45.69,
+        "avg_total_pf": 40.43,
+        "avg_abs_margin": 11.11,
+        "home_win_pct": 0.57,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": -21.53,
+        "avg_total_fta": -6.19,
+        "avg_total_pf": -3.43,
+        "avg_abs_margin": 0.39,
+        "home_win_pct": 0.43,
+        "ot_rate": -0.06
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -100,6 +116,22 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
       "avg_total_points_pctile": null,
       "avg_total_fta_pctile": null,
       "avg_total_pf_pctile": null,
@@ -108,6 +140,48 @@
       "ot_rate_pctile": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2014-15",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 178.5,
+            "league": 200.03,
+            "diff": -21.53
+          },
+          "avg_total_fta": {
+            "value": 39.5,
+            "league": 45.69,
+            "diff": -6.19
+          },
+          "avg_total_pf": {
+            "value": 37.0,
+            "league": 40.43,
+            "diff": -3.43
+          },
+          "avg_abs_margin": {
+            "value": 11.5,
+            "league": 11.11,
+            "diff": 0.39
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.57,
+            "diff": 0.43
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.06,
+            "diff": -0.06
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Gordon Hayward",
