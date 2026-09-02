@@ -1697,24 +1697,50 @@ def build_leaderboards(referees_index):
     most_current = [entry(r, {"games_current": current_games(r)})
                     for r in top(idx, current_games, filt=lambda r: r["active"])]
 
-    # home win% and avg total FTA need min-n gates and come from whistle profiles
+    # home win% and avg total FTA need min-n gates and come from whistle profiles.
+    # Like the six dedicated whistle leaderboards (League Context section 2),
+    # this index-page widget ranks on the era-adjusted differential, not the
+    # raw value; referees with no computable differential are excluded. Raw
+    # values are still carried for display and for the dashboard's separate
+    # literal-record extremes (_raw_extremes below).
     hw = []
     fta = []
+    skipped_hw = skipped_fta = 0
     for r in idx:
         det = details[r["official_id"]]
         wp = det["whistle_profile"]
         n_all = wp["rs"]["n"] + wp["po"]["n"]
         if n_all >= LEADERBOARD_MIN_GAMES:
-            # home win% over RS+PO combined
+            # home win% over RS+PO combined; differential is the games-weighted
+            # average of each kind's own differential (equivalent to combined
+            # actual minus combined expected).
             hw_num = 0.0
+            diff_num, diff_den = 0.0, 0
             for k in ("rs", "po"):
                 e = wp[k]
                 if e["home_win_pct"] is not None:
                     hw_num += e["home_win_pct"] * e["n"]
-            hw.append(entry(r, {"home_win_pct": clean_num(hw_num / n_all), "n": n_all}))
+                d = (e.get("differential") or {}).get("home_win_pct")
+                if d is not None:
+                    diff_num += d * e["n"]
+                    diff_den += e["n"]
+            if diff_den:
+                hw.append(entry(r, {"home_win_pct": clean_num(hw_num / n_all),
+                                     "diff": clean_num(diff_num / diff_den), "n": n_all}))
+            else:
+                skipped_hw += 1
         rs = wp["rs"]
         if rs["n_boxscore"] >= LEADERBOARD_MIN_GAMES and rs["avg_total_fta"] is not None:
-            fta.append(entry(r, {"avg_total_fta": rs["avg_total_fta"], "n": rs["n_boxscore"]}))
+            diff = (rs.get("differential") or {}).get("avg_total_fta")
+            if diff is not None:
+                fta.append(entry(r, {"avg_total_fta": rs["avg_total_fta"], "diff": diff,
+                                      "n": rs["n_boxscore"]}))
+            else:
+                skipped_fta += 1
+    if skipped_hw:
+        print("  [note] home-win%% widget: %d referees skipped (no differential)" % skipped_hw)
+    if skipped_fta:
+        print("  [note] FTA widget: %d referees skipped (no differential)" % skipped_fta)
 
     # Officiating quality score (DASHBOARD_SPEC section 2). Career-total
     # ranking has no seasons_active gate; the per-season ranking applies
@@ -1735,15 +1761,23 @@ def build_leaderboards(referees_index):
         "most_finals_games": most_finals,
         "most_game7s": most_g7,
         "most_games_current_season": most_current,
-        "highest_home_win_pct": sorted(hw, key=lambda r: -r["home_win_pct"])[:25],
-        "lowest_home_win_pct": sorted(hw, key=lambda r: r["home_win_pct"])[:25],
-        "highest_avg_total_fta_rs": sorted(fta, key=lambda r: -r["avg_total_fta"])[:25],
-        "lowest_avg_total_fta_rs": sorted(fta, key=lambda r: r["avg_total_fta"])[:25],
+        "highest_home_win_pct": sorted(hw, key=lambda r: -r["diff"])[:25],
+        "lowest_home_win_pct": sorted(hw, key=lambda r: r["diff"])[:25],
+        "highest_avg_total_fta_rs": sorted(fta, key=lambda r: -r["diff"])[:25],
+        "lowest_avg_total_fta_rs": sorted(fta, key=lambda r: r["diff"])[:25],
         "most_quality_total": most_quality_total,
         "most_quality_per_season": most_quality_per_season,
         "_meta": {"min_games_for_rate_leaderboards": LEADERBOARD_MIN_GAMES,
                   "min_seasons_for_quality_per_season": QUALITY_MIN_SEASONS,
                   "current_season": CURRENT_SEASON},
+        # Literal raw-value extremes (unranked by differential) for the
+        # dashboard's factual "records" strip -- that widget claims a literal
+        # "highest ever recorded" value, which must stay raw, not diff-ranked.
+        "_raw_extremes": {
+            "highest_home_win_pct": max(hw, key=lambda r: r["home_win_pct"]) if hw else None,
+            "lowest_home_win_pct": min(hw, key=lambda r: r["home_win_pct"]) if hw else None,
+            "highest_avg_total_fta_rs": max(fta, key=lambda r: r["avg_total_fta"]) if fta else None,
+        },
     }
     assert_no_nan(leaderboards, "leaderboards")
     with open(os.path.join(DATA, "leaderboards.json"), "w", encoding="utf-8") as fh:
@@ -2121,16 +2155,17 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
                 "ref_slug": slug, "n": n}
 
     records = []
-    if leaderboards["highest_home_win_pct"]:
-        e = leaderboards["highest_home_win_pct"][0]
+    raw_extremes = leaderboards["_raw_extremes"]
+    if raw_extremes["highest_home_win_pct"]:
+        e = raw_extremes["highest_home_win_pct"]
         records.append(rec("Highest home team win rate", pct_str(e["home_win_pct"]),
                            e["name"], e["slug"], e["n"]))
-    if leaderboards["lowest_home_win_pct"]:
-        e = leaderboards["lowest_home_win_pct"][0]
+    if raw_extremes["lowest_home_win_pct"]:
+        e = raw_extremes["lowest_home_win_pct"]
         records.append(rec("Lowest home team win rate", pct_str(e["home_win_pct"]),
                            e["name"], e["slug"], e["n"]))
-    if leaderboards["highest_avg_total_fta_rs"]:
-        e = leaderboards["highest_avg_total_fta_rs"][0]
+    if raw_extremes["highest_avg_total_fta_rs"]:
+        e = raw_extremes["highest_avg_total_fta_rs"]
         records.append(rec("Busiest whistle (combined FTA/game, RS)", dec_str(e["avg_total_fta"]),
                            e["name"], e["slug"], e["n"]))
     if leaderboards["most_career_games"]:
