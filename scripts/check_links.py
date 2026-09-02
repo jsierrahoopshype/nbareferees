@@ -36,7 +36,7 @@ HREF_RE = re.compile(r'href="([^"]+)"')
 # fixture below only pulls in real site content, never .git/scripts/source-data.
 SITE_ENTRIES = [
     "index.html", "referee", "team", "player", "leaderboard", "crews",
-    "team-officials", "debuts", "eras", "swings", "compare", "sources",
+    "team-officials", "debuts", "eras", "swings", "compare", "matchup", "sources",
     "assets", "data",
 ]
 

@@ -342,6 +342,29 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .compare-col:empty{display:none}
 .compare-line{font-size:.84rem;margin:.3rem 0}
 
+/* ---- /matchup/ (docs/MATCHUP_SPEC.md) --------------------------------
+   Reuses the whistle-profile card shell (.whistle-cols/.whistle-col/
+   .whistle-kind/.whistle-grid/.wm/.wm-val/.wm-label/.wm-n) for the per-kind
+   stat grid -- same "raw value, label, n" card language already used on
+   every referee page, so this page doesn't invent a second visual system.
+   Only the suppression/flag states below are new. */
+.matchup-notice{border-left:3px solid var(--accent);background:var(--accent-dim);
+  padding:.9rem 1.1rem;border-radius:0 8px 8px 0;margin:1rem 0 1.4rem;max-width:70rem}
+.matchup-notice p{font-size:.86rem;line-height:1.5}
+.matchup-notice strong{color:var(--text)}
+.matchup-heading{font-size:1.25rem;letter-spacing:-.02em;margin:1.8rem 0 .8rem}
+.matchup-heading:first-child{margin-top:0}
+.mu-record-line{font-size:.86rem;color:var(--text-secondary);margin-bottom:.8rem}
+.wm-val.wm-suppressed{font-size:.76rem;font-weight:600;font-style:italic;
+  color:var(--text-secondary);letter-spacing:0}
+.mu-flag{display:inline-block;font-family:var(--mono);font-size:.58rem;font-weight:700;
+  color:var(--orange);background:var(--orange-dim);padding:.1rem .4rem;
+  border-radius:4px;text-transform:uppercase;letter-spacing:.03em;vertical-align:middle}
+.mu-td-suppressed{color:var(--text-secondary);font-style:italic;font-size:.8rem}
+.mu-win{color:var(--green);font-weight:700}
+.mu-loss{color:var(--red);font-weight:700}
+.mu-section-caption{margin-top:.3rem}
+
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
   border-top:1px solid var(--border);color:var(--text-secondary);

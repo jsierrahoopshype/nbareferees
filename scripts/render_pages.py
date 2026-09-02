@@ -166,7 +166,8 @@ def head(title, description, depth):
     <span class="brand-stripe" aria-hidden="true"></span>
     <span class="brand-name">Referee Database</span>
   </a>
-  <nav class="masthead-nav"><a href="{root}compare/index.html">Compare</a></nav>
+  <nav class="masthead-nav"><a href="{root}compare/index.html">Compare</a>
+  <a href="{root}matchup/index.html">Matchup</a></nav>
   <span class="brand-sub">NBA officiating record &middot; 1993-94 to {cur}</span>
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
@@ -588,7 +589,8 @@ def render_ref(doc):
     <p class="ref-kicker">NBA on-court official</p>
     <h1 class="ref-name">{name}</h1>
     <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a>
-    <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a></div>
+    <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a>
+    <a class="compare-btn" href="{root}matchup/index.html?ref={slug}">Team matchups</a></div>
     <div class="chip-row">{chips}</div>
   </div>
 </section>""".format(name=esc(name), active=active, chips="".join(chips),
@@ -778,6 +780,7 @@ def render_team(doc):
                 name, tri, s["first_season"] or "1993-94"))
     badges = ('<span class="badge badge-past">Historical franchise</span>'
               if s.get("historical") else "")
+    badges += ' <a class="compare-btn" href="../../matchup/index.html?team=%s">Referee matchups</a>' % esc(s["slug"])
     chips = [
         stat_chip("Games in dataset", i(s["games_total"]), accent=True),
         stat_chip("Tricode", esc(tri)),
@@ -1390,6 +1393,41 @@ def render_compare():
 
 
 # ---------------------------------------------------------------------------
+# team x referee matchup lookup (docs/MATCHUP_SPEC.md) -- static shell,
+# content fetched and rendered client-side keyed off ?team=&ref=, same
+# pattern as render_compare() above (data/matchups/{official_id}.json,
+# data/referee_games/{official_id}.json and data/teams/{slug}.json already
+# exist; nothing pre-rendered per pairing, there are ~5,000 of them).
+# ---------------------------------------------------------------------------
+def render_matchup():
+    title = "NBA team x referee lookup: a team's record in games one official worked"
+    desc = ("A team's record in games a specific NBA official worked -- games, win rate, "
+            "home/road splits, points for and against, fouls and free throws, regular "
+            "season and playoffs -- with the full auditable game log underneath. "
+            "Share a lookup by its URL.")
+    box_team = ref_search(1, "top", type_filter="team", compare_slot="team")
+    box_ref = ref_search(1, "top", type_filter="ref", compare_slot="ref")
+    notice = ('<div class="matchup-notice"><p><strong>What this page shows:</strong> a '
+              'team’s results in games a specific official worked — never a claim '
+              'that the official caused those results. Officials are assigned to games; '
+              'nothing on this page implies they influenced who won, and every number can '
+              'be checked against the actual games listed below it.</p></div>')
+    body = """<section class="block">
+  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
+  Matchup</span><h2>Team &times; referee lookup</h2></div>
+  {notice}
+  <div class="compare-pickers">
+    <div class="compare-picker">{box_team}</div>
+    <div class="compare-picker">{box_ref}</div>
+  </div>
+  <p class="empty-note" id="matchup-prompt">Pick a team and an official above to see that
+  team's record in games they worked.</p>
+  <div id="matchup-result"></div>
+</section>""".format(notice=notice, box_team=box_team, box_ref=box_ref)
+    return page(title, desc, 1, body)
+
+
+# ---------------------------------------------------------------------------
 # Tier C full-list pages (docs/TIER_C_SPEC.md)
 # ---------------------------------------------------------------------------
 def crews_table(crews):
@@ -1974,6 +2012,29 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .compare-col:empty{display:none}
 .compare-line{font-size:.84rem;margin:.3rem 0}
 
+/* ---- /matchup/ (docs/MATCHUP_SPEC.md) --------------------------------
+   Reuses the whistle-profile card shell (.whistle-cols/.whistle-col/
+   .whistle-kind/.whistle-grid/.wm/.wm-val/.wm-label/.wm-n) for the per-kind
+   stat grid -- same "raw value, label, n" card language already used on
+   every referee page, so this page doesn't invent a second visual system.
+   Only the suppression/flag states below are new. */
+.matchup-notice{border-left:3px solid var(--accent);background:var(--accent-dim);
+  padding:.9rem 1.1rem;border-radius:0 8px 8px 0;margin:1rem 0 1.4rem;max-width:70rem}
+.matchup-notice p{font-size:.86rem;line-height:1.5}
+.matchup-notice strong{color:var(--text)}
+.matchup-heading{font-size:1.25rem;letter-spacing:-.02em;margin:1.8rem 0 .8rem}
+.matchup-heading:first-child{margin-top:0}
+.mu-record-line{font-size:.86rem;color:var(--text-secondary);margin-bottom:.8rem}
+.wm-val.wm-suppressed{font-size:.76rem;font-weight:600;font-style:italic;
+  color:var(--text-secondary);letter-spacing:0}
+.mu-flag{display:inline-block;font-family:var(--mono);font-size:.58rem;font-weight:700;
+  color:var(--orange);background:var(--orange-dim);padding:.1rem .4rem;
+  border-radius:4px;text-transform:uppercase;letter-spacing:.03em;vertical-align:middle}
+.mu-td-suppressed{color:var(--text-secondary);font-style:italic;font-size:.8rem}
+.mu-win{color:var(--green);font-weight:700}
+.mu-loss{color:var(--red);font-weight:700}
+.mu-section-caption{margin-top:.3rem}
+
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
   border-top:1px solid var(--border);color:var(--text-secondary);
@@ -2094,30 +2155,40 @@ JS = r"""(function(){
     document.addEventListener("click",function(e){if(!wrap.contains(e.target))close();});
   });
   // --- sortable tables ---
+  // Exposed on window so content injected after page load (the /matchup/
+  // page's client-fetched tables -- everything else on the site is
+  // server-rendered before this runs at DOMContentLoaded) can wire up the
+  // same sort behavior on demand instead of duplicating it.
   function cellVal(td){
     var s=td.getAttribute("data-sort");
     if(s!==null){var n=parseFloat(s);return isNaN(n)?s.toLowerCase():n;}
     return td.textContent.trim().toLowerCase();
   }
-  [].slice.call(document.querySelectorAll(".sortable-table")).forEach(function(table){
-    var ths=[].slice.call(table.querySelectorAll("th.sortable"));
-    ths.forEach(function(th,col){
-      th.addEventListener("click",function(){
-        var tbody=table.tBodies[0];
-        var rows=[].slice.call(tbody.querySelectorAll("tr"));
-        var asc=!th.classList.contains("sort-asc");
-        ths.forEach(function(o){o.classList.remove("sort-asc","sort-desc");});
-        th.classList.add(asc?"sort-asc":"sort-desc");
-        rows.sort(function(a,b){
-          var x=cellVal(a.cells[col]),y=cellVal(b.cells[col]);
-          if(x<y)return asc?-1:1;
-          if(x>y)return asc?1:-1;
-          return 0;
+  function initSortableTables(root){
+    [].slice.call((root||document).querySelectorAll(".sortable-table")).forEach(function(table){
+      if(table.__sortInit)return;
+      table.__sortInit=true;
+      var ths=[].slice.call(table.querySelectorAll("th.sortable"));
+      ths.forEach(function(th,col){
+        th.addEventListener("click",function(){
+          var tbody=table.tBodies[0];
+          var rows=[].slice.call(tbody.querySelectorAll("tr"));
+          var asc=!th.classList.contains("sort-asc");
+          ths.forEach(function(o){o.classList.remove("sort-asc","sort-desc");});
+          th.classList.add(asc?"sort-asc":"sort-desc");
+          rows.sort(function(a,b){
+            var x=cellVal(a.cells[col]),y=cellVal(b.cells[col]);
+            if(x<y)return asc?-1:1;
+            if(x>y)return asc?1:-1;
+            return 0;
+          });
+          rows.forEach(function(r){tbody.appendChild(r);});
         });
-        rows.forEach(function(r){tbody.appendChild(r);});
       });
     });
-  });
+  }
+  window.initSortableTables=initSortableTables;
+  initSortableTables(document);
   // --- leaderboard tabs ---
   // Scoped PER .lb-tabs container (its .lb-panels sibling), not globally --
   // a page can carry more than one independent tab group (e.g. the index's
@@ -2320,6 +2391,227 @@ JS = r"""(function(){
     loadCol(colA,aSlug);
     loadCol(colB,bSlug);
   })();
+  // --- /matchup/ team x referee lookup (docs/MATCHUP_SPEC.md) -- reads
+  // data/matchups/{official_id}.json (career + per-season, RS/PO) and
+  // data/referee_games/{official_id}.json (the auditable log, filtered
+  // client-side to the selected team) keyed off ?team=&ref=. ---
+  (function(){
+    var resultEl=document.getElementById("matchup-result");
+    if(!resultEl)return;
+    var MU_SUPPRESS=3, MU_FLAG=10;
+    var promptEl=document.getElementById("matchup-prompt");
+    var params=new URLSearchParams(window.location.search);
+    var teamSlug=(params.get("team")||"").toLowerCase();
+    var refSlug=params.get("ref");
+    // Prefilled from a referee or team page: the picker itself must show
+    // which one is already chosen, not just silently use it -- a reader
+    // arriving via a "Team matchups" link should see their referee's name
+    // sitting in the box, not two blank pickers.
+    var teamInput=document.querySelector('.refsearch-wrap[data-compare="team"] .refsearch');
+    var refInput=document.querySelector('.refsearch-wrap[data-compare="ref"] .refsearch');
+
+    function fmtPct(v){return (v*100).toFixed(1)+"%";}
+    function fmtDec(v){return v.toFixed(1);}
+    function fmtSigned(v){return (v>=0?"+":"")+v.toFixed(1);}
+
+    // One stat cell in the whistle-profile card shell (.wm/.wm-val/.wm-label/
+    // .wm-n, same markup referee pages already use). games is what gates
+    // suppression for every stat; n is the sample actually backing THIS
+    // number (n_box for FTA/PF, since box scores can be missing even when
+    // games themselves are on record) -- the two can differ, and the
+    // suppressed-state message says which one is short.
+    function wmCell(label,val,fmt,games,n){
+      var body;
+      if(val==null){
+        var reason=games<MU_SUPPRESS
+          ?("too few games (n="+games+", min "+MU_SUPPRESS+")")
+          :("box score unavailable for these games (n="+n+")");
+        body='<div class="wm-val wm-suppressed">'+escHtml(reason)+'</div>';
+      }else{
+        var flag=n<MU_FLAG?' <span class="mu-flag" title="Fewer than '+MU_FLAG+
+          ' games back this number (n='+n+') -- shown, but a small sample.">small sample</span>':"";
+        body='<div class="wm-val">'+fmt(val)+flag+'</div>';
+      }
+      return '<div class="wm">'+body+'<div class="wm-label">'+escHtml(label)+'</div>'+
+        '<div class="wm-n">n = '+n+'</div></div>';
+    }
+    function matchupBlock(kindLabel,b){
+      if(!b||!b.games)return "";
+      var winTxt=b.win_pct!=null?fmtPct(b.win_pct):
+        (b.games<MU_SUPPRESS?("too few games (n="+b.games+")"):"—");
+      var header=b.wins+"-"+b.losses+" ("+winTxt+")"+
+        " &middot; Home "+b.home_games+" ("+b.home_wins+"-"+(b.home_games-b.home_wins)+")"+
+        " &middot; Road "+b.away_games+" ("+b.away_wins+"-"+(b.away_games-b.away_wins)+")";
+      var cells=[
+        ["Avg. margin",b.avg_margin,fmtSigned,b.games,b.games],
+        ["Points for",b.avg_pts_for,fmtDec,b.games,b.games],
+        ["Points against",b.avg_pts_against,fmtDec,b.games,b.games],
+        ["Team FTA",b.avg_team_fta,fmtDec,b.games,b.n_box],
+        ["Opponent FTA",b.avg_opp_fta,fmtDec,b.games,b.n_box],
+        ["Team fouls",b.avg_team_pf,fmtDec,b.games,b.n_box],
+        ["Opponent fouls",b.avg_opp_pf,fmtDec,b.games,b.n_box]
+      ].map(function(c){return wmCell(c[0],c[1],c[2],c[3],c[4]);}).join("");
+      return '<div class="whistle-col"><h3 class="whistle-kind">'+escHtml(kindLabel)+
+        ' <span class="whistle-n">'+b.games+' games</span></h3>'+
+        '<p class="mu-record-line">'+header+'</p>'+
+        '<div class="whistle-grid">'+cells+'</div></div>';
+    }
+    // Table-cell twin of wmCell for the season-by-season table -- same
+    // suppress/flag policy, td markup instead of a card.
+    function muTd(label,val,fmt,games,n){
+      if(val==null){
+        var reason=games<MU_SUPPRESS
+          ?("too few games (n="+games+", min "+MU_SUPPRESS+")")
+          :("box score unavailable (n="+n+")");
+        return '<td data-label="'+escHtml(label)+'" data-sort="-999999">'+
+          '<span class="mu-td-suppressed" title="'+escHtml(reason)+'">'+escHtml(reason)+'</span></td>';
+      }
+      var flag=n<MU_FLAG?' <span class="mu-flag" title="Fewer than '+MU_FLAG+
+        ' games back this number (n='+n+')">small</span>':"";
+      return '<td data-label="'+escHtml(label)+'" data-sort="'+val+'">'+fmt(val)+flag+'</td>';
+    }
+    function seasonRow(seasonLabel,sortKey,kindLabel,b){
+      if(!b||!b.games)return "";
+      return "<tr>"+
+        '<td data-label="Season" data-sort="'+escHtml(sortKey)+'">'+escHtml(seasonLabel)+'</td>'+
+        '<td data-label="Type">'+kindLabel+'</td>'+
+        '<td data-label="Games" data-sort="'+b.games+'">'+b.games+'</td>'+
+        '<td data-label="W-L">'+b.wins+'-'+b.losses+'</td>'+
+        muTd("Win%",b.win_pct,fmtPct,b.games,b.games)+
+        muTd("Margin",b.avg_margin,fmtSigned,b.games,b.games)+
+        muTd("Team FTA",b.avg_team_fta,fmtDec,b.games,b.n_box)+
+        muTd("Opp FTA",b.avg_opp_fta,fmtDec,b.games,b.n_box)+
+        muTd("Team PF",b.avg_team_pf,fmtDec,b.games,b.n_box)+
+        muTd("Opp PF",b.avg_opp_pf,fmtDec,b.games,b.n_box)+
+        "</tr>";
+    }
+    function seasonTable(seasons,career){
+      var heads=["Season","Type","Games","W-L","Win%","Margin","Team FTA","Opp FTA","Team PF","Opp PF"];
+      var ths=heads.map(function(h,idx){
+        return '<th class="sortable '+(idx<2?"col-text":"col-num")+'" data-type="'+
+          (idx<2?"text":"num")+'" scope="col">'+h+'</th>';
+      }).join("");
+      var rows="";
+      seasons.forEach(function(s){
+        rows+=seasonRow(s.season,s.season,"RS",s.rs);
+        rows+=seasonRow(s.season,s.season,"PO",s.po);
+      });
+      rows+=seasonRow("Career","9999","RS",career.rs);
+      rows+=seasonRow("Career","9999","PO",career.po);
+      return '<table class="data-table sortable-table"><thead><tr>'+ths+
+        '</tr></thead><tbody>'+rows+'</tbody></table>';
+    }
+    function filterGameLog(doc,tricode){
+      var out=[];
+      (doc.by_season||[]).forEach(function(season){
+        (season.games||[]).forEach(function(g){
+          if(g.kind==="PI")return;
+          if(g.home_canon===tricode||g.away_canon===tricode)out.push(g);
+        });
+      });
+      out.sort(function(a,b){return a.date<b.date?1:(a.date>b.date?-1:0);});
+      return out;
+    }
+    function gameLogTable(games,tricode){
+      if(!games.length)return '<p class="empty-note">No games on record for this pairing.</p>';
+      var heads=["Date","Matchup","Score","Result","Round","Crew"];
+      var ths=heads.map(function(h){
+        return '<th class="sortable col-text" data-type="text" scope="col">'+h+'</th>';
+      }).join("");
+      var rows=games.map(function(g){
+        var isHome=g.home_canon===tricode;
+        var teamPts=isHome?g.home_pts:g.away_pts, oppPts=isHome?g.away_pts:g.home_pts;
+        var result="—", resultClass="";
+        if(teamPts!=null&&oppPts!=null){
+          result=(teamPts>oppPts?"W ":"L ")+teamPts+"-"+oppPts;
+          resultClass=teamPts>oppPts?"mu-win":"mu-loss";
+        }
+        var crew=(g.co_officials||[]).map(function(c){
+          return '<a href="../referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
+        }).join(" &middot; ")||"—";
+        // Away-home order, matching the Matchup column's "away @ home" reading --
+        // a separate home-away order here would read backwards against it.
+        var score=(g.home_pts!=null&&g.away_pts!=null)?(g.away_pts+"-"+g.home_pts):"—";
+        return "<tr>"+
+          '<td data-label="Date" data-sort="'+esc0(g.date)+'">'+escHtml(g.date)+'</td>'+
+          '<td data-label="Matchup">'+escHtml(g.away_team_abbr)+' <span class="vs">@</span> '+
+            escHtml(g.home_team_abbr)+'</td>'+
+          '<td data-label="Score">'+score+'</td>'+
+          '<td data-label="Result"><span class="'+resultClass+'">'+result+'</span></td>'+
+          '<td data-label="Round">'+escHtml(g.round_label||"—")+'</td>'+
+          '<td data-label="Crew" class="crew">'+crew+'</td>'+
+        "</tr>";
+      }).join("");
+      return '<table class="data-table sortable-table"><thead><tr>'+ths+
+        '</tr></thead><tbody>'+rows+'</tbody></table>';
+    }
+    function esc0(s){return String(s).replace(/"/g,"&quot;");}
+
+    function renderMatchup(teamDoc,refDoc,matchupDoc,gameLogDoc){
+      var tricode=teamDoc.summary.tricode, teamName=teamDoc.summary.name;
+      var refName=refDoc.summary.name, rSlug=refDoc.summary.slug;
+      var heading='<h3 class="matchup-heading">'+escHtml(teamName)+' &times; '+
+        '<a href="../referee/'+rSlug+'/index.html">'+escHtml(refName)+'</a></h3>';
+      var teamData=(matchupDoc.teams||{})[tricode];
+      if(!teamData||(!teamData.career.rs&&!teamData.career.po)){
+        resultEl.innerHTML=heading+
+          '<p class="empty-note">No games on record for '+escHtml(refName)+
+          ' officiating '+escHtml(teamName)+'.</p>';
+        return;
+      }
+      var career=teamData.career;
+      var summaryHtml=matchupBlock("Regular season",career.rs)+matchupBlock("Playoffs",career.po);
+      var filtered=filterGameLog(gameLogDoc,tricode);
+      resultEl.innerHTML=heading+
+        '<div class="whistle-cols">'+summaryHtml+'</div>'+
+        '<h3 class="lb-subhead" style="margin-top:1.6rem">Season by season</h3>'+
+        '<div class="table-wrap">'+seasonTable(teamData.seasons,career)+'</div>'+
+        '<h3 class="lb-subhead" style="margin-top:1.6rem">Game log ('+filtered.length+' games)</h3>'+
+        '<p class="caption mu-section-caption">Every game on record for this pairing -- the '+
+        'numbers above are computed from exactly these rows.</p>'+
+        '<div class="table-wrap">'+gameLogTable(filtered,tricode)+'</div>';
+      if(window.initSortableTables)window.initSortableTables(resultEl);
+    }
+
+    var teamPromise=teamSlug
+      ?fetch("../data/teams/"+teamSlug+".json").then(function(r){
+        if(!r.ok)throw new Error("team not found");return r.json();
+      }).catch(function(){return null;})
+      :Promise.resolve(null);
+    var refPromise=refSlug
+      ?fetch("../data/referees/"+refSlug+".json").then(function(r){
+        if(!r.ok)throw new Error("ref not found");return r.json();
+      }).catch(function(){return null;})
+      :Promise.resolve(null);
+
+    Promise.all([teamPromise,refPromise]).then(function(docs){
+      var teamDoc=docs[0], refDoc=docs[1];
+      if(teamDoc&&teamInput)teamInput.value=teamDoc.summary.name;
+      if(refDoc&&refInput)refInput.value=refDoc.summary.name;
+      if(promptEl)promptEl.hidden=!!(teamDoc&&refDoc);
+      if(!teamDoc||!refDoc){
+        resultEl.innerHTML=(teamSlug&&!teamDoc)||(refSlug&&!refDoc)
+          ?'<p class="empty-note">Could not find that team or official -- check the URL.</p>':"";
+        return;
+      }
+      var officialId=refDoc.summary.official_id;
+      resultEl.innerHTML='<p class="empty-note">Loading…</p>';
+      Promise.all([
+        fetch("../data/matchups/"+officialId+".json").then(function(r){
+          if(!r.ok)throw new Error("matchup data not found");
+          return r.json();
+        }),
+        fetch("../data/referee_games/"+officialId+".json").then(function(r){
+          if(!r.ok)throw new Error("game log not found");
+          return r.json();
+        })
+      ]).then(function(results){
+        renderMatchup(teamDoc,refDoc,results[0],results[1]);
+      }).catch(function(){
+        resultEl.innerHTML='<p class="empty-note">Could not load data for this pairing.</p>';
+      });
+    });
+  })();
 })();
 """
 
@@ -2400,6 +2692,11 @@ def main():
     os.makedirs(os.path.join(REPO, "compare"), exist_ok=True)
     with open(os.path.join(REPO, "compare", "index.html"), "w", encoding="utf-8") as f:
         f.write(render_compare())
+
+    # team x referee matchup lookup (static shell; content loads client-side)
+    os.makedirs(os.path.join(REPO, "matchup"), exist_ok=True)
+    with open(os.path.join(REPO, "matchup", "index.html"), "w", encoding="utf-8") as f:
+        f.write(render_matchup())
 
     # referee pages
     docs = [json.load(open(p, encoding="utf-8"))
@@ -2499,6 +2796,7 @@ def main():
     print("wrote index.html")
     print("wrote sources/index.html")
     print("wrote compare/index.html")
+    print("wrote matchup/index.html")
     print("wrote assets/style.css, assets/app.js")
     if removed:
         print("removed %d stale referee page(s)" % removed)
@@ -2509,7 +2807,7 @@ def main():
     print("wrote %d Tier C pages: %s" % (len(tier_c_pages), ", ".join(s for s, _ in tier_c_pages)))
     print("sample URLs:")
     for u in ["referee/scott-foster/", "referee/scott-foster/games/", "team/bos/",
-              "player/lebron-james/", "leaderboard/ot-rate/", "compare/",
+              "player/lebron-james/", "leaderboard/ot-rate/", "compare/", "matchup/",
               "crews/", "team-officials/", "debuts/", "eras/", "swings/"]:
         print("  %sindex.html" % u)
 
