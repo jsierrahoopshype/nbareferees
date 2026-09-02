@@ -97,6 +97,16 @@ QUALITY_MIN_SEASONS = 3           # min seasons_active for the PER-SEASON rankin
 # SPEC §1) -- excludes avg_abs_margin, which the spec's spotlight list omits.
 SPOTLIGHT_STAT_KEYS = ["home_win_pct", "avg_total_fta", "avg_total_pf", "ot_rate", "avg_total_points"]
 TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on team pages
+# /matchup/ (team x referee lookup, docs/MATCHUP_SPEC.md): a two-tier sample-
+# size policy applied uniformly at both career and per-season scope, since a
+# single team-referee pairing is a much finer cut than any other split on the
+# site and per-season samples are naturally tiny (~1-4 games, teams meet a
+# handful of times a season). Below MATCHUP_SUPPRESS_MIN, rate/average stats
+# (win%, margins, FTA/PF) are suppressed outright -- games/W-L still show,
+# since a raw count is never misleading, but a percentage over 1-2 games is.
+# Between the two, stats still show but carry a small-sample flag.
+MATCHUP_FLAG_MIN = TEAM_REF_MIN_GAMES   # reuse the existing team-page listing bar (10)
+MATCHUP_SUPPRESS_MIN = 3
 PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
 
 # ---- Tier C (docs/TIER_C_SPEC.md) ------------------------------------------
@@ -624,6 +634,44 @@ def _whistle_stat_values(sub, got):
     return vals
 
 
+def _agg_matchup(grp):
+    """/matchup/ (docs/MATCHUP_SPEC.md): aggregate one team's record from a
+    slice of that team's own "melted" perspective rows (one row per game the
+    team appears in, already resolved to that team's own win/pts_for/
+    pts_against/fta_for/fta_against/pf_for/pf_against/is_home -- see the
+    home_persp/away_persp melt in aggregate()). Games/W-L are raw counts and
+    always populated; rate stats are None below MATCHUP_SUPPRESS_MIN so the
+    renderer never has to re-derive the suppression policy from n itself."""
+    games = len(grp)
+    out = {"games": games, "wins": 0, "losses": 0, "win_pct": None,
+           "home_games": 0, "home_wins": 0, "away_games": 0, "away_wins": 0,
+           "avg_pts_for": None, "avg_pts_against": None, "avg_margin": None,
+           "n_box": 0, "avg_team_fta": None, "avg_opp_fta": None,
+           "avg_team_pf": None, "avg_opp_pf": None}
+    if not games:
+        return out
+    wins = int(grp["win"].sum())
+    home_games = int(grp["is_home"].sum())
+    home_wins = int((grp["is_home"] & grp["win"]).sum())
+    out.update({"wins": wins, "losses": games - wins,
+                "home_games": home_games, "home_wins": home_wins,
+                "away_games": games - home_games, "away_wins": wins - home_wins})
+    if games >= MATCHUP_SUPPRESS_MIN:
+        out["win_pct"] = clean_num(wins / games)
+        out["avg_pts_for"] = clean_num(grp["pts_for"].mean())
+        out["avg_pts_against"] = clean_num(grp["pts_against"].mean())
+        out["avg_margin"] = clean_num((grp["pts_for"] - grp["pts_against"]).mean())
+        box = grp[grp["fta_for"].notna()]
+        nb = len(box)
+        out["n_box"] = nb
+        if nb >= MATCHUP_SUPPRESS_MIN:
+            out["avg_team_fta"] = clean_num(box["fta_for"].mean())
+            out["avg_opp_fta"] = clean_num(box["fta_against"].mean())
+            out["avg_team_pf"] = clean_num(box["pf_for"].mean())
+            out["avg_opp_pf"] = clean_num(box["pf_against"].mean())
+    return out
+
+
 def build_league_baselines(gm, game_tot):
     """League Context (docs/LEAGUE_CONTEXT_SPEC.md section 1): per season +
     season_type, the league-wide average for every WHISTLE_STATS stat, plus n
@@ -875,6 +923,24 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, 
     games_meta["kind"] = games_meta.apply(season_type_label, axis=1)
     games_meta["abs_margin"] = (games_meta["home_pts"] - games_meta["away_pts"]).abs()
     games_meta["total_pts"] = games_meta["home_pts"] + games_meta["away_pts"]
+    # Per-team (not combined) box-score figures for /matchup/
+    # (docs/MATCHUP_SPEC.md) -- tg is one row per (game_id, team_abbr); merge
+    # the home side's and away side's own FTA/PF onto the game row so a
+    # team's "own" vs. "opponent's" FTA/PF can be told apart, unlike
+    # game_tot's box_fta/box_pf (both teams combined, used for the whistle
+    # profile's "combined FTA" stat elsewhere).
+    tg_box = tg[["game_id", "team_abbr", "team_fta", "team_pf"]]
+    games_meta = games_meta.merge(
+        tg_box.rename(columns={"team_abbr": "home_team_abbr", "team_fta": "home_fta", "team_pf": "home_pf"}),
+        on=["game_id", "home_team_abbr"], how="left"
+    ).merge(
+        tg_box.rename(columns={"team_abbr": "away_team_abbr", "team_fta": "away_fta", "team_pf": "away_pf"}),
+        on=["game_id", "away_team_abbr"], how="left"
+    )
+    games_meta["home_canon"] = games_meta["home_team_abbr"].apply(
+        lambda t: nba_tricodes.canonical_franchise(t) if isinstance(t, str) and t else None)
+    games_meta["away_canon"] = games_meta["away_team_abbr"].apply(
+        lambda t: nba_tricodes.canonical_franchise(t) if isinstance(t, str) and t else None)
     gmeta = games_meta.set_index("game_id")
 
     got = game_tot.set_index("game_id")
@@ -902,6 +968,14 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, 
     game_log_dir = os.path.join(DATA, "referee_games")
     os.makedirs(game_log_dir, exist_ok=True)
     for old in glob.glob(os.path.join(game_log_dir, "*.json")):
+        os.remove(old)
+
+    # /matchup/ (docs/MATCHUP_SPEC.md): team x referee lookup, one file per
+    # referee (same reasoning as referee_games above -- kept out of the main
+    # per-referee JSON so it doesn't balloon for the busiest officials).
+    matchup_dir = os.path.join(DATA, "matchups")
+    os.makedirs(matchup_dir, exist_ok=True)
+    for old in glob.glob(os.path.join(matchup_dir, "*.json")):
         os.remove(old)
 
     # Slugs are assigned in ONE pass, upfront, keyed only on ref_key -- not
@@ -995,6 +1069,52 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, 
                       "away_wins": tr["wins"] - tr["home_wins"]})
             all_team_records.append(m)
         team_records.sort(key=lambda r: -r["games"])
+
+        # ---- /matchup/ team x referee lookup (docs/MATCHUP_SPEC.md) --------
+        # "Melt" each game this ref worked into two rows, one per side, each
+        # already resolved to THAT team's own win/pts_for/pts_against/fta_for/
+        # fta_against/pf_for/pf_against/is_home -- turns a home-or-away game
+        # table into a per-team perspective table a single groupby can
+        # aggregate, instead of re-deriving "which side is this team" inside
+        # every aggregation. PI is excluded (no league baseline exists for it
+        # elsewhere on the site either, and it's not RS or PO).
+        rs_po = gsub[gsub["kind"].isin(["RS", "PO"])]
+        home_persp = pd.DataFrame({
+            "team": rs_po["home_canon"], "kind": rs_po["kind"], "season": rs_po["season"],
+            "is_home": True, "win": rs_po["home_win"] == 1,
+            "pts_for": rs_po["home_pts"], "pts_against": rs_po["away_pts"],
+            "fta_for": rs_po["home_fta"], "fta_against": rs_po["away_fta"],
+            "pf_for": rs_po["home_pf"], "pf_against": rs_po["away_pf"],
+        })
+        away_persp = pd.DataFrame({
+            "team": rs_po["away_canon"], "kind": rs_po["kind"], "season": rs_po["season"],
+            "is_home": False, "win": rs_po["home_win"] == 0,
+            "pts_for": rs_po["away_pts"], "pts_against": rs_po["home_pts"],
+            "fta_for": rs_po["away_fta"], "fta_against": rs_po["home_fta"],
+            "pf_for": rs_po["away_pf"], "pf_against": rs_po["home_pf"],
+        })
+        melted = pd.concat([home_persp, away_persp], ignore_index=True)
+        melted = melted[melted["team"].notna()]
+
+        matchup_teams = {}
+        for team, tgrp in melted.groupby("team"):
+            career = {}
+            for kind, kgrp in tgrp.groupby("kind"):
+                career[kind.lower()] = _agg_matchup(kgrp)
+            season_rows = []
+            for season, sgrp in tgrp.groupby("season"):
+                row = {"season": season}
+                for kind, skgrp in sgrp.groupby("kind"):
+                    row[kind.lower()] = _agg_matchup(skgrp)
+                season_rows.append(row)
+            season_rows.sort(key=lambda r: r["season"], reverse=True)
+            matchup_teams[team] = {"team_abbr": team, "career": career, "seasons": season_rows}
+
+        matchup_doc = {"official_id": ref_key, "name": display[ref_key], "slug": slug,
+                       "teams": matchup_teams}
+        assert_no_nan(matchup_doc, "matchup[%s]" % ref_key)
+        with open(os.path.join(matchup_dir, "%s.json" % ref_key), "w", encoding="utf-8") as fh:
+            json.dump(matchup_doc, fh, ensure_ascii=False, indent=2)
 
         # ---- whistle profile (RS and PO separately), with League Context
         # era-adjusted expected baseline + differential (docs/
@@ -1226,8 +1346,13 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, 
             co_officials = [{"name": display[k], "slug": slug_of[k]}
                             for k in game_to_crew.get(gid, []) if k != ref_key]
             log_by_season[g["season"]].append({
-                "game_id": gid, "date": g["game_date"],
+                "game_id": gid, "date": g["game_date"], "kind": kind,
                 "home_team_abbr": g["home_team_abbr"], "away_team_abbr": g["away_team_abbr"],
+                # Canonical franchise for each side (docs/MATCHUP_SPEC.md) --
+                # so /matchup/'s client-side game-log filter matches the exact
+                # same team grouping the summary above it was built from (a
+                # historical tricode like VAN must filter into a MEM matchup).
+                "home_canon": g["home_canon"], "away_canon": g["away_canon"],
                 "home_pts": int(g["home_pts"]) if pd.notna(g["home_pts"]) else None,
                 "away_pts": int(g["away_pts"]) if pd.notna(g["away_pts"]) else None,
                 "round_label": round_label,
@@ -2093,6 +2218,47 @@ def league_context_spot_check(referees_index):
         print("  no qualifying 1990s-heavy referee found in the pool for this spot-check")
 
 
+def qa_matchups(referees_index, team_index):
+    """/matchup/ QA (docs/MATCHUP_SPEC.md): no NaN (re-verified from disk,
+    same pattern as qa_league_context), every team_abbr key resolves to a
+    real team page, and every referee's summed matchup games (career RS + PO
+    across every team) reconcile with games_rs + games_po (PI is deliberately
+    excluded from /matchup/, same as League Context)."""
+    hr("SECTION 9  Matchup QA")
+    known_team_slugs = {t["slug"] for t in team_index}
+    failures = []
+    for r in referees_index:
+        path = os.path.join(DATA, "matchups", "%s.json" % r["official_id"])
+        doc = json.load(open(path, encoding="utf-8"))
+        assert_no_nan(doc, "matchup[%s]" % r["official_id"])
+        summed = 0
+        for team_abbr, t in doc["teams"].items():
+            if team_abbr.lower() not in known_team_slugs:
+                failures.append("matchup team_abbr resolves to no team page: %s (ref=%s)"
+                                % (team_abbr, r["official_id"]))
+            for kind in ("rs", "po"):
+                summed += t["career"].get(kind, {}).get("games", 0)
+        # Each game contributes one row to the home team's total and one to
+        # the away team's -- so the correct reconciliation is against TWICE
+        # games_rs+games_po, same doubling qa_gate already checks for the
+        # career team_records (see "team_records games == 2 * games_total").
+        expected = 2 * (r["games_rs"] + r["games_po"])
+        if summed != expected:
+            failures.append("matchup game-count mismatch: %s summed=%d expected(2x rs+po)=%d"
+                            % (r["official_id"], summed, expected))
+    print("[hard] matchup game counts (career, RS+PO, doubled for home+away) reconcile "
+          "with games_rs+games_po for all %d referees: %s"
+          % (len(referees_index), not any("mismatch" in f for f in failures)))
+    print("[hard] every matchup team_abbr resolves to a real team page: %s"
+          % (not any("resolves to no team page" in f for f in failures)))
+    if failures:
+        hr("MATCHUP QA: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[matchup QA checks all passed]")
+
+
 # ----------------------------------------------------------------------------
 # frontpage dashboard (DASHBOARD_SPEC section 1)
 # ----------------------------------------------------------------------------
@@ -2588,6 +2754,7 @@ def main():
     qa_game_logs(referees_index)
     qa_league_context(referees_index)
     league_context_spot_check(referees_index)
+    qa_matchups(referees_index, team_index)
     spot_checks(referees_index, details)
     dashboard_spot_checks(referees_index, details, dashboard)
 
