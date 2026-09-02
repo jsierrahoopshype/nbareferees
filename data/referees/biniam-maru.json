@@ -335,12 +335,40 @@
       "avg_abs_margin": 15.28,
       "ot_games": 1,
       "ot_rate": 0.02,
+      "expected": {
+        "avg_total_points": 230.18,
+        "avg_total_fta": 46.58,
+        "avg_total_pf": 39.45,
+        "avg_abs_margin": 13.17,
+        "home_win_pct": 0.55,
+        "ot_rate": 0.04
+      },
+      "differential": {
+        "avg_total_points": 4.45,
+        "avg_total_fta": 2.16,
+        "avg_total_pf": 0.43,
+        "avg_abs_margin": 2.11,
+        "home_win_pct": -0.08,
+        "ot_rate": -0.02
+      },
+      "avg_total_points_qualifying": 128,
+      "avg_total_fta_qualifying": 128,
+      "avg_total_pf_qualifying": 128,
+      "avg_abs_margin_qualifying": 128,
+      "home_win_pct_qualifying": 128,
+      "ot_rate_qualifying": 128,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     },
     "po": {
       "n": 0,
@@ -352,14 +380,164 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "avg_total_points_qualifying": 37,
+      "avg_total_fta_qualifying": 37,
+      "avg_total_pf_qualifying": 37,
+      "avg_abs_margin_qualifying": 37,
+      "home_win_pct_qualifying": 37,
+      "ot_rate_qualifying": 37,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2025-26",
+      "games_rs": 39,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 233.0,
+            "league": 230.47,
+            "diff": 2.53
+          },
+          "avg_total_fta": {
+            "value": 49.08,
+            "league": 46.91,
+            "diff": 2.17
+          },
+          "avg_total_pf": {
+            "value": 40.15,
+            "league": 39.67,
+            "diff": 0.48
+          },
+          "avg_abs_margin": {
+            "value": 15.82,
+            "league": 13.23,
+            "diff": 2.59
+          },
+          "home_win_pct": {
+            "value": 0.46,
+            "league": 0.55,
+            "diff": -0.09
+          },
+          "ot_rate": {
+            "value": 0.03,
+            "league": 0.04,
+            "diff": -0.01
+          }
+        }
+      }
+    },
+    {
+      "season": "2024-25",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 246.5,
+            "league": 226.69,
+            "diff": 19.81
+          },
+          "avg_total_fta": {
+            "value": 41.0,
+            "league": 43.34,
+            "diff": -2.34
+          },
+          "avg_total_pf": {
+            "value": 31.5,
+            "league": 37.19,
+            "diff": -5.69
+          },
+          "avg_abs_margin": {
+            "value": 13.5,
+            "league": 12.7,
+            "diff": 0.8
+          },
+          "home_win_pct": {
+            "value": 0.5,
+            "league": 0.54,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    },
+    {
+      "season": "2023-24",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 254.5,
+            "league": 228.06,
+            "diff": 26.44
+          },
+          "avg_total_fta": {
+            "value": 50.0,
+            "league": 43.42,
+            "diff": 6.58
+          },
+          "avg_total_pf": {
+            "value": 43.0,
+            "league": 37.44,
+            "diff": 5.56
+          },
+          "avg_abs_margin": {
+            "value": 6.5,
+            "league": 12.56,
+            "diff": -6.06
+          },
+          "home_win_pct": {
+            "value": 0.5,
+            "league": 0.54,
+            "diff": -0.04
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Luka Doncic",

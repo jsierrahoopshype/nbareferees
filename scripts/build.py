@@ -594,6 +594,67 @@ def season_type_label(row):
     return "RS"
 
 
+def _whistle_stat_values(sub, got):
+    """Compute the six WHISTLE_STATS raw values (+ n / n_boxscore) for one
+    game-row slice (must carry total_pts/home_win/abs_margin and be indexed
+    by game_id). Shared by build_league_baselines (the league-wide
+    population), the per-referee career whistle_profile, and the per-referee
+    per-season splits (docs/LEAGUE_CONTEXT_SPEC.md) -- the same formula at
+    every granularity, so league baselines and referee stats are directly
+    comparable and a season-split row's numbers reconcile with the career
+    row's weighted-in inputs."""
+    n = len(sub)
+    vals = {"n": n, "n_boxscore": 0, "avg_total_points": None, "avg_total_fta": None,
+           "avg_total_pf": None, "home_win_pct": None, "avg_abs_margin": None,
+           "ot_games": None, "ot_rate": None}
+    if not n:
+        return vals
+    vals["avg_total_points"] = clean_num(sub["total_pts"].mean())
+    vals["home_win_pct"] = clean_num((sub["home_win"] == 1).mean())
+    vals["avg_abs_margin"] = clean_num(sub["abs_margin"].mean())
+    box = got.reindex(sub.index)
+    box = box[box["n_teams"] == 2]
+    nb = len(box)
+    vals["n_boxscore"] = nb
+    if nb:
+        vals["avg_total_fta"] = clean_num(box["box_fta"].mean())
+        vals["avg_total_pf"] = clean_num(box["box_pf"].mean())
+        vals["ot_games"] = int(box["is_ot"].sum())
+        vals["ot_rate"] = clean_num(box["is_ot"].mean())
+    return vals
+
+
+def build_league_baselines(gm, game_tot):
+    """League Context (docs/LEAGUE_CONTEXT_SPEC.md section 1): per season +
+    season_type, the league-wide average for every WHISTLE_STATS stat, plus n
+    (games). This is the raw material every referee's era-adjusted expected
+    baseline is built from (section 2) -- reuses season_type_label (the exact
+    classifier aggregate() uses for the per-referee side) and
+    _whistle_stat_values (the exact formula used at every other granularity),
+    so league and referee numbers are computed on an identical population
+    definition and are directly comparable."""
+    hr("League baselines (League Context)")
+    games_meta = gm.copy()
+    games_meta["kind"] = games_meta.apply(season_type_label, axis=1)
+    games_meta["abs_margin"] = (games_meta["home_pts"] - games_meta["away_pts"]).abs()
+    games_meta["total_pts"] = games_meta["home_pts"] + games_meta["away_pts"]
+    games_meta = games_meta.set_index("game_id")
+    got = game_tot.set_index("game_id")
+
+    baselines = {}
+    for (season, kind), sub in games_meta.groupby(["season", "kind"]):
+        if kind not in ("RS", "PO"):
+            continue  # whistle profiles (and era adjustment) only cover RS/PO
+        baselines.setdefault(season, {})[kind.lower()] = _whistle_stat_values(sub, got)
+
+    assert_no_nan(baselines, "league_baselines")
+    with open(os.path.join(DATA, "league_baselines.json"), "w", encoding="utf-8") as fh:
+        json.dump(baselines, fh, ensure_ascii=False, indent=2)
+    print("league_baselines: %d seasons (RS/PO each) -> data/league_baselines.json"
+          % len(baselines))
+    return baselines
+
+
 def build_player_baselines(pl, games_meta):
     """(player_id, season, kind) -> per-game means, kind in {RS, PO}. Keyed on
     (player_id, season): a season is single-era, so this is already era-safe even
@@ -807,7 +868,7 @@ def slugify_unique(display, ref_key, used):
     return slug
 
 
-def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
+def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, league_baselines):
     hr("SECTION 6  Per-referee aggregation")
 
     games_meta = gm.copy()
@@ -935,28 +996,82 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             all_team_records.append(m)
         team_records.sort(key=lambda r: -r["games"])
 
-        # ---- whistle profile (RS and PO separately) -------------------------
+        # ---- whistle profile (RS and PO separately), with League Context
+        # era-adjusted expected baseline + differential (docs/
+        # LEAGUE_CONTEXT_SPEC.md section 2). expected[key] is the games-
+        # weighted average of the LEAGUE value for that stat, across exactly
+        # the seasons this referee worked that kind, weighted by this
+        # referee's own games in that season -- so a ref who worked mostly
+        # 1990s seasons gets an expected baseline pulled toward the (lower-
+        # scoring) 1990s league average, not the career-spanning average.
+        # differential = actual - expected. Rank/percentile (assigned in
+        # build_whistle_leaderboards below) are computed on differential, not
+        # the raw value -- the entire point of this round: a raw ranking is
+        # dominated by era, not by the official.
         whistle = {}
         for kind in ("RS", "PO"):
             ksub = gsub[gsub["kind"] == kind]
-            n = len(ksub)
-            entry = {"n": n, "n_boxscore": 0, "avg_total_points": None,
-                     "avg_total_fta": None, "avg_total_pf": None, "home_win_pct": None,
-                     "avg_abs_margin": None, "ot_games": None, "ot_rate": None}
-            if n:
-                entry["avg_total_points"] = clean_num(ksub["total_pts"].mean())
-                entry["home_win_pct"] = clean_num((ksub["home_win"] == 1).mean())
-                entry["avg_abs_margin"] = clean_num(ksub["abs_margin"].mean())
-                box = got.reindex(ksub.index)
-                box = box[box["n_teams"] == 2]
-                nb = len(box)
-                entry["n_boxscore"] = nb
-                if nb:
-                    entry["avg_total_fta"] = clean_num(box["box_fta"].mean())
-                    entry["avg_total_pf"] = clean_num(box["box_pf"].mean())
-                    entry["ot_games"] = int(box["is_ot"].sum())
-                    entry["ot_rate"] = clean_num(box["is_ot"].mean())
-            whistle[kind.lower()] = entry
+            entry = _whistle_stat_values(ksub, got)
+            kind_key = kind.lower()
+
+            weights_by_stat = defaultdict(float)
+            sums = defaultdict(float)
+            for season in ksub["season"].unique():
+                w = per_season.get(season, {}).get(kind_key, 0)
+                if w <= 0:
+                    continue
+                lb = league_baselines.get(season, {}).get(kind_key)
+                if not lb:
+                    continue
+                for stat_key, *_rest in WHISTLE_STATS:
+                    v = lb.get(stat_key)
+                    if v is not None:
+                        sums[stat_key] += v * w
+                        weights_by_stat[stat_key] += w
+            expected = {stat_key: (clean_num(sums[stat_key] / weights_by_stat[stat_key])
+                                   if weights_by_stat[stat_key] else None)
+                       for stat_key, *_rest in WHISTLE_STATS}
+            differential = {}
+            for stat_key, *_rest in WHISTLE_STATS:
+                actual, exp = entry.get(stat_key), expected.get(stat_key)
+                differential[stat_key] = clean_num(actual - exp) if (actual is not None
+                                                                      and exp is not None) else None
+
+            entry["expected"] = expected
+            entry["differential"] = differential
+            whistle[kind_key] = entry
+
+        # ---- League Context section 3: per-season splits ---------------------
+        # One row per season this referee worked, RS and PO broken out
+        # separately (matching the whistle profile's own RS/PO split -- the
+        # two are different scoring/pace regimes and combining them would be
+        # misleading). This is the season selector: a full table, not a
+        # dropdown that hides data. Play-In games are counted (games_pi) so
+        # the row reconciles with games_total, but carry no stats/diff --
+        # league_baselines deliberately has no PI population to compare
+        # against (build_league_baselines / whistle profiles are RS/PO only).
+        season_splits = []
+        for season, ssub in gsub.groupby("season"):
+            row = {"season": season, "games_rs": 0, "games_po": 0, "games_pi": 0, "stats": {}}
+            row["games_pi"] = int((ssub["kind"] == "PI").sum())
+            for kind in ("RS", "PO"):
+                kind_key = kind.lower()
+                kssub = ssub[ssub["kind"] == kind]
+                svals = _whistle_stat_values(kssub, got)
+                row["games_%s" % kind_key] = svals["n"]
+                if svals["n"] == 0:
+                    continue
+                lb = league_baselines.get(season, {}).get(kind_key)
+                stat_row = {}
+                for stat_key, *_rest in WHISTLE_STATS:
+                    actual = svals.get(stat_key)
+                    lgval = lb.get(stat_key) if lb else None
+                    diff = clean_num(actual - lgval) if (actual is not None
+                                                         and lgval is not None) else None
+                    stat_row[stat_key] = {"value": actual, "league": lgval, "diff": diff}
+                row["stats"][kind_key] = stat_row
+            season_splits.append(row)
+        season_splits.sort(key=lambda r: r["season"], reverse=True)
 
         # ---- top performances + player swings -------------------------------
         # Swings accumulate at the CANONICAL ENTITY level (seg_to_entity slug):
@@ -1154,6 +1269,7 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity):
             "summary": summary,
             "team_records": team_records,
             "whistle_profile": whistle,
+            "season_splits": season_splits,
             "top_performances": top_performances,
             "player_swings": player_swings,
             "notable_games": notable,
@@ -1248,6 +1364,17 @@ def build_whistle_leaderboards(referees_index):
           whistle_profile[kind][key + "_pctile"] (100 = highest value in the
           qualifying field, 0 = lowest -- not "good"/"bad", just where they
           fall). Non-qualifying refs get None so the renderer never KeyErrors.
+
+    League Context (docs/LEAGUE_CONTEXT_SPEC.md section 2): rank/percentile
+    are computed on the era-adjusted DIFFERENTIAL, not the raw value -- a raw
+    ranking is dominated by which seasons a referee happened to work, not by
+    the official. The raw value ships in every row too (section 6 keeps it as
+    a legitimate, separately-labeled factual column), just not as the sort
+    key. A referee with no computable differential for a stat (in practice
+    only possible if every season they worked that stat is missing a league
+    baseline, which shouldn't happen given build_league_baselines covers
+    every season with any games) is excluded rather than ranked on a value
+    that isn't era-adjusted.
     """
     hr("SECTION 8  Whistle-profile leaderboards + percentiles")
     docs = {r["official_id"]: json.load(
@@ -1261,34 +1388,51 @@ def build_whistle_leaderboards(referees_index):
         for kind in ("rs", "po"):
             min_games = min_games_for[kind]
             rows = []
+            skipped_no_diff = 0
             for r in referees_index:
                 off_id = r["official_id"]
                 entry = docs[off_id]["whistle_profile"][kind]
                 val, n = entry.get(key), entry.get(ncol)
+                diff = (entry.get("differential") or {}).get(key)
                 if val is None or n is None or n < min_games:
                     continue
+                if diff is None:
+                    skipped_no_diff += 1
+                    continue
                 rows.append({"official_id": off_id, "name": r["name"], "slug": r["slug"],
-                             "value": val, "n": n})
-            rows.sort(key=lambda x: x["value"], reverse=True)
+                             "value": val, "diff": diff, "n": n})
+            rows.sort(key=lambda x: x["diff"], reverse=True)
             total = len(rows)
             for rank, row in enumerate(rows, 1):
                 pctile = clean_num((total - rank) / (total - 1) * 100) if total > 1 else 100.0
-                docs[row["official_id"]]["whistle_profile"][kind][key + "_pctile"] = pctile
+                wp = docs[row["official_id"]]["whistle_profile"][kind]
+                wp[key + "_pctile"] = pctile
+                wp[key + "_rank"] = rank
                 row["rank"], row["pctile"] = rank, pctile
             leaderboards[key][kind] = [
                 {"rank": x["rank"], "name": x["name"], "slug": x["slug"],
-                 "value": x["value"], "n": x["n"], "pctile": x["pctile"]} for x in rows]
+                 "value": x["value"], "diff": x["diff"], "n": x["n"], "pctile": x["pctile"]}
+                for x in rows]
+            # Pool size travels on every referee's doc (even non-qualifying
+            # ones) so the compact card ("12th lowest of 118") can render
+            # "not enough games to rank" copy with the real denominator.
+            for r in referees_index:
+                docs[r["official_id"]]["whistle_profile"][kind][key + "_qualifying"] = total
+            if skipped_no_diff:
+                print("    %-22s %-2s: %d qualifying-by-n referee(s) skipped "
+                      "(no era-adjusted differential available)" % (key, kind, skipped_no_diff))
         print("  %-24s rs qualifying=%-4d (>=%d)   po qualifying=%-4d (>=%d)"
               % (key, len(leaderboards[key]["rs"]), LEADERBOARD_MIN_GAMES,
                  len(leaderboards[key]["po"]), PO_LEADERBOARD_MIN_GAMES))
 
-    # Every ref's whistle_profile gets a (possibly None) pctile field for every
-    # stat, even when they don't qualify, so render_pages.py can read it
+    # Every ref's whistle_profile gets a (possibly None) pctile/rank field for
+    # every stat, even when they don't qualify, so render_pages.py can read it
     # unconditionally.
     for off_id, doc in docs.items():
         for kind in ("rs", "po"):
             for key, *_rest in WHISTLE_STATS:
                 doc["whistle_profile"][kind].setdefault(key + "_pctile", None)
+                doc["whistle_profile"][kind].setdefault(key + "_rank", None)
         path = os.path.join(DATA, "referees", "%s.json" % off_id)
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(doc, fh, ensure_ascii=False, indent=2)
@@ -1561,24 +1705,50 @@ def build_leaderboards(referees_index):
     most_current = [entry(r, {"games_current": current_games(r)})
                     for r in top(idx, current_games, filt=lambda r: r["active"])]
 
-    # home win% and avg total FTA need min-n gates and come from whistle profiles
+    # home win% and avg total FTA need min-n gates and come from whistle profiles.
+    # Like the six dedicated whistle leaderboards (League Context section 2),
+    # this index-page widget ranks on the era-adjusted differential, not the
+    # raw value; referees with no computable differential are excluded. Raw
+    # values are still carried for display and for the dashboard's separate
+    # literal-record extremes (_raw_extremes below).
     hw = []
     fta = []
+    skipped_hw = skipped_fta = 0
     for r in idx:
         det = details[r["official_id"]]
         wp = det["whistle_profile"]
         n_all = wp["rs"]["n"] + wp["po"]["n"]
         if n_all >= LEADERBOARD_MIN_GAMES:
-            # home win% over RS+PO combined
+            # home win% over RS+PO combined; differential is the games-weighted
+            # average of each kind's own differential (equivalent to combined
+            # actual minus combined expected).
             hw_num = 0.0
+            diff_num, diff_den = 0.0, 0
             for k in ("rs", "po"):
                 e = wp[k]
                 if e["home_win_pct"] is not None:
                     hw_num += e["home_win_pct"] * e["n"]
-            hw.append(entry(r, {"home_win_pct": clean_num(hw_num / n_all), "n": n_all}))
+                d = (e.get("differential") or {}).get("home_win_pct")
+                if d is not None:
+                    diff_num += d * e["n"]
+                    diff_den += e["n"]
+            if diff_den:
+                hw.append(entry(r, {"home_win_pct": clean_num(hw_num / n_all),
+                                     "diff": clean_num(diff_num / diff_den), "n": n_all}))
+            else:
+                skipped_hw += 1
         rs = wp["rs"]
         if rs["n_boxscore"] >= LEADERBOARD_MIN_GAMES and rs["avg_total_fta"] is not None:
-            fta.append(entry(r, {"avg_total_fta": rs["avg_total_fta"], "n": rs["n_boxscore"]}))
+            diff = (rs.get("differential") or {}).get("avg_total_fta")
+            if diff is not None:
+                fta.append(entry(r, {"avg_total_fta": rs["avg_total_fta"], "diff": diff,
+                                      "n": rs["n_boxscore"]}))
+            else:
+                skipped_fta += 1
+    if skipped_hw:
+        print("  [note] home-win%% widget: %d referees skipped (no differential)" % skipped_hw)
+    if skipped_fta:
+        print("  [note] FTA widget: %d referees skipped (no differential)" % skipped_fta)
 
     # Officiating quality score (DASHBOARD_SPEC section 2). Career-total
     # ranking has no seasons_active gate; the per-season ranking applies
@@ -1599,15 +1769,23 @@ def build_leaderboards(referees_index):
         "most_finals_games": most_finals,
         "most_game7s": most_g7,
         "most_games_current_season": most_current,
-        "highest_home_win_pct": sorted(hw, key=lambda r: -r["home_win_pct"])[:25],
-        "lowest_home_win_pct": sorted(hw, key=lambda r: r["home_win_pct"])[:25],
-        "highest_avg_total_fta_rs": sorted(fta, key=lambda r: -r["avg_total_fta"])[:25],
-        "lowest_avg_total_fta_rs": sorted(fta, key=lambda r: r["avg_total_fta"])[:25],
+        "highest_home_win_pct": sorted(hw, key=lambda r: -r["diff"])[:25],
+        "lowest_home_win_pct": sorted(hw, key=lambda r: r["diff"])[:25],
+        "highest_avg_total_fta_rs": sorted(fta, key=lambda r: -r["diff"])[:25],
+        "lowest_avg_total_fta_rs": sorted(fta, key=lambda r: r["diff"])[:25],
         "most_quality_total": most_quality_total,
         "most_quality_per_season": most_quality_per_season,
         "_meta": {"min_games_for_rate_leaderboards": LEADERBOARD_MIN_GAMES,
                   "min_seasons_for_quality_per_season": QUALITY_MIN_SEASONS,
                   "current_season": CURRENT_SEASON},
+        # Literal raw-value extremes (unranked by differential) for the
+        # dashboard's factual "records" strip -- that widget claims a literal
+        # "highest ever recorded" value, which must stay raw, not diff-ranked.
+        "_raw_extremes": {
+            "highest_home_win_pct": max(hw, key=lambda r: r["home_win_pct"]) if hw else None,
+            "lowest_home_win_pct": min(hw, key=lambda r: r["home_win_pct"]) if hw else None,
+            "highest_avg_total_fta_rs": max(fta, key=lambda r: r["avg_total_fta"]) if fta else None,
+        },
     }
     assert_no_nan(leaderboards, "leaderboards")
     with open(os.path.join(DATA, "leaderboards.json"), "w", encoding="utf-8") as fh:
@@ -1834,6 +2012,87 @@ def qa_game_logs(referees_index):
     print("\n[game-log QA checks all passed]")
 
 
+def qa_league_context(referees_index):
+    """League Context QA (docs/LEAGUE_CONTEXT_SPEC.md): every season split's
+    game counts must reconcile with that referee's games_total, and no NaN
+    anywhere in season_splits (assert_no_nan already covers this at write
+    time in aggregate(); re-verified here from the written files as an
+    independent check, same pattern as qa_game_logs)."""
+    hr("SECTION 9  League Context QA")
+    failures = []
+    for r in referees_index:
+        path = os.path.join(DATA, "referees", "%s.json" % r["official_id"])
+        doc = json.load(open(path, encoding="utf-8"))
+        splits = doc["season_splits"]
+        summed = sum(row["games_rs"] + row["games_po"] + row["games_pi"] for row in splits)
+        if summed != r["games_total"]:
+            failures.append("season_splits game-count mismatch: %s summed=%d games_total=%d"
+                            % (r["official_id"], summed, r["games_total"]))
+        assert_no_nan(splits, "season_splits[%s]" % r["official_id"])
+    print("[hard] season_splits game counts reconcile with games_total for all %d referees: %s"
+          % (len(referees_index), not failures))
+    if failures:
+        hr("LEAGUE CONTEXT QA: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[League Context QA checks all passed]")
+
+
+def league_context_spot_check(referees_index):
+    """League Context QA (docs/LEAGUE_CONTEXT_SPEC.md): the whole point of
+    this round is that a 1990s-heavy referee gets swept toward the bottom of
+    a RAW scoring leaderboard as a pure artifact of era (1990s combined
+    points were far lower league-wide), not moved there by anything about how
+    they officiated. This must be shown working, not just asserted: find the
+    most 1990s-heavy qualifying referee and report their combined-points (RS)
+    rank before (raw value) vs. after (era-adjusted differential)."""
+    hr("SECTION 9  League Context spot-check: raw vs. differential ranking")
+    docs = {r["official_id"]: json.load(
+        open(os.path.join(DATA, "referees", "%s.json" % r["official_id"]), encoding="utf-8"))
+        for r in referees_index}
+
+    key, ncol = "avg_total_points", "n"
+    rows = {}
+    for r in referees_index:
+        off_id = r["official_id"]
+        entry = docs[off_id]["whistle_profile"]["rs"]
+        val, n = entry.get(key), entry.get(ncol)
+        diff = (entry.get("differential") or {}).get(key)
+        if val is None or n is None or n < LEADERBOARD_MIN_GAMES or diff is None:
+            continue
+        rows[off_id] = {"name": r["name"], "value": val, "diff": diff}
+
+    total = len(rows)
+    raw_rank = {off_id: i for i, off_id in
+               enumerate(sorted(rows, key=lambda k: rows[k]["value"], reverse=True), 1)}
+    diff_rank = {off_id: i for i, off_id in
+                enumerate(sorted(rows, key=lambda k: rows[k]["diff"], reverse=True), 1)}
+
+    NINETIES = {"1993-94", "1994-95", "1995-96", "1996-97", "1997-98", "1998-99", "1999-00"}
+    heaviest, heaviest_n = None, -1
+    for off_id in rows:
+        per_season = docs[off_id]["summary"]["per_season"]
+        n90s = sum(v.get("rs", 0) for s, v in per_season.items() if s in NINETIES)
+        if n90s > heaviest_n:
+            heaviest, heaviest_n = off_id, n90s
+
+    print("  Stat: combined points (RS), ranked descending (rank 1 = highest value), "
+         "%d qualifying referees (>=%d RS games)" % (total, LEADERBOARD_MIN_GAMES))
+    if heaviest and heaviest_n > 0:
+        row = rows[heaviest]
+        shift = raw_rank[heaviest] - diff_rank[heaviest]
+        print("  %s: %d 1990s regular-season games (the most in the qualifying pool)"
+             % (row["name"], heaviest_n))
+        print("    BEFORE -- ranked by raw value:                #%d of %d  (%.1f combined pts/gm)"
+             % (raw_rank[heaviest], total, row["value"]))
+        print("    AFTER  -- ranked by era-adjusted differential: #%d of %d  (%+.1f vs. their own-era baseline)"
+             % (diff_rank[heaviest], total, row["diff"]))
+        print("    shift: %+d rank places" % shift)
+    else:
+        print("  no qualifying 1990s-heavy referee found in the pool for this spot-check")
+
+
 # ----------------------------------------------------------------------------
 # frontpage dashboard (DASHBOARD_SPEC section 1)
 # ----------------------------------------------------------------------------
@@ -1904,16 +2163,17 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
                 "ref_slug": slug, "n": n}
 
     records = []
-    if leaderboards["highest_home_win_pct"]:
-        e = leaderboards["highest_home_win_pct"][0]
+    raw_extremes = leaderboards["_raw_extremes"]
+    if raw_extremes["highest_home_win_pct"]:
+        e = raw_extremes["highest_home_win_pct"]
         records.append(rec("Highest home team win rate", pct_str(e["home_win_pct"]),
                            e["name"], e["slug"], e["n"]))
-    if leaderboards["lowest_home_win_pct"]:
-        e = leaderboards["lowest_home_win_pct"][0]
+    if raw_extremes["lowest_home_win_pct"]:
+        e = raw_extremes["lowest_home_win_pct"]
         records.append(rec("Lowest home team win rate", pct_str(e["home_win_pct"]),
                            e["name"], e["slug"], e["n"]))
-    if leaderboards["highest_avg_total_fta_rs"]:
-        e = leaderboards["highest_avg_total_fta_rs"][0]
+    if raw_extremes["highest_avg_total_fta_rs"]:
+        e = raw_extremes["highest_avg_total_fta_rs"]
         records.append(rec("Busiest whistle (combined FTA/game, RS)", dec_str(e["avg_total_fta"]),
                            e["name"], e["slug"], e["n"]))
     if leaderboards["most_career_games"]:
@@ -2294,9 +2554,14 @@ def main():
 
     tg, game_tot = build_team_game(pl)
 
+    # League Context (docs/LEAGUE_CONTEXT_SPEC.md) -- computed before
+    # aggregate() so every referee's era-adjusted expected baseline can be
+    # built against it.
+    league_baselines = build_league_baselines(gm, game_tot)
+
     seg_to_entity, entities = reconcile_players(pl, gm, load_player_overrides())
     referees_index, all_swings, all_team_records = aggregate(
-        off_ref, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity)
+        off_ref, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, league_baselines)
 
     build_crewmates(off_ref, referees_index)
     build_whistle_leaderboards(referees_index)
@@ -2321,6 +2586,8 @@ def main():
     qa_teams_players(referees_index, team_index, player_index)
     qa_dashboard(dashboard, referees_index, team_index)
     qa_game_logs(referees_index)
+    qa_league_context(referees_index)
+    league_context_spot_check(referees_index)
     spot_checks(referees_index, details)
     dashboard_spot_checks(referees_index, details, dashboard)
 

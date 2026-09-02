@@ -229,6 +229,25 @@
       home_win_pct:"Home team win rate",ot_rate:"Games to overtime"};
     var WHISTLE_ALL_ISPCT={home_win_pct:1,ot_rate:1};
     function fmtWhistleAll(key,v){return WHISTLE_ALL_ISPCT[key]?(v*100).toFixed(1)+"%":v.toFixed(1);}
+    function fmtDiffAll(key,v){
+      if(v==null)return "—";
+      var sign=v>=0?"+":"";
+      return WHISTLE_ALL_ISPCT[key]?sign+(v*100).toFixed(1)+"%":sign+v.toFixed(1);
+    }
+    function ordinalAll(n){
+      if(n==null)return "—";
+      n=Math.trunc(n);
+      var m10=n%10,m100=n%100;
+      var suf=(m10===1&&m100!==11)?"st":(m10===2&&m100!==12)?"nd":(m10===3&&m100!==13)?"rd":"th";
+      return n+suf;
+    }
+    function diffRankLabelAll(rank,total,diff){
+      if(!total)return "ranking not available";
+      if(rank==null)return "not enough games to rank";
+      if(total<=1)return "only qualifying official";
+      if(diff!=null&&diff<0)return ordinalAll(total-rank+1)+" lowest of "+total;
+      return ordinalAll(rank)+" highest of "+total;
+    }
     function intensityClass(pctile){
       if(pctile==null)return"";
       var d=Math.abs(pctile-50),lvl=d>=40?4:d>=30?3:d>=20?2:d>=10?1:0;
@@ -239,10 +258,17 @@
       var keys=["avg_total_points","avg_total_fta","avg_total_pf","avg_abs_margin","home_win_pct","ot_rate"];
       var nMap={avg_total_points:w.n,avg_total_fta:w.n_boxscore,avg_total_pf:w.n_boxscore,
         avg_abs_margin:w.n,home_win_pct:w.n,ot_rate:w.n_boxscore};
+      var exp=w.expected||{}, dif=w.differential||{};
       var cells=keys.map(function(k){
         var v=w[k],cls=intensityClass(w[k+"_pctile"]),vs=(v==null)?"—":fmtWhistleAll(k,v);
-        return '<div class="wm '+cls+'"><div class="wm-val">'+vs+'</div>'+
-          '<div class="wm-label">'+WHISTLE_ALL_LABELS[k]+'</div><div class="wm-n">n = '+(nMap[k]||0)+'</div></div>';
+        var lg=exp[k],lgs=(lg==null)?"—":fmtWhistleAll(k,lg);
+        var d=(dif[k]==null)?null:dif[k],ds=fmtDiffAll(k,d);
+        var rankTxt=diffRankLabelAll(w[k+"_rank"],w[k+"_qualifying"],d);
+        return '<div class="wm '+cls+'"><div class="wm-val">'+vs+' <span class="wm-lg">lg '+lgs+
+          '</span> <span class="wm-diff">'+ds+'</span></div>'+
+          '<div class="wm-label">'+WHISTLE_ALL_LABELS[k]+'</div>'+
+          '<div class="wm-rank">'+rankTxt+'</div>'+
+          '<div class="wm-n">n = '+(nMap[k]||0)+'</div></div>';
       }).join("");
       return '<div class="whistle-col"><h3 class="whistle-kind">'+kindLabel+
         ' <span class="whistle-n">'+(w.n||0)+' games</span></h3><div class="whistle-grid">'+cells+'</div></div>';

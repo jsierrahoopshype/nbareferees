@@ -333,12 +333,40 @@
       "avg_abs_margin": 9.28,
       "ot_games": 1,
       "ot_rate": 0.02,
+      "expected": {
+        "avg_total_points": 186.79,
+        "avg_total_fta": 48.41,
+        "avg_total_pf": 42.9,
+        "avg_abs_margin": 10.35,
+        "home_win_pct": 0.61,
+        "ot_rate": 0.06
+      },
+      "differential": {
+        "avg_total_points": -3.84,
+        "avg_total_fta": -4.36,
+        "avg_total_pf": -2.71,
+        "avg_abs_margin": -1.07,
+        "home_win_pct": -0.01,
+        "ot_rate": -0.04
+      },
+      "avg_total_points_qualifying": 128,
+      "avg_total_fta_qualifying": 128,
+      "avg_total_pf_qualifying": 128,
+      "avg_abs_margin_qualifying": 128,
+      "home_win_pct_qualifying": 128,
+      "ot_rate_qualifying": 128,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     },
     "po": {
       "n": 0,
@@ -350,14 +378,84 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "avg_total_points_qualifying": 37,
+      "avg_total_fta_qualifying": 37,
+      "avg_total_pf_qualifying": 37,
+      "avg_abs_margin_qualifying": 37,
+      "home_win_pct_qualifying": 37,
+      "ot_rate_qualifying": 37,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2003-04",
+      "games_rs": 43,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 182.95,
+            "league": 186.79,
+            "diff": -3.84
+          },
+          "avg_total_fta": {
+            "value": 44.05,
+            "league": 48.41,
+            "diff": -4.36
+          },
+          "avg_total_pf": {
+            "value": 40.19,
+            "league": 42.9,
+            "diff": -2.71
+          },
+          "avg_abs_margin": {
+            "value": 9.28,
+            "league": 10.35,
+            "diff": -1.07
+          },
+          "home_win_pct": {
+            "value": 0.6,
+            "league": 0.61,
+            "diff": -0.01
+          },
+          "ot_rate": {
+            "value": 0.02,
+            "league": 0.06,
+            "diff": -0.04
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Allen Iverson",

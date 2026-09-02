@@ -173,12 +173,40 @@
       "avg_abs_margin": 8.0,
       "ot_games": 1,
       "ot_rate": 0.14,
+      "expected": {
+        "avg_total_points": 199.0,
+        "avg_total_fta": 52.84,
+        "avg_total_pf": 46.13,
+        "avg_abs_margin": 10.94,
+        "home_win_pct": 0.6,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": 1.57,
+        "avg_total_fta": 5.59,
+        "avg_total_pf": 3.58,
+        "avg_abs_margin": -2.94,
+        "home_win_pct": 0.26,
+        "ot_rate": 0.09
+      },
+      "avg_total_points_qualifying": 128,
+      "avg_total_fta_qualifying": 128,
+      "avg_total_pf_qualifying": 128,
+      "avg_abs_margin_qualifying": 128,
+      "home_win_pct_qualifying": 128,
+      "ot_rate_qualifying": 128,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     },
     "po": {
       "n": 0,
@@ -190,14 +218,84 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "avg_total_points_qualifying": 37,
+      "avg_total_fta_qualifying": 37,
+      "avg_total_pf_qualifying": 37,
+      "avg_abs_margin_qualifying": 37,
+      "home_win_pct_qualifying": 37,
+      "ot_rate_qualifying": 37,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     }
   },
+  "season_splits": [
+    {
+      "season": "1995-96",
+      "games_rs": 7,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 200.57,
+            "league": 199.0,
+            "diff": 1.57
+          },
+          "avg_total_fta": {
+            "value": 58.43,
+            "league": 52.84,
+            "diff": 5.59
+          },
+          "avg_total_pf": {
+            "value": 49.71,
+            "league": 46.13,
+            "diff": 3.58
+          },
+          "avg_abs_margin": {
+            "value": 8.0,
+            "league": 10.94,
+            "diff": -2.94
+          },
+          "home_win_pct": {
+            "value": 0.86,
+            "league": 0.6,
+            "diff": 0.26
+          },
+          "ot_rate": {
+            "value": 0.14,
+            "league": 0.05,
+            "diff": 0.09
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Anfernee Hardaway",

@@ -119,12 +119,40 @@
       "avg_abs_margin": 11.5,
       "ot_games": 0,
       "ot_rate": 0.0,
+      "expected": {
+        "avg_total_points": 228.58,
+        "avg_total_fta": 45.12,
+        "avg_total_pf": 38.43,
+        "avg_abs_margin": 12.96,
+        "home_win_pct": 0.55,
+        "ot_rate": 0.04
+      },
+      "differential": {
+        "avg_total_points": -7.58,
+        "avg_total_fta": -1.12,
+        "avg_total_pf": 3.32,
+        "avg_abs_margin": -1.46,
+        "home_win_pct": -0.05,
+        "ot_rate": -0.04
+      },
+      "avg_total_points_qualifying": 128,
+      "avg_total_fta_qualifying": 128,
+      "avg_total_pf_qualifying": 128,
+      "avg_abs_margin_qualifying": 128,
+      "home_win_pct_qualifying": 128,
+      "ot_rate_qualifying": 128,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     },
     "po": {
       "n": 0,
@@ -136,14 +164,124 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "avg_total_points_qualifying": 37,
+      "avg_total_fta_qualifying": 37,
+      "avg_total_pf_qualifying": 37,
+      "avg_abs_margin_qualifying": 37,
+      "home_win_pct_qualifying": 37,
+      "ot_rate_qualifying": 37,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2025-26",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 237.0,
+            "league": 230.47,
+            "diff": 6.53
+          },
+          "avg_total_fta": {
+            "value": 43.0,
+            "league": 46.91,
+            "diff": -3.91
+          },
+          "avg_total_pf": {
+            "value": 41.0,
+            "league": 39.67,
+            "diff": 1.33
+          },
+          "avg_abs_margin": {
+            "value": 14.0,
+            "league": 13.23,
+            "diff": 0.77
+          },
+          "home_win_pct": {
+            "value": 1.0,
+            "league": 0.55,
+            "diff": 0.45
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.04,
+            "diff": -0.04
+          }
+        }
+      }
+    },
+    {
+      "season": "2024-25",
+      "games_rs": 2,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 205.0,
+            "league": 226.69,
+            "diff": -21.69
+          },
+          "avg_total_fta": {
+            "value": 45.0,
+            "league": 43.34,
+            "diff": 1.66
+          },
+          "avg_total_pf": {
+            "value": 42.5,
+            "league": 37.19,
+            "diff": 5.31
+          },
+          "avg_abs_margin": {
+            "value": 9.0,
+            "league": 12.7,
+            "diff": -3.7
+          },
+          "home_win_pct": {
+            "value": 0.0,
+            "league": 0.54,
+            "diff": -0.54
+          },
+          "ot_rate": {
+            "value": 0.0,
+            "league": 0.05,
+            "diff": -0.05
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Donovan Mitchell",

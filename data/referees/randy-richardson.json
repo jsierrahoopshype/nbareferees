@@ -163,12 +163,40 @@
       "avg_abs_margin": 11.17,
       "ot_games": 1,
       "ot_rate": 0.17,
+      "expected": {
+        "avg_total_points": 212.67,
+        "avg_total_fta": 43.35,
+        "avg_total_pf": 39.7,
+        "avg_abs_margin": 11.13,
+        "home_win_pct": 0.58,
+        "ot_rate": 0.05
+      },
+      "differential": {
+        "avg_total_points": -3.5,
+        "avg_total_fta": -6.68,
+        "avg_total_pf": -4.7,
+        "avg_abs_margin": 0.04,
+        "home_win_pct": -0.08,
+        "ot_rate": 0.12
+      },
+      "avg_total_points_qualifying": 128,
+      "avg_total_fta_qualifying": 128,
+      "avg_total_pf_qualifying": 128,
+      "avg_abs_margin_qualifying": 128,
+      "home_win_pct_qualifying": 128,
+      "ot_rate_qualifying": 128,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     },
     "po": {
       "n": 0,
@@ -180,14 +208,84 @@
       "avg_abs_margin": null,
       "ot_games": null,
       "ot_rate": null,
+      "expected": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "differential": {
+        "avg_total_points": null,
+        "avg_total_fta": null,
+        "avg_total_pf": null,
+        "avg_abs_margin": null,
+        "home_win_pct": null,
+        "ot_rate": null
+      },
+      "avg_total_points_qualifying": 37,
+      "avg_total_fta_qualifying": 37,
+      "avg_total_pf_qualifying": 37,
+      "avg_abs_margin_qualifying": 37,
+      "home_win_pct_qualifying": 37,
+      "ot_rate_qualifying": 37,
       "avg_total_points_pctile": null,
+      "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
+      "avg_total_fta_rank": null,
       "avg_total_pf_pctile": null,
+      "avg_total_pf_rank": null,
       "avg_abs_margin_pctile": null,
+      "avg_abs_margin_rank": null,
       "home_win_pct_pctile": null,
-      "ot_rate_pctile": null
+      "home_win_pct_rank": null,
+      "ot_rate_pctile": null,
+      "ot_rate_rank": null
     }
   },
+  "season_splits": [
+    {
+      "season": "2017-18",
+      "games_rs": 6,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 209.17,
+            "league": 212.67,
+            "diff": -3.5
+          },
+          "avg_total_fta": {
+            "value": 36.67,
+            "league": 43.35,
+            "diff": -6.68
+          },
+          "avg_total_pf": {
+            "value": 35.0,
+            "league": 39.7,
+            "diff": -4.7
+          },
+          "avg_abs_margin": {
+            "value": 11.17,
+            "league": 11.13,
+            "diff": 0.04
+          },
+          "home_win_pct": {
+            "value": 0.5,
+            "league": 0.58,
+            "diff": -0.08
+          },
+          "ot_rate": {
+            "value": 0.17,
+            "league": 0.05,
+            "diff": 0.12
+          }
+        }
+      }
+    }
+  ],
   "top_performances": [
     {
       "player_name": "Austin Rivers",
