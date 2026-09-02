@@ -1005,24 +1005,28 @@ def paired_panel(tab_id, active, title_hi, rows_hi, title_lo, rows_lo, valkey, v
 
 # ---------------------------------------------------------------------------
 # frontpage dashboard sections (DASHBOARD_SPEC section 3)
+#
+# Information-design round: these used to each wrap themselves in a full
+# <section class="block"> with their own repeated "DASHBOARD" eyebrow --
+# eight near-identical boxed headers stacked down the page. render_index now
+# owns that scaffolding (three tiers: fresh/statistics/reference, each with
+# ONE header), and every function below returns bare inner content only, no
+# outer section/heading -- typography, spacing and dividers carry the
+# hierarchy instead of another rounded rectangle per module.
 # ---------------------------------------------------------------------------
 def dashboard_records_strip(records):
-    """Horizontally scannable row of small stat cards, each linking to the
+    """Horizontally scannable strip of small stat facts, each linking to the
     ref. Static/known at build time, so rendered server-side like everything
-    else on the site (real HTML, not JS-injected)."""
-    cards = "".join(
-        '<a class="record-card" href="referee/{slug}/index.html">'
+    else on the site (real HTML, not JS-injected). Items are divided by a
+    vertical rule, not individually boxed."""
+    return "".join(
+        '<a class="record-item" href="referee/{slug}/index.html">'
         '<span class="record-label">{label}</span>'
         '<span class="record-val">{val}</span>'
         '<span class="record-ref">{name} <span class="record-n">n={n}</span></span>'
         '</a>'.format(slug=esc(r["ref_slug"]), label=esc(r["label"]),
                      val=esc(r["value"]), name=esc(r["ref_name"]), n=i(r["n"]))
         for r in records)
-    return ("""<section class="block" id="records">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Records &amp; oddities</h2></div>
-  <div class="record-strip">{cards}</div>
-</section>""").format(cards=cards)
 
 
 def dashboard_history_strip(history):
@@ -1053,38 +1057,30 @@ def dashboard_history_strip(history):
 
     curiosities = "".join("<li>%s</li>" % esc(c) for c in history.get("curiosities") or [])
 
-    return ("""<section class="block" id="history">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>History</h2></div>
-  <div class="history-cols">
-    <div class="history-col"><h3 class="lb-subhead">Top scoring games</h3>
+    return ("""<div class="history-cols">
+    <div class="history-col"><span class="lb-subhead">Top scoring games</span>
       <ol class="history-list">{games}</ol></div>
-    <div class="history-col"><h3 class="lb-subhead">Most frequent crew</h3>{trio}
-      <h3 class="lb-subhead">Notes on this data</h3>
+    <div class="history-col"><span class="lb-subhead">Most frequent crew</span>{trio}
+      <span class="lb-subhead">Notes on this data</span>
       <ul class="curiosity-list">{cur}</ul></div>
-  </div>
-</section>""").format(games="".join(game_items), trio=trio_html, cur=curiosities)
+  </div>""").format(games="".join(game_items), trio=trio_html, cur=curiosities)
 
 
 def dashboard_rotation_slots(dashboard):
     """Empty containers for the day-of-year spotlight pick and 'on this date'
-    card, plus the data they need embedded inline (not fetched) so there's no
+    line, plus the data they need embedded inline (not fetched) so there's no
     flash of missing content on first paint. The SELECTION is inherently
     client-side (must reflect the viewer's actual today on a statically-built
     site), but the underlying data ships as real JSON in the page source."""
     payload = json.dumps(
         {"spotlight": dashboard["spotlight"], "date_index": dashboard["date_index"]},
         ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    return ("""<section class="block" id="spotlight">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Spotlight of the day</h2></div>
-  <div id="spotlight-card" class="spotlight-card"><p class="empty-note">Loading…</p></div>
-</section>
-<section class="block" id="on-this-date">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>On this date</h2></div>
-  <div id="ondate-card" class="ondate-card"><p class="empty-note">Loading…</p></div>
-</section>
+    return ("""<div class="today-grid">
+  <div class="today-col"><span class="lb-subhead">Spotlight of the day</span>
+    <div id="spotlight-card"><p class="empty-note">Loading…</p></div></div>
+  <div class="today-col"><span class="lb-subhead">On this date</span>
+    <div id="ondate-card"><p class="empty-note">Loading…</p></div></div>
+</div>
 <script type="application/json" id="dashboard-rotation-data">{payload}</script>""").format(payload=payload)
 
 
@@ -1093,11 +1089,10 @@ def dashboard_tonights_crews_slot():
     September-pipeline output that doesn't exist yet) and only un-hides this
     if it's present AND dated today/yesterday (US time) -- absent or stale
     renders nothing at all, no placeholder."""
-    return ("""<section class="block" id="tonights-crews" hidden>
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Tonight</span><h2>Tonight's crews</h2></div>
+    return ("""<div id="tonights-crews" hidden>
+  <span class="lb-subhead">Tonight's crews</span>
   <div id="tonights-crews-body"></div>
-</section>""")
+</div>""")
 
 
 # ---------------------------------------------------------------------------
@@ -1107,65 +1102,37 @@ def dashboard_tonights_crews_slot():
 def dashboard_crews_strip(crews):
     """Rendered only on index.html (depth 0) -- ref_link needs root=""."""
     top5 = crews[:5]
-    items = "".join(
+    return "".join(
         '<li class="history-row"><span class="history-rank">{rk}</span>'
         '<span class="crew-names">{names}</span> '
         '<span class="lb-val">{g} games together</span></li>'.format(
             rk=rank, names=", ".join(ref_link(r["name"], r["slug"], root="") for r in c["refs"]),
             g=i(c["games"]))
         for rank, c in enumerate(top5, 1))
-    return ("""<section class="block" id="crews">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Crew chemistry</h2></div>
-  <ol class="history-list">{items}</ol>
-  <p class="caption">The most frequent three-official crews in the database, by games
-  worked together. <a href="crews/index.html">See all {n} ranked crews &rarr;</a></p>
-</section>""").format(items=items, n=i(len(crews)))
 
 
 def dashboard_team_officials_strip(team_officials):
-    cards = "".join(
-        '<a class="record-card" href="referee/{slug}/index.html">'
+    return "".join(
+        '<a class="record-item" href="referee/{slug}/index.html">'
         '<span class="record-label">{team}</span>'
         '<span class="record-val">{ref}</span>'
         '<span class="record-ref">{g} games <span class="record-n">n={n}</span></span>'
         '</a>'.format(slug=esc(t["ref_slug"]), team=esc(t["team_name"]),
                      ref=esc(t["ref_name"]), g=i(t["games"]), n=i(t["n"]))
         for t in team_officials)
-    return ("""<section class="block" id="team-officials">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Most frequent official, by team</h2></div>
-  <div class="record-strip">{cards}</div>
-  <p class="caption">Frequency only — not a "best" or "worst" referee ranking by outcome.
-  <a href="team-officials/index.html">See the full list &rarr;</a></p>
-</section>""").format(cards=cards)
 
 
 def dashboard_debuts_widget(debuts_farewells):
+    """Returns (season, inner_html) for the most recent season, or None if
+    there's no data -- the caller decides how to present the empty case."""
     if not debuts_farewells:
-        return ""
+        return None
     block = debuts_farewells[0]           # already sorted most-recent-season first
-    inner = debuts_farewells_section(block)
-    return ("""<section class="block" id="debuts">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Debuts &amp; farewells &mdash; {season}</h2></div>
-  <div class="history-cols">{inner}</div>
-  <p class="caption">"First"/"last game in this database" describe this site's own coverage
-  (starting 1993-94), not an official's actual NBA career.
-  <a href="debuts/index.html">See every season &rarr;</a></p>
-</section>""").format(season=esc(block["season"]), inner=inner)
+    return block["season"], debuts_farewells_section(block)
 
 
 def dashboard_era_leaders_widget(era_leaders):
-    tabs, panels = era_leaders_block(era_leaders)
-    return ("""<section class="block" id="era-leaders">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Dashboard</span><h2>Leaders by decade</h2></div>
-  <div class="lb-tabs" role="tablist">{tabs}</div>
-  <div class="lb-panels">{panels}</div>
-  <p class="caption">Each decade counts only games within it, not career totals.
-  <a href="eras/index.html">See full decade tables &rarr;</a></p>
-</section>""").format(tabs=tabs, panels=panels)
+    return era_leaders_block(era_leaders)
 
 
 def render_index(refs, lb, dashboard):
@@ -1188,45 +1155,31 @@ def render_index(refs, lb, dashboard):
   </div>
 </section>""".format(total=total, span=esc(span), active=active_n)
 
-    # search + directory
-    rows = []
-    for r in sorted(refs, key=lambda x: x["name"].lower()):
-        rows.append(
-            '<tr class="ref-row" data-name="{nm}">'
-            '<td data-label="Referee"><a href="referee/{slug}/index.html">{name}</a>'
-            '{badge}</td>'
-            '<td data-label="Seasons">{seasons}</td>'
-            '<td data-label="Games" data-sort="{g}">{gi}</td>'
-            '<td data-label="RS" data-sort="{rs}">{rsi}</td>'
-            '<td data-label="PO" data-sort="{po}">{poi}</td>'
-            "</tr>".format(
-                nm=esc(r["name"].lower()), slug=esc(r["slug"]), name=esc(r["name"]),
-                badge=' <span class="dot-active" title="Active this season">●</span>' if r["active"] else "",
-                seasons=esc(career_span(r["first_season"], r["last_season"])),
-                g=r["games_total"], gi=i(r["games_total"]),
-                rs=r["games_rs"], rsi=i(r["games_rs"]),
-                po=r["games_po"], poi=i(r["games_po"])))
-    directory = """<section class="block" id="directory">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Find an official</span><h2>All referees</h2></div>
-  <div class="search-wrap">
-    <input type="search" id="ref-search" class="search-input"
-      placeholder="Search {total} referees by name…" autocomplete="off"
-      aria-label="Search referees by name">
-    <p class="search-empty" id="search-empty" hidden>No referee matches that name.</p>
-  </div>
-  <div class="table-wrap">
-    <table class="data-table sortable-table" id="ref-directory"><thead><tr>
-      <th class="sortable col-text" data-type="text" scope="col">Referee</th>
-      <th scope="col">Seasons</th>
-      <th class="sortable col-num" data-type="num" scope="col">Games</th>
-      <th class="sortable col-num" data-type="num" scope="col">RS</th>
-      <th class="sortable col-num" data-type="num" scope="col">PO</th>
-    </tr></thead><tbody>{rows}</tbody></table>
-  </div>
-</section>""".format(total=total, rows="".join(rows))
+    # ---- sticky section nav ------------------------------------------------
+    # Compact jump-list, one entry per anchor below. Sticky on desktop; the
+    # mobile media query below drops the sticky positioning (see CSS comment
+    # for why) but keeps the links themselves, since they're still useful as
+    # an ordinary in-page table of contents.
+    subnav = """<nav class="index-subnav" aria-label="Jump to section">
+  <a href="#today">Today</a><a href="#records">Records</a><a href="#leaders">Leaders</a>
+  <a href="#crews-teams">Crews &amp; teams</a><a href="#directory">Directory</a>
+</nav>"""
 
-    # leaderboards
+    # ---- tier 1: fresh -- today's rotation + the database's oddities ------
+    today_inner = dashboard_rotation_slots(dashboard) + dashboard_tonights_crews_slot()
+    records_inner = ('<span class="lb-subhead">Records &amp; oddities</span>'
+                     '<div class="record-strip">%s</div>'
+                     % dashboard_records_strip(dashboard["records"])
+                     + dashboard_history_strip(dashboard["history"]))
+    tier_fresh = """<section class="tier">
+  <div class="tier-head"><span class="tier-eyebrow">Fresh</span>
+  <h2>Today, records &amp; history</h2>
+  <p class="tier-desc">What's new and what's unusual — refreshed daily where the data allows.</p></div>
+  <div class="submod-anchor" id="today">{today}</div>
+  <div class="submod-anchor" id="records">{records}</div>
+</section>""".format(today=today_inner, records=records_inner)
+
+    # ---- tier 2: statistics -- the deep leaderboards + cross-official cuts
     tabs_btns = []
     panels = []
     for idx, (tab_id, label, key, valkey, valfmt, n_key) in enumerate(LEADERBOARD_TABS):
@@ -1262,29 +1215,119 @@ def render_index(refs, lb, dashboard):
         diff_key="diff", difffmt=WHISTLE_DIFFFMT["avg_total_fta"]))
 
     min_n = lb["_meta"]["min_games_for_rate_leaderboards"]
-    leaderboards = """<section class="block" id="leaderboards">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Leaderboards</span><h2>Career leaders</h2></div>
+    leaders_inner = """<span class="lb-subhead">Career leaders</span>
   <div class="lb-tabs" role="tablist">{tabs}</div>
   <div class="lb-panels">{panels}</div>
   <p class="caption">Rate leaderboards (home win rate, free throws) include only
   officials with at least {min_n} qualifying games, ranked by the differential
   against the era-adjusted league baseline for the seasons each official worked
   (shown alongside the raw value) — see any <a href="leaderboard/home-win-rate/index.html">
-  dedicated leaderboard page</a> for the full methodology.</p>
-</section>""".format(tabs="".join(tabs_btns), panels="".join(panels), min_n=min_n)
+  dedicated leaderboard page</a> for the full methodology.</p>""".format(
+        tabs="".join(tabs_btns), panels="".join(panels), min_n=min_n)
 
-    dashboard_sections = (
-        dashboard_rotation_slots(dashboard)
-        + dashboard_tonights_crews_slot()
-        + dashboard_records_strip(dashboard["records"])
-        + dashboard_history_strip(dashboard["history"])
-        + dashboard_crews_strip(dashboard["crews"])
-        + dashboard_team_officials_strip(dashboard["team_officials"])
-        + dashboard_debuts_widget(dashboard["debuts_farewells"])
-        + dashboard_era_leaders_widget(dashboard["era_leaders"])
-    )
-    body = hero + dashboard_sections + leaderboards + directory + ref_search(0, "bottom")
+    era_tabs, era_panels = dashboard_era_leaders_widget(dashboard["era_leaders"])
+    debuts = dashboard_debuts_widget(dashboard["debuts_farewells"])
+    debuts_block = ""
+    if debuts:
+        season, debuts_inner = debuts
+        debuts_block = ("""<div class="submod-anchor"><span class="lb-subhead">Debuts &amp; farewells &mdash; {season}</span>
+      <div class="history-cols">{inner}</div>
+      <p class="caption">"First"/"last game in this database" describe this site's own
+      coverage (starting 1993-94), not an official's actual NBA career.
+      <a href="debuts/index.html">See every season &rarr;</a></p></div>"""
+                     .format(season=esc(season), inner=debuts_inner))
+
+    # Crew chemistry + team officials pair comfortably at half width (a
+    # ranked list and a horizontal-scroll strip). Debuts/farewells and the
+    # decade leaders each keep the full row -- the latter is a 3-column
+    # mini-grid internally (games/playoffs/Finals) that only reads cleanly
+    # with the full page width behind it.
+    crews_teams_inner = """<div class="submod-anchor"><div class="stat-grid-2">
+    <div><span class="lb-subhead">Crew chemistry</span>
+      <ol class="history-list">{crews}</ol>
+      <p class="caption">The most frequent three-official crews in the database, by games
+      worked together. <a href="crews/index.html">See all {n_crews} ranked crews &rarr;</a></p></div>
+    <div><span class="lb-subhead">Most frequent official, by team</span>
+      <div class="record-strip">{team_officials}</div>
+      <p class="caption">Frequency only — not a "best" or "worst" referee ranking by outcome.
+      <a href="team-officials/index.html">See the full list &rarr;</a></p></div>
+  </div></div>
+  {debuts_block}
+  <div class="submod-anchor"><span class="lb-subhead">Leaders by decade</span>
+    <div class="lb-tabs" role="tablist">{era_tabs}</div>
+    <div class="lb-panels">{era_panels}</div>
+    <p class="caption">Each decade counts only games within it, not career totals.
+    <a href="eras/index.html">See full decade tables &rarr;</a></p>
+  </div>""".format(
+        crews=dashboard_crews_strip(dashboard["crews"]), n_crews=i(len(dashboard["crews"])),
+        team_officials=dashboard_team_officials_strip(dashboard["team_officials"]),
+        debuts_block=debuts_block, era_tabs=era_tabs, era_panels=era_panels)
+
+    tier_stats = """<section class="tier">
+  <div class="tier-head"><span class="tier-eyebrow">Statistics</span>
+  <h2>Leaders, crews &amp; teams</h2>
+  <p class="tier-desc">Career leaderboards and cross-official patterns across the full
+  1993-94–2025-26 dataset.</p></div>
+  <div class="submod-anchor" id="leaders">{leaders}</div>
+  <div class="submod-anchor" id="crews-teams">{crews_teams}</div>
+</section>""".format(leaders=leaders_inner, crews_teams=crews_teams_inner)
+
+    # ---- tier 3: reference -- deep-dive links + the full directory --------
+    more_data_links = ['<a href="%sindex.html">%s</a>' % (esc("leaderboard/%s/" % slug), esc(label))
+                       for _key, _ncol, label, slug in WHISTLE_STATS]
+    more_data_links += [
+        '<a href="crews/index.html">All crews</a>',
+        '<a href="team-officials/index.html">Team officials, full list</a>',
+        '<a href="debuts/index.html">Debuts &amp; farewells, all seasons</a>',
+        '<a href="eras/index.html">Era leaders, all decades</a>',
+        '<a href="swings/index.html">Biggest player swings</a>',
+        '<a href="compare/index.html">Compare two referees</a>',
+    ]
+
+    rows = []
+    for r in sorted(refs, key=lambda x: x["name"].lower()):
+        rows.append(
+            '<tr class="ref-row" data-name="{nm}">'
+            '<td data-label="Referee"><a href="referee/{slug}/index.html">{name}</a>'
+            '{badge}</td>'
+            '<td data-label="Seasons">{seasons}</td>'
+            '<td data-label="Games" data-sort="{g}">{gi}</td>'
+            '<td data-label="RS" data-sort="{rs}">{rsi}</td>'
+            '<td data-label="PO" data-sort="{po}">{poi}</td>'
+            "</tr>".format(
+                nm=esc(r["name"].lower()), slug=esc(r["slug"]), name=esc(r["name"]),
+                badge=' <span class="dot-active" title="Active this season">●</span>' if r["active"] else "",
+                seasons=esc(career_span(r["first_season"], r["last_season"])),
+                g=r["games_total"], gi=i(r["games_total"]),
+                rs=r["games_rs"], rsi=i(r["games_rs"]),
+                po=r["games_po"], poi=i(r["games_po"])))
+
+    tier_reference = """<section class="tier">
+  <div class="tier-head"><span class="tier-eyebrow">Reference</span>
+  <h2>Look up an official</h2>
+  <p class="tier-desc">Search or sort all {total} referees, or jump straight to a deeper
+  per-stat page.</p></div>
+  <div class="submod-anchor" id="directory">
+    <div class="more-data-links">{more_data}</div>
+    <div class="search-wrap">
+      <input type="search" id="ref-search" class="search-input"
+        placeholder="Search {total} referees by name…" autocomplete="off"
+        aria-label="Search referees by name">
+      <p class="search-empty" id="search-empty" hidden>No referee matches that name.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table sortable-table" id="ref-directory"><thead><tr>
+        <th class="sortable col-text" data-type="text" scope="col">Referee</th>
+        <th scope="col">Seasons</th>
+        <th class="sortable col-num" data-type="num" scope="col">Games</th>
+        <th class="sortable col-num" data-type="num" scope="col">RS</th>
+        <th class="sortable col-num" data-type="num" scope="col">PO</th>
+      </tr></thead><tbody>{rows}</tbody></table>
+    </div>
+  </div>
+</section>""".format(total=total, more_data="".join(more_data_links), rows="".join(rows))
+
+    body = hero + subnav + tier_fresh + tier_stats + tier_reference + ref_search(0, "bottom")
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
@@ -1665,6 +1708,46 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .block-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
 .caption{color:var(--text-secondary);font-size:.78rem;max-width:70ch;margin:.7rem 0 0}
 
+/* ---- index page: three-tier information hierarchy ----------------------
+   PRIMARY (fresh: today's rotation + oddities), SECONDARY (statistics:
+   leaderboards + crews/teams), UTILITY (reference: directory + deep links).
+   One .tier-head per tier carries the section-level framing; individual
+   modules inside a tier are separated by dividers/typography (.submod-anchor,
+   .lb-subhead), not by another bordered/rounded card each -- that repetition
+   ("DASHBOARD" stamped on eight boxes) was the thing this round removes. */
+.index-subnav{position:sticky;top:0;z-index:6;background:var(--bg);
+  border-bottom:1px solid var(--border);display:flex;gap:1.3rem;
+  padding:.65rem 0;margin-top:.4rem;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+.index-subnav a{font-family:var(--mono);font-size:.72rem;font-weight:600;
+  color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;flex:0 0 auto}
+.index-subnav a:hover{color:var(--accent);text-decoration:none}
+.tier{padding:2rem 0;border-bottom:1px solid var(--border)}
+.tier:last-of-type{border-bottom:0}
+.tier-head{padding-bottom:1.1rem;margin-bottom:1.3rem;border-bottom:1px solid var(--border)}
+.tier-eyebrow{display:block;font-family:var(--mono);text-transform:uppercase;
+  letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--accent);margin-bottom:.35rem}
+.tier-head h2{font-size:1.4rem;letter-spacing:-.03em}
+.tier-desc{color:var(--text-secondary);font-size:.88rem;max-width:60rem;margin:.4rem 0 0}
+.submod-anchor{scroll-margin-top:3.6rem}
+.submod-anchor+.submod-anchor{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
+.stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
+.today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
+.today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
+#tonights-crews{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
+.more-data-links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin-bottom:1.3rem;
+  font-family:var(--mono);font-size:.72rem}
+.more-data-links a{color:var(--text-secondary);font-weight:600}
+.more-data-links a:hover{color:var(--accent)}
+@media(max-width:860px){
+  /* A permanently pinned bar costs real vertical space on a short mobile
+     viewport for the whole length of an already-long page; keep the jump
+     links (still useful for a quick table of contents) but stop pinning
+     them so they don't sit on top of content while scrolling. */
+  .index-subnav{position:static;overflow-x:visible;white-space:normal;flex-wrap:wrap;
+    background:none;border-bottom:0;padding:.2rem 0 1rem}
+  .stat-grid-2,.today-grid{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+
 /* ---- referee hero (flat header, Polymarket .phead treatment) ---- */
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
@@ -1842,21 +1925,22 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .lb-diff{font-weight:600;color:var(--text-secondary);font-size:.74rem;margin-left:.35rem}
 .lb-n{font-weight:500;color:var(--text-secondary);font-size:.7rem;margin-left:.3rem}
 
-/* ---- frontpage dashboard (spotlight, on this date, records, history) ---- */
-.spotlight-card,.ondate-card{background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:1.1rem 1.3rem}
-.spotlight-name{font-size:1.15rem;font-weight:700;color:var(--text)}
+/* ---- frontpage dashboard (spotlight, on this date, records, history) ----
+   No card boxes here by design (see the tier-system comment above) --
+   typography and the tier/submodule dividers carry the framing instead. */
+#spotlight-card,#ondate-card{margin-top:0}
+.spotlight-name{font-size:1.3rem;font-weight:700;color:var(--text)}
 .spotlight-name:hover{color:var(--accent)}
 .spotlight-meta{font-family:var(--mono);font-size:.74rem;color:var(--text-secondary);margin:.4rem 0 0}
-.spotlight-sig{font-size:.85rem;margin:.6rem 0 0;max-width:60ch}
-.ondate-card{font-size:.88rem}
+.spotlight-sig{font-size:.88rem;margin:.6rem 0 0;max-width:60ch}
+#ondate-card{font-size:.92rem}
 
-.record-strip{display:flex;gap:.9rem;overflow-x:auto;padding-bottom:.3rem;
-  scrollbar-width:thin}
-.record-card{flex:0 0 auto;min-width:11.5rem;background:var(--surface);
-  border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;
+.record-strip{display:flex;gap:0;overflow-x:auto;padding-bottom:.3rem;scrollbar-width:thin}
+.record-item{flex:0 0 auto;min-width:9.5rem;padding:0 1.2rem;border-right:1px solid var(--border);
   color:inherit;text-decoration:none;display:flex;flex-direction:column}
-.record-card:hover{border-color:var(--accent)}
+.record-item:first-child{padding-left:0}
+.record-item:last-child{border-right:0}
+.record-item:hover .record-val{color:var(--accent)}
 .record-label{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;
   letter-spacing:.05em;color:var(--text-secondary)}
 .record-val{font-size:1.2rem;font-weight:700;margin-top:.3rem;letter-spacing:-.01em}
@@ -1876,10 +1960,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
 .curiosity-list li{margin-bottom:.5rem}
 
-#tonights-crews-body{display:flex;flex-direction:column;gap:.6rem}
+#tonights-crews-body{display:flex;flex-direction:column;margin-top:.5rem}
 .crew-game{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;
-  background:var(--surface);border:1px solid var(--border);border-radius:10px;
-  padding:.6rem .85rem;font-size:.84rem}
+  padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+.crew-game:last-child{border-bottom:0}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
