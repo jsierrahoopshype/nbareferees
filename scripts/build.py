@@ -1405,12 +1405,19 @@ def build_whistle_leaderboards(referees_index):
             total = len(rows)
             for rank, row in enumerate(rows, 1):
                 pctile = clean_num((total - rank) / (total - 1) * 100) if total > 1 else 100.0
-                docs[row["official_id"]]["whistle_profile"][kind][key + "_pctile"] = pctile
+                wp = docs[row["official_id"]]["whistle_profile"][kind]
+                wp[key + "_pctile"] = pctile
+                wp[key + "_rank"] = rank
                 row["rank"], row["pctile"] = rank, pctile
             leaderboards[key][kind] = [
                 {"rank": x["rank"], "name": x["name"], "slug": x["slug"],
                  "value": x["value"], "diff": x["diff"], "n": x["n"], "pctile": x["pctile"]}
                 for x in rows]
+            # Pool size travels on every referee's doc (even non-qualifying
+            # ones) so the compact card ("12th lowest of 118") can render
+            # "not enough games to rank" copy with the real denominator.
+            for r in referees_index:
+                docs[r["official_id"]]["whistle_profile"][kind][key + "_qualifying"] = total
             if skipped_no_diff:
                 print("    %-22s %-2s: %d qualifying-by-n referee(s) skipped "
                       "(no era-adjusted differential available)" % (key, kind, skipped_no_diff))
@@ -1418,13 +1425,14 @@ def build_whistle_leaderboards(referees_index):
               % (key, len(leaderboards[key]["rs"]), LEADERBOARD_MIN_GAMES,
                  len(leaderboards[key]["po"]), PO_LEADERBOARD_MIN_GAMES))
 
-    # Every ref's whistle_profile gets a (possibly None) pctile field for every
-    # stat, even when they don't qualify, so render_pages.py can read it
+    # Every ref's whistle_profile gets a (possibly None) pctile/rank field for
+    # every stat, even when they don't qualify, so render_pages.py can read it
     # unconditionally.
     for off_id, doc in docs.items():
         for kind in ("rs", "po"):
             for key, *_rest in WHISTLE_STATS:
                 doc["whistle_profile"][kind].setdefault(key + "_pctile", None)
+                doc["whistle_profile"][kind].setdefault(key + "_rank", None)
         path = os.path.join(DATA, "referees", "%s.json" % off_id)
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(doc, fh, ensure_ascii=False, indent=2)
