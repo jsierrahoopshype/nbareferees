@@ -386,12 +386,18 @@ def season_splits_table(doc):
 # when its target page exists; otherwise it renders as plain text (no dead links).
 TEAM_EXISTS = set()      # tricodes (upper) with a /team/ page
 PLAYER_EXISTS = set()    # player slugs with a /player/ page
-# All table helpers run on depth-2 pages (referee/, team/, player/), so links
-# from within them reach the repo root via "../../".
+# Most table helpers run on depth-2 pages (referee/, team/, player/,
+# leaderboard/{slug}/), so links from within them reach the repo root via
+# "../../" by default -- but a few of these same helpers are also reused on
+# depth-0 (index.html) and depth-1 (crews/, team-officials/, debuts/, eras/,
+# swings/) pages, which need a shallower root. Each of the four link helpers
+# below takes an explicit root= override for those call sites (matching the
+# root= convention leaderboard_row/era_panel/debuts_farewells_section already
+# use); the default keeps every depth-2 call site unchanged.
 ROOT2 = "../../"
 
 
-def team_cell(abbr):
+def team_cell(abbr, root=ROOT2):
     """Full franchise name with the tricode as a small secondary chip; the name
     links to the team page when one exists."""
     full = nba_tricodes.display_name(abbr)
@@ -400,24 +406,24 @@ def team_cell(abbr):
         return '<span class="team-cell">%s</span>' % tag
     name = esc(full)
     if abbr in TEAM_EXISTS:
-        name = '<a href="%steam/%s/index.html">%s</a>' % (ROOT2, esc(abbr.lower()), name)
+        name = '<a href="%steam/%s/index.html">%s</a>' % (root, esc(abbr.lower()), name)
     return '<span class="team-cell"><span class="team-name">%s</span>%s</span>' % (name, tag)
 
 
-def player_link(name, slug):
+def player_link(name, slug, root=ROOT2):
     """Player name linked to its page when one exists, else plain text."""
     if slug and slug in PLAYER_EXISTS:
-        return '<a href="%splayer/%s/index.html">%s</a>' % (ROOT2, esc(slug), esc(name))
+        return '<a href="%splayer/%s/index.html">%s</a>' % (root, esc(slug), esc(name))
     return esc(name)
 
 
-def ref_link(name, slug):
+def ref_link(name, slug, root=ROOT2):
     """Referee name linked back to the ref page (always exists)."""
-    return '<a href="%sreferee/%s/index.html">%s</a>' % (ROOT2, esc(slug), esc(name))
+    return '<a href="%sreferee/%s/index.html">%s</a>' % (root, esc(slug), esc(name))
 
 
-def back_home(label="All referees"):
-    return '<a class="backlink" href="%sindex.html">&larr; %s</a>' % (ROOT2, esc(label))
+def back_home(label="All referees", root=ROOT2):
+    return '<a class="backlink" href="%sindex.html">&larr; %s</a>' % (root, esc(label))
 
 
 def partners_card(partners):
@@ -1021,10 +1027,12 @@ def dashboard_records_strip(records):
 
 def dashboard_history_strip(history):
     """Top scoring games (linked crew + player) and the most frequent
-    3-official crew ever, plus a few fixed factual notes about the dataset."""
+    3-official crew ever, plus a few fixed factual notes about the dataset.
+    Rendered only on index.html (depth 0), so every link helper here needs
+    root="" instead of its depth-2 default."""
     game_items = []
     for rank, g in enumerate(history["top_scoring_games"], 1):
-        crew = " &middot; ".join(ref_link(c["name"], c["slug"]) for c in g.get("crew") or []) or "—"
+        crew = " &middot; ".join(ref_link(c["name"], c["slug"], root="") for c in g.get("crew") or []) or "—"
         game_items.append(
             '<li class="history-row"><span class="history-rank">{rk}</span>'
             '<span class="history-pts">{pts}</span> {player} '
@@ -1032,14 +1040,14 @@ def dashboard_history_strip(history):
             '<span class="history-date">{date}</span>'
             '<span class="history-crew">Crew: {crew}</span></li>'.format(
                 rk=rank, pts=i(g["pts"]),
-                player=player_link(g["player_name"], g.get("player_slug")),
-                team=team_cell(g["team_abbr"]), opp=team_cell(g["opp_abbr"]),
+                player=player_link(g["player_name"], g.get("player_slug"), root=""),
+                team=team_cell(g["team_abbr"], root=""), opp=team_cell(g["opp_abbr"], root=""),
                 date=esc(g["game_date"]), crew=crew))
 
     trio = history.get("top_crew_trio")
     trio_html = '<p class="empty-note">No three-official crew on record.</p>'
     if trio:
-        names = ", ".join(ref_link(r["name"], r["slug"]) for r in trio["refs"])
+        names = ", ".join(ref_link(r["name"], r["slug"], root="") for r in trio["refs"])
         trio_html = ('<p class="history-trio">{names} — {n} games together, more than '
                     'any other three-official crew.</p>').format(names=names, n=i(trio["games"]))
 
@@ -1097,12 +1105,13 @@ def dashboard_tonights_crews_slot():
 # own full-list page.
 # ---------------------------------------------------------------------------
 def dashboard_crews_strip(crews):
+    """Rendered only on index.html (depth 0) -- ref_link needs root=""."""
     top5 = crews[:5]
     items = "".join(
         '<li class="history-row"><span class="history-rank">{rk}</span>'
         '<span class="crew-names">{names}</span> '
         '<span class="lb-val">{g} games together</span></li>'.format(
-            rk=rank, names=", ".join(ref_link(r["name"], r["slug"]) for r in c["refs"]),
+            rk=rank, names=", ".join(ref_link(r["name"], r["slug"], root="") for r in c["refs"]),
             g=i(c["games"]))
         for rank, c in enumerate(top5, 1))
     return ("""<section class="block" id="crews">
@@ -1341,6 +1350,7 @@ def render_compare():
 # Tier C full-list pages (docs/TIER_C_SPEC.md)
 # ---------------------------------------------------------------------------
 def crews_table(crews):
+    """Rendered only on /crews/ (depth 1) -- ref_link needs root='../'."""
     cols = [("Crew", "text"), ("Games together", "num"), ("First season", "text"),
             ("Last season", "text"), ("Avg total pts", "num"), ("Avg total FTA", "num")]
     ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
@@ -1348,7 +1358,7 @@ def crews_table(crews):
     body = []
     for c in crews:
         names_sort = esc(", ".join(r["name"] for r in c["refs"]).lower())
-        names = ", ".join(ref_link(r["name"], r["slug"]) for r in c["refs"])
+        names = ", ".join(ref_link(r["name"], r["slug"], root="../") for r in c["refs"])
         pts = ("%s <span class=\"lb-n\">n=%s</span>" % (dec(c["avg_total_points"]), i(c["pts_n"]))
               if c["avg_total_points"] is not None else "—")
         fta = ("%s <span class=\"lb-n\">n=%s</span>" % (dec(c["avg_total_fta"]), i(c["fta_n"]))
@@ -1373,7 +1383,7 @@ def render_crews(crews):
             "ranked by games worked together, with combined scoring and free-throw "
             "averages for each trio." % len(crews))
     chips = [stat_chip("Crews ranked", i(len(crews)), accent=True)]
-    blocks = [back_home(), hero_block("Crew chemistry", "Most frequent officiating crews", "", chips),
+    blocks = [back_home(root="../"), hero_block("Crew chemistry", "Most frequent officiating crews", "", chips),
               ref_search(1, "top")]
     blocks.append(section(None, "Top crew trios",
                           '<div class="table-wrap">%s</div>' % crews_table(crews),
@@ -1386,6 +1396,8 @@ def render_crews(crews):
 
 
 def team_officials_table(rows):
+    """Rendered only on /team-officials/ (depth 1) -- team_cell/ref_link need
+    root='../'."""
     ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
         c="col-text" if t == "text" else "col-num", t=t, l=esc(l))
         for l, t in [("Team", "text"), ("Official", "text"), ("Games", "num")])
@@ -1396,9 +1408,9 @@ def team_officials_table(rows):
             '<td data-label="Team" data-sort="{tsort}">{team}</td>'
             '<td data-label="Official" data-sort="{rsort}">{ref}</td>'
             '<td data-label="Games" data-sort="{g}">{gi} <span class="lb-n">n={n}</span></td>'
-            "</tr>".format(tsort=esc(t["team_name"].lower()), team=team_cell(t["tricode"]),
+            "</tr>".format(tsort=esc(t["team_name"].lower()), team=team_cell(t["tricode"], root="../"),
                            rsort=esc(t["ref_name"].lower()),
-                           ref=ref_link(t["ref_name"], t["ref_slug"]),
+                           ref=ref_link(t["ref_name"], t["ref_slug"], root="../"),
                            g=t["games"], gi=i(t["games"]), n=i(t["n"])))
     return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
@@ -1410,7 +1422,7 @@ def render_team_officials(team_officials):
             "has worked the most of that team's games. Frequency only, not a win-rate "
             "ranking." % len(team_officials))
     chips = [stat_chip("Teams", i(len(team_officials)), accent=True)]
-    blocks = [back_home(), hero_block("Team officials", "Most frequent official, by team", "", chips),
+    blocks = [back_home(root="../"), hero_block("Team officials", "Most frequent official, by team", "", chips),
               ref_search(1, "top")]
     blocks.append(section(None, "Most frequent official by team",
                           '<div class="table-wrap">%s</div>' % team_officials_table(team_officials),
@@ -1449,7 +1461,7 @@ def render_debuts(debuts_farewells):
             "— this dataset's own coverage starts at 1993-94, so officials active before "
             "then have real careers predating it.")
     chips = [stat_chip("Seasons", i(len(debuts_farewells)), accent=True)]
-    blocks = [back_home(), hero_block("Debuts & farewells", "First and last games, by season", "", chips),
+    blocks = [back_home(root="../"), hero_block("Debuts & farewells", "First and last games, by season", "", chips),
               ref_search(1, "top")]
     note = ('<p class="caption">"First game" / "last game" describe this DATABASE’s coverage, '
             'not an official’s actual NBA career — officials active before the 1993-94 floor '
@@ -1505,7 +1517,7 @@ def render_eras(era_leaders):
     desc = ("Officiating leaders by decade — total games, playoff games, and Finals "
             "games worked in the 1990s (partial), 2000s, 2010s, and 2020s.")
     tabs, panels = era_leaders_block(era_leaders, root="../")
-    blocks = [back_home(), hero_block("Era leaders", "Referee leaders by decade", "", [])]
+    blocks = [back_home(root="../"), hero_block("Era leaders", "Referee leaders by decade", "", [])]
     blocks.append("""<section class="block" id="eras">
   <div class="block-head"><h2>Leaders by decade</h2></div>
   <div class="lb-tabs" role="tablist">{tabs}</div>
@@ -1518,6 +1530,8 @@ def render_eras(era_leaders):
 
 
 def swings_all_table(rows):
+    """Rendered only on /swings/ (depth 1) -- player_link/ref_link need
+    root='../'."""
     ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
         c="col-text" if t == "text" else "col-num", t=t, l=esc(l))
         for l, t in [("Player", "text"), ("Referee", "text"), ("Games", "num"),
@@ -1533,8 +1547,9 @@ def swings_all_table(rows):
             '<td data-label="PTS baseline" data-sort="{pb}">{pbf}</td>'
             '<td data-label="PTS swing" data-sort="{ps}"><span class="{psc}">{pss}</span></td>'
             "</tr>".format(
-                pn=esc(r["player_name"].lower()), pcell=player_link(r["player_name"], r["player_slug"]),
-                rn=esc(r["ref_name"].lower()), rcell=ref_link(r["ref_name"], r["ref_slug"]),
+                pn=esc(r["player_name"].lower()),
+                pcell=player_link(r["player_name"], r["player_slug"], root="../"),
+                rn=esc(r["ref_name"].lower()), rcell=ref_link(r["ref_name"], r["ref_slug"], root="../"),
                 n=r["n_games"], ni=i(r["n_games"]),
                 pw=r["pts_with_ref"], pwf=dec(r["pts_with_ref"]),
                 pb=r["pts_baseline"], pbf=dec(r["pts_baseline"]),
@@ -1552,7 +1567,7 @@ def render_swings(swings_all):
             "player's own same-season baseline." % (len(top) + len(bottom)))
     chips = [stat_chip("Qualifying pairs", i(swings_all["total_pairs"]), accent=True),
             stat_chip("Min. games", "15")]
-    blocks = [back_home(), hero_block("Swings", "Biggest player scoring swings", "", chips),
+    blocks = [back_home(root="../"), hero_block("Swings", "Biggest player scoring swings", "", chips),
               ref_search(1, "top")]
     note = ('<p class="caption">"Swing" is the average difference between a player’s output '
             'in games a given official worked and that player’s own same-season average — '
