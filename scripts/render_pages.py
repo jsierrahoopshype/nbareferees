@@ -1173,15 +1173,57 @@ def dashboard_rotation_slots(dashboard):
 <script type="application/json" id="dashboard-rotation-data">{payload}</script>""").format(payload=payload)
 
 
-def dashboard_tonights_crews_slot():
-    """Empty, hidden by default. app.js fetches data/tonights-crews.json (a
-    September-pipeline output that doesn't exist yet) and only un-hides this
-    if it's present AND dated today/yesterday (US time) -- absent or stale
-    renders nothing at all, no placeholder."""
-    return ("""<div id="tonights-crews" hidden>
-  <span class="lb-subhead">Tonight's crews</span>
-  <div id="tonights-crews-body"></div>
-</div>""")
+def index_masthead(total):
+    """Title, one short description line, and the site-wide navigate-search --
+    the whole reason to demote everything else off the first screen. Search
+    label is deliberately accurate to what's actually indexed (referees,
+    teams, players) -- games aren't searchable yet, so it doesn't claim they are."""
+    return ("""<section class="index-intro">
+  <h1 class="index-title">The NBA Referee Database</h1>
+  <p class="index-lead">Search {total} on-court officials, every team, or any
+  player they've shared a box score with — career games worked, team records,
+  and whistle tendencies since 1993-94.</p>
+  {search}
+</section>""").format(total=total, search=ref_search(0, "top"))
+
+
+def latest_game_day_body(games):
+    """One .crew-game row per game -- same markup the live Tonight's Officials
+    JS builds, so the fallback and live states are visually identical apart
+    from the crew-tip slot (final score here, tipoff time when live)."""
+    rows = []
+    for g in games:
+        hp, ap = g.get("home_pts"), g.get("away_pts")
+        final = ("Final %s–%s" % (i(ap), i(hp))) if hp is not None and ap is not None else ""
+        crew = " &middot; ".join(ref_link(c["name"], c["slug"], root="") for c in g.get("crew") or []) or "—"
+        rows.append(
+            '<div class="crew-game"><span class="crew-matchup">{away} @ {home}</span>'
+            '<span class="crew-tip">{final}</span>'
+            '<span class="crew-names">{crew}</span></div>'.format(
+                away=esc(g["away_team_abbr"]), home=esc(g["home_team_abbr"]),
+                final=esc(final), crew=crew))
+    return "".join(rows)
+
+
+def tonight_officials_section(dashboard):
+    """The page's promoted anchor module. Server-renders the most recent real
+    game day on record (data/dashboard.json's latest_game_day, computed in
+    build.py) as a non-empty fallback so the module is never a hole -- the
+    live "tonight's assignments" pipeline doesn't exist yet, and even once it
+    does, it will only ever cover in-season days. app.js swaps the heading and
+    body to live content automatically when data/tonights-crews.json is
+    present and fresh; otherwise this fallback is what ships, no JS required."""
+    ld = dashboard.get("latest_game_day")
+    if not ld or not ld.get("games"):
+        return ""
+    body = latest_game_day_body(ld["games"])
+    return ("""<section class="tonight-anchor" id="tonight">
+  <div class="tonight-head">
+    <h2 id="tonight-heading">Most recent officiating crews</h2>
+    <span class="tonight-sub" id="tonight-sub">{date} &middot; the most recent game day on record &mdash; not tonight's assignments</span>
+  </div>
+  <div id="tonight-officials-body">{body}</div>
+</section>""").format(date=esc(ld["date"]), body=body)
 
 
 def dashboard_recent_form_slot():
@@ -1244,11 +1286,15 @@ def render_index(refs, lb, dashboard):
     span = "%s to %s" % (min(r["first_season"] for r in refs), CURRENT_SEASON)
     active_n = sum(1 for r in refs if r["active"])
 
-    # hero
-    hero = """<section class="index-hero">
-  <div class="hero-rule" aria-hidden="true"></div>
+    # First screen: title, one description line, prominent search, then
+    # Tonight's Officials (or its most-recent-day fallback). Everything that
+    # used to open the page -- the tagline, the 166/81/26 stat row -- moves
+    # below the fold as index-demoted, content and depth unchanged.
+    masthead = index_masthead(total)
+    tonight_section = tonight_officials_section(dashboard)
+
+    demoted_intro = """<section class="index-demoted">
   <p class="hero-kicker">Every whistle, on the record</p>
-  <h1 class="hero-title">The NBA Referee Database</h1>
   <p class="hero-lead">Career profiles for {total} on-court officials — games worked,
   team records under each crew, whistle tendencies, and notable playoff games,
   from {span}.</p>
@@ -1270,8 +1316,14 @@ def render_index(refs, lb, dashboard):
 </nav>"""
 
     # ---- tier 1: fresh -- today's rotation + the database's oddities ------
-    today_inner = (dashboard_rotation_slots(dashboard) + dashboard_tonights_crews_slot()
-                  + dashboard_recent_form_slot())
+    # Tonight's Officials itself is promoted above the fold (see
+    # tonight_officials_section); this tier keeps the rest of the same
+    # "fresh" material -- spotlight, on-this-date, recent-form outliers,
+    # records -- just lower on the page. tier-surface gives the whole tier
+    # ONE shared white canvas (not a card per module) so dividers between
+    # submod-anchors carry the internal structure, matching the reference's
+    # big-table-not-many-boxes read.
+    today_inner = dashboard_rotation_slots(dashboard) + dashboard_recent_form_slot()
     records_inner = ('<span class="lb-subhead">Records &amp; oddities</span>'
                      '<div class="record-strip">%s</div>'
                      % dashboard_records_strip(dashboard["records"])
@@ -1280,8 +1332,10 @@ def render_index(refs, lb, dashboard):
   <div class="tier-head"><span class="tier-eyebrow">Fresh</span>
   <h2>Today, records &amp; history</h2>
   <p class="tier-desc">What's new and what's unusual — refreshed daily where the data allows.</p></div>
-  <div class="submod-anchor" id="today">{today}</div>
-  <div class="submod-anchor" id="records">{records}</div>
+  <div class="tier-surface">
+    <div class="submod-anchor" id="today">{today}</div>
+    <div class="submod-anchor" id="records">{records}</div>
+  </div>
 </section>""".format(today=today_inner, records=records_inner)
 
     # ---- tier 2: statistics -- the deep leaderboards + cross-official cuts
@@ -1373,8 +1427,10 @@ def render_index(refs, lb, dashboard):
   <h2>Leaders, crews &amp; teams</h2>
   <p class="tier-desc">Career leaderboards and cross-official patterns across the full
   1993-94–2025-26 dataset.</p></div>
-  <div class="submod-anchor" id="leaders">{leaders}</div>
-  <div class="submod-anchor" id="crews-teams">{crews_teams}</div>
+  <div class="tier-surface">
+    <div class="submod-anchor" id="leaders">{leaders}</div>
+    <div class="submod-anchor" id="crews-teams">{crews_teams}</div>
+  </div>
 </section>""".format(leaders=leaders_inner, crews_teams=crews_teams_inner)
 
     # ---- tier 3: reference -- deep-dive links + the full directory --------
@@ -1432,7 +1488,8 @@ def render_index(refs, lb, dashboard):
   </div>
 </section>""".format(total=total, more_data="".join(more_data_links), rows="".join(rows))
 
-    body = hero + subnav + tier_fresh + tier_stats + tier_reference + ref_search(0, "bottom")
+    body = (masthead + tonight_section + demoted_intro + subnav + tier_fresh + tier_stats
+           + tier_reference + ref_search(0, "bottom"))
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
@@ -1826,11 +1883,36 @@ h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .masthead-nav a:hover{color:var(--accent)}
 main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 
-/* ---- index hero ---- */
-.index-hero{padding:1.6rem 0 1.4rem;border-bottom:1px solid var(--border)}
+/* ---- index page: title/search, promoted Tonight's Officials, demoted intro ----
+   First screen at 1280px is deliberately minimal: title, one description
+   line, search, then Tonight's Officials. Everything that used to open the
+   page -- tagline, the 166/81/26 stat row -- moves to .index-demoted, right
+   above the sticky subnav; same content, same depth, just lower emphasis. */
+.index-intro{padding:1.6rem 0 .6rem}
+.index-title{font-size:1.9rem;letter-spacing:-.03em}
+.index-lead{max-width:60rem;color:var(--text-secondary);font-size:.92rem;margin:.5rem 0 0}
+.index-intro .refsearch-wrap{max-width:100%}
+.index-intro .refsearch{padding:.8rem 1.1rem;font-size:1rem}
+
+.tonight-anchor{padding-bottom:1.8rem;margin-bottom:1.6rem;border-bottom:1px solid var(--border)}
+.tonight-head{display:flex;align-items:baseline;justify-content:space-between;
+  gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tonight-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.tonight-sub{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
+#tonight-officials-body{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.2rem 1.1rem}
+
+/* Large cohesive white canvas per tier (not a card per module -- dividers
+   between .submod-anchors still carry the internal structure) so the main
+   data canvas reads white like the table-heavy reference, gray reserved for
+   headers/chrome/dividers. */
+.tier-surface{background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1.6rem 1.8rem}
+
+/* ---- index demoted intro (tagline + stat row, moved below the fold) ---- */
+.index-demoted{padding:1.6rem 0 1.4rem;border-bottom:1px solid var(--border)}
 .hero-kicker,.ref-kicker{font-family:var(--mono);text-transform:uppercase;
   letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--accent);margin:0 0 .6rem}
-.hero-title{font-size:1.9rem;letter-spacing:-.03em}
 .hero-lead{max-width:60rem;color:var(--text-secondary);font-size:.95rem;margin:.6rem 0 0}
 .hero-stats{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:1.3rem}
 .hstat{display:flex;flex-direction:column}
@@ -1854,7 +1936,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
    One .tier-head per tier carries the section-level framing; individual
    modules inside a tier are separated by dividers/typography (.submod-anchor,
    .lb-subhead), not by another bordered/rounded card each -- that repetition
-   ("DASHBOARD" stamped on eight boxes) was the thing this round removes. */
+   ("DASHBOARD" stamped on eight boxes) was the thing an earlier round
+   removed. .tier-surface (below) now gives the whole tier ONE shared white
+   canvas so the page reads white where it carries data, gray where it's
+   chrome -- not a step back toward per-module cards. */
 .index-subnav{position:sticky;top:0;z-index:6;background:var(--bg);
   border-bottom:1px solid var(--border);display:flex;gap:1.3rem;
   padding:.65rem 0;margin-top:.4rem;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
@@ -1873,7 +1958,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
-#tonights-crews{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight-body{display:flex}
 #recent-form-spotlight-body .record-strip{width:100%}
@@ -2103,9 +2187,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
 .curiosity-list li{margin-bottom:.5rem}
 
-#tonights-crews-body{display:flex;flex-direction:column;margin-top:.5rem}
+#tonight-officials-body{display:flex;flex-direction:column}
 .crew-game{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;
-  padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+  padding:.55rem .2rem;border-bottom:1px solid var(--border);font-size:.84rem}
 .crew-game:last-child{border-bottom:0}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
@@ -2166,7 +2250,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .masthead{padding:1rem 1rem .8rem}
   .brand-sub{width:100%;margin-left:0;margin-top:.2rem}
   main{padding:0 1rem}
-  .hero-title{font-size:1.5rem}
+  .index-title{font-size:1.5rem}
+  .tier-surface{padding:1.2rem 1.2rem}
   .whistle-cols{grid-template-columns:1fr}
   .lb-paired.is-active,.lb-triple.is-active{grid-template-columns:1fr}
   .lb-list-wide{columns:1}
@@ -2382,15 +2467,20 @@ JS = r"""(function(){
       }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
-  // --- Tonight's Crews (September pipeline; absent all season until then) ---
+  // --- Tonight's Officials -- the page's promoted anchor module. The server
+  // already rendered a non-empty fallback (the most recent real game day on
+  // record, from data/dashboard.json's latest_game_day). This only OVERWRITES
+  // that fallback when a live data/tonights-crews.json (September pipeline;
+  // doesn't exist yet, and only ever covers in-season days once it does) is
+  // present AND dated today/yesterday (US Eastern, the NBA's scheduling
+  // clock) -- so the module switches to live assignments automatically
+  // whenever they show up, with no further work, and otherwise the fallback
+  // just stands as rendered.
   // Expected data/tonights-crews.json schema once the pipeline ships:
   //   {date, games:[{away, home, tipoff_et, crew:[{name, slug}], crew_note}]}
-  // Absent, unparseable, or dated anything other than today/yesterday (US
-  // Eastern time, since that's the NBA's scheduling clock) -- render NOTHING,
-  // not even a placeholder.
   (function(){
-    var slot=document.getElementById("tonights-crews");
-    if(!slot)return;
+    var body=document.getElementById("tonight-officials-body");
+    if(!body)return;
     function usEasternISO(offsetDays){
       var d=new Date(Date.now()+offsetDays*86400000);
       var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
@@ -2403,8 +2493,11 @@ JS = r"""(function(){
       return r.json();
     }).then(function(data){
       var valid=data&&data.date&&(data.date===usEasternISO(0)||data.date===usEasternISO(-1));
-      if(!valid||!Array.isArray(data.games)||!data.games.length)return;
-      var body=slot.querySelector("#tonights-crews-body");
+      if(!valid||!Array.isArray(data.games)||!data.games.length)return;  // keep the fallback
+      var heading=document.getElementById("tonight-heading");
+      var sub=document.getElementById("tonight-sub");
+      if(heading)heading.textContent="Tonight's officials";
+      if(sub)sub.textContent=data.date;
       body.innerHTML=data.games.map(function(g){
         var crew=(g.crew||[]).map(function(c){
           return '<a href="referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
@@ -2414,8 +2507,7 @@ JS = r"""(function(){
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
           '<span class="crew-names">'+crew+'</span>'+note+'</div>';
       }).join("");
-      slot.hidden=false;
-    }).catch(function(){/* absent or unparseable -- render nothing, by design */});
+    }).catch(function(){/* absent, unparseable, or stale -- keep the fallback */});
   })();
   // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
   // same way Tonight's Crews is: absent, empty, off-season (in_season:false),

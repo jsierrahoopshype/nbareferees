@@ -193,15 +193,20 @@
       }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
-  // --- Tonight's Crews (September pipeline; absent all season until then) ---
+  // --- Tonight's Officials -- the page's promoted anchor module. The server
+  // already rendered a non-empty fallback (the most recent real game day on
+  // record, from data/dashboard.json's latest_game_day). This only OVERWRITES
+  // that fallback when a live data/tonights-crews.json (September pipeline;
+  // doesn't exist yet, and only ever covers in-season days once it does) is
+  // present AND dated today/yesterday (US Eastern, the NBA's scheduling
+  // clock) -- so the module switches to live assignments automatically
+  // whenever they show up, with no further work, and otherwise the fallback
+  // just stands as rendered.
   // Expected data/tonights-crews.json schema once the pipeline ships:
   //   {date, games:[{away, home, tipoff_et, crew:[{name, slug}], crew_note}]}
-  // Absent, unparseable, or dated anything other than today/yesterday (US
-  // Eastern time, since that's the NBA's scheduling clock) -- render NOTHING,
-  // not even a placeholder.
   (function(){
-    var slot=document.getElementById("tonights-crews");
-    if(!slot)return;
+    var body=document.getElementById("tonight-officials-body");
+    if(!body)return;
     function usEasternISO(offsetDays){
       var d=new Date(Date.now()+offsetDays*86400000);
       var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
@@ -214,8 +219,11 @@
       return r.json();
     }).then(function(data){
       var valid=data&&data.date&&(data.date===usEasternISO(0)||data.date===usEasternISO(-1));
-      if(!valid||!Array.isArray(data.games)||!data.games.length)return;
-      var body=slot.querySelector("#tonights-crews-body");
+      if(!valid||!Array.isArray(data.games)||!data.games.length)return;  // keep the fallback
+      var heading=document.getElementById("tonight-heading");
+      var sub=document.getElementById("tonight-sub");
+      if(heading)heading.textContent="Tonight's officials";
+      if(sub)sub.textContent=data.date;
       body.innerHTML=data.games.map(function(g){
         var crew=(g.crew||[]).map(function(c){
           return '<a href="referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
@@ -225,8 +233,7 @@
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
           '<span class="crew-names">'+crew+'</span>'+note+'</div>';
       }).join("");
-      slot.hidden=false;
-    }).catch(function(){/* absent or unparseable -- render nothing, by design */});
+    }).catch(function(){/* absent, unparseable, or stale -- keep the fallback */});
   })();
   // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
   // same way Tonight's Crews is: absent, empty, off-season (in_season:false),
