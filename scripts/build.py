@@ -2847,6 +2847,28 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
         "curiosities": DASHBOARD_CURIOSITIES,
     }
 
+    # ---- latest_game_day --------------------------------------------------
+    # The most recent calendar date in the WHOLE dataset with any game on it
+    # (RS, PO, or PI -- this is a "who actually worked most recently" snapshot,
+    # not a stat, so no season-type filtering) plus every game that date and
+    # its officiating crew. Used by the index page's Tonight's Officials
+    # module as a non-empty fallback when no live "tonight" assignments exist
+    # yet (the pipeline that would produce those doesn't exist yet, and only
+    # ever covers in-season days once it does) -- keeps that module, the
+    # page's promoted anchor, from ever being a hole.
+    gm_dated = gm.dropna(subset=["game_date"])
+    latest_date = gm_dated["game_date"].max()
+    latest_rows = gm_dated[gm_dated["game_date"] == latest_date].sort_values("game_id")
+    latest_game_day = {
+        "date": latest_date,
+        "games": [{
+            "game_id": row["game_id"],
+            "home_team_abbr": row["home_team_abbr"], "away_team_abbr": row["away_team_abbr"],
+            "home_pts": clean_num(row["home_pts"]), "away_pts": clean_num(row["away_pts"]),
+            "crew": game_crew.get(row["game_id"], []),
+        } for _, row in latest_rows.iterrows()],
+    }
+
     # ---- date_index -----------------------------------------------------
     # Highest-scoring individual performance on each calendar date (MM-DD)
     # across all seasons. Every one of the 366 possible calendar dates gets an
@@ -2884,6 +2906,7 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
         "records": records,
         "history": history,
         "date_index": date_index,
+        "latest_game_day": latest_game_day,
         # Tier C (docs/TIER_C_SPEC.md)
         "crews": crews,
         "team_officials": team_officials,
@@ -2895,10 +2918,11 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
         json.dump(dashboard, fh, ensure_ascii=False, indent=2)
     print("wrote data/dashboard.json (%d spotlight, %d records, %d top-scoring, "
           "trio=%s, %d curiosities, %d crews, %d team_officials, %d debuts_farewells "
-          "seasons, %d era_leaders decades)"
+          "seasons, %d era_leaders decades, latest_game_day=%s with %d games)"
           % (len(spotlight), len(records), len(top_scoring_games),
              "yes" if top_trio else "no", len(DASHBOARD_CURIOSITIES),
-             len(crews), len(team_officials), len(debuts_farewells), len(era_leaders)))
+             len(crews), len(team_officials), len(debuts_farewells), len(era_leaders),
+             latest_game_day["date"], len(latest_game_day["games"])))
     return dashboard
 
 
@@ -2944,6 +2968,16 @@ def qa_dashboard(dashboard, referees_index, team_index):
     print("[hard] top_scoring_games: %d, top_crew_trio present: %s"
           % (len(dashboard["history"]["top_scoring_games"]), bool(trio)))
     print("[hard] date_index: %d calendar-date entries" % len(dashboard["date_index"]))
+
+    ld = dashboard["latest_game_day"]
+    bad_ld_crew = [c["slug"] for g in ld["games"] for c in g.get("crew") or []
+                   if c["slug"] not in known_slugs]
+    if not ld.get("date") or not ld.get("games"):
+        failures.append("latest_game_day missing a date or has zero games")
+    if bad_ld_crew:
+        failures.append("latest_game_day crew slugs not in referees_index: %s" % bad_ld_crew[:5])
+    print("[hard] latest_game_day: %s, %d games, all crew slugs resolve: %s"
+          % (ld.get("date"), len(ld.get("games") or []), not bad_ld_crew))
 
     # ---- Tier C ------------------------------------------------------------
     bad_crew = []

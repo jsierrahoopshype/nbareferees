@@ -54,11 +54,36 @@ h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .masthead-nav a:hover{color:var(--accent)}
 main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 
-/* ---- index hero ---- */
-.index-hero{padding:1.6rem 0 1.4rem;border-bottom:1px solid var(--border)}
+/* ---- index page: title/search, promoted Tonight's Officials, demoted intro ----
+   First screen at 1280px is deliberately minimal: title, one description
+   line, search, then Tonight's Officials. Everything that used to open the
+   page -- tagline, the 166/81/26 stat row -- moves to .index-demoted, right
+   above the sticky subnav; same content, same depth, just lower emphasis. */
+.index-intro{padding:1.6rem 0 .6rem}
+.index-title{font-size:1.9rem;letter-spacing:-.03em}
+.index-lead{max-width:60rem;color:var(--text-secondary);font-size:.92rem;margin:.5rem 0 0}
+.index-intro .refsearch-wrap{max-width:100%}
+.index-intro .refsearch{padding:.8rem 1.1rem;font-size:1rem}
+
+.tonight-anchor{padding-bottom:1.8rem;margin-bottom:1.6rem;border-bottom:1px solid var(--border)}
+.tonight-head{display:flex;align-items:baseline;justify-content:space-between;
+  gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tonight-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.tonight-sub{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
+#tonight-officials-body{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.2rem 1.1rem}
+
+/* Large cohesive white canvas per tier (not a card per module -- dividers
+   between .submod-anchors still carry the internal structure) so the main
+   data canvas reads white like the table-heavy reference, gray reserved for
+   headers/chrome/dividers. */
+.tier-surface{background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:1.6rem 1.8rem}
+
+/* ---- index demoted intro (tagline + stat row, moved below the fold) ---- */
+.index-demoted{padding:1.6rem 0 1.4rem;border-bottom:1px solid var(--border)}
 .hero-kicker,.ref-kicker{font-family:var(--mono);text-transform:uppercase;
   letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--accent);margin:0 0 .6rem}
-.hero-title{font-size:1.9rem;letter-spacing:-.03em}
 .hero-lead{max-width:60rem;color:var(--text-secondary);font-size:.95rem;margin:.6rem 0 0}
 .hero-stats{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:1.3rem}
 .hstat{display:flex;flex-direction:column}
@@ -82,7 +107,10 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
    One .tier-head per tier carries the section-level framing; individual
    modules inside a tier are separated by dividers/typography (.submod-anchor,
    .lb-subhead), not by another bordered/rounded card each -- that repetition
-   ("DASHBOARD" stamped on eight boxes) was the thing this round removes. */
+   ("DASHBOARD" stamped on eight boxes) was the thing an earlier round
+   removed. .tier-surface (below) now gives the whole tier ONE shared white
+   canvas so the page reads white where it carries data, gray where it's
+   chrome -- not a step back toward per-module cards. */
 .index-subnav{position:sticky;top:0;z-index:6;background:var(--bg);
   border-bottom:1px solid var(--border);display:flex;gap:1.3rem;
   padding:.65rem 0;margin-top:.4rem;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
@@ -101,7 +129,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
-#tonights-crews{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight-body{display:flex}
 #recent-form-spotlight-body .record-strip{width:100%}
@@ -331,9 +358,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
 .curiosity-list li{margin-bottom:.5rem}
 
-#tonights-crews-body{display:flex;flex-direction:column;margin-top:.5rem}
+#tonight-officials-body{display:flex;flex-direction:column}
 .crew-game{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;
-  padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+  padding:.55rem .2rem;border-bottom:1px solid var(--border);font-size:.84rem}
 .crew-game:last-child{border-bottom:0}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
@@ -394,7 +421,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .masthead{padding:1rem 1rem .8rem}
   .brand-sub{width:100%;margin-left:0;margin-top:.2rem}
   main{padding:0 1rem}
-  .hero-title{font-size:1.5rem}
+  .index-title{font-size:1.5rem}
+  .tier-surface{padding:1.2rem 1.2rem}
   .whistle-cols{grid-template-columns:1fr}
   .lb-paired.is-active,.lb-triple.is-active{grid-template-columns:1fr}
   .lb-list-wide{columns:1}
