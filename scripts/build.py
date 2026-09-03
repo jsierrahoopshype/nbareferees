@@ -1683,6 +1683,27 @@ def _recent_form_calendar_window(d, days):
     return out, games
 
 
+def _recent_form_calendar_window_asof(d, days, asof):
+    """The referee's CURRENT calendar window, computed exactly once, anchored
+    to `asof` (the actual build date) rather than to that referee's own last
+    game. This is what makes the window go genuinely empty off-season:
+    _recent_form_calendar_window's rolling("Nd") series is anchored to each
+    ROW's own date, so its last element answers "how many games fell in the
+    30 days before this referee's own most recent game" -- a number that
+    stays whatever it was even if that most recent game was months ago. Only
+    this as-of-today slice answers the question the feature actually needs to
+    ask: how many games has this referee worked in the last 30 real days."""
+    cutoff = pd.Timestamp(asof) - pd.Timedelta(days=days)
+    sub = d[(d["game_date_dt"] > cutoff) & (d["game_date_dt"] <= pd.Timestamp(asof))]
+    stats = {}
+    for key, col, needs_box in RECENT_FORM_STATS:
+        s = sub[col].dropna()
+        n = len(s)
+        min_n = RECENT_FORM_MIN_BOX if needs_box else 1
+        stats[key] = {"value": float(s.mean()) if n >= min_n else None, "n": n}
+    return stats, len(sub)
+
+
 RECENT_FORM_WINDOW_DEFS = [
     ("n5", 5, "count", "Last 5 games"),
     ("n10", 10, "count", "Last 10 games"),
@@ -1807,12 +1828,20 @@ def build_recent_form(referees_index, off_ref, gm, tg, game_tot):
         days_since_last = (pd.Timestamp(today) - last_game_date).days
         windows_out = {}
         for wkey, size_or_days, kind, label in RECENT_FORM_WINDOW_DEFS:
-            info = raw[off_id][wkey]
-            games_now = int(info["games"][-1]) if not np.isnan(info["games"][-1]) else 0
+            if kind == "calendar":
+                # Anchored to `today`, not to this referee's own last game --
+                # see _recent_form_calendar_window_asof's docstring.
+                cur_stats, games_now = _recent_form_calendar_window_asof(d, size_or_days, today)
+            else:
+                info = raw[off_id][wkey]
+                games_now = int(info["games"][-1]) if not np.isnan(info["games"][-1]) else 0
+                cur_stats = {key: {"value": info["stats"][key]["value"][-1],
+                                   "n": info["stats"][key]["n"][-1]}
+                            for key, col, needs_box in RECENT_FORM_STATS}
             stat_out = {}
             for key, col, needs_box in RECENT_FORM_STATS:
-                v = info["stats"][key]["value"][-1]
-                n = info["stats"][key]["n"][-1]
+                v = cur_stats[key]["value"]
+                n = cur_stats[key]["n"]
                 v = None if (v is None or (isinstance(v, float) and np.isnan(v))) else clean_num(v)
                 n = 0 if (n is None or (isinstance(n, float) and np.isnan(n))) else int(n)
                 b = base.get(key)

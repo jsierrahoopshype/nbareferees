@@ -228,6 +228,45 @@
       slot.hidden=false;
     }).catch(function(){/* absent or unparseable -- render nothing, by design */});
   })();
+  // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
+  // same way Tonight's Crews is: absent, empty, off-season (in_season:false),
+  // or a build whose as_of has gone stale against the viewer's own clock all
+  // render nothing at all, not a placeholder. The as_of freshness check is
+  // belt-and-suspenders on top of build.py's own in_season flag -- it stops a
+  // build made during the season from still showing that season's spotlight
+  // to someone browsing months later, off-season, before the site is rebuilt.
+  (function(){
+    var slot=document.getElementById("recent-form-spotlight");
+    if(!slot)return;
+    var RF_STAT_LABELS={avg_total_points:"combined points",avg_total_fta:"combined FTAs",
+      avg_total_pf:"combined fouls",avg_abs_margin:"avg. margin",home_win_pct:"home win rate",
+      ot_rate:"OT rate"};
+    var RF_ISPCT={home_win_pct:1,ot_rate:1};
+    function fmtRf(key,v){return RF_ISPCT[key]?(v*100).toFixed(1)+"%":v.toFixed(1);}
+    function fmtRfDiff(key,v){
+      var sign=v>=0?"+":"";
+      return RF_ISPCT[key]?sign+(v*100).toFixed(1)+"%":sign+v.toFixed(1);
+    }
+    fetch("data/recent_form_dashboard.json").then(function(r){
+      if(!r.ok)throw new Error("absent");
+      return r.json();
+    }).then(function(data){
+      if(!data||!data.in_season||!Array.isArray(data.spotlight)||!data.spotlight.length)return;
+      var asOf=new Date(data.as_of+"T00:00:00Z");
+      var ageDays=(Date.now()-asOf.getTime())/86400000;
+      if(!(ageDays>=-1&&ageDays<=5))return;   // stale build -- render nothing
+      var body=slot.querySelector("#recent-form-spotlight-body");
+      body.innerHTML='<div class="record-strip">'+data.spotlight.map(function(s){
+        return '<a class="record-item" href="referee/'+s.slug+'/index.html">'+
+          '<span class="record-label">'+escHtml(s.name)+'</span>'+
+          '<span class="record-val">'+fmtRf(s.stat,s.value)+
+          ' <span class="wm-diff">'+fmtRfDiff(s.stat,s.diff)+'</span></span>'+
+          '<span class="record-ref">'+escHtml(s.window_label)+' &middot; '+
+          escHtml(RF_STAT_LABELS[s.stat]||s.stat)+'</span></a>';
+      }).join("")+'</div>';
+      slot.hidden=false;
+    }).catch(function(){/* absent, unparseable, or stale -- render nothing, by design */});
+  })();
   // --- comparator (/compare/) -- reads existing data/referees/{slug}.json
   // client-side, keyed off the ?a=/?b= query string so any pair is shareable
   // without pre-rendering the ~159*158/2 possible combinations. ---
