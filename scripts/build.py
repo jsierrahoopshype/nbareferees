@@ -47,6 +47,7 @@ import unicodedata
 from collections import defaultdict
 
 import pandas as pd
+import numpy as np
 
 # Shared tricode normalization lives with the local scripts.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "local"))
@@ -86,6 +87,19 @@ WHISTLE_STATS = [
     ("home_win_pct", "n", "Home team win rate", "home-win-rate"),
     ("ot_rate", "n_boxscore", "Games to overtime", "ot-rate"),
 ]
+# Recent form (docs/RECENT_FORM_SPEC.md): the same six WHISTLE_STATS keys,
+# mapped to the raw per-game column each is rolled up from (needs_box marks
+# the three that require box-score data and so can have fewer usable games
+# than the window itself).
+RECENT_FORM_STATS = [
+    # (key, raw_col, needs_box)
+    ("avg_total_points", "total_pts", False),
+    ("avg_total_fta", "box_fta", True),
+    ("avg_total_pf", "box_pf", True),
+    ("avg_abs_margin", "abs_margin", False),
+    ("home_win_pct", "home_win_f", False),
+    ("ot_rate", "is_ot_f", True),
+]
 # Officiating "quality score" (DASHBOARD_SPEC §2): weight each game a ref
 # worked with known round by how deep into the playoffs it was, per BUILD_SPEC
 # round labels (label_rounds) -- this includes every game in
@@ -108,6 +122,48 @@ TEAM_REF_MIN_GAMES = 10           # min games of a team under a ref to list on t
 MATCHUP_FLAG_MIN = TEAM_REF_MIN_GAMES   # reuse the existing team-page listing bar (10)
 MATCHUP_SUPPRESS_MIN = 3
 PLAYER_TOP_GAMES = 10             # best scoring games shown on a player page
+
+# ---- Recent form (docs/RECENT_FORM_SPEC.md) --------------------------------
+# Rolling windows over each referee's own chronological RS+PO game log (Play-In
+# excluded, same as everywhere else a league baseline is involved). Four
+# window types: three fixed game counts, one calendar window that goes empty
+# off-season by construction (it's anchored to the actual build date, not to
+# the referee's own last game -- a retired official's "last 5 games" would
+# otherwise never look empty).
+RECENT_FORM_WINDOWS = [5, 10, 25]
+RECENT_FORM_CAL_DAYS = 30
+# Box-score-dependent stats (FTA/PF/OT) can have fewer usable games than the
+# window itself (box data isn't universal, especially older ESPN-era games) --
+# below this many box-available games in a window, that stat is suppressed
+# (explicit reason shown, not a blank cell), matching /matchup/'s policy.
+RECENT_FORM_MIN_BOX = MATCHUP_SUPPRESS_MIN
+# A referee only CONTRIBUTES samples to the league-wide pooled distribution
+# (what "normal variance" means for a window of this size) once their own
+# career is comfortably larger than the window -- otherwise the window and
+# its own baseline overlap too much and the "deviation" is artificially
+# small, which would narrow the normal-range band and make everyone ELSE's
+# genuine deviations look more unusual than they are. This only gates who
+# helps DEFINE normal; every referee's own current window is still compared
+# against the resulting distribution regardless of their career length.
+RECENT_FORM_POOL_MULT = 2         # count windows: need career >= MULT * window size
+RECENT_FORM_POOL_MIN_CAL_CAREER = 20   # calendar window: flat career-game floor
+# "Normal variance" = the middle 90% of the pooled deviation distribution for
+# a window of that size and stat; outside the 5th-95th percentile band is
+# flagged as outside typical range. An 80% band (10/90) was tried first and
+# rejected: with 4 window types x 6 stats shown per referee, an 80% band
+# flagged >=1 combination for 143 of 166 referees (86%) on the actual data --
+# technically correct (percentiles guarantee ~20% of individual samples fall
+# outside a p10-p90 band) but it makes "outside" look like the common case on
+# any one referee's page, undermining the whole point of the flag. Tightening
+# to a 90% band is a real fix to that, not just cosmetic -- it's still purely
+# a threshold choice, not a change to what's being measured.
+# Also NOT "any window outside the band" for the dashboard widget -- with 24
+# combinations per referee, nearly everyone clears even a tight bar on SOME
+# combination by chance alone. The widget instead ranks by how far outside
+# (percentile distance from the median), across the whole pool of (ref,
+# window, stat) triples, and only surfaces genuine tail cases.
+RECENT_FORM_NORMAL_LO, RECENT_FORM_NORMAL_HI = 5, 95
+RECENT_FORM_DASHBOARD_TOP_N = 6
 
 # ---- Tier C (docs/TIER_C_SPEC.md) ------------------------------------------
 CREW_TOP_N = 40                   # full /crews/ page length; index widget shows CREW_TOP_N[:5]
@@ -1577,6 +1633,291 @@ def _clean_dir(path):
         os.remove(old)
 
 
+def _recent_form_count_window(d, size):
+    """Rolling game-count window over one referee's ordered game series `d`.
+    Returns (per-stat dict of {value, n} arrays aligned to d's rows using
+    min_periods=1 -- so a short career still yields a "however many games
+    are available" figure -- plus a parallel "exact" array using
+    min_periods=size, NaN until a genuine size-game window exists, which is
+    what feeds the league-wide pool), and the games-in-window array."""
+    games = np.minimum(np.arange(1, len(d) + 1), size)
+    out = {}
+    for key, col, needs_box in RECENT_FORM_STATS:
+        s = d[col]
+        if needs_box:
+            cnt = s.notna().rolling(size, min_periods=1).sum()
+            summ = s.fillna(0.0).rolling(size, min_periods=1).sum()
+            value = (summ / cnt).where(cnt >= RECENT_FORM_MIN_BOX)
+            cnt_exact = s.notna().rolling(size, min_periods=size).sum()
+            summ_exact = s.fillna(0.0).rolling(size, min_periods=size).sum()
+            exact = (summ_exact / cnt_exact).where(cnt_exact >= RECENT_FORM_MIN_BOX)
+            n = cnt
+        else:
+            value = s.rolling(size, min_periods=1).mean()
+            exact = s.rolling(size, min_periods=size).mean()
+            n = s.rolling(size, min_periods=1).count()
+        out[key] = {"value": value.to_numpy(), "n": n.to_numpy(), "exact": exact.to_numpy()}
+    return out, games
+
+
+def _recent_form_calendar_window(d, days):
+    """Trailing calendar-day window (pandas time-based rolling, so irregular
+    game spacing is handled natively). No separate "exact" array -- pooling
+    eligibility for this window type is decided per-position by how many
+    games actually fell in that slice (see RECENT_FORM_MIN_BOX below)."""
+    idxd = d.set_index("game_date_dt")
+    win = "%dD" % days
+    games = idxd["total_pts"].rolling(win).count().to_numpy()
+    out = {}
+    for key, col, needs_box in RECENT_FORM_STATS:
+        s = idxd[col]
+        if needs_box:
+            cnt = s.notna().rolling(win).sum()
+            summ = s.fillna(0.0).rolling(win).sum()
+            value = (summ / cnt).where(cnt >= RECENT_FORM_MIN_BOX)
+            n = cnt
+        else:
+            value = s.rolling(win).mean()
+            n = s.rolling(win).count()
+        out[key] = {"value": value.to_numpy(), "n": n.to_numpy()}
+    return out, games
+
+
+def _recent_form_calendar_window_asof(d, days, asof):
+    """The referee's CURRENT calendar window, computed exactly once, anchored
+    to `asof` (the actual build date) rather than to that referee's own last
+    game. This is what makes the window go genuinely empty off-season:
+    _recent_form_calendar_window's rolling("Nd") series is anchored to each
+    ROW's own date, so its last element answers "how many games fell in the
+    30 days before this referee's own most recent game" -- a number that
+    stays whatever it was even if that most recent game was months ago. Only
+    this as-of-today slice answers the question the feature actually needs to
+    ask: how many games has this referee worked in the last 30 real days."""
+    cutoff = pd.Timestamp(asof) - pd.Timedelta(days=days)
+    sub = d[(d["game_date_dt"] > cutoff) & (d["game_date_dt"] <= pd.Timestamp(asof))]
+    stats = {}
+    for key, col, needs_box in RECENT_FORM_STATS:
+        s = sub[col].dropna()
+        n = len(s)
+        min_n = RECENT_FORM_MIN_BOX if needs_box else 1
+        stats[key] = {"value": float(s.mean()) if n >= min_n else None, "n": n}
+    return stats, len(sub)
+
+
+RECENT_FORM_WINDOW_DEFS = [
+    ("n5", 5, "count", "Last 5 games"),
+    ("n10", 10, "count", "Last 10 games"),
+    ("n25", 25, "count", "Last 25 games"),
+    ("cal30", RECENT_FORM_CAL_DAYS, "calendar", "Last 30 days"),
+]
+
+
+def build_recent_form(referees_index, off_ref, gm, tg, game_tot):
+    """Recent form: rolling windows over each referee's own chronological
+    RS+PO game log (docs/RECENT_FORM_SPEC.md), shown against the league-wide
+    distribution of same-size windows so a reader can tell whether a recent
+    deviation is notable or routine -- see the RECENT_FORM_* constants above
+    for the sample-size and pooling policy this implements.
+
+    Two passes, same shape as build_whistle_leaderboards: pass 1 computes
+    every referee's rolling series and feeds the league-wide pool; pass 2
+    (after every referee's pooled contribution is in) classifies each
+    referee's CURRENT window against that pool and writes the final files.
+    """
+    hr("SECTION 9  Recent form (rolling windows + league variance)")
+    games_meta = gm.copy()
+    games_meta["kind"] = games_meta.apply(season_type_label, axis=1)
+    games_meta["abs_margin"] = (games_meta["home_pts"] - games_meta["away_pts"]).abs()
+    games_meta["total_pts"] = games_meta["home_pts"] + games_meta["away_pts"]
+    games_meta["home_win_f"] = (games_meta["home_win"] == 1).astype(float)
+    gmeta = games_meta.set_index("game_id")
+    got = game_tot.set_index("game_id")
+
+    ref_games = off_ref.groupby("ref_key")["game_id"].apply(list).to_dict()
+    today = datetime.date.today()
+
+    # ---- build each referee's ordered per-game series ----------------------
+    series = {}
+    for r in referees_index:
+        off_id = r["official_id"]
+        gids = ref_games.get(off_id, [])
+        gsub = gmeta.reindex(gids)
+        gsub = gsub[gsub["kind"].isin(["RS", "PO"])]
+        if gsub.empty:
+            continue
+        box = got.reindex(gsub.index)
+        has_box = box["n_teams"] == 2
+        d = pd.DataFrame({
+            "game_date_dt": pd.to_datetime(gsub["game_date"]),
+            "total_pts": gsub["total_pts"],
+            "home_win_f": gsub["home_win_f"],
+            "abs_margin": gsub["abs_margin"],
+            "box_fta": box["box_fta"].where(has_box),
+            "box_pf": box["box_pf"].where(has_box),
+            "is_ot_f": box["is_ot"].astype(float).where(has_box),
+        }, index=gsub.index).sort_values("game_date_dt").reset_index(drop=True)
+        series[off_id] = d
+
+    # ---- career baselines (RS+PO combined, chronological -- this feature's
+    # own population, independent of the whistle_profile's RS/PO split) -----
+    baselines = {}
+    for off_id, d in series.items():
+        base = {}
+        for key, col, needs_box in RECENT_FORM_STATS:
+            s = d[col].dropna()
+            min_n = RECENT_FORM_MIN_BOX if needs_box else 1
+            base[key] = clean_num(s.mean()) if len(s) >= min_n else None
+        baselines[off_id] = base
+
+    # ---- pass 1: rolling windows + pooled deviations -----------------------
+    pooled = defaultdict(list)   # (window_key, stat_key) -> [deviation, ...]
+    raw = {}                     # off_id -> {window_key: {"stats":..., "games":..., "kind":...}}
+    for off_id, d in series.items():
+        career_games = len(d)
+        base = baselines[off_id]
+        raw[off_id] = {}
+        for wkey, size_or_days, kind, label in RECENT_FORM_WINDOW_DEFS:
+            if kind == "count":
+                stats, games_arr = _recent_form_count_window(d, size_or_days)
+                pool_eligible = career_games >= RECENT_FORM_POOL_MULT * size_or_days
+            else:
+                stats, games_arr = _recent_form_calendar_window(d, size_or_days)
+                pool_eligible = career_games >= RECENT_FORM_POOL_MIN_CAL_CAREER
+            raw[off_id][wkey] = {"stats": stats, "games": games_arr, "kind": kind,
+                                 "size": size_or_days, "label": label}
+            if not pool_eligible:
+                continue
+            for key, col, needs_box in RECENT_FORM_STATS:
+                b = base.get(key)
+                if b is None:
+                    continue
+                vals = stats[key]["exact"] if kind == "count" else stats[key]["value"]
+                for pos in range(len(vals)):
+                    v = vals[pos]
+                    if v is None or (isinstance(v, float) and np.isnan(v)):
+                        continue
+                    if kind == "calendar" and games_arr[pos] < RECENT_FORM_MIN_BOX:
+                        continue
+                    pooled[(wkey, key)].append(float(v) - b)
+
+    pool_stats = {}
+    for pk, devs in pooled.items():
+        arr = np.array(sorted(devs))
+        pool_stats[pk] = {
+            "n": len(arr),
+            "sorted": arr,
+            "lo": float(np.percentile(arr, RECENT_FORM_NORMAL_LO)),
+            "hi": float(np.percentile(arr, RECENT_FORM_NORMAL_HI)),
+        }
+    print("  pooled window samples per (window, stat) -- e.g. n5/avg_total_points: %d, "
+          "n25/avg_total_points: %d, cal30/avg_total_points: %d"
+          % (pool_stats.get(("n5", "avg_total_points"), {}).get("n", 0),
+             pool_stats.get(("n25", "avg_total_points"), {}).get("n", 0),
+             pool_stats.get(("cal30", "avg_total_points"), {}).get("n", 0)))
+
+    # ---- pass 2: classify each referee's CURRENT window, write files -------
+    recent_form_dir = os.path.join(DATA, "recent_form")
+    _clean_dir(recent_form_dir)
+    dashboard_candidates = []   # every (ref, window, stat) classified "outside", for the widget
+    name_by_id = {r["official_id"]: r["name"] for r in referees_index}
+    slug_by_id = {r["official_id"]: r["slug"] for r in referees_index}
+
+    for off_id, d in series.items():
+        base = baselines[off_id]
+        last_game_date = d["game_date_dt"].iloc[-1]
+        days_since_last = (pd.Timestamp(today) - last_game_date).days
+        windows_out = {}
+        for wkey, size_or_days, kind, label in RECENT_FORM_WINDOW_DEFS:
+            if kind == "calendar":
+                # Anchored to `today`, not to this referee's own last game --
+                # see _recent_form_calendar_window_asof's docstring.
+                cur_stats, games_now = _recent_form_calendar_window_asof(d, size_or_days, today)
+            else:
+                info = raw[off_id][wkey]
+                games_now = int(info["games"][-1]) if not np.isnan(info["games"][-1]) else 0
+                cur_stats = {key: {"value": info["stats"][key]["value"][-1],
+                                   "n": info["stats"][key]["n"][-1]}
+                            for key, col, needs_box in RECENT_FORM_STATS}
+            stat_out = {}
+            for key, col, needs_box in RECENT_FORM_STATS:
+                v = cur_stats[key]["value"]
+                n = cur_stats[key]["n"]
+                v = None if (v is None or (isinstance(v, float) and np.isnan(v))) else clean_num(v)
+                n = 0 if (n is None or (isinstance(n, float) and np.isnan(n))) else int(n)
+                b = base.get(key)
+                diff = clean_num(v - b) if (v is not None and b is not None) else None
+                status, pctile_rank = None, None
+                pk = (wkey, key)
+                # Only classify a genuine full-size window (count: exactly
+                # `size` games; calendar: at least RECENT_FORM_MIN_BOX games
+                # actually in the slice) against a pool with enough samples
+                # to mean anything.
+                full_enough = (games_now >= size_or_days) if kind == "count" else (games_now >= RECENT_FORM_MIN_BOX)
+                if diff is not None and full_enough and pool_stats.get(pk, {}).get("n", 0) >= 50:
+                    ps = pool_stats[pk]
+                    status = "outside" if (diff < ps["lo"] or diff > ps["hi"]) else "within"
+                    pctile_rank = clean_num(
+                        100.0 * np.searchsorted(ps["sorted"], diff, side="right") / ps["n"])
+                stat_out[key] = {"value": v, "baseline": b, "diff": diff, "n": n, "status": status,
+                                 "pctile_rank": pctile_rank}
+                if status == "outside" and pctile_rank is not None:
+                    dashboard_candidates.append({
+                        "official_id": off_id, "window": wkey, "window_label": label,
+                        "stat": key, "extremity": abs(pctile_rank - 50),
+                        "value": v, "baseline": b, "diff": diff, "n": n,
+                        "pctile_rank": pctile_rank,
+                    })
+            windows_out[wkey] = {"label": label, "kind": kind, "size": size_or_days,
+                                 "games": games_now, "stats": stat_out}
+        doc = {
+            "official_id": off_id, "name": name_by_id[off_id], "slug": slug_by_id[off_id],
+            "as_of": today.isoformat(), "days_since_last_game": days_since_last,
+            "baseline": base, "windows": windows_out,
+        }
+        assert_no_nan(doc, "recent_form[%s]" % off_id)
+        with open(os.path.join(recent_form_dir, "%s.json" % off_id), "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=2)
+
+    # ---- dashboard widget: the most extreme (ref, window, stat), one per
+    # active referee, gated to officials who've actually worked recently so
+    # an off-season/retired outlier from years ago can't surface here -------
+    dashboard_candidates.sort(key=lambda c: -c["extremity"])
+    seen_refs = set()
+    spotlight_rows = []
+    active_ids = {off_id for off_id, d in series.items()
+                 if (pd.Timestamp(today) - d["game_date_dt"].iloc[-1]).days <= RECENT_FORM_CAL_DAYS}
+    for c in dashboard_candidates:
+        if c["official_id"] not in active_ids or c["official_id"] in seen_refs:
+            continue
+        seen_refs.add(c["official_id"])
+        spotlight_rows.append({
+            "official_id": c["official_id"], "name": name_by_id[c["official_id"]],
+            "slug": slug_by_id[c["official_id"]], "window": c["window"],
+            "window_label": c["window_label"], "stat": c["stat"], "value": c["value"],
+            "baseline": c["baseline"], "diff": c["diff"], "n": c["n"],
+            "pctile_rank": c["pctile_rank"],
+        })
+        if len(spotlight_rows) >= RECENT_FORM_DASHBOARD_TOP_N:
+            break
+
+    recent_form_dashboard = {
+        "as_of": today.isoformat(),
+        "in_season": bool(active_ids),   # league-wide: has ANYONE worked a game in the last 30 days
+        "spotlight": spotlight_rows,
+    }
+    assert_no_nan(recent_form_dashboard, "recent_form_dashboard")
+    with open(os.path.join(DATA, "recent_form_dashboard.json"), "w", encoding="utf-8") as fh:
+        json.dump(recent_form_dashboard, fh, ensure_ascii=False, indent=2)
+
+    print("wrote %d data/recent_form/*.json files" % len(series))
+    print("  league in-season (>=1 ref worked within %d days): %s (%d active referees)"
+          % (RECENT_FORM_CAL_DAYS, recent_form_dashboard["in_season"], len(active_ids)))
+    print("  dashboard spotlight: %d entries (from %d outside-normal-variance candidates "
+          "among active referees)" % (len(spotlight_rows),
+                                      sum(1 for c in dashboard_candidates if c["official_id"] in active_ids)))
+    return recent_form_dashboard
+
+
 def build_team_pages(all_team_records, gm):
     hr("SECTION 8  Team pages")
     team_dir = os.path.join(DATA, "teams")
@@ -2259,6 +2600,90 @@ def qa_matchups(referees_index, team_index):
     print("\n[matchup QA checks all passed]")
 
 
+def qa_recent_form(referees_index):
+    """Recent form QA (docs/RECENT_FORM_SPEC.md): no NaN (re-verified from
+    disk), every count-window's game total equals min(career RS+PO games,
+    window size) -- catching an off-by-one in the rolling logic would show
+    up here immediately -- and every status is one of the three legal
+    values. Also prints how many referees carry at least one "outside
+    normal variance" flag vs. all-"within", so a build that accidentally
+    flags everyone (or nobody) is visible without opening a single file."""
+    hr("SECTION 9  Recent form QA")
+    by_id = {r["official_id"]: r for r in referees_index}
+    failures = []
+    n_any_outside = n_all_within_or_none = 0
+    for r in referees_index:
+        path = os.path.join(DATA, "recent_form", "%s.json" % r["official_id"])
+        doc = json.load(open(path, encoding="utf-8"))
+        assert_no_nan(doc, "recent_form[%s]" % r["official_id"])
+        career = r["games_rs"] + r["games_po"]
+        any_outside = False
+        for wkey, w in doc["windows"].items():
+            if w["kind"] == "count":
+                expected_games = min(career, w["size"])
+                if w["games"] != expected_games:
+                    failures.append("recent_form games mismatch: %s/%s games=%d expected=%d"
+                                    % (r["official_id"], wkey, w["games"], expected_games))
+            for key, s in w["stats"].items():
+                if s["status"] not in (None, "within", "outside"):
+                    failures.append("recent_form illegal status: %s/%s/%s = %r"
+                                    % (r["official_id"], wkey, key, s["status"]))
+                if s["status"] == "outside":
+                    any_outside = True
+        if any_outside:
+            n_any_outside += 1
+        else:
+            n_all_within_or_none += 1
+    print("[hard] recent_form count-window game totals reconcile with min(career, window size) "
+          "for all %d referees: %s" % (len(referees_index), not any("games mismatch" in f for f in failures)))
+    print("[hard] every recent_form status is a legal value: %s"
+          % (not any("illegal status" in f for f in failures)))
+    print("  referees with >=1 window/stat flagged outside normal variance: %d" % n_any_outside)
+    print("  referees with none flagged (all within, or not enough data to classify): %d"
+          % n_all_within_or_none)
+    if failures:
+        hr("RECENT FORM QA: FAILED")
+        for f in failures[:10]:
+            print("  FAIL: %s" % f)
+        raise SystemExit(1)
+    print("\n[recent form QA checks all passed]")
+
+
+def recent_form_spot_check(referees_index):
+    """Recent form QA: demonstrate the variance framing actually distinguishes
+    routine from notable, the same way league_context_spot_check demonstrates
+    the era-adjustment round -- print one referee whose n10/avg_total_points
+    window is flagged "outside" normal variance and one flagged "within", so
+    the before/after isn't just asserted by the code, it's visible in the
+    build log."""
+    hr("SECTION 9  Recent form spot-check: outside vs. within normal variance")
+    outside_ex, within_ex = None, None
+    for r in referees_index:
+        path = os.path.join(DATA, "recent_form", "%s.json" % r["official_id"])
+        doc = json.load(open(path, encoding="utf-8"))
+        s = doc["windows"].get("n10", {}).get("stats", {}).get("avg_total_points", {})
+        if s.get("status") == "outside" and outside_ex is None:
+            outside_ex = (r["name"], s)
+        elif s.get("status") == "within" and within_ex is None:
+            within_ex = (r["name"], s)
+        if outside_ex and within_ex:
+            break
+    if outside_ex:
+        name, s = outside_ex
+        print("  OUTSIDE normal range -- %-20s last 10 games combined points: %.1f "
+              "vs. career baseline %.1f (%+.1f, pctile %.0f)"
+              % (name, s["value"], s["baseline"], s["diff"], s["pctile_rank"]))
+    else:
+        print("  no referee currently flagged 'outside' on n10/avg_total_points for this spot-check")
+    if within_ex:
+        name, s = within_ex
+        print("  WITHIN  normal range -- %-20s last 10 games combined points: %.1f "
+              "vs. career baseline %.1f (%+.1f, pctile %.0f) -- routine, not a trend"
+              % (name, s["value"], s["baseline"], s["diff"], s["pctile_rank"]))
+    else:
+        print("  no referee currently flagged 'within' on n10/avg_total_points for this spot-check")
+
+
 # ----------------------------------------------------------------------------
 # frontpage dashboard (DASHBOARD_SPEC section 1)
 # ----------------------------------------------------------------------------
@@ -2731,6 +3156,7 @@ def main():
 
     build_crewmates(off_ref, referees_index)
     build_whistle_leaderboards(referees_index)
+    build_recent_form(referees_index, off_ref, gm, tg, game_tot)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
     game_crew = build_game_crew(off_ref, ref_lookup)
     team_index = build_team_pages(all_team_records, gm)
@@ -2755,6 +3181,8 @@ def main():
     qa_league_context(referees_index)
     league_context_spot_check(referees_index)
     qa_matchups(referees_index, team_index)
+    qa_recent_form(referees_index)
+    recent_form_spot_check(referees_index)
     spot_checks(referees_index, details)
     dashboard_spot_checks(referees_index, details, dashboard)
 

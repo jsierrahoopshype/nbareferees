@@ -383,6 +383,79 @@ def season_splits_table(doc):
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
 
 
+# ---------------------------------------------------------------------------
+# Recent form (docs/RECENT_FORM_SPEC.md) -- rolling windows (last 5/10/25
+# games, last 30 calendar days) shown against the league-wide distribution of
+# same-size windows, so a reader sees whether a deviation is notable or
+# routine rather than just a bare number. Reuses the whistle-profile card
+# shell (.whistle-cols/.whistle-col/.whistle-kind/.whistle-grid/.wm/.wm-val/
+# .wm-label) and the WHISTLE_STATS/WHISTLE_LABEL/WHISTLE_VALFMT/
+# WHISTLE_DIFFFMT tables already defined above -- the six stats and their
+# formatting are identical, this section just adds a baseline line and an
+# explicit within/outside indicator per cell.
+# ---------------------------------------------------------------------------
+RECENT_FORM_WINDOW_ORDER = ["n5", "n10", "n25", "cal30"]
+
+
+def recent_form_status_note(status):
+    if status == "outside":
+        return '<div class="rf-status rf-status-outside">Outside normal range</div>'
+    if status == "within":
+        return '<div class="rf-status rf-status-within">Within normal range</div>'
+    return '<div class="rf-status rf-status-na">Not enough data to compare</div>'
+
+
+def recent_form_cell(key, stat):
+    v = stat.get("value")
+    valfmt = WHISTLE_VALFMT[key]
+    if v is None:
+        return ('<div class="wm rf-cell rf-cell-na">'
+                '<div class="wm-val rf-cell-dash">—</div>'
+                '<div class="wm-label">{l}</div>'
+                '<div class="rf-baseline">Too few box-score games in this window</div>'
+                '</div>').format(l=esc(WHISTLE_LABEL[key]))
+    b = stat.get("baseline")
+    d = stat.get("diff")
+    status = stat.get("status")
+    cls = "rf-cell-%s" % (status or "unranked")
+    return ('<div class="wm rf-cell {cls}">'
+            '<div class="wm-val">{v} <span class="wm-diff">{d}</span></div>'
+            '<div class="wm-label">{l}</div>'
+            '<div class="rf-baseline">career avg {b}</div>'
+            '{note}'
+            '</div>').format(
+        cls=cls, v=valfmt(v), d=WHISTLE_DIFFFMT[key](d), l=esc(WHISTLE_LABEL[key]),
+        b=valfmt(b) if b is not None else "—", note=recent_form_status_note(status))
+
+
+def recent_form_window_block(w):
+    games, size, kind, label = w["games"], w["size"], w["kind"], w["label"]
+    if kind == "count":
+        n_txt = ("%d of %d games" % (games, size)) if games < size else "%d games" % games
+    else:
+        n_txt = "%d games" % games
+    if not games:
+        body = '<p class="empty-note">No games officiated in this window.</p>'
+    else:
+        cells = "".join(recent_form_cell(key, w["stats"][key]) for key, *_r in WHISTLE_STATS)
+        body = '<div class="whistle-grid">%s</div>' % cells
+    return ('<div class="whistle-col rf-window"><h3 class="whistle-kind">{lab} '
+            '<span class="whistle-n">{n}</span></h3>{body}</div>').format(
+        lab=esc(label), n=esc(n_txt), body=body)
+
+
+def recent_form_block(rf_doc):
+    """Returns the compact recent-form section's inner HTML, or None if there's
+    no recent-form file for this referee (shouldn't happen post-build, but
+    the caller treats None as "omit the section" rather than erroring)."""
+    if rf_doc is None:
+        return None
+    windows = rf_doc["windows"]
+    cols = "".join(recent_form_window_block(windows[wkey]) for wkey in RECENT_FORM_WINDOW_ORDER
+                   if wkey in windows)
+    return '<div class="whistle-cols rf-cols">%s</div>' % cols
+
+
 # Existence sets for cross-linking (populated in main). A name is linkified only
 # when its target page exists; otherwise it renders as plain text (no dead links).
 TEAM_EXISTS = set()      # tricodes (upper) with a /team/ page
@@ -561,7 +634,7 @@ def section(num, title, inner, extra_head=""):
         eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
 
 
-def render_ref(doc):
+def render_ref(doc, rf_doc=None):
     s = doc["summary"]
     name = s["name"]
     seasons = career_span(s["first_season"], s["last_season"])
@@ -615,6 +688,19 @@ def render_ref(doc):
                           '<p class="caption">Each stat\'s differential against that season\'s '
                           'league average (regular season and playoffs shown separately). '
                           'Tap a column to sort; career totals are the bottom rows.</p>'))
+
+    # recent form (docs/RECENT_FORM_SPEC.md) -- rolling windows against the
+    # league-wide distribution of same-size windows
+    rf_inner = recent_form_block(rf_doc)
+    if rf_inner:
+        blocks.append(section(None, "Recent form", rf_inner,
+                              '<p class="caption">Each window\'s average against {name}\'s own '
+                              'career baseline, checked against how much same-size windows '
+                              'typically vary league-wide — “outside normal range” flags a '
+                              'window that sits beyond where most referees\' windows of that '
+                              'size land, not a claim about the official. These describe games '
+                              'worked, not calls made. The 30-day window is empty in the '
+                              'off-season by design.</p>'.format(name=esc(name))))
 
     # team records
     blocks.append(section(None, "Team records under %s" % name,
@@ -1098,6 +1184,21 @@ def dashboard_tonights_crews_slot():
 </div>""")
 
 
+def dashboard_recent_form_slot():
+    """Empty, hidden by default -- same gating pattern as Tonight's Crews.
+    app.js fetches data/recent_form_dashboard.json and only un-hides this if
+    in_season is true, spotlight is non-empty, AND the file's as_of date is
+    still fresh against the viewer's live clock, so a build made in-season
+    can't leave last season's spotlight showing to an off-season visitor."""
+    return ("""<div id="recent-form-spotlight" hidden>
+  <span class="lb-subhead">Recent form outliers</span>
+  <div id="recent-form-spotlight-body"></div>
+  <p class="caption">Officials whose recent-game averages sit furthest outside
+  the normal range for a window of that size — a description of the games in
+  the window, not a claim about the official.</p>
+</div>""")
+
+
 # ---------------------------------------------------------------------------
 # Tier C index widgets (docs/TIER_C_SPEC.md section 3) -- each links to its
 # own full-list page.
@@ -1169,7 +1270,8 @@ def render_index(refs, lb, dashboard):
 </nav>"""
 
     # ---- tier 1: fresh -- today's rotation + the database's oddities ------
-    today_inner = dashboard_rotation_slots(dashboard) + dashboard_tonights_crews_slot()
+    today_inner = (dashboard_rotation_slots(dashboard) + dashboard_tonights_crews_slot()
+                  + dashboard_recent_form_slot())
     records_inner = ('<span class="lb-subhead">Records &amp; oddities</span>'
                      '<div class="record-strip">%s</div>'
                      % dashboard_records_strip(dashboard["records"])
@@ -1772,6 +1874,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
 #tonights-crews{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
+#recent-form-spotlight{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
+#recent-form-spotlight-body{display:flex}
+#recent-form-spotlight-body .record-strip{width:100%}
 .more-data-links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin-bottom:1.3rem;
   font-family:var(--mono);font-size:.72rem}
 .more-data-links a{color:var(--text-secondary);font-weight:600}
@@ -2034,6 +2139,19 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .mu-win{color:var(--green);font-weight:700}
 .mu-loss{color:var(--red);font-weight:700}
 .mu-section-caption{margin-top:.3rem}
+
+/* ---- Recent form (docs/RECENT_FORM_SPEC.md) -- reuses the same
+   .whistle-cols/.whistle-col/.whistle-kind/.whistle-grid/.wm card shell as
+   the whistle profile above; only the baseline line, status note, and the
+   subtle "outside" accent are new. */
+.rf-baseline{font-family:var(--mono);font-size:.62rem;color:var(--text-secondary);margin-top:.3rem}
+.rf-status{font-size:.66rem;font-weight:600;margin-top:.3rem}
+.rf-status-outside{color:var(--orange)}
+.rf-status-within{color:var(--text-secondary)}
+.rf-status-na{color:var(--text-secondary);font-style:italic}
+.rf-cell-outside{border-left:3px solid var(--orange)}
+.rf-cell-na .wm-label,.rf-cell-na .rf-baseline{opacity:.75}
+.rf-cell-dash{font-size:1.1rem;font-weight:700;color:var(--text-secondary)}
 
 /* ---- footer ---- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem 3rem;
@@ -2298,6 +2416,45 @@ JS = r"""(function(){
       }).join("");
       slot.hidden=false;
     }).catch(function(){/* absent or unparseable -- render nothing, by design */});
+  })();
+  // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
+  // same way Tonight's Crews is: absent, empty, off-season (in_season:false),
+  // or a build whose as_of has gone stale against the viewer's own clock all
+  // render nothing at all, not a placeholder. The as_of freshness check is
+  // belt-and-suspenders on top of build.py's own in_season flag -- it stops a
+  // build made during the season from still showing that season's spotlight
+  // to someone browsing months later, off-season, before the site is rebuilt.
+  (function(){
+    var slot=document.getElementById("recent-form-spotlight");
+    if(!slot)return;
+    var RF_STAT_LABELS={avg_total_points:"combined points",avg_total_fta:"combined FTAs",
+      avg_total_pf:"combined fouls",avg_abs_margin:"avg. margin",home_win_pct:"home win rate",
+      ot_rate:"OT rate"};
+    var RF_ISPCT={home_win_pct:1,ot_rate:1};
+    function fmtRf(key,v){return RF_ISPCT[key]?(v*100).toFixed(1)+"%":v.toFixed(1);}
+    function fmtRfDiff(key,v){
+      var sign=v>=0?"+":"";
+      return RF_ISPCT[key]?sign+(v*100).toFixed(1)+"%":sign+v.toFixed(1);
+    }
+    fetch("data/recent_form_dashboard.json").then(function(r){
+      if(!r.ok)throw new Error("absent");
+      return r.json();
+    }).then(function(data){
+      if(!data||!data.in_season||!Array.isArray(data.spotlight)||!data.spotlight.length)return;
+      var asOf=new Date(data.as_of+"T00:00:00Z");
+      var ageDays=(Date.now()-asOf.getTime())/86400000;
+      if(!(ageDays>=-1&&ageDays<=5))return;   // stale build -- render nothing
+      var body=slot.querySelector("#recent-form-spotlight-body");
+      body.innerHTML='<div class="record-strip">'+data.spotlight.map(function(s){
+        return '<a class="record-item" href="referee/'+s.slug+'/index.html">'+
+          '<span class="record-label">'+escHtml(s.name)+'</span>'+
+          '<span class="record-val">'+fmtRf(s.stat,s.value)+
+          ' <span class="wm-diff">'+fmtRfDiff(s.stat,s.diff)+'</span></span>'+
+          '<span class="record-ref">'+escHtml(s.window_label)+' &middot; '+
+          escHtml(RF_STAT_LABELS[s.stat]||s.stat)+'</span></a>';
+      }).join("")+'</div>';
+      slot.hidden=false;
+    }).catch(function(){/* absent, unparseable, or stale -- render nothing, by design */});
   })();
   // --- comparator (/compare/) -- reads existing data/referees/{slug}.json
   // client-side, keyed off the ?a=/?b= query string so any pair is shareable
@@ -2734,8 +2891,10 @@ def main():
         official_id = doc["summary"]["official_id"]
         out_dir = os.path.join(REFEREE_DIR, slug)
         os.makedirs(out_dir, exist_ok=True)
+        rf_path = os.path.join(DATA, "recent_form", "%s.json" % official_id)
+        rf_doc = json.load(open(rf_path, encoding="utf-8")) if os.path.exists(rf_path) else None
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
-            f.write(render_ref(doc))
+            f.write(render_ref(doc, rf_doc))
         n += 1
 
         # Tier C per-referee game log (docs/TIER_C_SPEC.md section 3) --

@@ -1,0 +1,241 @@
+{
+  "official_id": "sir-allen-conner",
+  "name": "Sir Allen Conner",
+  "slug": "sir-allen-conner",
+  "as_of": "2026-09-02",
+  "days_since_last_game": 5018,
+  "baseline": {
+    "avg_total_points": 192.1,
+    "avg_total_fta": 45.6,
+    "avg_total_pf": 39.8,
+    "avg_abs_margin": 12.3,
+    "home_win_pct": 0.9,
+    "ot_rate": 0.1
+  },
+  "windows": {
+    "n5": {
+      "label": "Last 5 games",
+      "kind": "count",
+      "size": 5,
+      "games": 5,
+      "stats": {
+        "avg_total_points": {
+          "value": 181.8,
+          "baseline": 192.1,
+          "diff": -10.3,
+          "n": 5,
+          "status": "within",
+          "pctile_rank": 21.92
+        },
+        "avg_total_fta": {
+          "value": 38.0,
+          "baseline": 45.6,
+          "diff": -7.6,
+          "n": 5,
+          "status": "within",
+          "pctile_rank": 10.44
+        },
+        "avg_total_pf": {
+          "value": 35.0,
+          "baseline": 39.8,
+          "diff": -4.8,
+          "n": 5,
+          "status": "within",
+          "pctile_rank": 11.29
+        },
+        "avg_abs_margin": {
+          "value": 13.0,
+          "baseline": 12.3,
+          "diff": 0.7,
+          "n": 5,
+          "status": "within",
+          "pctile_rank": 61.22
+        },
+        "home_win_pct": {
+          "value": 0.8,
+          "baseline": 0.9,
+          "diff": -0.1,
+          "n": 5,
+          "status": "within",
+          "pctile_rank": 33.03
+        },
+        "ot_rate": {
+          "value": 0.0,
+          "baseline": 0.1,
+          "diff": -0.1,
+          "n": 5,
+          "status": "outside",
+          "pctile_rank": 0.09
+        }
+      }
+    },
+    "n10": {
+      "label": "Last 10 games",
+      "kind": "count",
+      "size": 10,
+      "games": 10,
+      "stats": {
+        "avg_total_points": {
+          "value": 192.1,
+          "baseline": 192.1,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 52.43
+        },
+        "avg_total_fta": {
+          "value": 45.6,
+          "baseline": 45.6,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 49.68
+        },
+        "avg_total_pf": {
+          "value": 39.8,
+          "baseline": 39.8,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 49.47
+        },
+        "avg_abs_margin": {
+          "value": 12.3,
+          "baseline": 12.3,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 52.96
+        },
+        "home_win_pct": {
+          "value": 0.9,
+          "baseline": 0.9,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 51.26
+        },
+        "ot_rate": {
+          "value": 0.1,
+          "baseline": 0.1,
+          "diff": 0.0,
+          "n": 10,
+          "status": "within",
+          "pctile_rank": 54.9
+        }
+      }
+    },
+    "n25": {
+      "label": "Last 25 games",
+      "kind": "count",
+      "size": 25,
+      "games": 10,
+      "stats": {
+        "avg_total_points": {
+          "value": 192.1,
+          "baseline": 192.1,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_total_fta": {
+          "value": 45.6,
+          "baseline": 45.6,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_total_pf": {
+          "value": 39.8,
+          "baseline": 39.8,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_abs_margin": {
+          "value": 12.3,
+          "baseline": 12.3,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        },
+        "home_win_pct": {
+          "value": 0.9,
+          "baseline": 0.9,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        },
+        "ot_rate": {
+          "value": 0.1,
+          "baseline": 0.1,
+          "diff": 0.0,
+          "n": 10,
+          "status": null,
+          "pctile_rank": null
+        }
+      }
+    },
+    "cal30": {
+      "label": "Last 30 days",
+      "kind": "calendar",
+      "size": 30,
+      "games": 0,
+      "stats": {
+        "avg_total_points": {
+          "value": null,
+          "baseline": 192.1,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_total_fta": {
+          "value": null,
+          "baseline": 45.6,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_total_pf": {
+          "value": null,
+          "baseline": 39.8,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        },
+        "avg_abs_margin": {
+          "value": null,
+          "baseline": 12.3,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        },
+        "home_win_pct": {
+          "value": null,
+          "baseline": 0.9,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        },
+        "ot_rate": {
+          "value": null,
+          "baseline": 0.1,
+          "diff": null,
+          "n": 0,
+          "status": null,
+          "pctile_rank": null
+        }
+      }
+    }
+  }
+}
