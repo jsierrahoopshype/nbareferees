@@ -16,15 +16,22 @@ canonical data/referees.json.
 
 IMPORTANT -- originally written blind (this environment's egress to nbra.net
 is confirmed blocked), then corrected against real cached markup from the
-first actual run. Confirmed real-world quirks baked into the fixes below:
+first actual run. Confirmed real-world quirk baked into the fix below:
   * The index page's jersey number sits immediately BEFORE the name in the
     SAME text node ("48 Scott Foster", no "#"/"No." marker) -- see
     LEADING_NUM_NAME_RE / try_name_jersey.
-  * nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
-    happen to decode to the WRONG characters (e.g. "...ÔÇÖ86" for "...'86")
-    -- upstream corruption already baked into their served bytes, not a
-    decode mistake on this end. See fix_mojibake's docstring for exactly
-    what it reverses and why it's safe to apply unconditionally.
+A second suspected bug (a garbled "ÔÇÖ" in place of an apostrophe in college
+fields, e.g. "Old Dominion University ÔÇÖ86") turned out NOT to be real: the
+raw cached bytes were confirmed (via a direct hex/repr dump of the cache
+file) to be plain, correct UTF-8 for a right single quotation mark
+(\xe2\x80\x99) all along -- the garbled text was a Windows cmd console
+rendering artifact (cmd's own code page, not this script or the CSV, doing
+the misdecoding on display), never present in the actual data. A CP850
+round-trip "repair" was tried and reverted -- it would have corrected a
+corruption that never existed in the file, and risked mangling genuinely
+correct accented text if the pattern had ever coincidentally matched. Moral:
+verify against raw bytes before treating a terminal's rendering as ground
+truth.
 Every fetched page is still cached to disk BEFORE parsing
 (source-data/_nbra_raw/, gitignored, local only) and parsing is a pure
 function over that cache -- so if anything else comes up empty or wrong,
@@ -152,30 +159,6 @@ CSV_FIELDS = [
 ]
 
 
-def fix_mojibake(text):
-    """Repairs a specific upstream corruption confirmed on the first real run:
-    nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
-    decode (correctly, no error) to the WRONG characters -- e.g.
-    "Old Dominion University ÔÇÖ86" for what should read
-    "...'86" (a right single quotation mark). This isn't a decode mistake on
-    this script's end (the HTTP response bytes ARE read as UTF-8, correctly,
-    both here and in fetch_cached); the corruption is already baked into the
-    bytes nbra.net serves, consistent with their own content pipeline having
-    read genuinely-UTF-8 text as CP850 (a legacy DOS/OEM code page) at some
-    point and re-saved the result as new, validly-encoded-but-wrong UTF-8.
-
-    Reversing that exact misread -- re-encode as cp850, re-decode as UTF-8 --
-    recovers the original text. Verified safe against plain ASCII and against
-    genuinely-correct accented text (encoding one correct accented character
-    as cp850 and decoding the result as UTF-8 fails outright with either
-    UnicodeEncodeError or UnicodeDecodeError, so this never touches text that
-    wasn't actually corrupted this specific way -- it's a no-op on it)."""
-    try:
-        return text.encode("cp850").decode("utf-8")
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        return text
-
-
 def hr(title=""):
     print("\n" + "=" * 78)
     if title:
@@ -285,9 +268,9 @@ def try_name_jersey(text):
         return None
     m = LEADING_NUM_NAME_RE.match(text)
     if m:
-        return fix_mojibake(m.group(2)), m.group(1)
+        return m.group(2), m.group(1)
     if NAME_LIKE_RE.match(text):
-        return fix_mojibake(text), None
+        return text, None
     return None
 
 
@@ -377,7 +360,7 @@ def extract_labeled_facts(soup):
         dts, dds = dl.find_all("dt"), dl.find_all("dd")
         for dt, dd in zip(dts, dds):
             label = normalize_label(dt.get_text())
-            value = fix_mojibake(dd.get_text(" ", strip=True))
+            value = dd.get_text(" ", strip=True)
             if label and value:
                 facts.setdefault(label, value)
 
@@ -386,12 +369,12 @@ def extract_labeled_facts(soup):
             cells = tr.find_all(["td", "th"])
             if len(cells) == 2:
                 label = normalize_label(cells[0].get_text())
-                value = fix_mojibake(cells[1].get_text(" ", strip=True))
+                value = cells[1].get_text(" ", strip=True)
                 if label and value:
                     facts.setdefault(label, value)
 
     for el in soup.find_all(["p", "li"]):
-        text = fix_mojibake(el.get_text(" ", strip=True))
+        text = el.get_text(" ", strip=True)
         m = re.match(r"^([A-Za-z][A-Za-z /]{2,30}):\s*(.+)$", text)
         if m:
             label = normalize_label(m.group(1))
