@@ -28,6 +28,12 @@
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
+  // (site-wide convention: calendar-year span, not the raw season labels).
+  function careerSpan(first,last){
+    var start=parseInt(String(first).slice(0,4),10), end=parseInt(String(last).slice(0,4),10)+1;
+    return start+"-"+end;
+  }
   [].slice.call(document.querySelectorAll(".refsearch-wrap")).forEach(function(wrap){
     var input=wrap.querySelector(".refsearch");
     var out=wrap.querySelector(".refsearch-results");
@@ -175,7 +181,7 @@
         var badge=pick.active?' <span class="badge badge-active">Active</span>':"";
         spotCard.innerHTML='<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
           escHtml(pick.name)+'</a>'+badge+
-          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+pick.first_season+'–'+pick.last_season+'</p>'+sigHtml;
+          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+sigHtml;
       }
 
       var mm=("0"+(now.getMonth()+1)).slice(-2), dd=("0"+now.getDate()).slice(-2);
@@ -187,7 +193,7 @@
           :escHtml(entry.player_name);
         var fallbackNote=entry.month_day===(mm+"-"+dd)?"":
           ' <span class="caption">(nearest date with games on record; from '+entry.date+')</span>';
-        onDate.innerHTML='<span class="history-pts">'+entry.pts+'</span> '+playerBit+' '+
+        onDate.innerHTML='<span class="history-pts">'+entry.pts+' pts</span> '+playerBit+' '+
           escHtml(entry.team_abbr)+' <span class="vs">vs</span> '+escHtml(entry.opp_abbr)+
           ' — '+escHtml(entry.date)+fallbackNote;
       }
@@ -344,7 +350,7 @@
       var badge=s.active?' <span class="badge badge-active">Active</span>':"";
       container.innerHTML=
         '<a class="spotlight-name" href="../referee/'+s.slug+'/index.html">'+escHtml(s.name)+'</a>'+badge+
-        '<p class="spotlight-meta">'+s.games_total+' games &middot; '+s.first_season+'–'+s.last_season+
+        '<p class="spotlight-meta">'+s.games_total+' games &middot; '+careerSpan(s.first_season,s.last_season)+
         ' &middot; RS '+s.games_rs+' &middot; PO '+s.games_po+' &middot; Finals '+s.finals_games+
         ' &middot; G7s '+s.game7s+'</p>'+
         '<div class="whistle-cols">'+whistleColHtml("Regular season",doc.whistle_profile.rs)+
