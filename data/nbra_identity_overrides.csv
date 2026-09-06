@@ -1,0 +1,24 @@
+# NBRA bio identity overrides (scripts/local/fetch_nbra_bios.py escape hatch).
+#
+# Auto-matching (build.py's norm_ref_key, applied to the name as DISPLAYED on
+# the NBRA bio page) is the default and resolves most textual variants on its
+# own -- accents, periods/apostrophes, extra whitespace. Add a row here ONLY
+# for a real identity mismatch normalization can't solve: a name NBRA's
+# CURRENT site uses that doesn't reduce to the same key as our canonical one
+# (a married/former name, an added second surname, etc).
+#
+# Columns:
+#   raw_name_or_id        exact name as DISPLAYED on the NBRA bio page
+#                         (matched case-insensitively)
+#   canonical_ref_key     the matching data/referees.json official_id
+#   canonical_display_name  our display name for that referee
+#
+# Lines beginning with '#' are ignored.
+#
+# --- Known cases (confirmed against data/referees.json before this file's
+# --- first real run; the NBRA site itself has not been fetched from this
+# --- environment -- egress is blocked). Add more here as fetch_nbra_bios.py's
+# --- unmatched-officials report surfaces them.
+raw_name_or_id,canonical_ref_key,canonical_display_name
+Lauren Holtkamp-Sterling,lauren-holtkamp,Lauren Holtkamp
+Dannica Mosher,dannica-baroody,Dannica Baroody
