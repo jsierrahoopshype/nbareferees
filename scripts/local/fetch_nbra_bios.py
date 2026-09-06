@@ -14,16 +14,22 @@ canonical data/referees.json.
 
   pip install beautifulsoup4
 
-IMPORTANT -- written blind. This environment's egress to nbra.net is
-confirmed blocked, so the HTML-parsing logic below has never run against the
-real page; it's written defensively (BeautifulSoup, several fallback
-extraction strategies per field, verbose per-item diagnostics) specifically
-so a first-run shortfall is cheap to fix. Every fetched page is cached to
-disk BEFORE parsing (source-data/_nbra_raw/, gitignored, local only) and
-parsing is a pure function over that cache -- so if the index or bio parser
-comes up empty or wrong on names/fields, share what printed (or the cached
-HTML) back and the extraction logic can be corrected and re-run against the
-cache with zero new network calls.
+IMPORTANT -- originally written blind (this environment's egress to nbra.net
+is confirmed blocked), then corrected against real cached markup from the
+first actual run. Confirmed real-world quirks baked into the fixes below:
+  * The index page's jersey number sits immediately BEFORE the name in the
+    SAME text node ("48 Scott Foster", no "#"/"No." marker) -- see
+    LEADING_NUM_NAME_RE / try_name_jersey.
+  * nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
+    happen to decode to the WRONG characters (e.g. "...ÔÇÖ86" for "...'86")
+    -- upstream corruption already baked into their served bytes, not a
+    decode mistake on this end. See fix_mojibake's docstring for exactly
+    what it reverses and why it's safe to apply unconditionally.
+Every fetched page is still cached to disk BEFORE parsing
+(source-data/_nbra_raw/, gitignored, local only) and parsing is a pure
+function over that cache -- so if anything else comes up empty or wrong,
+share what printed (or the cached HTML) back and the extraction logic can be
+corrected and re-run against the cache with zero new network calls.
 
 Behavior:
   * 1s polite delay between HTTP requests (index page + each bio page) --
@@ -118,6 +124,14 @@ HEADERS = {
 }
 
 NAME_LIKE_RE = re.compile(r"^[A-Za-z][A-Za-z.'\-]*(?:\s+[A-Za-z][A-Za-z.'\-]*)+$")
+# NBRA's real index format: the jersey number sits immediately BEFORE the
+# name in the same text node ("48 Scott Foster"), no "#"/"No." marker at all
+# -- discovered on the first real run, when JERSEY_RE1/JERSEY_RE2 below (the
+# only patterns originally handled) came up empty on every row and every name
+# fell through all the way to the URL-slug guess (a bare leading digit fails
+# NAME_LIKE_RE, which requires the string to START with a letter).
+LEADING_NUM_NAME_RE = re.compile(
+    r"^\s*(\d{1,3})\s+([A-Za-z][A-Za-z.'\-]*(?:\s+[A-Za-z][A-Za-z.'\-]*)+)\s*$")
 JERSEY_RE1 = re.compile(r"#\s*(\d{1,3})\b")
 JERSEY_RE2 = re.compile(r"\bNo\.?\s*(\d{1,3})\b", re.IGNORECASE)
 
@@ -136,6 +150,30 @@ CSV_FIELDS = [
     "official_id", "match_status", "nbra_name", "name_source", "jersey_num",
     "years_experience", "college", "hometown", "bio_url", "extra_fields",
 ]
+
+
+def fix_mojibake(text):
+    """Repairs a specific upstream corruption confirmed on the first real run:
+    nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
+    decode (correctly, no error) to the WRONG characters -- e.g.
+    "Old Dominion University ÔÇÖ86" for what should read
+    "...'86" (a right single quotation mark). This isn't a decode mistake on
+    this script's end (the HTTP response bytes ARE read as UTF-8, correctly,
+    both here and in fetch_cached); the corruption is already baked into the
+    bytes nbra.net serves, consistent with their own content pipeline having
+    read genuinely-UTF-8 text as CP850 (a legacy DOS/OEM code page) at some
+    point and re-saved the result as new, validly-encoded-but-wrong UTF-8.
+
+    Reversing that exact misread -- re-encode as cp850, re-decode as UTF-8 --
+    recovers the original text. Verified safe against plain ASCII and against
+    genuinely-correct accented text (encoding one correct accented character
+    as cp850 and decoding the result as UTF-8 fails outright with either
+    UnicodeEncodeError or UnicodeDecodeError, so this never touches text that
+    wasn't actually corrupted this specific way -- it's a no-op on it)."""
+    try:
+        return text.encode("cp850").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
 
 
 def hr(title=""):
@@ -234,31 +272,53 @@ def find_card(link, max_up=5):
     return best
 
 
+def try_name_jersey(text):
+    """Checks one candidate text for either NBRA's real combined format
+    ("48 Scott Foster" -- jersey number immediately before the name, no
+    marker) or a plain name alone. Returns (name, jersey_or_None) if this
+    text is usable, else None. The combined-format check runs FIRST: a bare
+    leading digit fails NAME_LIKE_RE outright (it requires the string to
+    start with a letter), which is exactly why every name previously fell
+    through this function's old name-only check and ended up as a
+    URL-slug guess on every single row."""
+    if not text:
+        return None
+    m = LEADING_NUM_NAME_RE.match(text)
+    if m:
+        return fix_mojibake(m.group(2)), m.group(1)
+    if NAME_LIKE_RE.match(text):
+        return fix_mojibake(text), None
+    return None
+
+
 def extract_name(link, card):
     """Priority: the link's own visible text, then its title attribute, then
     an <img alt>, then a heading/strong inside the card -- all real displayed
-    text. The URL slug is a last-resort GUESS only, flagged as such, because
-    it's known to diverge from the display name for some officials (Josh
-    Tiven / joshua-tiven, Che Flores / cheryl-flores) -- matching must never
-    be done against it."""
-    text = link.get_text(" ", strip=True)
-    if text and NAME_LIKE_RE.match(text):
-        return text, "link-text"
-    title = (link.get("title") or "").strip()
-    if title and NAME_LIKE_RE.match(title):
-        return title, "link-title"
+    text, checked via try_name_jersey so a jersey number embedded in that
+    same text is captured alongside it. The URL slug is a last-resort GUESS
+    only, flagged as such, because it's known to diverge from the display
+    name for some officials (Josh Tiven / joshua-tiven, Che Flores /
+    cheryl-flores) -- matching must never be done against it.
+
+    Returns (name, name_source, jersey_or_None)."""
+    r = try_name_jersey(link.get_text(" ", strip=True))
+    if r:
+        return r[0], "link-text", r[1]
+    r = try_name_jersey((link.get("title") or "").strip())
+    if r:
+        return r[0], "link-title", r[1]
     img = link.find("img")
-    if img and (img.get("alt") or "").strip():
-        alt = img["alt"].strip()
-        if NAME_LIKE_RE.match(alt):
-            return alt, "img-alt"
+    if img:
+        r = try_name_jersey((img.get("alt") or "").strip())
+        if r:
+            return r[0], "img-alt", r[1]
     for tag in card.find_all(["h1", "h2", "h3", "h4", "h5", "strong"]):
-        t = tag.get_text(" ", strip=True)
-        if NAME_LIKE_RE.match(t):
-            return t, "heading"
+        r = try_name_jersey(tag.get_text(" ", strip=True))
+        if r:
+            return r[0], "heading", r[1]
     slug = urllib.parse.urlparse(link["href"]).path.rstrip("/").split("/")[-1]
     guess = slug.replace("-", " ").replace("_", " ").title()
-    return guess, "url-slug-GUESS"
+    return guess, "url-slug-GUESS", None
 
 
 def extract_jersey(card_text):
@@ -279,8 +339,11 @@ def parse_index(html):
             continue
         seen.add(abs_url)
         card = find_card(link)
-        name, name_source = extract_name(link, card)
-        jersey = extract_jersey(card.get_text(" ", strip=True))
+        name, name_source, jersey_from_name = extract_name(link, card)
+        # A jersey number found bundled with the name is unambiguously tied
+        # to THIS official; only fall back to scanning the whole card's text
+        # (the older "#NN"/"No. NN" patterns) when that's not available.
+        jersey = jersey_from_name or extract_jersey(card.get_text(" ", strip=True))
         entries.append({
             "name": name, "name_source": name_source,
             "jersey_num": jersey, "url": abs_url,
@@ -314,7 +377,7 @@ def extract_labeled_facts(soup):
         dts, dds = dl.find_all("dt"), dl.find_all("dd")
         for dt, dd in zip(dts, dds):
             label = normalize_label(dt.get_text())
-            value = dd.get_text(" ", strip=True)
+            value = fix_mojibake(dd.get_text(" ", strip=True))
             if label and value:
                 facts.setdefault(label, value)
 
@@ -323,12 +386,12 @@ def extract_labeled_facts(soup):
             cells = tr.find_all(["td", "th"])
             if len(cells) == 2:
                 label = normalize_label(cells[0].get_text())
-                value = cells[1].get_text(" ", strip=True)
+                value = fix_mojibake(cells[1].get_text(" ", strip=True))
                 if label and value:
                     facts.setdefault(label, value)
 
     for el in soup.find_all(["p", "li"]):
-        text = el.get_text(" ", strip=True)
+        text = fix_mojibake(el.get_text(" ", strip=True))
         m = re.match(r"^([A-Za-z][A-Za-z /]{2,30}):\s*(.+)$", text)
         if m:
             label = normalize_label(m.group(1))
