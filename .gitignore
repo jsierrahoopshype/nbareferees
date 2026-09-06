@@ -14,6 +14,10 @@ env/
 # Transient resume-cache for fetch_espn_round_labels.py (not a committed extract).
 source-data/_round_labels_gamenote_cache.json
 
+# Raw HTML cache for fetch_nbra_bios.py (local scraping cache, not a source
+# extract -- the parsed output is source-data/nbra_bios.csv).
+source-data/_nbra_raw/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
