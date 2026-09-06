@@ -1119,23 +1119,33 @@ def dashboard_records_strip(records):
 
 
 def dashboard_history_strip(history):
-    """Top scoring games (linked crew + player) and the most frequent
-    3-official crew ever, plus a few fixed factual notes about the dataset.
-    Rendered only on index.html (depth 0), so every link helper here needs
-    root="" instead of its depth-2 default."""
-    game_items = []
+    """Top scoring games as a real table (rank, points, player, matchup, date,
+    crew -- consistent columns instead of a prose line that wrapped
+    differently row to row), plus the most frequent 3-official crew ever and
+    a short pointer to the sources page, which now carries the dataset notes
+    in full (see render_sources). Rendered only on index.html (depth 0), so
+    every link/cell helper here needs root="" instead of its depth-2 default."""
+    body = []
     for rank, g in enumerate(history["top_scoring_games"], 1):
         crew = " &middot; ".join(ref_link(c["name"], c["slug"], root="") for c in g.get("crew") or []) or "—"
-        game_items.append(
-            '<li class="history-row"><span class="history-rank">{rk}</span>'
-            '<span class="history-pts">{pts}</span> {player} '
-            '<span class="history-matchup">{team} <span class="vs">vs</span> {opp}</span> '
-            '<span class="history-date">{date}</span>'
-            '<span class="history-crew">Crew: {crew}</span></li>'.format(
+        body.append(
+            "<tr>"
+            '<td data-label="#" class="rank">{rk}</td>'
+            '<td data-label="Pts"><span class="big-num">{pts}</span></td>'
+            '<td data-label="Player">{player}</td>'
+            '<td data-label="Matchup" class="matchup">{team} <span class="vs">vs</span> {opp}</td>'
+            '<td data-label="Date">{date}</td>'
+            '<td data-label="Crew" class="crew">{crew}</td>'
+            "</tr>".format(
                 rk=rank, pts=i(g["pts"]),
                 player=player_link(g["player_name"], g.get("player_slug"), root=""),
                 team=team_cell(g["team_abbr"], root=""), opp=team_cell(g["opp_abbr"], root=""),
                 date=esc(g["game_date"]), crew=crew))
+    games_table = ('<table class="data-table"><thead><tr>'
+                   '<th scope="col">#</th><th scope="col">Pts</th><th scope="col">Player</th>'
+                   '<th scope="col">Matchup</th><th scope="col">Date</th>'
+                   '<th scope="col">Crew</th></tr></thead><tbody>{body}</tbody></table>'
+                   ).format(body="".join(body))
 
     trio = history.get("top_crew_trio")
     trio_html = '<p class="empty-note">No three-official crew on record.</p>'
@@ -1144,15 +1154,12 @@ def dashboard_history_strip(history):
         trio_html = ('<p class="history-trio">{names} — {n} games together, more than '
                     'any other three-official crew.</p>').format(names=names, n=i(trio["games"]))
 
-    curiosities = "".join("<li>%s</li>" % esc(c) for c in history.get("curiosities") or [])
-
-    return ("""<div class="history-cols">
-    <div class="history-col"><span class="lb-subhead">Top scoring games</span>
-      <ol class="history-list">{games}</ol></div>
-    <div class="history-col"><span class="lb-subhead">Most frequent crew</span>{trio}
-      <span class="lb-subhead">Notes on this data</span>
-      <ul class="curiosity-list">{cur}</ul></div>
-  </div>""").format(games="".join(game_items), trio=trio_html, cur=curiosities)
+    return ("""<span class="lb-subhead">Top scoring games</span>
+  <div class="table-wrap">{table}</div>
+  <div class="history-foot">
+    <div><span class="lb-subhead">Most frequent crew</span>{trio}</div>
+    <p class="caption"><a href="sources/index.html#notes">Notes on this data &rarr;</a></p>
+  </div>""").format(table=games_table, trio=trio_html)
 
 
 def dashboard_rotation_slots(dashboard):
@@ -1325,7 +1332,7 @@ def render_index(refs, lb, dashboard):
     # big-table-not-many-boxes read.
     today_inner = dashboard_rotation_slots(dashboard) + dashboard_recent_form_slot()
     records_inner = ('<span class="lb-subhead">Records &amp; oddities</span>'
-                     '<div class="record-strip">%s</div>'
+                     '<div class="records-grid">%s</div>'
                      % dashboard_records_strip(dashboard["records"])
                      + dashboard_history_strip(dashboard["history"]))
     tier_fresh = """<section class="tier">
@@ -1497,14 +1504,23 @@ def render_index(refs, lb, dashboard):
 
 
 # ---------------------------------------------------------------------------
-# data-sources page (carries the attribution moved out of the footer)
+# data-sources page (carries the attribution moved out of the footer, and --
+# moved from the index's Fresh tier -- the dataset's own methodology notes)
 # ---------------------------------------------------------------------------
-def render_sources():
+def render_sources(curiosities=None):
     items = "".join(
         '<li class="src-item"><a href="{u}" rel="noopener">{name}</a>'
         '<span class="src-note">{note}</span></li>'.format(
             u=esc(u), name=esc(name), note=esc(note))
         for name, u, note in ATTRIBUTION)
+    notes_items = "".join("<li>%s</li>" % esc(c) for c in curiosities or [])
+    notes_section = ""
+    if notes_items:
+        notes_section = ("""<section class="block" id="notes">
+  <div class="block-head"><span class="eyebrow">Methodology</span>
+  <h2>Notes on this data</h2></div>
+  <ul class="curiosity-list">{items}</ul>
+</section>""").format(items=notes_items)
     body = """<section class="block">
   <div class="block-head"><span class="eyebrow">Attribution</span>
   <h2>Data sources</h2></div>
@@ -1514,7 +1530,7 @@ def render_sources():
   <p class="caption">The historical NBA database is published under the Creative
   Commons Attribution-ShareAlike 4.0 licence (CC BY-SA 4.0); the derived
   statistics on this site are shared under the same terms.</p>
-</section>""".format(items=items)
+</section>{notes}""".format(items=items, notes=notes_section)
     title = "Data sources — NBA Referee Database"
     desc = ("Attribution and licensing for the NBA Referee Database: Wyatt Walsh's "
             "NBA Database (CC BY-SA 4.0), ESPN's public API, and szymonjwiak's box scores.")
@@ -2168,6 +2184,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .record-item:first-child{padding-left:0}
 .record-item:last-child{border-right:0}
 .record-item:hover .record-val{color:var(--accent)}
+/* Records & oddities: a wrapping grid, not a horizontally-scrolling strip --
+   at full desktop width the strip's ~8 entries ran past the viewport and
+   needed a scrollbar to read the last one or two. Reuses .record-item's
+   typography; just drops the flex-row-of-vertical-rules layout for a grid
+   where every entry is always fully visible. */
+.records-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
+  gap:1.2rem 1.6rem}
+.records-grid .record-item{border-right:0;padding:0;min-width:0}
 .record-label{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;
   letter-spacing:.05em;color:var(--text-secondary)}
 .record-val{font-size:1.2rem;font-weight:700;margin-top:.3rem;letter-spacing:-.01em}
@@ -2184,6 +2208,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .history-date{font-family:var(--mono);font-size:.7rem;color:var(--text-secondary)}
 .history-crew{flex-basis:100%;font-size:.72rem;color:var(--text-secondary)}
 .history-trio{font-size:.85rem}
+.history-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:1.6rem;
+  flex-wrap:wrap;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
+.history-foot .caption{margin-top:.6rem}
 .curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
 .curiosity-list li{margin-bottom:.5rem}
 
@@ -2268,6 +2295,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
     font-weight:600;text-transform:uppercase;font-size:.6rem;letter-spacing:.04em;text-align:left;flex:none}
   .data-table td:first-child{text-align:right}
   .data-table td[data-label]:only-child::before{content:""}
+  /* A Matchup cell holding two full team names (.team-cell, not a bare
+     tricode) doesn't fit next to its label on one line -- nested flex items
+     default to a min-width that blocks shrinking/wrapping, which was
+     overflowing the viewport. Let the label take its own line and the
+     team-cells wrap/shrink normally underneath it. */
+  .data-table td[data-label="Matchup"]{flex-wrap:wrap;text-align:left}
+  .data-table td[data-label="Matchup"]::before{flex:1 0 100%}
+  .data-table td[data-label="Matchup"] .team-cell{min-width:0;max-width:100%}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 """
@@ -2302,6 +2337,12 @@ JS = r"""(function(){
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
+  // (site-wide convention: calendar-year span, not the raw season labels).
+  function careerSpan(first,last){
+    var start=parseInt(String(first).slice(0,4),10), end=parseInt(String(last).slice(0,4),10)+1;
+    return start+"-"+end;
+  }
   [].slice.call(document.querySelectorAll(".refsearch-wrap")).forEach(function(wrap){
     var input=wrap.querySelector(".refsearch");
     var out=wrap.querySelector(".refsearch-results");
@@ -2449,7 +2490,7 @@ JS = r"""(function(){
         var badge=pick.active?' <span class="badge badge-active">Active</span>':"";
         spotCard.innerHTML='<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
           escHtml(pick.name)+'</a>'+badge+
-          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+pick.first_season+'–'+pick.last_season+'</p>'+sigHtml;
+          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+sigHtml;
       }
 
       var mm=("0"+(now.getMonth()+1)).slice(-2), dd=("0"+now.getDate()).slice(-2);
@@ -2461,7 +2502,7 @@ JS = r"""(function(){
           :escHtml(entry.player_name);
         var fallbackNote=entry.month_day===(mm+"-"+dd)?"":
           ' <span class="caption">(nearest date with games on record; from '+entry.date+')</span>';
-        onDate.innerHTML='<span class="history-pts">'+entry.pts+'</span> '+playerBit+' '+
+        onDate.innerHTML='<span class="history-pts">'+entry.pts+' pts</span> '+playerBit+' '+
           escHtml(entry.team_abbr)+' <span class="vs">vs</span> '+escHtml(entry.opp_abbr)+
           ' — '+escHtml(entry.date)+fallbackNote;
       }
@@ -2618,7 +2659,7 @@ JS = r"""(function(){
       var badge=s.active?' <span class="badge badge-active">Active</span>':"";
       container.innerHTML=
         '<a class="spotlight-name" href="../referee/'+s.slug+'/index.html">'+escHtml(s.name)+'</a>'+badge+
-        '<p class="spotlight-meta">'+s.games_total+' games &middot; '+s.first_season+'–'+s.last_season+
+        '<p class="spotlight-meta">'+s.games_total+' games &middot; '+careerSpan(s.first_season,s.last_season)+
         ' &middot; RS '+s.games_rs+' &middot; PO '+s.games_po+' &middot; Finals '+s.finals_games+
         ' &middot; G7s '+s.game7s+'</p>'+
         '<div class="whistle-cols">'+whistleColHtml("Regular season",doc.whistle_profile.rs)+
@@ -2932,10 +2973,11 @@ def main():
     with open(os.path.join(REPO, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(refs, lb, dashboard))
 
-    # data-sources page (attribution moved out of the footer)
+    # data-sources page (attribution moved out of the footer, plus the
+    # dataset's methodology notes moved off the index's Fresh tier)
     os.makedirs(os.path.join(REPO, "sources"), exist_ok=True)
     with open(os.path.join(REPO, "sources", "index.html"), "w", encoding="utf-8") as f:
-        f.write(render_sources())
+        f.write(render_sources(dashboard["history"]["curiosities"]))
 
     # comparator page (static shell; content loads client-side)
     os.makedirs(os.path.join(REPO, "compare"), exist_ok=True)
