@@ -16,15 +16,22 @@ canonical data/referees.json.
 
 IMPORTANT -- originally written blind (this environment's egress to nbra.net
 is confirmed blocked), then corrected against real cached markup from the
-first actual run. Confirmed real-world quirks baked into the fixes below:
+first actual run. Confirmed real-world quirk baked into the fix below:
   * The index page's jersey number sits immediately BEFORE the name in the
     SAME text node ("48 Scott Foster", no "#"/"No." marker) -- see
     LEADING_NUM_NAME_RE / try_name_jersey.
-  * nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
-    happen to decode to the WRONG characters (e.g. "...ÔÇÖ86" for "...'86")
-    -- upstream corruption already baked into their served bytes, not a
-    decode mistake on this end. See fix_mojibake's docstring for exactly
-    what it reverses and why it's safe to apply unconditionally.
+A second suspected bug (a garbled "ÔÇÖ" in place of an apostrophe in college
+fields, e.g. "Old Dominion University ÔÇÖ86") turned out NOT to be real: the
+raw cached bytes were confirmed (via a direct hex/repr dump of the cache
+file) to be plain, correct UTF-8 for a right single quotation mark
+(\xe2\x80\x99) all along -- the garbled text was a Windows cmd console
+rendering artifact (cmd's own code page, not this script or the CSV, doing
+the misdecoding on display), never present in the actual data. A CP850
+round-trip "repair" was tried and reverted -- it would have corrected a
+corruption that never existed in the file, and risked mangling genuinely
+correct accented text if the pattern had ever coincidentally matched. Moral:
+verify against raw bytes before treating a terminal's rendering as ground
+truth.
 Every fetched page is still cached to disk BEFORE parsing
 (source-data/_nbra_raw/, gitignored, local only) and parsing is a pure
 function over that cache -- so if anything else comes up empty or wrong,
@@ -138,42 +145,26 @@ JERSEY_RE2 = re.compile(r"\bNo\.?\s*(\d{1,3})\b", re.IGNORECASE)
 # Known-field synonyms for the generic label:value scan on each bio page.
 # Anything scanned that doesn't match one of these lands in extra_fields
 # instead of being dropped -- see extract_labeled_facts's docstring.
+# "born" used to be grouped under hometown, which is wrong more often than
+# right on a bio page (a bare "Born:" label almost always precedes a birth
+# DATE, not a place -- a real hometown is normally its own separate label)
+# and meant a genuine "Date of Birth" field would either collide with
+# hometown via setdefault (silently losing whichever was scanned second) or,
+# if a page had no separate "hometown" label at all, get misfiled as one.
+# birth_date is now its own field.
 FIELD_SYNONYMS = {
     "years_experience": [
         "years of nba experience", "nba experience", "years experience",
         "years in the nba", "experience", "seasons of nba experience",
     ],
     "college": ["college", "university", "alma mater"],
-    "hometown": ["hometown", "home town", "from", "birthplace", "born"],
+    "hometown": ["hometown", "home town", "from", "birthplace"],
+    "birth_date": ["date of birth", "birth date", "birthdate", "dob", "born"],
 }
 CSV_FIELDS = [
     "official_id", "match_status", "nbra_name", "name_source", "jersey_num",
-    "years_experience", "college", "hometown", "bio_url", "extra_fields",
+    "years_experience", "college", "hometown", "birth_date", "bio_url", "extra_fields",
 ]
-
-
-def fix_mojibake(text):
-    """Repairs a specific upstream corruption confirmed on the first real run:
-    nbra.net serves some punctuation as genuinely-valid UTF-8 bytes that
-    decode (correctly, no error) to the WRONG characters -- e.g.
-    "Old Dominion University ÔÇÖ86" for what should read
-    "...'86" (a right single quotation mark). This isn't a decode mistake on
-    this script's end (the HTTP response bytes ARE read as UTF-8, correctly,
-    both here and in fetch_cached); the corruption is already baked into the
-    bytes nbra.net serves, consistent with their own content pipeline having
-    read genuinely-UTF-8 text as CP850 (a legacy DOS/OEM code page) at some
-    point and re-saved the result as new, validly-encoded-but-wrong UTF-8.
-
-    Reversing that exact misread -- re-encode as cp850, re-decode as UTF-8 --
-    recovers the original text. Verified safe against plain ASCII and against
-    genuinely-correct accented text (encoding one correct accented character
-    as cp850 and decoding the result as UTF-8 fails outright with either
-    UnicodeEncodeError or UnicodeDecodeError, so this never touches text that
-    wasn't actually corrupted this specific way -- it's a no-op on it)."""
-    try:
-        return text.encode("cp850").decode("utf-8")
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        return text
 
 
 def hr(title=""):
@@ -285,9 +276,9 @@ def try_name_jersey(text):
         return None
     m = LEADING_NUM_NAME_RE.match(text)
     if m:
-        return fix_mojibake(m.group(2)), m.group(1)
+        return m.group(2), m.group(1)
     if NAME_LIKE_RE.match(text):
-        return fix_mojibake(text), None
+        return text, None
     return None
 
 
@@ -377,7 +368,7 @@ def extract_labeled_facts(soup):
         dts, dds = dl.find_all("dt"), dl.find_all("dd")
         for dt, dd in zip(dts, dds):
             label = normalize_label(dt.get_text())
-            value = fix_mojibake(dd.get_text(" ", strip=True))
+            value = dd.get_text(" ", strip=True)
             if label and value:
                 facts.setdefault(label, value)
 
@@ -386,12 +377,12 @@ def extract_labeled_facts(soup):
             cells = tr.find_all(["td", "th"])
             if len(cells) == 2:
                 label = normalize_label(cells[0].get_text())
-                value = fix_mojibake(cells[1].get_text(" ", strip=True))
+                value = cells[1].get_text(" ", strip=True)
                 if label and value:
                     facts.setdefault(label, value)
 
     for el in soup.find_all(["p", "li"]):
-        text = fix_mojibake(el.get_text(" ", strip=True))
+        text = el.get_text(" ", strip=True)
         m = re.match(r"^([A-Za-z][A-Za-z /]{2,30}):\s*(.+)$", text)
         if m:
             label = normalize_label(m.group(1))
@@ -404,7 +395,8 @@ def extract_labeled_facts(soup):
 def parse_bio(html):
     soup = BeautifulSoup(html, "html.parser")
     raw_facts = extract_labeled_facts(soup)
-    out = {"years_experience": "", "college": "", "hometown": "", "extra_fields": {}}
+    out = {"years_experience": "", "college": "", "hometown": "", "birth_date": "",
+           "extra_fields": {}}
     for label, value in raw_facts.items():
         field = canonical_field(label)
         if field:
@@ -524,7 +516,7 @@ def main():
         row = dict(e)
         row.update(facts)
         bios.append(row)
-        found = [k for k in ("years_experience", "college", "hometown") if row.get(k)] \
+        found = [k for k in ("years_experience", "college", "hometown", "birth_date") if row.get(k)] \
             + list(row["extra_fields"].keys())
         print("  [{}/{}] {}  jersey={}  fields={}  ({})".format(
             idx, len(entries), e["name"], e.get("jersey_num") or "?",
@@ -533,7 +525,7 @@ def main():
             time.sleep(DELAY_SECONDS)
 
     if not any(b.get("years_experience") or b.get("college") or b.get("hometown")
-               or b["extra_fields"] for b in bios):
+               or b.get("birth_date") or b["extra_fields"] for b in bios):
         print("\nWARNING: zero structured fields found on ANY bio page. The bio-page")
         print("parser's three strategies (definition list / two-column table /")
         print("'Label: value' text) likely don't match this site's real markup.")
