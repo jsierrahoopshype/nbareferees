@@ -24,12 +24,13 @@ Highest-scoring performance officiated on each calendar date across all seasons.
 
 ## 2. build.py — officiating quality score (extends existing leaderboards.json, not a new file)
 
-For every ref, for every game with a known round (from label_rounds — this includes the 13 2000-01 games with round kept but game_num nulled; round is all this needs): R1=1pt, R2=2pts, R3=4pts, R4=8pts.
+For every ref, for every game: regular season = 1pt. For every game with a known playoff round (from label_rounds — this includes the 13 2000-01 games with round kept but game_num nulled; round is all this needs): R1=2pts, R2=4pts, R3=8pts, Finals=16pts. (Revised from the original R1=1/R2=2/R3=4/R4=8-only scale, which counted playoff games alone — the fuller scale also counts regular-season workload and doubles the playoff weights so a Finals game still outweighs the deepest earlier round.)
 
 - `quality_total` = sum across career.
 - `quality_per_season` = quality_total / seasons_active. Apply a minimum of 3 seasons_active for this specific ranking (not for the total ranking) — otherwise a single lucky rookie-season Finals assignment tops the list on n=1, the same small-sample distortion the site guards against everywhere else.
+- Because this now counts regular-season games, it reflects only games this database covers (1993-94 onward) — officials whose careers began earlier are undercounted, not fairly ranked against a full career. State this plainly next to the leaderboard, not in a footnote.
 
-Add two new categories to the existing leaderboard tab system (reuse the current UI, don't build a new one): "Playoff weight — career total" and "Playoff weight — per season" (with seasons_active shown as n on the per-season table). Each row links to the ref page as usual.
+Add two new categories to the existing leaderboard tab system (reuse the current UI, don't build a new one): "Quality score — career" and "Quality score — per season" (with seasons_active shown as n on the per-season table). Each row links to the ref page as usual.
 
 ## 3. render_pages.py + assets — the dashboard itself
 

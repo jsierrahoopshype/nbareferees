@@ -100,12 +100,16 @@ RECENT_FORM_STATS = [
     ("home_win_pct", "home_win_f", False),
     ("ot_rate", "is_ot_f", True),
 ]
-# Officiating "quality score" (DASHBOARD_SPEC §2): weight each game a ref
-# worked with known round by how deep into the playoffs it was, per BUILD_SPEC
-# round labels (label_rounds) -- this includes every game in
-# ESPN_GAME_NUM_UNRECOVERABLE with round kept but game_num nulled, since
-# round is all this needs.
-QUALITY_POINTS = {1: 1, 2: 2, 3: 4, 4: 8}
+# Officiating "quality score" (DASHBOARD_SPEC §2): weight every game a ref
+# worked by how much responsibility it represents -- 1 point per regular-
+# season game, then doubling with each round of the playoffs the game
+# belongs to (per BUILD_SPEC round labels / label_rounds -- this includes
+# every game in ESPN_GAME_NUM_UNRECOVERABLE with round kept but game_num
+# nulled, since round is all this needs). Play-in games are not separately
+# weighted (no round label applies to them) and so contribute 0, same as
+# before this scale was widened to include the regular season.
+QUALITY_RS_POINTS = 1
+QUALITY_PO_POINTS = {1: 2, 2: 4, 3: 8, 4: 16}   # round 1 (first round) .. round 4 (Finals)
 QUALITY_MIN_SEASONS = 3           # min seasons_active for the PER-SEASON ranking only
 # Subset of WHISTLE_STATS eligible for a spotlight "signature line" (DASHBOARD_
 # SPEC §1) -- excludes avg_abs_margin, which the spec's spotlight list omits.
@@ -1427,11 +1431,14 @@ def aggregate(off, gm, pl, tg, game_tot, display, raw_ids, eras, seg_to_entity, 
             json.dump(game_log_doc, fh, ensure_ascii=False, indent=2)
 
         # ---- officiating quality score (DASHBOARD_SPEC section 2) -----------
-        # Every game with a known round (label_rounds) is weighted by how deep
-        # into the playoffs it was; games without a round (season not yet
-        # labeled, or a genuinely unrecoverable game) simply don't contribute.
-        quality_total = int(sum(
-            QUALITY_POINTS.get(int(r), 0) for r in gsub["po_round"].dropna()))
+        # Regular-season games count at QUALITY_RS_POINTS each; playoff games
+        # with a known round (label_rounds) are weighted by how deep into the
+        # playoffs that round was. Games with no round label at all (a
+        # genuinely unrecoverable game) and Play-In games simply don't
+        # contribute beyond their base RS weight -- they have none, since
+        # only kind=="RS" games get QUALITY_RS_POINTS.
+        quality_total = int(n_rs * QUALITY_RS_POINTS + sum(
+            QUALITY_PO_POINTS.get(int(r), 0) for r in gsub["po_round"].dropna()))
         seasons_active = len(per_season)
         quality_per_season = clean_num(quality_total / seasons_active) if seasons_active else None
 
@@ -2370,11 +2377,16 @@ def build_era_leaders(referees_index, details):
     slug_of = {r["official_id"]: r["slug"] for r in referees_index}
     per_decade = {label: defaultdict(lambda: {"total": 0, "po": 0, "finals": 0})
                  for label, *_ in DECADES}
+    # "All-time" is not one of the DECADES buckets -- it's every season in the
+    # database, accumulated alongside (not instead of) the per-decade tallies.
+    all_time_acc = defaultdict(lambda: {"total": 0, "po": 0, "finals": 0})
 
     for r in referees_index:
         off_id = r["official_id"]
         doc = details[off_id]
         for season, counts in doc["summary"]["per_season"].items():
+            all_time_acc[off_id]["total"] += counts["total"]
+            all_time_acc[off_id]["po"] += counts["po"]
             label = season_decade(season)
             if label is None:
                 continue
@@ -2384,36 +2396,49 @@ def build_era_leaders(referees_index, details):
         for g in doc["notable_games"]:
             if g.get("round") != "Finals":
                 continue
+            all_time_acc[off_id]["finals"] += 1
             label = season_decade(g["season"])
             if label is None:
                 continue
             per_decade[label][off_id]["finals"] += 1
 
+    def top_list_for(accs, field):
+        rows = [{"official_id": oid, "name": name_of[oid], "slug": slug_of[oid], "value": a[field]}
+                for oid, a in accs.items() if a[field] > 0]
+        rows.sort(key=lambda x: -x["value"])
+        return rows[:ERA_LEADERS_TOP_N]
+
+    def print_era(label, partial):
+        e = era_leaders[label]
+        print("  %-8s (%s%s): total leader=%s(%d)  playoff leader=%s(%d)  finals leader=%s(%d)"
+              % (label, e["season_range"], " partial" if partial else "",
+                 e["total_games"][0]["name"] if e["total_games"] else "—",
+                 e["total_games"][0]["value"] if e["total_games"] else 0,
+                 e["playoff_games"][0]["name"] if e["playoff_games"] else "—",
+                 e["playoff_games"][0]["value"] if e["playoff_games"] else 0,
+                 e["finals_games"][0]["name"] if e["finals_games"] else "—",
+                 e["finals_games"][0]["value"] if e["finals_games"] else 0))
+
     era_leaders = {}
     for label, lo, hi, partial in DECADES:
         accs = per_decade[label]
-
-        def top_list(field, accs=accs):
-            rows = [{"official_id": oid, "name": name_of[oid], "slug": slug_of[oid], "value": a[field]}
-                    for oid, a in accs.items() if a[field] > 0]
-            rows.sort(key=lambda x: -x["value"])
-            return rows[:ERA_LEADERS_TOP_N]
-
         era_leaders[label] = {
             "label": label, "partial": partial,
             "season_range": "%d-%02d through %d-%02d" % (lo, (lo + 1) % 100, hi, (hi + 1) % 100),
-            "total_games": top_list("total"),
-            "playoff_games": top_list("po"),
-            "finals_games": top_list("finals"),
+            "total_games": top_list_for(accs, "total"),
+            "playoff_games": top_list_for(accs, "po"),
+            "finals_games": top_list_for(accs, "finals"),
         }
-        print("  %-6s (%s%s): total leader=%s(%d)  playoff leader=%s(%d)  finals leader=%s(%d)"
-              % (label, era_leaders[label]["season_range"], " partial" if partial else "",
-                 era_leaders[label]["total_games"][0]["name"] if era_leaders[label]["total_games"] else "—",
-                 era_leaders[label]["total_games"][0]["value"] if era_leaders[label]["total_games"] else 0,
-                 era_leaders[label]["playoff_games"][0]["name"] if era_leaders[label]["playoff_games"] else "—",
-                 era_leaders[label]["playoff_games"][0]["value"] if era_leaders[label]["playoff_games"] else 0,
-                 era_leaders[label]["finals_games"][0]["name"] if era_leaders[label]["finals_games"] else "—",
-                 era_leaders[label]["finals_games"][0]["value"] if era_leaders[label]["finals_games"] else 0))
+        print_era(label, partial)
+    era_leaders["All-time"] = {
+        "label": "All-time", "partial": False,
+        "season_range": "%d-%02d through %s" % (
+            SEASON_FLOOR_YEAR, (SEASON_FLOOR_YEAR + 1) % 100, CURRENT_SEASON),
+        "total_games": top_list_for(all_time_acc, "total"),
+        "playoff_games": top_list_for(all_time_acc, "po"),
+        "finals_games": top_list_for(all_time_acc, "finals"),
+    }
+    print_era("All-time", False)
     return era_leaders
 
 
@@ -3139,7 +3164,7 @@ def dashboard_spot_checks(referees_index, details, dashboard):
     hr("SECTION 9  Dashboard spot-checks")
     by_name = {r["name"]: r for r in referees_index}
 
-    print("Quality score (R1=1/R2=2/R3=4/R4=8 pt per playoff round worked) "
+    print("Quality score (RS=1/R1=2/R2=4/R3=8/Finals=16 pt per game worked) "
           "vs. already-verified Finals/Game-7 counts:")
     for n in ["Scott Foster", "Tony Brothers", "James Capers"]:
         r = by_name.get(n)
