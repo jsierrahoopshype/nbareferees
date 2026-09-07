@@ -240,6 +240,46 @@ def stat_chip(label, value, accent=False):
         a=" chip-accent" if accent else "", v=value, l=esc(label))
 
 
+def nbra_jersey_badge(nbra_bio):
+    """Jersey number, shown right next to the name (the one NBRA fact that
+    reads as an identity marker, not a biography detail). Only ~74/166
+    referees have this -- current officials only -- so this is simply
+    omitted, not padded, when absent."""
+    if not nbra_bio or not nbra_bio.get("jersey_num"):
+        return ""
+    return ' <span class="jersey-num">#{n}</span>'.format(n=esc(nbra_bio["jersey_num"]))
+
+
+def nbra_identity_line(nbra_bio):
+    """Compact, labeled identity facts from NBRA's bio pages (years of NBA
+    experience per NBRA, college, hometown, birth date, and a computed
+    current age) -- labeled explicitly rather than phrased into a sentence,
+    since the scraped value's own wording isn't something this site
+    controls. Renders nothing at all (not a dashed/empty placeholder) when
+    no fields are present, which is the common case: NBRA's biography index
+    lists current officials only, so most referee pages don't have this
+    data. Deliberately excludes the scraper's extra_fields (favorite movie,
+    hidden talent, etc.) -- personal trivia doesn't belong on a stats site;
+    those stay in the CSV only."""
+    if not nbra_bio:
+        return ""
+    items = []
+    if nbra_bio.get("years_experience"):
+        items.append("NBA experience: %s" % esc(nbra_bio["years_experience"]))
+    if nbra_bio.get("college"):
+        items.append("College: %s" % esc(nbra_bio["college"]))
+    if nbra_bio.get("hometown"):
+        items.append("Hometown: %s" % esc(nbra_bio["hometown"]))
+    if nbra_bio.get("birth_date"):
+        born = "Born: %s" % esc(nbra_bio["birth_date"])
+        if nbra_bio.get("age") is not None:
+            born += " (age %s)" % i(nbra_bio["age"])
+        items.append(born)
+    if not items:
+        return ""
+    return '<p class="nbra-identity">%s</p>' % " &middot; ".join(items)
+
+
 def whistle_intensity_class(pctile):
     """Single-hue 'how unusual' intensity for a whistle-profile stat card, from
     its percentile rank -- NOT directional (no red/green, no good/bad
@@ -653,7 +693,7 @@ def section(num, title, inner, extra_head=""):
         eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
 
 
-def render_ref(doc, rf_doc=None):
+def render_ref(doc, rf_doc=None, nbra_bio=None):
     s = doc["summary"]
     name = s["name"]
     seasons = career_span(s["first_season"], s["last_season"])
@@ -679,13 +719,15 @@ def render_ref(doc, rf_doc=None):
   <div class="ref-hero-stripe" aria-hidden="true"></div>
   <div class="ref-hero-body">
     <p class="ref-kicker">NBA on-court official</p>
-    <h1 class="ref-name">{name}</h1>
+    <h1 class="ref-name">{name}{jersey}</h1>
     <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a>
     <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a>
-    <a class="compare-btn" href="{root}matchup/index.html?ref={slug}">Team matchups</a></div>
+    <a class="compare-btn" href="{root}matchup/index.html?ref={slug}">Team matchups</a></div>{identity}
     <div class="chip-row">{chips}</div>
   </div>
-</section>""".format(name=esc(name), active=active, chips="".join(chips),
+</section>""".format(name=esc(name), jersey=nbra_jersey_badge(nbra_bio),
+                     identity=nbra_identity_line(nbra_bio),
+                     active=active, chips="".join(chips),
                      root=ROOT2, slug=esc(s["slug"]))
 
     blocks = [back_home(), hero, ref_search(2, "top")]
@@ -904,7 +946,18 @@ def render_team(doc):
     return page(title, desc, 2, "".join(blocks))
 
 
-def whistle_rank_table(rows, key):
+def age_cell(age_by_slug, slug):
+    a = (age_by_slug or {}).get(slug)
+    return ('<td data-label="Age" data-sort="{s}">{v}</td>'
+            .format(s=a if a is not None else "-1", v=i(a) if a is not None else "—"))
+
+
+AGE_TH = ('<th class="sortable col-num" data-type="num" scope="col" '
+          'title="Computed from NBRA bio data, where available -- most officials don\'t '
+          'have this on file">Age</th>')
+
+
+def whistle_rank_table(rows, key, age_by_slug=None):
     """League Context (docs/LEAGUE_CONTEXT_SPEC.md section 6): the raw value
     stays -- "games with the fewest total points" is a legitimate factual
     leaderboard, it just isn't a claim about the official -- alongside a new
@@ -925,9 +978,11 @@ def whistle_rank_table(rows, key):
             '<td data-label="Differential" data-sort="{ds}"><span class="big-num">{dv}</span></td>'
             '<td data-label="Raw value" data-sort="{vs}">{v}</td>'
             '<td data-label="Games" data-sort="{n}">{ni}</td>'
+            "{age}"
             "</tr>".format(rk=r["rank"], ref=ref_link(r["name"], r["slug"]),
                            ds=(d if d is not None else 0), dv=difffmt(d),
-                           vs=r["value"], v=valfmt(r["value"]), n=r["n"], ni=i(r["n"])))
+                           vs=r["value"], v=valfmt(r["value"]), n=r["n"], ni=i(r["n"]),
+                           age=age_cell(age_by_slug, r["slug"])))
     return ('<table class="data-table sortable-table"><thead><tr>'
             '<th class="sortable col-num" data-type="num" scope="col">#</th>'
             '<th class="sortable col-text" data-type="text" scope="col">Referee</th>'
@@ -937,7 +992,7 @@ def whistle_rank_table(rows, key):
             '<th class="sortable col-num" data-type="num" scope="col" '
             'title="Raw career figure across qualifying games -- not era-adjusted">Raw value</th>'
             '<th class="sortable col-num" data-type="num" scope="col">Games</th>'
-            '</tr></thead><tbody>%s</tbody></table>') % "".join(body)
+            '%s</tr></thead><tbody>%s</tbody></table>') % (AGE_TH, "".join(body))
 
 
 def render_whistle_leaderboard(doc):
@@ -969,14 +1024,15 @@ def render_whistle_leaderboard(doc):
                   'bar than the regular-season ranking, since playoff games are far scarcer '
                   'per career. {note} A descriptive ranking, not a causal claim.</p>').format(
         mg=i(mg_po), note=rank_note)
+    age_by_slug = doc.get("age_by_slug")
     blocks.append(
         '<section class="block" id="rs"><div class="block-head"><h2>Regular season</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (whistle_rank_table(doc["rs"], key), rs_methods))
+        % (whistle_rank_table(doc["rs"], key, age_by_slug), rs_methods))
     blocks.append(
         '<section class="block" id="po"><div class="block-head"><h2>Playoffs</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (whistle_rank_table(doc["po"], key), po_methods))
+        % (whistle_rank_table(doc["po"], key, age_by_slug), po_methods))
     blocks.append(ref_search(2, "bottom"))
     return page(title, desc, 2, "".join(blocks))
 
@@ -992,7 +1048,7 @@ QUALITY_SCALE_NOTICE = (
     'officiating quality.</p></div>')
 
 
-def quality_rank_table(rows, valkey, valfmt, n_key=None, n_label="Games"):
+def quality_rank_table(rows, valkey, valfmt, n_key=None, n_label="Games", age_by_slug=None):
     if not rows:
         return '<p class="empty-note">No officials currently qualify for this ranking.</p>'
     body = []
@@ -1006,15 +1062,16 @@ def quality_rank_table(rows, valkey, valfmt, n_key=None, n_label="Games"):
             '<td data-label="#" class="rank" data-sort="{rk}">{rk}</td>'
             '<td data-label="Referee">{ref}</td>'
             '<td data-label="Quality score" data-sort="{vs}"><span class="big-num">{v}</span></td>'
-            "{n_cell}"
+            "{n_cell}{age}"
             "</tr>".format(rk=rank, ref=ref_link(r["name"], r["slug"]),
-                           vs=r[valkey], v=valfmt(r[valkey]), n_cell=n_cell))
+                           vs=r[valkey], v=valfmt(r[valkey]), n_cell=n_cell,
+                           age=age_cell(age_by_slug, r["slug"])))
     n_th = '<th class="sortable col-num" data-type="num" scope="col">%s</th>' % esc(n_label) if n_key else ""
     return ('<table class="data-table sortable-table"><thead><tr>'
             '<th class="sortable col-num" data-type="num" scope="col">#</th>'
             '<th class="sortable col-text" data-type="text" scope="col">Referee</th>'
             '<th class="sortable col-num" data-type="num" scope="col">Quality score</th>'
-            '%s</tr></thead><tbody>%s</tbody></table>') % (n_th, "".join(body))
+            '%s%s</tr></thead><tbody>%s</tbody></table>') % (n_th, AGE_TH, "".join(body))
 
 
 def render_quality_leaderboard(doc):
@@ -1038,14 +1095,16 @@ def render_quality_leaderboard(doc):
                        'ranking only (not the career-total one) — otherwise a single lucky '
                        'rookie-season Finals assignment could top the list on n=1.</p>').format(
         mn=i(min_seasons))
+    age_by_slug = doc.get("age_by_slug")
     blocks.append(
         '<section class="block" id="career"><div class="block-head"><h2>Career total</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (quality_rank_table(total_rows, "quality_total", i), total_methods))
+        % (quality_rank_table(total_rows, "quality_total", i, age_by_slug=age_by_slug), total_methods))
     blocks.append(
         '<section class="block" id="per-season"><div class="block-head"><h2>Per season</h2></div>'
         '<div class="table-wrap">%s</div>%s</section>'
-        % (quality_rank_table(season_rows, "quality_per_season", dec, n_key="n", n_label="Seasons"),
+        % (quality_rank_table(season_rows, "quality_per_season", dec, n_key="n", n_label="Seasons",
+                              age_by_slug=age_by_slug),
            season_methods))
     blocks.append(ref_search(2, "bottom"))
     return page(title, desc, 2, "".join(blocks))
@@ -1258,13 +1317,16 @@ def dashboard_rotation_slots(dashboard):
     client-side (must reflect the viewer's actual today on a statically-built
     site), but the underlying data ships as real JSON in the page source."""
     payload = json.dumps(
-        {"spotlight": dashboard["spotlight"], "date_index": dashboard["date_index"]},
+        {"spotlight": dashboard["spotlight"], "date_index": dashboard["date_index"],
+         "birthdays": dashboard["birthdays"]},
         ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return ("""<div class="today-grid">
   <div class="today-col"><span class="lb-subhead">Spotlight of the day</span>
     <div id="spotlight-card"><p class="empty-note">Loading…</p></div></div>
   <div class="today-col"><span class="lb-subhead">On this date</span>
     <div id="ondate-card"><p class="empty-note">Loading…</p></div></div>
+  <div class="today-col"><span class="lb-subhead" id="birthday-heading">Birthdays</span>
+    <div id="birthday-card"><p class="empty-note">Loading…</p></div></div>
 </div>
 <script type="application/json" id="dashboard-rotation-data">{payload}</script>""").format(payload=payload)
 
@@ -1377,7 +1439,7 @@ def dashboard_era_leaders_widget(era_leaders):
     return era_leaders_block(era_leaders)
 
 
-def render_index(refs, lb, dashboard):
+def render_index(refs, lb, dashboard, nbra_bios):
     total = len(refs)
     span = "%s to %s" % (min(r["first_season"] for r in refs), CURRENT_SEASON)
     active_n = sum(1 for r in refs if r["active"])
@@ -1551,10 +1613,14 @@ def render_index(refs, lb, dashboard):
 
     rows = []
     for r in sorted(refs, key=lambda x: x["name"].lower()):
+        bio = nbra_bios.get(r["official_id"]) or {}
+        jersey_num, age = bio.get("jersey_num"), bio.get("age")
         rows.append(
             '<tr class="ref-row" data-name="{nm}">'
             '<td data-label="Referee"><a href="referee/{slug}/index.html">{name}</a>'
             '{badge}</td>'
+            '<td data-label="Jersey" data-sort="{jsort}">{jval}</td>'
+            '<td data-label="Age" data-sort="{asort}">{aval}</td>'
             '<td data-label="Seasons">{seasons}</td>'
             '<td data-label="Games" data-sort="{g}">{gi}</td>'
             '<td data-label="RS" data-sort="{rs}">{rsi}</td>'
@@ -1562,6 +1628,10 @@ def render_index(refs, lb, dashboard):
             "</tr>".format(
                 nm=esc(r["name"].lower()), slug=esc(r["slug"]), name=esc(r["name"]),
                 badge=' <span class="dot-active" title="Active this season">●</span>' if r["active"] else "",
+                jsort=esc(jersey_num) if jersey_num else "-1",
+                jval=esc(jersey_num) if jersey_num else "—",
+                asort=age if age is not None else "-1",
+                aval=i(age) if age is not None else "—",
                 seasons=esc(career_span(r["first_season"], r["last_season"])),
                 g=r["games_total"], gi=i(r["games_total"]),
                 rs=r["games_rs"], rsi=i(r["games_rs"]),
@@ -1583,6 +1653,8 @@ def render_index(refs, lb, dashboard):
     <div class="table-wrap">
       <table class="data-table sortable-table" id="ref-directory"><thead><tr>
         <th class="sortable col-text" data-type="text" scope="col">Referee</th>
+        <th class="sortable col-num" data-type="num" scope="col">Jersey</th>
+        <th class="sortable col-num" data-type="num" scope="col">Age</th>
         <th scope="col">Seasons</th>
         <th class="sortable col-num" data-type="num" scope="col">Games</th>
         <th class="sortable col-num" data-type="num" scope="col">RS</th>
@@ -2081,8 +2153,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .submod-anchor{scroll-margin-top:3.6rem}
 .submod-anchor+.submod-anchor{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
-.today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
-.today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
+.today-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.8rem}
+.today-col #spotlight-card,.today-col #ondate-card,.today-col #birthday-card{margin-top:.5rem}
+.birthday-row{font-size:.9rem;font-weight:600;margin-top:.15rem}
+.birthday-row:first-child{margin-top:0}
+.birthday-fallback-note{display:block;font-size:.68rem;color:var(--text-secondary);margin-top:.3rem}
+@media(max-width:1100px){
+  .today-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
 #recent-form-spotlight{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight-body{display:flex}
 #recent-form-spotlight-body .record-strip{width:100%}
@@ -2104,7 +2182,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
+.jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
+  font-size:1.05rem;font-weight:700;color:var(--accent);vertical-align:middle}
 .ref-badges{margin-top:.6rem}
+/* NBRA identity line (jersey/experience/college/hometown/birth date/age):
+   only ~74/166 referees have this (current officials only per NBRA's own
+   biography index), so it's a single plain line that simply doesn't render
+   when absent -- never a dashed/empty placeholder. */
+.nbra-identity{font-size:.82rem;color:var(--text-secondary);margin-top:.5rem;max-width:60rem}
 .badge{display:inline-block;font-family:var(--mono);font-size:.64rem;font-weight:700;
   padding:.16rem .5rem;border-radius:5px;text-transform:uppercase;letter-spacing:.04em}
 .badge-active{background:var(--green-dim);color:var(--green)}
@@ -2623,6 +2708,36 @@ JS = r"""(function(){
           escHtml(entry.team_abbr)+' <span class="vs">vs</span> '+escHtml(entry.opp_abbr)+
           ' — '+escHtml(entry.date)+fallbackNote;
       }
+
+      // Birthdays widget (same family as On this date, opposite direction:
+      // data/dashboard.json's birthdays is precomputed so every one of the
+      // 366 calendar days already carries either a real birthday or the
+      // nearest UPCOMING one -- this is sparse (~74 officials at most), so
+      // most days fall back, and the heading/copy always says which case
+      // this is rather than silently showing someone else's birthday as if
+      // it were today's.
+      var birthdays=dash.birthdays||{};
+      var bEntry=birthdays[mm+"-"+dd];
+      var bCard=document.getElementById("birthday-card");
+      var bHeading=document.getElementById("birthday-heading");
+      if(bCard){
+        if(bEntry&&bEntry.people&&bEntry.people.length){
+          var isToday=!!bEntry.is_today;
+          if(bHeading)bHeading.textContent=isToday?"Birthdays today":"Next birthday";
+          var rows=bEntry.people.map(function(p){
+            var jersey=p.jersey_num?' <span class="jersey-num">#'+escHtml(p.jersey_num)+'</span>':"";
+            var age=(p.age!=null)?' <span class="caption">(age '+p.age+')</span>':"";
+            return '<div class="birthday-row"><a href="referee/'+p.slug+'/index.html">'+
+              escHtml(p.name)+'</a>'+jersey+age+'</div>';
+          }).join("");
+          var note=isToday?"":('<span class="birthday-fallback-note">No official birthdays today '+
+            '&mdash; next up: '+escHtml(bEntry.people[0].display_date||"")+'.</span>');
+          bCard.innerHTML=rows+note;
+        }else if(bHeading){
+          bHeading.textContent="Birthdays";
+          bCard.innerHTML='<p class="empty-note">No birthday data on file yet.</p>';
+        }
+      }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
   // --- Tonight's Officials -- the page's promoted anchor module. The server
@@ -3074,6 +3189,10 @@ def main():
     dashboard = json.load(open(os.path.join(DATA, "dashboard.json"), encoding="utf-8"))
     team_index = json.load(open(os.path.join(DATA, "teams.json"), encoding="utf-8"))
     player_index = json.load(open(os.path.join(DATA, "players.json"), encoding="utf-8"))
+    nbra_bios = json.load(open(os.path.join(DATA, "nbra_bios.json"), encoding="utf-8"))
+    slug_of = {r["official_id"]: r["slug"] for r in refs}
+    age_by_slug = {slug_of[oid]: bio["age"] for oid, bio in nbra_bios.items()
+                  if bio.get("age") is not None and oid in slug_of}
 
     # populate the cross-link existence sets BEFORE rendering anything, so ref
     # pages linkify only teams/players that actually have a page.
@@ -3088,7 +3207,7 @@ def main():
 
     # index
     with open(os.path.join(REPO, "index.html"), "w", encoding="utf-8") as f:
-        f.write(render_index(refs, lb, dashboard))
+        f.write(render_index(refs, lb, dashboard, nbra_bios))
 
     # data-sources page (attribution moved out of the footer, plus the
     # dataset's methodology notes moved off the index's Fresh tier)
@@ -3145,7 +3264,7 @@ def main():
         rf_path = os.path.join(DATA, "recent_form", "%s.json" % official_id)
         rf_doc = json.load(open(rf_path, encoding="utf-8")) if os.path.exists(rf_path) else None
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
-            f.write(render_ref(doc, rf_doc))
+            f.write(render_ref(doc, rf_doc, nbra_bios.get(official_id)))
         n += 1
 
         # Tier C per-referee game log (docs/TIER_C_SPEC.md section 3) --
@@ -3182,11 +3301,12 @@ def main():
             continue
         leaderboard_docs[doc["slug"]] = {"kind": "whistle", "key": key, "label": doc["label"],
                                          "rs": doc["rs"], "po": doc["po"],
-                                         "min_games": min_games}
+                                         "min_games": min_games, "age_by_slug": age_by_slug}
     leaderboard_docs["quality-score"] = {
         "kind": "quality", "total": lb["most_quality_total"],
         "per_season": lb["most_quality_per_season"],
         "min_seasons": lb["_meta"]["min_seasons_for_quality_per_season"],
+        "age_by_slug": age_by_slug,
     }
     n_leaderboards = _render_dir(
         os.path.join(REPO, "leaderboard"), leaderboard_docs,

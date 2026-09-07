@@ -48,6 +48,7 @@ from collections import defaultdict
 
 import pandas as pd
 import numpy as np
+from dateutil import parser as date_parser
 
 # Shared tricode normalization lives with the local scripts.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "local"))
@@ -2710,6 +2711,202 @@ def recent_form_spot_check(referees_index):
 
 
 # ----------------------------------------------------------------------------
+# NBRA bios (scripts/local/fetch_nbra_bios.py) -- optional identity data:
+# jersey number, years of NBA experience (per NBRA), college, hometown, birth
+# date, computed current age. source-data/nbra_bios.csv only exists once that
+# LOCAL script has been run (this environment has no network access to
+# nbra.net); absent, this stage writes an empty data/nbra_bios.json and every
+# referee page renders without the identity block, same as before this
+# feature existed.
+#
+# Deliberately narrow: only official_id, jersey_num, years_experience,
+# college, hometown, birth_date (+derived age) are carried through. The
+# scraper's extra_fields column (favorite movie, hidden talent, and similar
+# personal trivia some bio pages carry) is never read here -- it stays in the
+# CSV only, out of scope for a statistics site.
+# ----------------------------------------------------------------------------
+NBRA_BIOS_CSV = os.path.join(SRC, "nbra_bios.csv")
+NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date"]
+# Plausibility bounds for a computed age -- outside this range the parse is
+# treated as bad data (garbled scrape, or a birth-date string missing its
+# year that dateutil silently defaulted), never shown as a wrong age.
+NBRA_AGE_MIN, NBRA_AGE_MAX = 18, 90
+_YEAR_RE = re.compile(r"\b(?:18|19|20)\d{2}\b")
+_BIRTH_DATE_YEAR_SENTINEL = 1904  # implausible as a real birth year -- flags "no year in the raw string"
+
+
+def _parse_nbra_birth_date(raw):
+    """Best-effort parse of a scraped NBRA birth-date string ('May 12, 1975'
+    and similar) into (date, has_year). NBRA is a US site, so month-first is
+    assumed for any ambiguous numeric format. Returns (None, False) on
+    anything that doesn't parse cleanly -- this is optional, best-effort
+    data; a bad parse silently falls back to "no age/birthday shown", never a
+    wrong date. has_year distinguishes a real parsed year from dateutil's
+    default (it fills in a year even when the source string has none), so a
+    birth date that's only "Month Day" can still power the birthday widget
+    without fabricating an age."""
+    if not raw:
+        return None, False
+    has_year = bool(_YEAR_RE.search(str(raw)))
+    try:
+        dt = date_parser.parse(str(raw), dayfirst=False, fuzzy=False,
+                               default=datetime.datetime(_BIRTH_DATE_YEAR_SENTINEL, 1, 1))
+    except (ValueError, OverflowError, TypeError):
+        return None, False
+    return dt.date(), has_year
+
+
+def _age_as_of(birth_date, today):
+    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+
+def build_nbra_bios(referees_index):
+    hr("SECTION 9  NBRA bios (optional)")
+    known_keys = {r["official_id"] for r in referees_index}
+    today = datetime.date.today()
+    if not os.path.exists(NBRA_BIOS_CSV):
+        print("no %s -- referee pages render without jersey/bio identity data "
+              "until scripts/local/fetch_nbra_bios.py has been run locally"
+              % os.path.relpath(NBRA_BIOS_CSV, REPO))
+        out = {}
+    else:
+        df = pd.read_csv(NBRA_BIOS_CSV, dtype=str)
+        for col in ["official_id"] + NBRA_BIOS_FIELDS:
+            if col not in df.columns:
+                df[col] = ""
+        df = df.fillna("")
+        matched = df[df["official_id"].str.strip() != ""]
+        out = {}
+        dupes, unknown, bad_dates = [], [], []
+        for _, r in matched.iterrows():
+            oid = r["official_id"].strip()
+            if oid in out:
+                dupes.append(oid)
+                continue
+            if oid not in known_keys:
+                unknown.append(oid)
+                continue
+            rec = {f: (r[f].strip() or None) for f in NBRA_BIOS_FIELDS}
+            age = None
+            if rec["birth_date"]:
+                bd, has_year = _parse_nbra_birth_date(rec["birth_date"])
+                if bd is not None and has_year:
+                    a = _age_as_of(bd, today)
+                    if NBRA_AGE_MIN <= a <= NBRA_AGE_MAX:
+                        age = a
+                    else:
+                        bad_dates.append((oid, rec["birth_date"]))
+                elif bd is None:
+                    bad_dates.append((oid, rec["birth_date"]))
+            rec["age"] = age
+            out[oid] = rec
+        if dupes:
+            print("  WARNING: duplicate official_id rows in nbra_bios.csv, kept "
+                  "first only: %s" % sorted(set(dupes)))
+        if unknown:
+            print("  WARNING: nbra_bios.csv rows with an official_id not in "
+                  "referees.json (stale scrape?): %s" % sorted(set(unknown)))
+        if bad_dates:
+            print("  WARNING: birth_date present but unparseable or implausible "
+                  "(age omitted, still usable for the identity line): %s" % sorted(set(bad_dates)))
+        print("loaded %d/%d matched NBRA bio record(s) (%d rows total in the file, "
+              "%d with a computed age)"
+              % (len(out), len(referees_index), len(df), sum(1 for v in out.values() if v["age"] is not None)))
+
+    assert_no_nan(out, "nbra_bios")
+    with open(os.path.join(DATA, "nbra_bios.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=2)
+    return out
+
+
+def qa_nbra_bios(nbra_bios, referees_index):
+    hr("SECTION 9  NBRA bios QA")
+    known_keys = {r["official_id"] for r in referees_index}
+    bad_keys = [k for k in nbra_bios if k not in known_keys]
+    bad_jersey = [(k, v["jersey_num"]) for k, v in nbra_bios.items()
+                  if v["jersey_num"] is not None and not v["jersey_num"].isdigit()]
+    bad_age = [(k, v["age"]) for k, v in nbra_bios.items()
+              if v["age"] is not None and not (NBRA_AGE_MIN <= v["age"] <= NBRA_AGE_MAX)]
+    print("[hard] nbra_bios: %d records, all official_ids resolve: %s"
+          % (len(nbra_bios), not bad_keys))
+    print("[hard] nbra_bios: jersey numbers all numeric where present: %s" % (not bad_jersey))
+    print("[hard] nbra_bios: ages all within [%d, %d] where present: %s"
+          % (NBRA_AGE_MIN, NBRA_AGE_MAX, not bad_age))
+    if bad_keys or bad_jersey or bad_age:
+        hr("NBRA BIOS QA: FAILED")
+        if bad_keys:
+            print("  FAIL: unknown official_ids: %s" % bad_keys[:5])
+        if bad_jersey:
+            print("  FAIL: non-numeric jersey numbers: %s" % bad_jersey[:5])
+        if bad_age:
+            print("  FAIL: out-of-range computed ages: %s" % bad_age[:5])
+        raise SystemExit(1)
+    print("\n[nbra bios QA checks all passed]")
+
+
+# Month names for the birthday widget's display string ("May 12") -- avoids
+# %-d, which isn't portable across platforms' strftime implementations.
+_MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"]
+
+
+def build_birthdays(nbra_bios, referees_index):
+    """Frontpage birthday widget (same family as 'On this date' -- see
+    dashboard_rotation_slots in render_pages.py): officials whose NBRA bio
+    carries a birth date with a real year contribute a (month, day) entry.
+    Sparse by construction (~74/166 referees have any NBRA data at all, and
+    only those with a cleanly parseable, year-bearing birth date contribute
+    here), so -- mirroring date_index's precomputed fallback exactly, just in
+    the opposite direction -- every one of the 366 possible calendar days
+    gets a precomputed entry here too: a real birthday if that day has one,
+    else the nearest FUTURE day that does (wrapping from Dec 31 back to Jan
+    1), so the client only ever does a single dict lookup and this widget is
+    never empty."""
+    hr("SECTION 9  Birthdays widget (optional)")
+    name_of = {r["official_id"]: r["name"] for r in referees_index}
+    slug_of = {r["official_id"]: r["slug"] for r in referees_index}
+    by_md = defaultdict(list)
+    for oid, bio in nbra_bios.items():
+        bd = bio.get("birth_date")
+        if not bd:
+            continue
+        parsed, has_year = _parse_nbra_birth_date(bd)
+        if parsed is None or not has_year:
+            continue
+        md = parsed.strftime("%m-%d")
+        by_md[md].append({
+            "official_id": oid, "name": name_of[oid], "slug": slug_of[oid],
+            "jersey_num": bio.get("jersey_num"), "age": bio.get("age"),
+            "display_date": "%s %d" % (_MONTH_NAMES[parsed.month - 1], parsed.day),
+        })
+    for entries in by_md.values():
+        entries.sort(key=lambda e: e["name"])
+
+    all_mds = [d.strftime("%m-%d") for d in pd.date_range("2000-01-01", "2000-12-31")]
+    birthdays_index = {}
+    if by_md:
+        # Walk the calendar backward over two concatenated years so every
+        # real day's "nearest day at-or-after it with a birthday" is found in
+        # one pass, wrapping across the Dec 31 -> Jan 1 boundary for free.
+        doubled = all_mds + all_mds
+        carry = None
+        forward = [None] * len(doubled)
+        for idx in range(len(doubled) - 1, -1, -1):
+            if doubled[idx] in by_md:
+                carry = doubled[idx]
+            forward[idx] = carry
+        for i, md in enumerate(all_mds):
+            target = forward[i]
+            birthdays_index[md] = {"month_day": target, "is_today": target == md,
+                                   "people": by_md[target]}
+    n_people = sum(len(v) for v in by_md.values())
+    print("birthdays: %d/%d referees contribute a birthday (%d/%d distinct calendar "
+          "days); rest fall back to the nearest upcoming date"
+          % (n_people, len(nbra_bios), len(by_md), len(all_mds)))
+    return birthdays_index
+
+
+# ----------------------------------------------------------------------------
 # frontpage dashboard (DASHBOARD_SPEC section 1)
 # ----------------------------------------------------------------------------
 # 3-5 fixed, factual curiosity entries for the history strip -- genuinely true
@@ -2735,7 +2932,8 @@ DASHBOARD_CURIOSITIES = [
 
 
 def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderboards,
-                    seg_to_entity, crews, team_officials, debuts_farewells, era_leaders):
+                    seg_to_entity, crews, team_officials, debuts_farewells, era_leaders,
+                    birthdays):
     hr("SECTION 9  Frontpage dashboard")
 
     # ---- spotlight --------------------------------------------------------
@@ -2937,6 +3135,7 @@ def build_dashboard(referees_index, details, gm, pl, game_crew, off_ref, leaderb
         "team_officials": team_officials,
         "debuts_farewells": debuts_farewells,
         "era_leaders": era_leaders,
+        "birthdays": birthdays,
     }
     assert_no_nan(dashboard, "dashboard")
     with open(os.path.join(DATA, "dashboard.json"), "w", encoding="utf-8") as fh:
@@ -3051,6 +3250,13 @@ def qa_dashboard(dashboard, referees_index, team_index):
         failures.append("era_leaders slugs not in referees_index: %s" % bad_era[:5])
     print("[hard] era_leaders: %d decades, all slugs resolve: %s"
           % (len(dashboard["era_leaders"]), not bad_era))
+
+    bad_bday = [p["slug"] for entry in dashboard["birthdays"].values() for p in entry["people"]
+               if p["slug"] not in known_slugs]
+    if bad_bday:
+        failures.append("birthdays slugs not in referees_index: %s" % bad_bday[:5])
+    print("[hard] birthdays: %d calendar-day entries, all slugs resolve: %s"
+          % (len(dashboard["birthdays"]), not bad_bday))
 
     if failures:
         hr("DASHBOARD QA: FAILED")
@@ -3216,6 +3422,8 @@ def main():
     build_crewmates(off_ref, referees_index)
     build_whistle_leaderboards(referees_index)
     build_recent_form(referees_index, off_ref, gm, tg, game_tot)
+    nbra_bios = build_nbra_bios(referees_index)
+    birthdays = build_birthdays(nbra_bios, referees_index)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
     game_crew = build_game_crew(off_ref, ref_lookup)
     team_index = build_team_pages(all_team_records, gm)
@@ -3232,7 +3440,7 @@ def main():
 
     dashboard = build_dashboard(referees_index, details, gm, pl, game_crew, off_ref,
                                 leaderboards, seg_to_entity, crews, team_officials,
-                                debuts_farewells, era_leaders)
+                                debuts_farewells, era_leaders, birthdays)
     qa_gate(off_raw, gm, off_trimmed, referees_index, details)
     qa_teams_players(referees_index, team_index, player_index)
     qa_dashboard(dashboard, referees_index, team_index)
@@ -3242,6 +3450,7 @@ def main():
     qa_matchups(referees_index, team_index)
     qa_recent_form(referees_index)
     recent_form_spot_check(referees_index)
+    qa_nbra_bios(nbra_bios, referees_index)
     spot_checks(referees_index, details)
     dashboard_spot_checks(referees_index, details, dashboard)
 

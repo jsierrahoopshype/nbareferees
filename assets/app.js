@@ -197,6 +197,36 @@
           escHtml(entry.team_abbr)+' <span class="vs">vs</span> '+escHtml(entry.opp_abbr)+
           ' — '+escHtml(entry.date)+fallbackNote;
       }
+
+      // Birthdays widget (same family as On this date, opposite direction:
+      // data/dashboard.json's birthdays is precomputed so every one of the
+      // 366 calendar days already carries either a real birthday or the
+      // nearest UPCOMING one -- this is sparse (~74 officials at most), so
+      // most days fall back, and the heading/copy always says which case
+      // this is rather than silently showing someone else's birthday as if
+      // it were today's.
+      var birthdays=dash.birthdays||{};
+      var bEntry=birthdays[mm+"-"+dd];
+      var bCard=document.getElementById("birthday-card");
+      var bHeading=document.getElementById("birthday-heading");
+      if(bCard){
+        if(bEntry&&bEntry.people&&bEntry.people.length){
+          var isToday=!!bEntry.is_today;
+          if(bHeading)bHeading.textContent=isToday?"Birthdays today":"Next birthday";
+          var rows=bEntry.people.map(function(p){
+            var jersey=p.jersey_num?' <span class="jersey-num">#'+escHtml(p.jersey_num)+'</span>':"";
+            var age=(p.age!=null)?' <span class="caption">(age '+p.age+')</span>':"";
+            return '<div class="birthday-row"><a href="referee/'+p.slug+'/index.html">'+
+              escHtml(p.name)+'</a>'+jersey+age+'</div>';
+          }).join("");
+          var note=isToday?"":('<span class="birthday-fallback-note">No official birthdays today '+
+            '&mdash; next up: '+escHtml(bEntry.people[0].display_date||"")+'.</span>');
+          bCard.innerHTML=rows+note;
+        }else if(bHeading){
+          bHeading.textContent="Birthdays";
+          bCard.innerHTML='<p class="empty-note">No birthday data on file yet.</p>';
+        }
+      }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
   // --- Tonight's Officials -- the page's promoted anchor module. The server

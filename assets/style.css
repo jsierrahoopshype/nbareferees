@@ -127,8 +127,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .submod-anchor{scroll-margin-top:3.6rem}
 .submod-anchor+.submod-anchor{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
-.today-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
-.today-col #spotlight-card,.today-col #ondate-card{margin-top:.5rem}
+.today-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.8rem}
+.today-col #spotlight-card,.today-col #ondate-card,.today-col #birthday-card{margin-top:.5rem}
+.birthday-row{font-size:.9rem;font-weight:600;margin-top:.15rem}
+.birthday-row:first-child{margin-top:0}
+.birthday-fallback-note{display:block;font-size:.68rem;color:var(--text-secondary);margin-top:.3rem}
+@media(max-width:1100px){
+  .today-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
 #recent-form-spotlight{margin-top:1.6rem;padding-top:1.6rem;border-top:1px solid var(--border)}
 #recent-form-spotlight-body{display:flex}
 #recent-form-spotlight-body .record-strip{width:100%}
@@ -150,7 +156,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
+.jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
+  font-size:1.05rem;font-weight:700;color:var(--accent);vertical-align:middle}
 .ref-badges{margin-top:.6rem}
+/* NBRA identity line (jersey/experience/college/hometown/birth date/age):
+   only ~74/166 referees have this (current officials only per NBRA's own
+   biography index), so it's a single plain line that simply doesn't render
+   when absent -- never a dashed/empty placeholder. */
+.nbra-identity{font-size:.82rem;color:var(--text-secondary);margin-top:.5rem;max-width:60rem}
 .badge{display:inline-block;font-family:var(--mono);font-size:.64rem;font-weight:700;
   padding:.16rem .5rem;border-radius:5px;text-transform:uppercase;letter-spacing:.04em}
 .badge-active{background:var(--green-dim);color:var(--green)}
