@@ -145,17 +145,25 @@ JERSEY_RE2 = re.compile(r"\bNo\.?\s*(\d{1,3})\b", re.IGNORECASE)
 # Known-field synonyms for the generic label:value scan on each bio page.
 # Anything scanned that doesn't match one of these lands in extra_fields
 # instead of being dropped -- see extract_labeled_facts's docstring.
+# "born" used to be grouped under hometown, which is wrong more often than
+# right on a bio page (a bare "Born:" label almost always precedes a birth
+# DATE, not a place -- a real hometown is normally its own separate label)
+# and meant a genuine "Date of Birth" field would either collide with
+# hometown via setdefault (silently losing whichever was scanned second) or,
+# if a page had no separate "hometown" label at all, get misfiled as one.
+# birth_date is now its own field.
 FIELD_SYNONYMS = {
     "years_experience": [
         "years of nba experience", "nba experience", "years experience",
         "years in the nba", "experience", "seasons of nba experience",
     ],
     "college": ["college", "university", "alma mater"],
-    "hometown": ["hometown", "home town", "from", "birthplace", "born"],
+    "hometown": ["hometown", "home town", "from", "birthplace"],
+    "birth_date": ["date of birth", "birth date", "birthdate", "dob", "born"],
 }
 CSV_FIELDS = [
     "official_id", "match_status", "nbra_name", "name_source", "jersey_num",
-    "years_experience", "college", "hometown", "bio_url", "extra_fields",
+    "years_experience", "college", "hometown", "birth_date", "bio_url", "extra_fields",
 ]
 
 
@@ -387,7 +395,8 @@ def extract_labeled_facts(soup):
 def parse_bio(html):
     soup = BeautifulSoup(html, "html.parser")
     raw_facts = extract_labeled_facts(soup)
-    out = {"years_experience": "", "college": "", "hometown": "", "extra_fields": {}}
+    out = {"years_experience": "", "college": "", "hometown": "", "birth_date": "",
+           "extra_fields": {}}
     for label, value in raw_facts.items():
         field = canonical_field(label)
         if field:
@@ -507,7 +516,7 @@ def main():
         row = dict(e)
         row.update(facts)
         bios.append(row)
-        found = [k for k in ("years_experience", "college", "hometown") if row.get(k)] \
+        found = [k for k in ("years_experience", "college", "hometown", "birth_date") if row.get(k)] \
             + list(row["extra_fields"].keys())
         print("  [{}/{}] {}  jersey={}  fields={}  ({})".format(
             idx, len(entries), e["name"], e.get("jersey_num") or "?",
@@ -516,7 +525,7 @@ def main():
             time.sleep(DELAY_SECONDS)
 
     if not any(b.get("years_experience") or b.get("college") or b.get("hometown")
-               or b["extra_fields"] for b in bios):
+               or b.get("birth_date") or b["extra_fields"] for b in bios):
         print("\nWARNING: zero structured fields found on ANY bio page. The bio-page")
         print("parser's three strategies (definition list / two-column table /")
         print("'Label: value' text) likely don't match this site's real markup.")
