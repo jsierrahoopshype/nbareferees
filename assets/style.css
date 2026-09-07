@@ -195,6 +195,14 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .wm-i4{background:rgba(59,130,246,.38)}
 .wm-i3 .wm-val,.wm-i4 .wm-val{color:var(--accent)}
 .wm-i1:hover,.wm-i2:hover,.wm-i3:hover,.wm-i4:hover{background:rgba(59,130,246,.46)}
+.wp-legend{background:var(--surface-hover);border:1px solid var(--border);border-radius:10px;
+  padding:.7rem .9rem;margin-bottom:1rem;font-size:.76rem;color:var(--text-secondary);line-height:1.6}
+.wp-legend p{margin:.15rem 0}
+.wp-legend-term{font-weight:700;color:var(--text)}
+.wp-swatch{display:inline-block;width:1rem;height:.85rem;border:1px solid var(--border);
+  border-radius:3px;vertical-align:middle;margin:0 1px}
+.wp-swatch.wm-i0{background:var(--surface)}
+.wp-legend-labels{font-size:.68rem;margin-left:.3rem}
 
 /* ---- tables (Polymarket table.lb treatment) ---- */
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:auto}
