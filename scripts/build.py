@@ -2733,23 +2733,39 @@ NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "bi
 NBRA_AGE_MIN, NBRA_AGE_MAX = 18, 90
 _YEAR_RE = re.compile(r"\b(?:18|19|20)\d{2}\b")
 _BIRTH_DATE_YEAR_SENTINEL = 1904  # implausible as a real birth year -- flags "no year in the raw string"
+# NBRA's real bio pages append the birthplace in parens after the date itself
+# -- "December 12, 1983 (Elizabeth, N.J.)" -- which is never itself shown as
+# a separate "hometown" (that field is blank on every real bio page scraped
+# so far; the birthplace only exists here). It's kept as-is in the *stored*
+# birth_date string (still shown to the reader, on the ref page, as bonus
+# context) but must be stripped before parsing -- dateutil's strict mode
+# rejects trailing junk it can't place, which would otherwise silently
+# fail every single real birth date.
+_TRAILING_PAREN_RE = re.compile(r"\s*\([^)]*\)\s*$")
 
 
 def _parse_nbra_birth_date(raw):
-    """Best-effort parse of a scraped NBRA birth-date string ('May 12, 1975'
-    and similar) into (date, has_year). NBRA is a US site, so month-first is
-    assumed for any ambiguous numeric format. Returns (None, False) on
-    anything that doesn't parse cleanly -- this is optional, best-effort
-    data; a bad parse silently falls back to "no age/birthday shown", never a
-    wrong date. has_year distinguishes a real parsed year from dateutil's
-    default (it fills in a year even when the source string has none), so a
-    birth date that's only "Month Day" can still power the birthday widget
+    """Best-effort parse of a scraped NBRA birth-date string ('May 12, 1975',
+    'Oct. 22, 1974 (Flint, Mich.)', and similar real-world variants -- see
+    _TRAILING_PAREN_RE above) into (date, has_year). NBRA is a US site, so
+    month-first is assumed for any ambiguous numeric format; fuzzy matching
+    is safe here specifically because the trailing parenthetical (the only
+    "noise" these strings carry) is stripped first, so what's left really is
+    just a date, however it's formatted. Returns (None, False) on anything
+    that still doesn't parse -- this is optional, best-effort data; a bad
+    parse silently falls back to "no age/birthday shown", never a wrong
+    date. has_year distinguishes a real parsed year from dateutil's default
+    (it fills in a year even when the source string has none), so a birth
+    date that's only "Month Day" can still power the birthday widget
     without fabricating an age."""
     if not raw:
         return None, False
-    has_year = bool(_YEAR_RE.search(str(raw)))
+    cleaned = _TRAILING_PAREN_RE.sub("", str(raw)).strip()
+    if not cleaned:
+        return None, False
+    has_year = bool(_YEAR_RE.search(cleaned))
     try:
-        dt = date_parser.parse(str(raw), dayfirst=False, fuzzy=False,
+        dt = date_parser.parse(cleaned, dayfirst=False, fuzzy=True,
                                default=datetime.datetime(_BIRTH_DATE_YEAR_SENTINEL, 1, 1))
     except (ValueError, OverflowError, TypeError):
         return None, False
