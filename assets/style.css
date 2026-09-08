@@ -31,7 +31,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);
 a{color:var(--text);text-decoration:none}
 a:hover,a:focus,a:active{color:var(--accent);text-decoration:underline}
 h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.2}
-.mono,.chip-val,.wm-val,.hstat-num,.lb-val,.big-num,.rank,
+.mono,.chip-val,.wm-val,.lb-val,.big-num,.rank,
 .data-table td,.team-tag,.round-tag{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .skip{position:absolute;left:-999px}
 .skip:focus{left:8px;top:8px;background:var(--text);color:#fff;padding:8px 12px;z-index:20;border-radius:8px}
@@ -56,9 +56,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 
 /* ---- index page: title/search, promoted Tonight's Officials, demoted intro ----
    First screen at 1280px is deliberately minimal: title, one description
-   line, search, then Tonight's Officials. Everything that used to open the
-   page -- tagline, the 166/81/26 stat row -- moves to .index-demoted, right
-   above the sticky subnav; same content, same depth, just lower emphasis. */
+   line, search, then Tonight's Officials. .index-demoted is just one plain
+   factual line below that -- this is a reference tool, not a landing page;
+   no eyebrow, no second marketing paragraph, no stat row. */
 .index-intro{padding:1.6rem 0 .6rem}
 .index-title{font-size:1.9rem;letter-spacing:-.03em}
 .index-lead{max-width:60rem;color:var(--text-secondary);font-size:.92rem;margin:.5rem 0 0}
@@ -80,16 +80,11 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .tier-surface{background:var(--surface);border:1px solid var(--border);
   border-radius:14px;padding:1.6rem 1.8rem}
 
-/* ---- index demoted intro (tagline + stat row, moved below the fold) ---- */
-.index-demoted{padding:1.6rem 0 1.4rem;border-bottom:1px solid var(--border)}
-.hero-kicker,.ref-kicker{font-family:var(--mono);text-transform:uppercase;
+/* ---- index demoted intro: one plain factual line, nothing else ---- */
+.index-demoted{padding:.9rem 0 1rem;border-bottom:1px solid var(--border)}
+.index-factline{color:var(--text-secondary);font-size:.86rem}
+.ref-kicker{font-family:var(--mono);text-transform:uppercase;
   letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--accent);margin:0 0 .6rem}
-.hero-lead{max-width:60rem;color:var(--text-secondary);font-size:.95rem;margin:.6rem 0 0}
-.hero-stats{display:flex;flex-wrap:wrap;gap:1.6rem;margin-top:1.3rem}
-.hstat{display:flex;flex-direction:column}
-.hstat-num{font-size:1.6rem;font-weight:700;line-height:1;letter-spacing:-.02em}
-.hstat-label{font-family:var(--mono);font-size:.62rem;color:var(--text-secondary);
-  text-transform:uppercase;letter-spacing:.06em;margin-top:.4rem}
 
 /* ---- blocks / section headings ---- */
 .block{padding:1.5rem 0;border-bottom:1px solid var(--border)}
@@ -245,6 +240,16 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   border-radius:4px;padding:.05rem .3rem}
 .matchup .vs{color:var(--text-secondary);font-size:.72rem;margin:0 .1rem}
 .data-table td[data-label="Crew"]{text-align:left;white-space:normal}
+/* Directory: 166 rows of what's fundamentally a lookup list -- every row
+   already links through to the full profile, so the row itself only needs
+   to be scannable, not spacious. Tighter padding/type than the default
+   data-table at every width. */
+#ref-directory th,#ref-directory td{padding:.36rem .5rem;font-size:.8rem}
+/* Mobile-only "show more columns" toggle -- on top of tighter row spacing,
+   the mobile card view defaults to Referee/Seasons/Games only; Jersey, Age,
+   RS and PO are one tap away instead of stacked into every one of 166
+   cards. No-op on desktop, where every column already shows in the table. */
+.col-toggle{display:none}
 .crew{font-family:var(--sans);font-size:.76rem;color:var(--text-secondary);
   line-height:1.5;min-width:12rem}
 .team-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
@@ -360,19 +365,38 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .record-item:first-child{padding-left:0}
 .record-item:last-child{border-right:0}
 .record-item:hover .record-val{color:var(--accent)}
-/* Records & oddities: a wrapping grid, not a horizontally-scrolling strip --
-   at full desktop width the strip's ~8 entries ran past the viewport and
-   needed a scrollbar to read the last one or two. Reuses .record-item's
-   typography; just drops the flex-row-of-vertical-rules layout for a grid
-   where every entry is always fully visible. */
-.records-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
-  gap:1.2rem 1.6rem}
-.records-grid .record-item{border-right:0;padding:0;min-width:0}
 .record-label{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;
   letter-spacing:.05em;color:var(--text-secondary)}
 .record-val{font-size:1.2rem;font-weight:700;margin-top:.3rem;letter-spacing:-.01em}
 .record-ref{font-size:.76rem;color:var(--text-secondary);margin-top:.35rem}
 .record-n{font-family:var(--mono);font-size:.66rem}
+
+/* ---- compact list: one dense row per entry, for browsing material that
+   doesn't need a card's visual weight (Records & oddities, Top scoring
+   games). Each row is a single line wherever it fits; only the parts that
+   genuinely can't share a line (a game's crew) drop to a second, smaller
+   line. This is the "aggressively tightened" alternative to a bordered
+   card or a full data-table for a list that's read top-to-bottom, not
+   compared column-by-column. ---- */
+.cl-list{list-style:none}
+.cl-row{display:flex;align-items:baseline;gap:.6rem;padding:.32rem 0;
+  border-bottom:1px solid var(--border);font-size:.8rem;color:inherit;
+  text-decoration:none;flex-wrap:wrap}
+.cl-list li.cl-row:last-child,a.cl-row:last-child{border-bottom:0}
+a.cl-row:hover{background:var(--surface-hover);text-decoration:none}
+a.cl-row:hover .cl-val{color:var(--accent)}
+.cl-rank{font-family:var(--mono);color:var(--text-secondary);font-size:.7rem;width:1.3em;flex:none}
+.cl-label{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--text-secondary);flex:0 0 8.5rem}
+.cl-val{font-weight:700;flex:0 0 auto}
+.cl-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.cl-n{font-family:var(--mono);font-size:.64rem;color:var(--text-secondary);flex:0 0 auto}
+/* flex-basis:100% (its own line, wrapping freely inside it) rather than
+   flex:0 0 auto (fixed to its intrinsic width) -- two full team names plus
+   badges don't fit on a shared line at narrow widths, and a fixed-width
+   flex item just runs off the edge instead of wrapping. */
+.cl-sub{flex-basis:100%;font-size:.74rem;color:var(--text-secondary)}
+.cl-crew{flex-basis:100%;font-size:.68rem;color:var(--text-secondary)}
 
 .history-cols{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem}
 .history-list{list-style:none}
@@ -479,5 +503,20 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .data-table td[data-label="Matchup"]{flex-wrap:wrap;text-align:left}
   .data-table td[data-label="Matchup"]::before{flex:1 0 100%}
   .data-table td[data-label="Matchup"] .team-cell{min-width:0;max-width:100%}
+
+  /* Directory on mobile: 166 rows is a lot of scrolling even before adding
+     a bordered, rounded, margined card per row -- that overhead alone was
+     most of the "enormous vertical space" for what's a lookup list, not
+     individually significant records. A plain divider between rows (no
+     card chrome) and tighter type recovers most of that space back. */
+  #ref-directory tr{border:0;border-bottom:1px solid var(--border);border-radius:0;
+    margin-bottom:0;padding:.15rem 0}
+  #ref-directory td{padding:.15rem .3rem;font-size:.74rem}
+  #ref-directory td::before{font-size:.54rem}
+  .col-toggle{display:inline-block;margin-bottom:.7rem;padding:.6rem 1rem;font-family:var(--mono);
+    font-size:.72rem;font-weight:600;border:1px solid var(--border);border-radius:8px;
+    background:var(--surface);color:var(--accent);cursor:pointer;min-height:2.5rem}
+  .table-wrap:not(.pin-first) .data-table td.col-extra{display:none}
+  .table-wrap:not(.pin-first).cols-expanded .data-table td.col-extra{display:flex}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}

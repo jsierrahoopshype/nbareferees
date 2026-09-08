@@ -2804,17 +2804,20 @@ def build_nbra_bios(referees_index):
                 continue
             rec = {f: (r[f].strip() or None) for f in NBRA_BIOS_FIELDS}
             age = None
+            birth_date_iso = None
             if rec["birth_date"]:
                 bd, has_year = _parse_nbra_birth_date(rec["birth_date"])
                 if bd is not None and has_year:
                     a = _age_as_of(bd, today)
                     if NBRA_AGE_MIN <= a <= NBRA_AGE_MAX:
                         age = a
+                        birth_date_iso = bd.isoformat()  # schema.org Person.birthDate (ISO 8601)
                     else:
                         bad_dates.append((oid, rec["birth_date"]))
                 elif bd is None:
                     bad_dates.append((oid, rec["birth_date"]))
             rec["age"] = age
+            rec["birth_date_iso"] = birth_date_iso
             out[oid] = rec
         if dupes:
             print("  WARNING: duplicate official_id rows in nbra_bios.csv, kept "

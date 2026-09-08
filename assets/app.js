@@ -124,6 +124,20 @@
   }
   window.initSortableTables=initSortableTables;
   initSortableTables(document);
+  // --- mobile column toggle (directory) ---
+  // Card view on a narrow screen shows only Referee/Seasons/Games by
+  // default (.col-extra hidden); this reveals Jersey/Age/RS/PO without
+  // navigating away. No-op above the 860px breakpoint where .col-toggle
+  // itself is hidden and every column already shows.
+  [].slice.call(document.querySelectorAll(".col-toggle")).forEach(function(btn){
+    var wrap=btn.nextElementSibling;
+    if(!wrap)return;
+    btn.addEventListener("click",function(){
+      var on=wrap.classList.toggle("cols-expanded");
+      btn.textContent=on?(btn.getAttribute("data-label-expanded")||"Show fewer columns")
+                        :(btn.getAttribute("data-label-collapsed")||btn.textContent);
+    });
+  });
   // --- leaderboard tabs ---
   // Scoped PER .lb-tabs container (its .lb-panels sibling), not globally --
   // a page can carry more than one independent tab group (e.g. the index's
