@@ -206,6 +206,8 @@ def footer(depth):
   as they were officiated. Nothing on this site implies a referee causes a
   result or favors a team.</p>
   <p class="foot-links"><a href="{root}sources/index.html">Data sources</a></p>
+  <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopshype@hoopshype.com">hoopshype@hoopshype.com</a>.
+  For business inquiries, contact us at <a href="mailto:ads@hoopshype.com">ads@hoopshype.com</a>.</p>
 </footer>
 <script src="{root}assets/app.js"></script>
 </body>
@@ -1350,9 +1352,11 @@ def dashboard_records_strip(records):
     return "".join(
         '<a class="cl-row" href="referee/{slug}/index.html">'
         '<span class="cl-label">{label}</span>'
+        '<span class="cl-main">'
         '<span class="cl-val">{val}</span>'
         '<span class="cl-name">{name}</span>'
         '<span class="cl-n">n={n}</span>'
+        '</span>'
         '</a>'.format(slug=esc(r["ref_slug"]), label=esc(r["label"]),
                      val=esc(r["value"]), name=esc(r["ref_name"]), n=i(r["n"]))
         for r in records)
@@ -1371,9 +1375,11 @@ def dashboard_history_strip(history):
         crew = " &middot; ".join(ref_link(c["name"], c["slug"], root="") for c in g.get("crew") or []) or "—"
         rows.append(
             '<li class="cl-row cl-row-static">'
+            '<span class="cl-main">'
             '<span class="cl-rank">{rk}</span>'
             '<span class="cl-val">{pts} pts</span>'
             '<span class="cl-name">{player}</span>'
+            '</span>'
             '<span class="cl-sub">{team} <span class="vs">vs</span> {opp} &middot; {date}</span>'
             '<span class="cl-crew">{crew}</span>'
             '</li>'.format(
@@ -1536,14 +1542,11 @@ def render_index(refs, lb, dashboard, nbra_bios):
     # register hero furniture that used to sit below the fold here (an
     # eyebrow line, a second long description paragraph, a 166/81/26 stat
     # row) is gone -- this is a reference tool, not a landing page, and the
-    # index_masthead lead line above already says what the site is. One
-    # plain factual line stands in its place.
+    # index_masthead lead line above already says what the site is. The one
+    # plain factual line that stood in its place is gone too now -- the
+    # subnav right below carries the section list, nothing else needed here.
     masthead = index_masthead(total)
     tonight_section = tonight_officials_section(dashboard)
-
-    demoted_intro = ("""<section class="index-demoted">
-  <p class="index-factline">Career records for {total} NBA officials, {span}.</p>
-</section>""").format(total=total, span=esc(span))
 
     # ---- sticky section nav ------------------------------------------------
     # Compact jump-list, one entry per anchor below. Sticky on desktop; the
@@ -1552,7 +1555,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
     # an ordinary in-page table of contents.
     subnav = """<nav class="index-subnav" aria-label="Jump to section">
   <a href="#today">Today</a><a href="#leaders">Leaders</a>
-  <a href="#crews-teams">Crews &amp; teams</a><a href="#directory">Directory</a>
+  <a href="#crews-teams">Teams</a><a href="#directory">Directory</a>
   <a href="#records">Records</a>
 </nav>"""
 
@@ -1762,7 +1765,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
   </div>
 </section>""".format(total=total, more_data="".join(more_data_links), rows="".join(rows))
 
-    body = (masthead + tonight_section + demoted_intro + subnav + tier_fresh + tier_stats
+    body = (masthead + tonight_section + subnav + tier_fresh + tier_stats
            + tier_reference + tier_records + ref_search(0, "bottom"))
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
@@ -2212,9 +2215,6 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .tier-surface{background:var(--surface);border:1px solid var(--border);
   border-radius:14px;padding:1.6rem 1.8rem}
 
-/* ---- index demoted intro: one plain factual line, nothing else ---- */
-.index-demoted{padding:.9rem 0 1rem;border-bottom:1px solid var(--border)}
-.index-factline{color:var(--text-secondary);font-size:.86rem}
 .ref-kicker{font-family:var(--mono);text-transform:uppercase;
   letter-spacing:.08em;font-size:.68rem;font-weight:600;color:var(--accent);margin:0 0 .6rem}
 
@@ -2273,9 +2273,15 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   /* A permanently pinned bar costs real vertical space on a short mobile
      viewport for the whole length of an already-long page; keep the jump
      links (still useful for a quick table of contents) but stop pinning
-     them so they don't sit on top of content while scrolling. */
-  .index-subnav{position:static;overflow-x:visible;white-space:normal;flex-wrap:wrap;
-    background:none;border-bottom:0;padding:.2rem 0 1rem}
+     them so they don't sit on top of content while scrolling. Five items
+     needs to read as one row, not wrap to two -- tighter gap/type (labels
+     are already kept short server-side; see subnav's own comment) fits all
+     five without a horizontal scrollbar at typical phone widths, and
+     nowrap/overflow-x:auto is a graceful fallback on anything narrower
+     rather than a hard failure back into wrapping. */
+  .index-subnav{position:static;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;
+    gap:.85rem;background:none;border-bottom:0;padding:.2rem 0 1rem}
+  .index-subnav a{font-size:.66rem}
   .stat-grid-2,.today-grid{grid-template-columns:minmax(0,1fr);gap:1.6rem}
 }
 
@@ -2505,30 +2511,34 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 
 /* ---- compact list: one dense row per entry, for browsing material that
    doesn't need a card's visual weight (Records & oddities, Top scoring
-   games). Each row is a single line wherever it fits; only the parts that
-   genuinely can't share a line (a game's crew) drop to a second, smaller
-   line. This is the "aggressively tightened" alternative to a bordered
-   card or a full data-table for a list that's read top-to-bottom, not
-   compared column-by-column. ---- */
+   games). Each row is a fixed shape, not a free-wrapping one: the label
+   (or rank) always gets its own full-width line, then a single .cl-main
+   line holds the value + official/player name together, and any further
+   detail (a game's matchup/date, a crew) drops to its own line below
+   that. .cl-row is a column flex container so every child stretches to
+   the same full width automatically -- that's what gives every row a
+   consistent left edge, instead of each field being a wrappable sibling
+   that could land at a different indent row to row. Inside .cl-main,
+   the sample-size n rides along as a fixed-width sibling of the
+   ellipsis-truncating name (nowrap, no wrap on the row itself) so it is
+   subordinate to the name but can never end up orphaned on a line by
+   itself -- if the name is too long to fit, the name truncates, not n. */
 .cl-list{list-style:none}
-.cl-row{display:flex;align-items:baseline;gap:.6rem;padding:.32rem 0;
+.cl-row{display:flex;flex-direction:column;gap:.15rem;padding:.4rem 0;
   border-bottom:1px solid var(--border);font-size:.8rem;color:inherit;
-  text-decoration:none;flex-wrap:wrap}
+  text-decoration:none}
 .cl-list li.cl-row:last-child,a.cl-row:last-child{border-bottom:0}
 a.cl-row:hover{background:var(--surface-hover);text-decoration:none}
 a.cl-row:hover .cl-val{color:var(--accent)}
-.cl-rank{font-family:var(--mono);color:var(--text-secondary);font-size:.7rem;width:1.3em;flex:none}
 .cl-label{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;
-  color:var(--text-secondary);flex:0 0 8.5rem}
-.cl-val{font-weight:700;flex:0 0 auto}
+  color:var(--text-secondary)}
+.cl-main{display:flex;align-items:baseline;gap:.5rem;min-width:0}
+.cl-rank{font-family:var(--mono);color:var(--text-secondary);font-size:.7rem;width:1.3em;flex:none}
+.cl-val{font-weight:700;flex:none}
 .cl-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.cl-n{font-family:var(--mono);font-size:.64rem;color:var(--text-secondary);flex:0 0 auto}
-/* flex-basis:100% (its own line, wrapping freely inside it) rather than
-   flex:0 0 auto (fixed to its intrinsic width) -- two full team names plus
-   badges don't fit on a shared line at narrow widths, and a fixed-width
-   flex item just runs off the edge instead of wrapping. */
-.cl-sub{flex-basis:100%;font-size:.74rem;color:var(--text-secondary)}
-.cl-crew{flex-basis:100%;font-size:.68rem;color:var(--text-secondary)}
+.cl-n{font-family:var(--mono);font-size:.64rem;color:var(--text-secondary);flex:none}
+.cl-sub{font-size:.74rem;color:var(--text-secondary)}
+.cl-crew{font-size:.68rem;color:var(--text-secondary)}
 
 .history-cols{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem}
 .history-list{list-style:none}
@@ -2603,6 +2613,8 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .foot-editorial{max-width:74ch;margin:0 auto;opacity:.85}
 .foot-links{margin-top:.7rem}
 .foot-links a{font-weight:600}
+.foot-contact{max-width:74ch;margin:1rem auto 0;padding-top:1rem;border-top:1px solid var(--border)}
+.foot-contact a{font-weight:600}
 
 /* ---- responsive: tables collapse to labeled cards ---- */
 @media(max-width:860px){
@@ -2625,8 +2637,25 @@ a.cl-row:hover .cl-val{color:var(--accent)}
     white-space:normal;border:0;padding:.4rem .8rem}
   .data-table td::before{content:attr(data-label);font-family:var(--mono);color:var(--text-secondary);
     font-weight:600;text-transform:uppercase;font-size:.6rem;letter-spacing:.04em;text-align:left;flex:none}
-  .data-table td:first-child{text-align:right}
   .data-table td[data-label]:only-child::before{content:""}
+  /* Every card's identifying column (referee/player/team/season/crew/date --
+     whichever a table leads with) is that card's HEADING, not another
+     label/value row. As a flex row with justify-content:space-between (the
+     default above), its value's horizontal position shifted with however
+     long its label+value text happened to be, so the same field landed in
+     a different spot card to card -- exactly what a heading must not do.
+     Full-width, left-aligned, no label prefix, set off by a rule below it.
+     Rank ("#") columns are the one exception: the card's own position
+     already shows rank, so the number is dropped (not promoted) and the
+     name right after it becomes the heading instead. */
+  .data-table td:first-child:not(.rank),
+  .data-table td.rank + td{
+    display:block;width:100%;text-align:left;font-family:var(--sans);
+    font-weight:700;font-size:.92rem;padding:.5rem .8rem .45rem;
+    border-bottom:1px solid var(--border);margin-bottom:.15rem}
+  .data-table td:first-child:not(.rank)::before,
+  .data-table td.rank + td::before{content:none}
+  .data-table td.rank{display:none}
   /* A Matchup cell holding two full team names (.team-cell, not a bare
      tricode) doesn't fit next to its label on one line -- nested flex items
      default to a min-width that blocks shrinking/wrapping, which was
@@ -2645,6 +2674,13 @@ a.cl-row:hover .cl-val{color:var(--accent)}
     margin-bottom:0;padding:.15rem 0}
   #ref-directory td{padding:.15rem .3rem;font-size:.74rem}
   #ref-directory td::before{font-size:.54rem}
+  /* #ref-directory td above is ID-scoped, so it otherwise outranks the
+     shared .data-table heading rule (a class selector) on specificity alone
+     and would silently keep the referee-name cell tiny -- match its own
+     specificity here so the heading treatment actually wins. */
+  #ref-directory td:first-child{display:block;width:100%;text-align:left;
+    font-family:var(--sans);font-weight:700;font-size:.92rem;
+    padding:.5rem .5rem .4rem;border-bottom:1px solid var(--border);margin-bottom:.15rem}
   .col-toggle{display:inline-block;margin-bottom:.7rem;padding:.6rem 1rem;font-family:var(--mono);
     font-size:.72rem;font-weight:600;border:1px solid var(--border);border-radius:8px;
     background:var(--surface);color:var(--accent);cursor:pointer;min-height:2.5rem}
