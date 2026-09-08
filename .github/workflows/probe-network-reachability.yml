@@ -1,0 +1,301 @@
+name: Probe network reachability
+
+# Manual-only reachability report. Answers ONE question: which of our data
+# sources are reachable from a GitHub-hosted runner's datacenter IP, and which
+# get blocked? That decides whether the in-season nightly "Tonight's Crews"
+# pipeline can be automated here or has to stay a scheduled task on Jorge's
+# machine (see DASHBOARD_SPEC section 4 and source-data/_probe_assignments.txt).
+#
+# READ-ONLY. No parsing, no commits, no data changes -- output is the Actions
+# log plus a job summary table. Nothing in the repo is touched.
+
+on:
+  workflow_dispatch:
+    inputs:
+      espn_date:
+        description: 'ESPN scoreboard date (YYYYMMDD). Blank = yesterday (may be off-season, i.e. zero games but still a valid reachability result).'
+        required: false
+        default: ''
+      nba_season:
+        description: 'Season for the stats.nba.com leaguegamelog probe, e.g. 2025-26'
+        required: false
+        default: '2025-26'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Show runner egress IP
+        # Useful context: stats.nba.com's block is IP/ASN-based, so knowing
+        # which egress address the runner used explains a 403 vs a timeout.
+        run: |
+          echo "Runner egress IP (via api.ipify.org):"
+          curl -s --max-time 15 https://api.ipify.org || echo "(ipify unreachable)"
+          echo
+
+      - name: Probe data sources
+        env:
+          ESPN_DATE: ${{ inputs.espn_date }}
+          NBA_SEASON: ${{ inputs.nba_season }}
+        run: |
+          python3 - <<'PY'
+          import datetime
+          import gzip
+          import io
+          import json
+          import os
+          import ssl
+          import time
+          import urllib.error
+          import urllib.request
+          import zlib
+
+          TIMEOUT = 30  # seconds; a timeout is itself a meaningful result
+
+          UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+
+          # Headers copied from the local scripts so the runner test is
+          # apples-to-apples with what already works on Jorge's machine:
+          # scripts/local/probe_nba_assignments.py (official.nba.com),
+          # scripts/local/fetch_espn_seasons.py (ESPN),
+          # scripts/local/fetch_player_logs.py (stats.nba.com).
+          HTML_HEADERS = {
+              "User-Agent": UA,
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Accept-Encoding": "gzip, deflate",
+          }
+          ESPN_HEADERS = {
+              "User-Agent": UA,
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Accept-Encoding": "gzip, deflate",
+          }
+          NBA_HEADERS = {
+              "Host": "stats.nba.com",
+              "User-Agent": UA,
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Accept-Encoding": "gzip, deflate",
+              "Connection": "keep-alive",
+              "Referer": "https://www.nba.com/",
+              "Origin": "https://www.nba.com",
+              "x-nba-stats-origin": "stats",
+              "x-nba-stats-token": "true",
+          }
+
+          # --- date inputs -------------------------------------------------
+          espn_date = (os.environ.get("ESPN_DATE") or "").strip()
+          if not espn_date:
+              espn_date = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+          season = (os.environ.get("NBA_SEASON") or "2025-26").strip()
+
+          # A fixed in-season control date, so we can tell "ESPN is reachable
+          # but there were no games that day" apart from "ESPN is blocked".
+          CONTROL_DATE = "20260115"
+
+          ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+          NBA_GAMELOG = (
+              "https://stats.nba.com/stats/leaguegamelog"
+              "?Counter=0&Direction=DESC&LeagueID=00&PlayerOrTeam=T"
+              "&Season=" + season.replace(" ", "") +
+              "&SeasonType=Regular+Season&Sorter=DATE"
+          )
+
+          TARGETS = [
+              {
+                  "name": "official.nba.com referee assignments",
+                  "url": "https://official.nba.com/referee-assignments/",
+                  "headers": HTML_HEADERS,
+                  "expect": "html",
+                  # Markers that say we really got the assignments page and not
+                  # a generic landing/error page.
+                  "markers": ["referee", "assignment", "official"],
+              },
+              {
+                  "name": "ESPN scoreboard (%s)" % espn_date,
+                  "url": ESPN_BASE + "?dates=" + espn_date,
+                  "headers": ESPN_HEADERS,
+                  "expect": "json",
+                  "markers": ["events", "leagues"],
+              },
+              {
+                  "name": "ESPN scoreboard (in-season control %s)" % CONTROL_DATE,
+                  "url": ESPN_BASE + "?dates=" + CONTROL_DATE,
+                  "headers": ESPN_HEADERS,
+                  "expect": "json",
+                  "markers": ["events", "leagues"],
+              },
+              {
+                  "name": "stats.nba.com leaguegamelog (%s)" % season,
+                  "url": NBA_GAMELOG,
+                  "headers": NBA_HEADERS,
+                  "expect": "json",
+                  "markers": ["resultSets", "resource"],
+              },
+          ]
+
+          # Strings that identify an edge block / bot-wall rather than content.
+          BLOCK_SIGNS = [
+              "access denied", "request unsuccessful", "incapsula", "imperva",
+              "cloudfront", "akamai", "attention required", "just a moment",
+              "cf-browser-verification", "captcha", "are you a robot",
+              "forbidden", "blocked", "bot detection", "perimeterx",
+              "reference #", "you have been blocked",
+          ]
+
+
+          def decode_body(raw, encoding):
+              """urllib does not auto-decompress; handle gzip/deflate ourselves."""
+              enc = (encoding or "").lower()
+              try:
+                  if "gzip" in enc:
+                      return gzip.GzipFile(fileobj=io.BytesIO(raw)).read()
+                  if "deflate" in enc:
+                      try:
+                          return zlib.decompress(raw)
+                      except zlib.error:
+                          return zlib.decompress(raw, -zlib.MAX_WBITS)
+              except Exception:
+                  return raw  # report what we got rather than dying on encoding
+              return raw
+
+
+          def classify(status, ctype, body_text, target):
+              """Return (verdict, detail) -- expected content vs block page vs other."""
+              lowered = body_text[:8000].lower()
+              hits = [s for s in BLOCK_SIGNS if s in lowered]
+
+              if status in (401, 403, 407, 429, 451):
+                  return "BLOCKED", "HTTP %d%s" % (
+                      status, " + block wording: %s" % ", ".join(hits[:3]) if hits else "")
+              if status >= 500:
+                  return "ERROR", "HTTP %d (server side or edge rejection)" % status
+
+              if target["expect"] == "json":
+                  try:
+                      parsed = json.loads(body_text)
+                  except ValueError:
+                      if hits:
+                          return "BLOCKED", "non-JSON body with block wording: %s" % ", ".join(hits[:3])
+                      return "UNEXPECTED", "HTTP %d but body is not JSON (content-type: %s)" % (status, ctype)
+                  missing = [m for m in target["markers"] if m not in parsed]
+                  if missing:
+                      return "UNEXPECTED", "JSON parsed but missing expected key(s): %s" % ", ".join(missing)
+                  # Extra, purely informational shape note. Not parsing data --
+                  # just counting top-level rows to show the payload is real.
+                  note = "valid JSON with %s" % ", ".join(target["markers"])
+                  if "events" in parsed and isinstance(parsed["events"], list):
+                      note += "; events=%d" % len(parsed["events"])
+                  if "resultSets" in parsed and isinstance(parsed["resultSets"], list):
+                      try:
+                          rows = sum(len(rs.get("rowSet", [])) for rs in parsed["resultSets"])
+                          note += "; resultSet rows=%d" % rows
+                      except Exception:
+                          pass
+                  return "LOOKS EXPECTED", note
+
+              # HTML target
+              if hits and "text/html" in (ctype or "").lower() and len(body_text) < 20000:
+                  return "BLOCKED", "short HTML with block wording: %s" % ", ".join(hits[:3])
+              found = [m for m in target["markers"] if m in lowered]
+              if found:
+                  return "LOOKS EXPECTED", "HTML containing marker(s): %s" % ", ".join(found)
+              if hits:
+                  return "BLOCKED", "block wording: %s" % ", ".join(hits[:3])
+              return "UNEXPECTED", "HTTP %d, no expected markers in body" % status
+
+
+          def probe(target):
+              req = urllib.request.Request(target["url"], headers=target["headers"])
+              started = time.time()
+              try:
+                  with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+                      raw = resp.read()
+                      status = resp.getcode()
+                      headers = dict(resp.headers)
+                      final_url = resp.geturl()
+              except urllib.error.HTTPError as exc:
+                  raw = exc.read() or b""
+                  status = exc.code
+                  headers = dict(exc.headers or {})
+                  final_url = target["url"]
+              except urllib.error.URLError as exc:
+                  return {
+                      "target": target, "elapsed": time.time() - started,
+                      "status": "-", "ctype": "-", "wire": 0, "size": 0,
+                      "verdict": "UNREACHABLE",
+                      "detail": "%s: %s" % (type(exc.reason).__name__ if exc.reason is not None else "URLError", exc.reason),
+                      "final_url": target["url"], "preview": "",
+                  }
+              except (ssl.SSLError, TimeoutError, OSError) as exc:
+                  return {
+                      "target": target, "elapsed": time.time() - started,
+                      "status": "-", "ctype": "-", "wire": 0, "size": 0,
+                      "verdict": "UNREACHABLE",
+                      "detail": "%s: %s" % (type(exc).__name__, exc),
+                      "final_url": target["url"], "preview": "",
+                  }
+
+              elapsed = time.time() - started
+              ctype = headers.get("Content-Type", headers.get("content-type", "(none)"))
+              cenc = headers.get("Content-Encoding", headers.get("content-encoding", ""))
+              body = decode_body(raw, cenc)
+              text = body.decode("utf-8", "replace")
+              verdict, detail = classify(status, ctype, text, target)
+              preview = " ".join(text[:300].split())
+              return {
+                  "target": target, "elapsed": elapsed, "status": status,
+                  "ctype": ctype, "wire": len(raw), "size": len(body),
+                  "verdict": verdict, "detail": detail,
+                  "final_url": final_url, "preview": preview,
+              }
+
+
+          results = []
+          for t in TARGETS:
+              print("=" * 78)
+              print("PROBE: %s" % t["name"])
+              print("URL:   %s" % t["url"])
+              r = probe(t)
+              results.append(r)
+              print("  HTTP status     : %s" % r["status"])
+              print("  Content-Type    : %s" % r["ctype"])
+              print("  Response size   : %d bytes decoded (%d bytes on the wire)" % (r["size"], r["wire"]))
+              print("  Elapsed         : %.2fs" % r["elapsed"])
+              if r["final_url"] != t["url"]:
+                  print("  Redirected to   : %s" % r["final_url"])
+              print("  Verdict         : %s -- %s" % (r["verdict"], r["detail"]))
+              if r["preview"]:
+                  print("  Body preview    : %s" % r["preview"])
+              print()
+
+          print("=" * 78)
+          print("SUMMARY")
+          print("=" * 78)
+          for r in results:
+              print("%-14s %-6s %10s bytes  %s" % (
+                  r["verdict"], r["status"], r["size"], r["target"]["name"]))
+
+          # Same table in the job summary so it is readable without opening logs.
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as fh:
+                  fh.write("## NBA data source reachability from a GitHub runner\n\n")
+                  fh.write("| Source | Status | Size | Content-Type | Verdict | Detail |\n")
+                  fh.write("| --- | --- | ---: | --- | --- | --- |\n")
+                  for r in results:
+                      fh.write("| %s | %s | %d | %s | **%s** | %s |\n" % (
+                          r["target"]["name"], r["status"], r["size"],
+                          str(r["ctype"]).split(";")[0], r["verdict"],
+                          r["detail"].replace("|", "\\|")))
+                  fh.write("\nRead-only probe. No parsing, no commits, no data changes.\n")
+
+          # Always exit 0: this is a report, not a gate. A blocked source is a
+          # finding we want recorded, not a red X.
+          PY
