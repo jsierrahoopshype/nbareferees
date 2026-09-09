@@ -276,7 +276,12 @@
       if(sub)sub.textContent=data.date;
       body.innerHTML=data.games.map(function(g){
         var crew=(g.crew||[]).map(function(c){
-          return '<a href="referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
+          // slug is null when the feed could not match an official to a
+          // canonical referee page (a new hire, a name spelling we have not
+          // mapped yet). Render the name as plain text rather than linking to
+          // referee/null/index.html.
+          var nm=escHtml(c.name);
+          return c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
         }).join(", ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+

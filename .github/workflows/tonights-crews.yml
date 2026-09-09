@@ -1,0 +1,117 @@
+name: Update tonight's crews
+
+# Daily in-season refresh of data/tonights-crews.json, the live feed behind the
+# home page's "Tonight's Officials" module.
+#
+# WHAT THIS COMMITS -- read before enabling. This is the first automation in the
+# repo that writes to it, so the blast radius is deliberately tiny:
+#
+#   * It commits EXACTLY ONE PATH: data/tonights-crews.json. The commit step
+#     stages that file by name (`git add data/tonights-crews.json`) and nothing
+#     else, so no other change can ride along.
+#   * If the file is byte-identical to what is already committed, it makes NO
+#     COMMIT AT ALL and pushes nothing. A dark night in-season, or a re-run of
+#     the same day, is a clean no-op.
+#   * If the fetch fails, the script writes nothing and exits non-zero. The
+#     previously committed file stays as it is; a blip never blanks the module.
+#   * Off-season and no-game days write a valid file with games: [], which
+#     app.js treats as "keep the server-rendered fallback".
+#
+# Schedule: 11:00 UTC daily, October through June (in-season). That is 7am ET
+# during EDT and 6am ET during EST -- GitHub cron has no timezone, so the ET
+# clock time shifts by an hour across the DST boundary; both are morning ET,
+# which is what this needs. July through September the schedule is off; use the
+# manual dispatch below if a summer date is ever needed.
+
+on:
+  schedule:
+    - cron: '0 11 * 10,11,12,1,2,3,4,5,6 *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Game date YYYY-MM-DD (blank = today, US Eastern)'
+        required: false
+        default: ''
+      commit:
+        description: 'Commit the result (uncheck for a dry run that only prints)'
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: write   # to commit data/tonights-crews.json
+  pages: write      # to request a Pages build after the commit
+
+concurrency:
+  group: tonights-crews
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build data/tonights-crews.json
+        # The date comes in through the environment, never interpolated into
+        # the command line, so a dispatch input cannot become shell syntax.
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          if [ -n "$INPUT_DATE" ]; then
+            python3 scripts/fetch_tonights_crews.py --date "$INPUT_DATE"
+          else
+            python3 scripts/fetch_tonights_crews.py
+          fi
+
+      - name: Show what changed
+        id: diff
+        run: |
+          # `git status --porcelain`, not `git diff`: on the first ever run the
+          # file is UNTRACKED, and git diff reports no change for an untracked
+          # path -- which would silently skip the first commit forever.
+          if [ -z "$(git status --porcelain -- data/tonights-crews.json)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No change to data/tonights-crews.json -- nothing to commit."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Change to be committed:"
+            git status --porcelain -- data/tonights-crews.json
+            git --no-pager diff -- data/tonights-crews.json | head -80
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true' && (github.event_name != 'workflow_dispatch' || inputs.commit)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Stage this one path only -- never `git add -A`.
+          git add data/tonights-crews.json
+          GAME_DATE=$(python3 -c 'import json;print(json.load(open("data/tonights-crews.json"))["date"])')
+          git commit -m "Update tonight's officiating crews ($GAME_DATE)"
+          # Rebase onto whatever landed while the job ran, then push.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Request a Pages build
+        # Branch-based Pages already rebuilds on push; this is an explicit nudge
+        # for it. Best-effort: it fails harmlessly if the site is instead
+        # published from a GitHub Actions source, so it never fails the job.
+        if: steps.diff.outputs.changed == 'true' && (github.event_name != 'workflow_dispatch' || inputs.commit)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            -w '\nHTTP %{http_code}\n' || true
+
+      - name: Summary
+        if: always()
+        env:
+          COMMITTED: ${{ steps.diff.outputs.changed == 'true' && (github.event_name != 'workflow_dispatch' || inputs.commit) }}
+        run: python3 scripts/tonights_crews_summary.py >> "$GITHUB_STEP_SUMMARY"
