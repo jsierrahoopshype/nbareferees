@@ -18,6 +18,10 @@ source-data/_round_labels_gamenote_cache.json
 # extract -- the parsed output is source-data/nbra_bios.csv).
 source-data/_nbra_raw/
 
+# Page + JS bundle cache for probe_assignments_source.py (local scraping cache
+# so the investigation can iterate without refetching; not a source extract).
+source-data/_assignments_raw/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
