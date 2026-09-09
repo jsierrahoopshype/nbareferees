@@ -1973,29 +1973,6 @@
   "top_games": [
     {
       "pts": 36,
-      "reb": 5,
-      "ast": 1,
-      "team_abbr": "POR",
-      "opp_abbr": "MIN",
-      "game_date": "2011-01-07",
-      "game_id": "0021000531",
-      "crew": [
-        {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
-        },
-        {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
-        },
-        {
-          "name": "Tommy Nunez Jr.",
-          "slug": "tommy-nunez"
-        }
-      ]
-    },
-    {
-      "pts": 36,
       "reb": 6,
       "ast": 5,
       "team_abbr": "DAL",
@@ -2014,6 +1991,29 @@
         {
           "name": "Leroy Richardson",
           "slug": "leroy-richardson"
+        }
+      ]
+    },
+    {
+      "pts": 36,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "POR",
+      "opp_abbr": "MIN",
+      "game_date": "2011-01-07",
+      "game_id": "0021000531",
+      "crew": [
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
+        },
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        },
+        {
+          "name": "Tommy Nunez Jr.",
+          "slug": "tommy-nunez"
         }
       ]
     },
@@ -2101,29 +2101,6 @@
       "reb": 3,
       "ast": 3,
       "team_abbr": "POR",
-      "opp_abbr": "MEM",
-      "game_date": "2010-11-16",
-      "game_id": "0021000154",
-      "crew": [
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "Jason Phillips",
-          "slug": "jason-phillips"
-        },
-        {
-          "name": "Marat Kogut",
-          "slug": "marat-kogut"
-        }
-      ]
-    },
-    {
-      "pts": 30,
-      "reb": 3,
-      "ast": 3,
-      "team_abbr": "POR",
       "opp_abbr": "UTA",
       "game_date": "2010-12-30",
       "game_id": "0021000475",
@@ -2166,25 +2143,48 @@
       ]
     },
     {
-      "pts": 29,
+      "pts": 30,
       "reb": 3,
-      "ast": 0,
-      "team_abbr": "UTA",
-      "opp_abbr": "OKC",
-      "game_date": "2010-03-14",
-      "game_id": "0020900987",
+      "ast": 3,
+      "team_abbr": "POR",
+      "opp_abbr": "MEM",
+      "game_date": "2010-11-16",
+      "game_id": "0021000154",
       "crew": [
         {
-          "name": "Kane Fitzgerald",
-          "slug": "kane-fitzgerald"
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
         },
         {
-          "name": "JB DeRosa",
-          "slug": "jb-derosa"
+          "name": "Jason Phillips",
+          "slug": "jason-phillips"
         },
         {
-          "name": "James Capers",
-          "slug": "james-capers"
+          "name": "Marat Kogut",
+          "slug": "marat-kogut"
+        }
+      ]
+    },
+    {
+      "pts": 29,
+      "reb": 4,
+      "ast": 5,
+      "team_abbr": "DAL",
+      "opp_abbr": "HOU",
+      "game_date": "2018-01-24",
+      "game_id": "0021700706",
+      "crew": [
+        {
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
+        },
+        {
+          "name": "Michael Smith",
+          "slug": "michael-smith"
+        },
+        {
+          "name": "Bill Kennedy",
+          "slug": "bill-kennedy"
         }
       ]
     }

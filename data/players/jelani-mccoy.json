@@ -420,47 +420,24 @@
     },
     {
       "pts": 13,
-      "reb": 4,
+      "reb": 15,
       "ast": 1,
       "team_abbr": "TOR",
-      "opp_abbr": "CLE",
-      "game_date": "2003-01-04",
-      "game_id": "230103028",
+      "opp_abbr": "NYK",
+      "game_date": "2003-01-02",
+      "game_id": "230101018",
       "crew": [
         {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
         },
         {
-          "name": "Bennie Adams",
-          "slug": "bennie-adams"
+          "name": "Leon Wood",
+          "slug": "leon-wood"
         },
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        }
-      ]
-    },
-    {
-      "pts": 13,
-      "reb": 6,
-      "ast": 1,
-      "team_abbr": "TOR",
-      "opp_abbr": "MIA",
-      "game_date": "2003-04-08",
-      "game_id": "230408014",
-      "crew": [
-        {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
-        },
-        {
-          "name": "Bob Delaney",
-          "slug": "bob-delaney"
-        },
-        {
-          "name": "Tim Donaghy",
-          "slug": "tim-donaghy"
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         }
       ]
     },
@@ -489,29 +466,6 @@
     },
     {
       "pts": 13,
-      "reb": 6,
-      "ast": 2,
-      "team_abbr": "TOR",
-      "opp_abbr": "UTA",
-      "game_date": "2002-12-31",
-      "game_id": "221230026",
-      "crew": [
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
-        },
-        {
-          "name": "Jason Phillips",
-          "slug": "jason-phillips"
-        }
-      ]
-    },
-    {
-      "pts": 13,
       "reb": 3,
       "ast": 1,
       "team_abbr": "SEA",
@@ -535,24 +489,70 @@
     },
     {
       "pts": 13,
-      "reb": 15,
-      "ast": 1,
+      "reb": 6,
+      "ast": 2,
       "team_abbr": "TOR",
-      "opp_abbr": "NYK",
-      "game_date": "2003-01-02",
-      "game_id": "230101018",
+      "opp_abbr": "UTA",
+      "game_date": "2002-12-31",
+      "game_id": "221230026",
       "crew": [
         {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
         },
         {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
+          "name": "Rodney Mott",
+          "slug": "rodney-mott"
         },
         {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
+          "name": "Jason Phillips",
+          "slug": "jason-phillips"
+        }
+      ]
+    },
+    {
+      "pts": 13,
+      "reb": 6,
+      "ast": 1,
+      "team_abbr": "TOR",
+      "opp_abbr": "MIA",
+      "game_date": "2003-04-08",
+      "game_id": "230408014",
+      "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Bob Delaney",
+          "slug": "bob-delaney"
+        },
+        {
+          "name": "Tim Donaghy",
+          "slug": "tim-donaghy"
+        }
+      ]
+    },
+    {
+      "pts": 13,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "TOR",
+      "opp_abbr": "CLE",
+      "game_date": "2003-01-04",
+      "game_id": "230103028",
+      "crew": [
+        {
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
+        },
+        {
+          "name": "Bennie Adams",
+          "slug": "bennie-adams"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     },

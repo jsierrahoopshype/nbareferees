@@ -1919,6 +1919,16 @@
     },
     {
       "pts": 41,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "MIN",
+      "opp_abbr": "LAL",
+      "game_date": "2017-04-09",
+      "game_id": "0021601202",
+      "crew": []
+    },
+    {
+      "pts": 41,
       "reb": 1,
       "ast": 2,
       "team_abbr": "MIN",
@@ -1941,14 +1951,27 @@
       ]
     },
     {
-      "pts": 41,
-      "reb": 2,
-      "ast": 1,
-      "team_abbr": "MIN",
-      "opp_abbr": "LAL",
-      "game_date": "2017-04-09",
-      "game_id": "0021601202",
-      "crew": []
+      "pts": 40,
+      "reb": 8,
+      "ast": 4,
+      "team_abbr": "GSW",
+      "opp_abbr": "MEM",
+      "game_date": "2021-03-19",
+      "game_id": "0022000636",
+      "crew": [
+        {
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
+        },
+        {
+          "name": "Jacyn Goble",
+          "slug": "jacyn-goble"
+        }
+      ]
     },
     {
       "pts": 40,
@@ -1975,16 +1998,6 @@
     },
     {
       "pts": 40,
-      "reb": 4,
-      "ast": 2,
-      "team_abbr": "MIN",
-      "opp_abbr": "DEN",
-      "game_date": "2017-02-15",
-      "game_id": "0021600842",
-      "crew": []
-    },
-    {
-      "pts": 40,
       "reb": 10,
       "ast": 4,
       "team_abbr": "MIN",
@@ -2008,6 +2021,16 @@
     },
     {
       "pts": 40,
+      "reb": 4,
+      "ast": 2,
+      "team_abbr": "MIN",
+      "opp_abbr": "DEN",
+      "game_date": "2017-02-15",
+      "game_id": "0021600842",
+      "crew": []
+    },
+    {
+      "pts": 40,
       "reb": 5,
       "ast": 7,
       "team_abbr": "MIN",
@@ -2026,29 +2049,6 @@
         {
           "name": "John Butler",
           "slug": "john-butler"
-        }
-      ]
-    },
-    {
-      "pts": 40,
-      "reb": 8,
-      "ast": 4,
-      "team_abbr": "GSW",
-      "opp_abbr": "MEM",
-      "game_date": "2021-03-19",
-      "game_id": "0022000636",
-      "crew": [
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        },
-        {
-          "name": "Matt Boland",
-          "slug": "matt-boland"
-        },
-        {
-          "name": "Jacyn Goble",
-          "slug": "jacyn-goble"
         }
       ]
     }

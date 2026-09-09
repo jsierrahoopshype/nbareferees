@@ -1308,29 +1308,6 @@
     },
     {
       "pts": 22,
-      "reb": 7,
-      "ast": 1,
-      "team_abbr": "MIA",
-      "opp_abbr": "ORL",
-      "game_date": "2002-10-31",
-      "game_id": "221030014",
-      "crew": [
-        {
-          "name": "Jim Clark",
-          "slug": "jim-clark"
-        },
-        {
-          "name": "Phil Robinson",
-          "slug": "phil-robinson"
-        },
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        }
-      ]
-    },
-    {
-      "pts": 22,
       "reb": 9,
       "ast": 0,
       "team_abbr": "MIA",
@@ -1345,6 +1322,29 @@
         {
           "name": "Marc Davis",
           "slug": "marc-davis"
+        },
+        {
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 7,
+      "ast": 1,
+      "team_abbr": "MIA",
+      "opp_abbr": "ORL",
+      "game_date": "2002-10-31",
+      "game_id": "221030014",
+      "crew": [
+        {
+          "name": "Jim Clark",
+          "slug": "jim-clark"
+        },
+        {
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
         },
         {
           "name": "Bennett Salvatore",
@@ -1423,39 +1423,6 @@
     },
     {
       "pts": 17,
-      "reb": 6,
-      "ast": 0,
-      "team_abbr": "MIA",
-      "opp_abbr": "NYK",
-      "game_date": "2002-12-14",
-      "game_id": "221213014",
-      "crew": [
-        {
-          "name": "Michael Smith",
-          "slug": "michael-smith"
-        },
-        {
-          "name": "Pat Fraher",
-          "slug": "pat-fraher"
-        },
-        {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
-        }
-      ]
-    },
-    {
-      "pts": 17,
-      "reb": 8,
-      "ast": 0,
-      "team_abbr": "NJN",
-      "opp_abbr": "POR",
-      "game_date": "2008-01-14",
-      "game_id": "0020700549",
-      "crew": []
-    },
-    {
-      "pts": 17,
       "reb": 4,
       "ast": 0,
       "team_abbr": "MIA",
@@ -1478,25 +1445,58 @@
       ]
     },
     {
-      "pts": 16,
+      "pts": 17,
+      "reb": 8,
+      "ast": 0,
+      "team_abbr": "NJN",
+      "opp_abbr": "POR",
+      "game_date": "2008-01-14",
+      "game_id": "0020700549",
+      "crew": []
+    },
+    {
+      "pts": 17,
       "reb": 6,
       "ast": 0,
-      "team_abbr": "CHI",
-      "opp_abbr": "PHI",
-      "game_date": "2006-02-16",
-      "game_id": "0020500777",
+      "team_abbr": "MIA",
+      "opp_abbr": "NYK",
+      "game_date": "2002-12-14",
+      "game_id": "221213014",
       "crew": [
         {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
+          "name": "Michael Smith",
+          "slug": "michael-smith"
         },
         {
-          "name": "Kevin Fehr",
-          "slug": "kevin-fehr"
+          "name": "Pat Fraher",
+          "slug": "pat-fraher"
         },
         {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
+        }
+      ]
+    },
+    {
+      "pts": 16,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "MIA",
+      "opp_abbr": "ORL",
+      "game_date": "2002-04-12",
+      "game_id": "220412014",
+      "crew": [
+        {
+          "name": "Joe DeRosa",
+          "slug": "joe-derosa"
+        },
+        {
+          "name": "Scott Wall",
+          "slug": "scott-wall"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
         }
       ]
     }

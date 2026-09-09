@@ -1709,29 +1709,6 @@
   "top_games": [
     {
       "pts": 35,
-      "reb": 18,
-      "ast": 1,
-      "team_abbr": "CLE",
-      "opp_abbr": "IND",
-      "game_date": "2004-11-03",
-      "game_id": "0020400006",
-      "crew": [
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
-        },
-        {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
-        },
-        {
-          "name": "Greg Willard",
-          "slug": "greg-willard"
-        }
-      ]
-    },
-    {
-      "pts": 35,
       "reb": 12,
       "ast": 2,
       "team_abbr": "CLE",
@@ -1750,6 +1727,29 @@
         {
           "name": "Rodney Mott",
           "slug": "rodney-mott"
+        }
+      ]
+    },
+    {
+      "pts": 35,
+      "reb": 18,
+      "ast": 1,
+      "team_abbr": "CLE",
+      "opp_abbr": "IND",
+      "game_date": "2004-11-03",
+      "game_id": "0020400006",
+      "crew": [
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        },
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Greg Willard",
+          "slug": "greg-willard"
         }
       ]
     },
@@ -1847,6 +1847,29 @@
     },
     {
       "pts": 30,
+      "reb": 11,
+      "ast": 1,
+      "team_abbr": "CLE",
+      "opp_abbr": "LAL",
+      "game_date": "2005-02-13",
+      "game_id": "0020400746",
+      "crew": [
+        {
+          "name": "Luis Grillo",
+          "slug": "luis-grillo"
+        },
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        }
+      ]
+    },
+    {
+      "pts": 30,
       "reb": 6,
       "ast": 4,
       "team_abbr": "CLE",
@@ -1865,29 +1888,6 @@
         {
           "name": "Ted Bernhardt",
           "slug": "ted-bernhardt"
-        }
-      ]
-    },
-    {
-      "pts": 30,
-      "reb": 11,
-      "ast": 1,
-      "team_abbr": "CLE",
-      "opp_abbr": "MIA",
-      "game_date": "2004-01-28",
-      "game_id": "0020300647",
-      "crew": [
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        },
-        {
-          "name": "Jess Kersey",
-          "slug": "jess-kersey"
-        },
-        {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
         }
       ]
     },
@@ -1919,21 +1919,21 @@
       "reb": 11,
       "ast": 1,
       "team_abbr": "CLE",
-      "opp_abbr": "LAL",
-      "game_date": "2005-02-13",
-      "game_id": "0020400746",
+      "opp_abbr": "MIA",
+      "game_date": "2004-01-28",
+      "game_id": "0020300647",
       "crew": [
         {
-          "name": "Luis Grillo",
-          "slug": "luis-grillo"
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
         },
         {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
+          "name": "Jess Kersey",
+          "slug": "jess-kersey"
         },
         {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
+          "name": "Scott Wall",
+          "slug": "scott-wall"
         }
       ]
     }

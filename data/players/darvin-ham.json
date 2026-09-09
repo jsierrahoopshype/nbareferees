@@ -1156,6 +1156,29 @@
     },
     {
       "pts": 13,
+      "reb": 4,
+      "ast": 0,
+      "team_abbr": "DEN",
+      "opp_abbr": "IND",
+      "game_date": "1997-01-11",
+      "game_id": "170110007",
+      "crew": [
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        },
+        {
+          "name": "Ron Olesiak",
+          "slug": "ron-olesiak"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        }
+      ]
+    },
+    {
+      "pts": 13,
       "reb": 3,
       "ast": 0,
       "team_abbr": "MIL",
@@ -1201,48 +1224,25 @@
       ]
     },
     {
-      "pts": 13,
-      "reb": 4,
-      "ast": 0,
-      "team_abbr": "DEN",
-      "opp_abbr": "IND",
-      "game_date": "1997-01-11",
-      "game_id": "170110007",
-      "crew": [
-        {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
-        },
-        {
-          "name": "Ron Olesiak",
-          "slug": "ron-olesiak"
-        },
-        {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
-        }
-      ]
-    },
-    {
       "pts": 12,
-      "reb": 2,
-      "ast": 0,
+      "reb": 5,
+      "ast": 1,
       "team_abbr": "ATL",
-      "opp_abbr": "WAS",
-      "game_date": "2003-04-12",
-      "game_id": "230412027",
+      "opp_abbr": "NOP",
+      "game_date": "2002-11-28",
+      "game_id": "221127003",
       "crew": [
         {
-          "name": "Joe DeRosa",
-          "slug": "joe-derosa"
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
         },
         {
-          "name": "Tim Donaghy",
-          "slug": "tim-donaghy"
+          "name": "David Jones",
+          "slug": "david-jones"
         },
         {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
+          "name": "Kevin Fehr",
+          "slug": "kevin-fehr"
         }
       ]
     },
@@ -1271,20 +1271,43 @@
     },
     {
       "pts": 12,
-      "reb": 5,
-      "ast": 1,
+      "reb": 2,
+      "ast": 0,
       "team_abbr": "ATL",
-      "opp_abbr": "NOP",
-      "game_date": "2002-11-28",
-      "game_id": "221127003",
+      "opp_abbr": "WAS",
+      "game_date": "2003-04-12",
+      "game_id": "230412027",
       "crew": [
         {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "Joe DeRosa",
+          "slug": "joe-derosa"
         },
         {
-          "name": "David Jones",
-          "slug": "david-jones"
+          "name": "Tim Donaghy",
+          "slug": "tim-donaghy"
+        },
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        }
+      ]
+    },
+    {
+      "pts": 11,
+      "reb": 13,
+      "ast": 0,
+      "team_abbr": "MIL",
+      "opp_abbr": "ATL",
+      "game_date": "2000-03-07",
+      "game_id": "200306015",
+      "crew": [
+        {
+          "name": "Don Vaden",
+          "slug": "don-vaden"
+        },
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
         },
         {
           "name": "Kevin Fehr",
@@ -1312,29 +1335,6 @@
         {
           "name": "Hank Armstrong",
           "slug": "hank-armstrong"
-        }
-      ]
-    },
-    {
-      "pts": 11,
-      "reb": 13,
-      "ast": 0,
-      "team_abbr": "MIL",
-      "opp_abbr": "ATL",
-      "game_date": "2000-03-07",
-      "game_id": "200306015",
-      "crew": [
-        {
-          "name": "Don Vaden",
-          "slug": "don-vaden"
-        },
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Kevin Fehr",
-          "slug": "kevin-fehr"
         }
       ]
     }

@@ -1513,29 +1513,6 @@
   "top_games": [
     {
       "pts": 22,
-      "reb": 2,
-      "ast": 1,
-      "team_abbr": "CHI",
-      "opp_abbr": "MIL",
-      "game_date": "2001-11-22",
-      "game_id": "211121015",
-      "crew": [
-        {
-          "name": "Ted Bernhardt",
-          "slug": "ted-bernhardt"
-        },
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
-        },
-        {
-          "name": "Phil Robinson",
-          "slug": "phil-robinson"
-        }
-      ]
-    },
-    {
-      "pts": 22,
       "reb": 4,
       "ast": 2,
       "team_abbr": "MIN",
@@ -1554,6 +1531,29 @@
         {
           "name": "Bill Kennedy",
           "slug": "bill-kennedy"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "CHI",
+      "opp_abbr": "MIL",
+      "game_date": "2001-11-22",
+      "game_id": "211121015",
+      "crew": [
+        {
+          "name": "Ted Bernhardt",
+          "slug": "ted-bernhardt"
+        },
+        {
+          "name": "James Capers",
+          "slug": "james-capers"
+        },
+        {
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
         }
       ]
     },
@@ -1651,16 +1651,6 @@
     },
     {
       "pts": 19,
-      "reb": 5,
-      "ast": 4,
-      "team_abbr": "MIN",
-      "opp_abbr": "HOU",
-      "game_date": "2005-02-04",
-      "game_id": "0020400685",
-      "crew": []
-    },
-    {
-      "pts": 19,
       "reb": 4,
       "ast": 3,
       "team_abbr": "MIN",
@@ -1684,26 +1674,13 @@
     },
     {
       "pts": 19,
-      "reb": 8,
-      "ast": 2,
+      "reb": 5,
+      "ast": 4,
       "team_abbr": "MIN",
-      "opp_abbr": "DAL",
-      "game_date": "2005-03-13",
-      "game_id": "0020400920",
-      "crew": [
-        {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
-        },
-        {
-          "name": "Ron Olesiak",
-          "slug": "ron-olesiak"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        }
-      ]
+      "opp_abbr": "HOU",
+      "game_date": "2005-02-04",
+      "game_id": "0020400685",
+      "crew": []
     },
     {
       "pts": 19,
@@ -1725,6 +1702,29 @@
         {
           "name": "Kevin Fehr",
           "slug": "kevin-fehr"
+        }
+      ]
+    },
+    {
+      "pts": 19,
+      "reb": 8,
+      "ast": 2,
+      "team_abbr": "MIN",
+      "opp_abbr": "DAL",
+      "game_date": "2005-03-13",
+      "game_id": "0020400920",
+      "crew": [
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        },
+        {
+          "name": "Ron Olesiak",
+          "slug": "ron-olesiak"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     }

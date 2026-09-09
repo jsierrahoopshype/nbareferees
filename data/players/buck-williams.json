@@ -853,23 +853,19 @@
     {
       "pts": 22,
       "reb": 10,
-      "ast": 0,
+      "ast": 1,
       "team_abbr": "POR",
-      "opp_abbr": "HOU",
-      "game_date": "1994-05-03",
-      "game_id": "140503022",
+      "opp_abbr": "LAC",
+      "game_date": "1993-12-30",
+      "game_id": "131229022",
       "crew": [
         {
-          "name": "Jim Clark",
-          "slug": "jim-clark"
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
         },
         {
-          "name": "Dick Bavetta",
-          "slug": "dick-bavetta"
-        },
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
         }
       ]
     },
@@ -899,19 +895,23 @@
     {
       "pts": 22,
       "reb": 10,
-      "ast": 1,
+      "ast": 0,
       "team_abbr": "POR",
-      "opp_abbr": "LAC",
-      "game_date": "1993-12-30",
-      "game_id": "131229022",
+      "opp_abbr": "HOU",
+      "game_date": "1994-05-03",
+      "game_id": "140503022",
       "crew": [
         {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
+          "name": "Jim Clark",
+          "slug": "jim-clark"
         },
         {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
+          "name": "Dick Bavetta",
+          "slug": "dick-bavetta"
+        },
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
         }
       ]
     },
@@ -931,6 +931,29 @@
         {
           "name": "Blane Reichelt",
           "slug": "blane-reichelt"
+        }
+      ]
+    },
+    {
+      "pts": 21,
+      "reb": 14,
+      "ast": 1,
+      "team_abbr": "POR",
+      "opp_abbr": "WAS",
+      "game_date": "1993-12-05",
+      "game_id": "131204027",
+      "crew": [
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        },
+        {
+          "name": "Jim Clark",
+          "slug": "jim-clark"
+        },
+        {
+          "name": "George Toliver",
+          "slug": "george-toliver"
         }
       ]
     },
@@ -981,48 +1004,25 @@
       ]
     },
     {
-      "pts": 21,
-      "reb": 14,
-      "ast": 1,
-      "team_abbr": "POR",
-      "opp_abbr": "WAS",
-      "game_date": "1993-12-05",
-      "game_id": "131204027",
-      "crew": [
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Jim Clark",
-          "slug": "jim-clark"
-        },
-        {
-          "name": "George Toliver",
-          "slug": "george-toliver"
-        }
-      ]
-    },
-    {
       "pts": 20,
-      "reb": 19,
-      "ast": 1,
+      "reb": 7,
+      "ast": 2,
       "team_abbr": "POR",
-      "opp_abbr": "NYK",
-      "game_date": "1994-01-31",
-      "game_id": "140130022",
+      "opp_abbr": "SAS",
+      "game_date": "1996-04-15",
+      "game_id": "160415022",
       "crew": [
+        {
+          "name": "Bruce Alexander",
+          "slug": "bruce-alexander"
+        },
         {
           "name": "Ed Middleton",
           "slug": "ed-middleton"
         },
         {
-          "name": "Blane Reichelt",
-          "slug": "blane-reichelt"
-        },
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "George Toliver",
+          "slug": "george-toliver"
         }
       ]
     }

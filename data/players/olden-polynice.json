@@ -1348,25 +1348,6 @@
   "top_games": [
     {
       "pts": 27,
-      "reb": 13,
-      "ast": 0,
-      "team_abbr": "DET",
-      "opp_abbr": "BOS",
-      "game_date": "1993-11-25",
-      "game_id": "131124008",
-      "crew": [
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
-        },
-        {
-          "name": "Tommy Nunez Jr.",
-          "slug": "tommy-nunez"
-        }
-      ]
-    },
-    {
-      "pts": 27,
       "reb": 16,
       "ast": 0,
       "team_abbr": "SAC",
@@ -1385,6 +1366,25 @@
         {
           "name": "Luis Grillo",
           "slug": "luis-grillo"
+        }
+      ]
+    },
+    {
+      "pts": 27,
+      "reb": 13,
+      "ast": 0,
+      "team_abbr": "DET",
+      "opp_abbr": "BOS",
+      "game_date": "1993-11-25",
+      "game_id": "131124008",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Tommy Nunez Jr.",
+          "slug": "tommy-nunez"
         }
       ]
     },
@@ -1437,15 +1437,46 @@
     {
       "pts": 25,
       "reb": 15,
-      "ast": 0,
-      "team_abbr": "DET",
-      "opp_abbr": "MIL",
-      "game_date": "1993-12-11",
-      "game_id": "131210008",
+      "ast": 3,
+      "team_abbr": "SAC",
+      "opp_abbr": "ATL",
+      "game_date": "1996-11-08",
+      "game_id": "161107023",
       "crew": [
         {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
+          "name": "Jess Kersey",
+          "slug": "jess-kersey"
+        },
+        {
+          "name": "Don Vaden",
+          "slug": "don-vaden"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        }
+      ]
+    },
+    {
+      "pts": 25,
+      "reb": 17,
+      "ast": 1,
+      "team_abbr": "SAC",
+      "opp_abbr": "DEN",
+      "game_date": "1996-04-15",
+      "game_id": "160415007",
+      "crew": [
+        {
+          "name": "Hugh Evans",
+          "slug": "hugh-evans"
+        },
+        {
+          "name": "Nolan Fine",
+          "slug": "nolan-fine"
+        },
+        {
+          "name": "Scott Foster",
+          "slug": "scott-foster"
         }
       ]
     },
@@ -1497,47 +1528,16 @@
     },
     {
       "pts": 25,
-      "reb": 17,
-      "ast": 1,
-      "team_abbr": "SAC",
-      "opp_abbr": "DEN",
-      "game_date": "1996-04-15",
-      "game_id": "160415007",
-      "crew": [
-        {
-          "name": "Hugh Evans",
-          "slug": "hugh-evans"
-        },
-        {
-          "name": "Nolan Fine",
-          "slug": "nolan-fine"
-        },
-        {
-          "name": "Scott Foster",
-          "slug": "scott-foster"
-        }
-      ]
-    },
-    {
-      "pts": 25,
       "reb": 15,
-      "ast": 3,
-      "team_abbr": "SAC",
-      "opp_abbr": "ATL",
-      "game_date": "1996-11-08",
-      "game_id": "161107023",
+      "ast": 0,
+      "team_abbr": "DET",
+      "opp_abbr": "MIL",
+      "game_date": "1993-12-11",
+      "game_id": "131210008",
       "crew": [
         {
-          "name": "Jess Kersey",
-          "slug": "jess-kersey"
-        },
-        {
-          "name": "Don Vaden",
-          "slug": "don-vaden"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
         }
       ]
     },

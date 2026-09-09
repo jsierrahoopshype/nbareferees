@@ -619,6 +619,25 @@
     },
     {
       "pts": 20,
+      "reb": 4,
+      "ast": 4,
+      "team_abbr": "CHA",
+      "opp_abbr": "WAS",
+      "game_date": "1996-11-09",
+      "game_id": "161108027",
+      "crew": [
+        {
+          "name": "Hugh Evans",
+          "slug": "hugh-evans"
+        },
+        {
+          "name": "Nolan Fine",
+          "slug": "nolan-fine"
+        }
+      ]
+    },
+    {
+      "pts": 20,
       "reb": 6,
       "ast": 9,
       "team_abbr": "LAL",
@@ -641,44 +660,21 @@
       ]
     },
     {
-      "pts": 20,
-      "reb": 4,
-      "ast": 4,
-      "team_abbr": "CHA",
-      "opp_abbr": "WAS",
-      "game_date": "1996-11-09",
-      "game_id": "161108027",
-      "crew": [
-        {
-          "name": "Hugh Evans",
-          "slug": "hugh-evans"
-        },
-        {
-          "name": "Nolan Fine",
-          "slug": "nolan-fine"
-        }
-      ]
-    },
-    {
       "pts": 19,
-      "reb": 2,
-      "ast": 3,
+      "reb": 3,
+      "ast": 8,
       "team_abbr": "LAL",
-      "opp_abbr": "GSW",
-      "game_date": "1994-04-23",
-      "game_id": "140423009",
+      "opp_abbr": "UTA",
+      "game_date": "1994-02-07",
+      "game_id": "140206013",
       "crew": [
         {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
         },
         {
-          "name": "Nolan Fine",
-          "slug": "nolan-fine"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
         }
       ]
     },
@@ -707,25 +703,6 @@
     },
     {
       "pts": 19,
-      "reb": 3,
-      "ast": 8,
-      "team_abbr": "LAL",
-      "opp_abbr": "UTA",
-      "game_date": "1994-02-07",
-      "game_id": "140206013",
-      "crew": [
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        }
-      ]
-    },
-    {
-      "pts": 19,
       "reb": 4,
       "ast": 4,
       "team_abbr": "LAL",
@@ -740,6 +717,29 @@
         {
           "name": "Tom Washington",
           "slug": "tom-washington"
+        }
+      ]
+    },
+    {
+      "pts": 19,
+      "reb": 2,
+      "ast": 3,
+      "team_abbr": "LAL",
+      "opp_abbr": "GSW",
+      "game_date": "1994-04-23",
+      "game_id": "140423009",
+      "crew": [
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        },
+        {
+          "name": "Nolan Fine",
+          "slug": "nolan-fine"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     }

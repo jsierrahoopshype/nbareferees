@@ -712,29 +712,6 @@
     },
     {
       "pts": 18,
-      "reb": 4,
-      "ast": 1,
-      "team_abbr": "MIL",
-      "opp_abbr": "MIA",
-      "game_date": "2016-03-09",
-      "game_id": "0021500952",
-      "crew": [
-        {
-          "name": "Marat Kogut",
-          "slug": "marat-kogut"
-        },
-        {
-          "name": "Pat Fraher",
-          "slug": "pat-fraher"
-        },
-        {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
-        }
-      ]
-    },
-    {
-      "pts": 18,
       "reb": 11,
       "ast": 0,
       "team_abbr": "PHX",
@@ -753,6 +730,29 @@
         {
           "name": "Scott Wall",
           "slug": "scott-wall"
+        }
+      ]
+    },
+    {
+      "pts": 18,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "MIL",
+      "opp_abbr": "MIA",
+      "game_date": "2016-03-09",
+      "game_id": "0021500952",
+      "crew": [
+        {
+          "name": "Marat Kogut",
+          "slug": "marat-kogut"
+        },
+        {
+          "name": "Pat Fraher",
+          "slug": "pat-fraher"
+        },
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
         }
       ]
     },
@@ -824,29 +824,6 @@
     },
     {
       "pts": 15,
-      "reb": 6,
-      "ast": 1,
-      "team_abbr": "PHX",
-      "opp_abbr": "SAS",
-      "game_date": "2013-11-06",
-      "game_id": "0021300068",
-      "crew": [
-        {
-          "name": "John Goble",
-          "slug": "john-goble"
-        },
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
-        },
-        {
-          "name": "Matt Boland",
-          "slug": "matt-boland"
-        }
-      ]
-    },
-    {
-      "pts": 15,
       "reb": 16,
       "ast": 1,
       "team_abbr": "PHX",
@@ -869,14 +846,50 @@
       ]
     },
     {
-      "pts": 14,
+      "pts": 15,
       "reb": 6,
-      "ast": 0,
+      "ast": 1,
       "team_abbr": "PHX",
-      "opp_abbr": "WAS",
-      "game_date": "2014-01-24",
-      "game_id": "0021300643",
-      "crew": []
+      "opp_abbr": "SAS",
+      "game_date": "2013-11-06",
+      "game_id": "0021300068",
+      "crew": [
+        {
+          "name": "John Goble",
+          "slug": "john-goble"
+        },
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
+        }
+      ]
+    },
+    {
+      "pts": 14,
+      "reb": 13,
+      "ast": 2,
+      "team_abbr": "PHX",
+      "opp_abbr": "PHI",
+      "game_date": "2014-01-27",
+      "game_id": "0021300662",
+      "crew": [
+        {
+          "name": "Eli Roe",
+          "slug": "eli-roe"
+        },
+        {
+          "name": "Mark Lindsay",
+          "slug": "mark-lindsay"
+        },
+        {
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
+        }
+      ]
     }
   ]
 }

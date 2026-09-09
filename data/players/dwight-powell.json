@@ -1781,29 +1781,6 @@
   "top_games": [
     {
       "pts": 26,
-      "reb": 10,
-      "ast": 2,
-      "team_abbr": "DAL",
-      "opp_abbr": "WAS",
-      "game_date": "2019-03-06",
-      "game_id": "0021800967",
-      "crew": [
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
-        },
-        {
-          "name": "Nick Buchert",
-          "slug": "nick-buchert"
-        },
-        {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
-        }
-      ]
-    },
-    {
-      "pts": 26,
       "reb": 12,
       "ast": 3,
       "team_abbr": "DAL",
@@ -1822,6 +1799,29 @@
         {
           "name": "Jenna Schroeder",
           "slug": "jenna-schroeder"
+        }
+      ]
+    },
+    {
+      "pts": 26,
+      "reb": 10,
+      "ast": 2,
+      "team_abbr": "DAL",
+      "opp_abbr": "WAS",
+      "game_date": "2019-03-06",
+      "game_id": "0021800967",
+      "crew": [
+        {
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
+        },
+        {
+          "name": "Nick Buchert",
+          "slug": "nick-buchert"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
         }
       ]
     },
@@ -1873,29 +1873,6 @@
     },
     {
       "pts": 24,
-      "reb": 8,
-      "ast": 4,
-      "team_abbr": "DAL",
-      "opp_abbr": "LAC",
-      "game_date": "2019-02-25",
-      "game_id": "0021800907",
-      "crew": [
-        {
-          "name": "Nick Buchert",
-          "slug": "nick-buchert"
-        },
-        {
-          "name": "David Guthrie",
-          "slug": "david-guthrie"
-        },
-        {
-          "name": "Ben Taylor",
-          "slug": "ben-taylor"
-        }
-      ]
-    },
-    {
-      "pts": 24,
       "reb": 5,
       "ast": 4,
       "team_abbr": "DAL",
@@ -1918,44 +1895,67 @@
       ]
     },
     {
-      "pts": 22,
+      "pts": 24,
       "reb": 8,
-      "ast": 2,
+      "ast": 4,
       "team_abbr": "DAL",
-      "opp_abbr": "SAS",
-      "game_date": "2023-03-15",
-      "game_id": "0022201040",
+      "opp_abbr": "LAC",
+      "game_date": "2019-02-25",
+      "game_id": "0021800907",
       "crew": [
         {
-          "name": "Scott Foster",
-          "slug": "scott-foster"
+          "name": "Nick Buchert",
+          "slug": "nick-buchert"
         },
         {
-          "name": "Mitchell Ervin",
-          "slug": "mitchell-ervin"
+          "name": "David Guthrie",
+          "slug": "david-guthrie"
         },
         {
-          "name": "Jonathan Sterling",
-          "slug": "jonathan-sterling"
+          "name": "Ben Taylor",
+          "slug": "ben-taylor"
         }
       ]
     },
     {
       "pts": 22,
-      "reb": 3,
-      "ast": 0,
+      "reb": 13,
+      "ast": 1,
       "team_abbr": "DAL",
-      "opp_abbr": "POR",
-      "game_date": "2021-12-27",
-      "game_id": "0022100506",
+      "opp_abbr": "MIL",
+      "game_date": "2022-04-03",
+      "game_id": "0022101167",
       "crew": [
         {
-          "name": "Scott Twardoski",
-          "slug": "scott-twardoski"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "Che Flores",
-          "slug": "che-flores"
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
+        },
+        {
+          "name": "Jacyn Goble",
+          "slug": "jacyn-goble"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 8,
+      "ast": 2,
+      "team_abbr": "DAL",
+      "opp_abbr": "MIN",
+      "game_date": "2022-03-21",
+      "game_id": "0022101079",
+      "crew": [
+        {
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
+        },
+        {
+          "name": "Sean Wright",
+          "slug": "sean-wright"
         },
         {
           "name": "Ray Acosta",
@@ -1988,13 +1988,26 @@
     },
     {
       "pts": 22,
-      "reb": 7,
-      "ast": 0,
+      "reb": 8,
+      "ast": 2,
       "team_abbr": "DAL",
-      "opp_abbr": "UTA",
-      "game_date": "2022-02-25",
-      "game_id": "0022100903",
-      "crew": []
+      "opp_abbr": "SAS",
+      "game_date": "2023-03-15",
+      "game_id": "0022201040",
+      "crew": [
+        {
+          "name": "Scott Foster",
+          "slug": "scott-foster"
+        },
+        {
+          "name": "Mitchell Ervin",
+          "slug": "mitchell-ervin"
+        },
+        {
+          "name": "Jonathan Sterling",
+          "slug": "jonathan-sterling"
+        }
+      ]
     }
   ]
 }

@@ -1544,6 +1544,21 @@
     },
     {
       "pts": 27,
+      "reb": 1,
+      "ast": 7,
+      "team_abbr": "VAN",
+      "opp_abbr": "CHI",
+      "game_date": "1995-12-01",
+      "game_id": "151130029",
+      "crew": [
+        {
+          "name": "Robbie Robinson",
+          "slug": "robbie-robinson"
+        }
+      ]
+    },
+    {
+      "pts": 27,
       "reb": 2,
       "ast": 5,
       "team_abbr": "VAN",
@@ -1562,21 +1577,6 @@
         {
           "name": "Woody Mayfield",
           "slug": "woody-mayfield"
-        }
-      ]
-    },
-    {
-      "pts": 27,
-      "reb": 1,
-      "ast": 7,
-      "team_abbr": "VAN",
-      "opp_abbr": "CHI",
-      "game_date": "1995-12-01",
-      "game_id": "151130029",
-      "crew": [
-        {
-          "name": "Robbie Robinson",
-          "slug": "robbie-robinson"
         }
       ]
     },
@@ -1605,25 +1605,6 @@
     },
     {
       "pts": 24,
-      "reb": 5,
-      "ast": 11,
-      "team_abbr": "VAN",
-      "opp_abbr": "SAS",
-      "game_date": "1997-02-13",
-      "game_id": "170212024",
-      "crew": [
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        },
-        {
-          "name": "Luis Grillo",
-          "slug": "luis-grillo"
-        }
-      ]
-    },
-    {
-      "pts": 24,
       "reb": 2,
       "ast": 3,
       "team_abbr": "VAN",
@@ -1643,24 +1624,20 @@
     },
     {
       "pts": 24,
-      "reb": 1,
-      "ast": 6,
-      "team_abbr": "POR",
-      "opp_abbr": "CHA",
-      "game_date": "1999-11-21",
-      "game_id": "191120003",
+      "reb": 5,
+      "ast": 11,
+      "team_abbr": "VAN",
+      "opp_abbr": "SAS",
+      "game_date": "1997-02-13",
+      "game_id": "170212024",
       "crew": [
         {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
         },
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        },
-        {
-          "name": "Derek Richardson",
-          "slug": "derek-richardson"
+          "name": "Luis Grillo",
+          "slug": "luis-grillo"
         }
       ]
     },
@@ -1684,6 +1661,29 @@
         {
           "name": "Bennie Adams",
           "slug": "bennie-adams"
+        }
+      ]
+    },
+    {
+      "pts": 24,
+      "reb": 1,
+      "ast": 6,
+      "team_abbr": "POR",
+      "opp_abbr": "CHA",
+      "game_date": "1999-11-21",
+      "game_id": "191120003",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        },
+        {
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
         }
       ]
     }

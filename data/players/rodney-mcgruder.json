@@ -571,6 +571,16 @@
     },
     {
       "pts": 20,
+      "reb": 3,
+      "ast": 2,
+      "team_abbr": "LAC",
+      "opp_abbr": "NOP",
+      "game_date": "2019-11-14",
+      "game_id": "0021900164",
+      "crew": []
+    },
+    {
+      "pts": 20,
       "reb": 8,
       "ast": 6,
       "team_abbr": "MIA",
@@ -616,14 +626,27 @@
       ]
     },
     {
-      "pts": 20,
-      "reb": 3,
-      "ast": 2,
-      "team_abbr": "LAC",
-      "opp_abbr": "NOP",
-      "game_date": "2019-11-14",
-      "game_id": "0021900164",
-      "crew": []
+      "pts": 19,
+      "reb": 6,
+      "ast": 5,
+      "team_abbr": "MIA",
+      "opp_abbr": "NYK",
+      "game_date": "2018-10-24",
+      "game_id": "0021800054",
+      "crew": [
+        {
+          "name": "Ashley Moyer-Gleich",
+          "slug": "ashley-moyer-gleich"
+        },
+        {
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
+        },
+        {
+          "name": "Ben Taylor",
+          "slug": "ben-taylor"
+        }
+      ]
     },
     {
       "pts": 19,
@@ -645,29 +668,6 @@
         {
           "name": "Scott Wall",
           "slug": "scott-wall"
-        }
-      ]
-    },
-    {
-      "pts": 19,
-      "reb": 6,
-      "ast": 5,
-      "team_abbr": "MIA",
-      "opp_abbr": "NYK",
-      "game_date": "2018-10-24",
-      "game_id": "0021800054",
-      "crew": [
-        {
-          "name": "Ashley Moyer-Gleich",
-          "slug": "ashley-moyer-gleich"
-        },
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        },
-        {
-          "name": "Ben Taylor",
-          "slug": "ben-taylor"
         }
       ]
     },
@@ -696,24 +696,24 @@
     },
     {
       "pts": 18,
-      "reb": 5,
-      "ast": 2,
-      "team_abbr": "DET",
-      "opp_abbr": "IND",
-      "game_date": "2023-03-13",
-      "game_id": "0022201020",
+      "reb": 4,
+      "ast": 5,
+      "team_abbr": "MIA",
+      "opp_abbr": "ATL",
+      "game_date": "2018-11-03",
+      "game_id": "0021800128",
       "crew": [
         {
-          "name": "Brent Barnaky",
-          "slug": "brent-barnaky"
+          "name": "Brett Nansel",
+          "slug": "brett-nansel"
         },
         {
-          "name": "Kevin Scott",
-          "slug": "kevin-scott"
+          "name": "Marc Davis",
+          "slug": "marc-davis"
         },
         {
-          "name": "Suyash Mehta",
-          "slug": "suyash-mehta"
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
         }
       ]
     }

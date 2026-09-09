@@ -1644,6 +1644,25 @@
     },
     {
       "pts": 21,
+      "reb": 12,
+      "ast": 2,
+      "team_abbr": "NYK",
+      "opp_abbr": "ATL",
+      "game_date": "1994-04-19",
+      "game_id": "140419018",
+      "crew": [
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        },
+        {
+          "name": "Nolan Fine",
+          "slug": "nolan-fine"
+        }
+      ]
+    },
+    {
+      "pts": 21,
       "reb": 14,
       "ast": 3,
       "team_abbr": "NYK",
@@ -1662,29 +1681,6 @@
         {
           "name": "George Toliver",
           "slug": "george-toliver"
-        }
-      ]
-    },
-    {
-      "pts": 21,
-      "reb": 7,
-      "ast": 2,
-      "team_abbr": "NYK",
-      "opp_abbr": "LAL",
-      "game_date": "1993-12-17",
-      "game_id": "131216018",
-      "crew": [
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
-        },
-        {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
         }
       ]
     },
@@ -1713,20 +1709,24 @@
     },
     {
       "pts": 21,
-      "reb": 12,
+      "reb": 7,
       "ast": 2,
       "team_abbr": "NYK",
-      "opp_abbr": "ATL",
-      "game_date": "1994-04-19",
-      "game_id": "140419018",
+      "opp_abbr": "LAL",
+      "game_date": "1993-12-17",
+      "game_id": "131216018",
       "crew": [
         {
           "name": "Eddie Rush",
           "slug": "eddie-rush"
         },
         {
-          "name": "Nolan Fine",
-          "slug": "nolan-fine"
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        },
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
         }
       ]
     }

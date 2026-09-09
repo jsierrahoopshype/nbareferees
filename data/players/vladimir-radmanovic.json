@@ -1714,16 +1714,6 @@
     },
     {
       "pts": 25,
-      "reb": 1,
-      "ast": 2,
-      "team_abbr": "SEA",
-      "opp_abbr": "LAC",
-      "game_date": "2004-04-14",
-      "game_id": "0020301188",
-      "crew": []
-    },
-    {
-      "pts": 25,
       "reb": 9,
       "ast": 1,
       "team_abbr": "SEA",
@@ -1769,6 +1759,39 @@
       ]
     },
     {
+      "pts": 25,
+      "reb": 1,
+      "ast": 2,
+      "team_abbr": "SEA",
+      "opp_abbr": "LAC",
+      "game_date": "2004-04-14",
+      "game_id": "0020301188",
+      "crew": []
+    },
+    {
+      "pts": 23,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "SEA",
+      "opp_abbr": "SAS",
+      "game_date": "2002-05-01",
+      "game_id": "220501025",
+      "crew": [
+        {
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
+        },
+        {
+          "name": "Don Vaden",
+          "slug": "don-vaden"
+        },
+        {
+          "name": "Bill Spooner",
+          "slug": "bill-spooner"
+        }
+      ]
+    },
+    {
       "pts": 23,
       "reb": 10,
       "ast": 0,
@@ -1788,29 +1811,6 @@
         {
           "name": "Derek Richardson",
           "slug": "derek-richardson"
-        }
-      ]
-    },
-    {
-      "pts": 23,
-      "reb": 8,
-      "ast": 1,
-      "team_abbr": "SEA",
-      "opp_abbr": "MEM",
-      "game_date": "2003-11-21",
-      "game_id": "0020300175",
-      "crew": [
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "JB DeRosa",
-          "slug": "jb-derosa"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
         }
       ]
     }

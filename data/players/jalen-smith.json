@@ -658,6 +658,29 @@
     },
     {
       "pts": 19,
+      "reb": 15,
+      "ast": 1,
+      "team_abbr": "IND",
+      "opp_abbr": "DET",
+      "game_date": "2022-10-22",
+      "game_id": "0022200029",
+      "crew": [
+        {
+          "name": "Scott Wall",
+          "slug": "scott-wall"
+        },
+        {
+          "name": "Brian Forte",
+          "slug": "brian-forte"
+        },
+        {
+          "name": "Josh Tiven",
+          "slug": "josh-tiven"
+        }
+      ]
+    },
+    {
+      "pts": 19,
       "reb": 14,
       "ast": 1,
       "team_abbr": "PHX",
@@ -676,29 +699,6 @@
         {
           "name": "Phenizee Ransom",
           "slug": "phenizee-ransom"
-        }
-      ]
-    },
-    {
-      "pts": 19,
-      "reb": 12,
-      "ast": 0,
-      "team_abbr": "PHX",
-      "opp_abbr": "CHA",
-      "game_date": "2022-01-02",
-      "game_id": "0022100549",
-      "crew": [
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        },
-        {
-          "name": "Suyash Mehta",
-          "slug": "suyash-mehta"
-        },
-        {
-          "name": "JD Ralls",
-          "slug": "jd-ralls"
         }
       ]
     },
@@ -750,24 +750,24 @@
     },
     {
       "pts": 19,
-      "reb": 15,
-      "ast": 1,
-      "team_abbr": "IND",
-      "opp_abbr": "DET",
-      "game_date": "2022-10-22",
-      "game_id": "0022200029",
+      "reb": 12,
+      "ast": 0,
+      "team_abbr": "PHX",
+      "opp_abbr": "CHA",
+      "game_date": "2022-01-02",
+      "game_id": "0022100549",
       "crew": [
         {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
         },
         {
-          "name": "Brian Forte",
-          "slug": "brian-forte"
+          "name": "Suyash Mehta",
+          "slug": "suyash-mehta"
         },
         {
-          "name": "Josh Tiven",
-          "slug": "josh-tiven"
+          "name": "JD Ralls",
+          "slug": "jd-ralls"
         }
       ]
     },

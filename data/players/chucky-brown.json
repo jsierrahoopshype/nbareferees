@@ -1126,29 +1126,6 @@
   "top_games": [
     {
       "pts": 19,
-      "reb": 9,
-      "ast": 1,
-      "team_abbr": "CHA",
-      "opp_abbr": "DET",
-      "game_date": "1999-04-14",
-      "game_id": "190414003",
-      "crew": [
-        {
-          "name": "Bob Delaney",
-          "slug": "bob-delaney"
-        },
-        {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
-        },
-        {
-          "name": "Kevin Fehr",
-          "slug": "kevin-fehr"
-        }
-      ]
-    },
-    {
-      "pts": 19,
       "reb": 14,
       "ast": 1,
       "team_abbr": "HOU",
@@ -1167,6 +1144,29 @@
         {
           "name": "Jim Kinsey",
           "slug": "jim-kinsey"
+        }
+      ]
+    },
+    {
+      "pts": 19,
+      "reb": 9,
+      "ast": 1,
+      "team_abbr": "CHA",
+      "opp_abbr": "DET",
+      "game_date": "1999-04-14",
+      "game_id": "190414003",
+      "crew": [
+        {
+          "name": "Bob Delaney",
+          "slug": "bob-delaney"
+        },
+        {
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
+        },
+        {
+          "name": "Kevin Fehr",
+          "slug": "kevin-fehr"
         }
       ]
     },
@@ -1209,21 +1209,6 @@
         {
           "name": "Scott Foster",
           "slug": "scott-foster"
-        }
-      ]
-    },
-    {
-      "pts": 17,
-      "reb": 7,
-      "ast": 0,
-      "team_abbr": "HOU",
-      "opp_abbr": "NYK",
-      "game_date": "1995-11-25",
-      "game_id": "151125018",
-      "crew": [
-        {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
         }
       ]
     },
@@ -1274,71 +1259,86 @@
       ]
     },
     {
-      "pts": 16,
-      "reb": 8,
+      "pts": 17,
+      "reb": 7,
       "ast": 0,
-      "team_abbr": "CHA",
-      "opp_abbr": "IND",
-      "game_date": "1999-04-29",
-      "game_id": "190429011",
+      "team_abbr": "HOU",
+      "opp_abbr": "NYK",
+      "game_date": "1995-11-25",
+      "game_id": "151125018",
       "crew": [
         {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
-        },
-        {
-          "name": "Tommy Nunez Jr.",
-          "slug": "tommy-nunez"
-        },
-        {
-          "name": "Gary Benson",
-          "slug": "gary-benson"
+          "name": "Rodney Mott",
+          "slug": "rodney-mott"
         }
       ]
     },
     {
       "pts": 16,
-      "reb": 7,
+      "reb": 0,
       "ast": 2,
-      "team_abbr": "HOU",
-      "opp_abbr": "DAL",
-      "game_date": "1996-02-14",
-      "game_id": "160213010",
+      "team_abbr": "CHA",
+      "opp_abbr": "TOR",
+      "game_date": "1999-04-27",
+      "game_id": "190427028",
       "crew": [
         {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
+          "name": "Marc Davis",
+          "slug": "marc-davis"
         },
         {
           "name": "David Jones",
           "slug": "david-jones"
         },
         {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
+          "name": "Ronnie Nunn",
+          "slug": "ronnie-nunn"
         }
       ]
     },
     {
       "pts": 16,
-      "reb": 3,
-      "ast": 0,
-      "team_abbr": "SAS",
-      "opp_abbr": "DAL",
-      "game_date": "1999-11-21",
-      "game_id": "191120024",
+      "reb": 4,
+      "ast": 4,
+      "team_abbr": "CHA",
+      "opp_abbr": "CLE",
+      "game_date": "1999-04-17",
+      "game_id": "190417005",
       "crew": [
         {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
+          "name": "Mike Mathis",
+          "slug": "mike-mathis"
         },
         {
-          "name": "Mark Wunderlich",
-          "slug": "mark-wunderlich"
+          "name": "David Jones",
+          "slug": "david-jones"
         },
         {
-          "name": "Violet Palmer",
-          "slug": "violet-palmer"
+          "name": "Joe DeRosa",
+          "slug": "joe-derosa"
+        }
+      ]
+    },
+    {
+      "pts": 16,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "HOU",
+      "opp_abbr": "LAL",
+      "game_date": "1996-05-03",
+      "game_id": "160502010",
+      "crew": [
+        {
+          "name": "Jess Kersey",
+          "slug": "jess-kersey"
+        },
+        {
+          "name": "Ed Middleton",
+          "slug": "ed-middleton"
+        },
+        {
+          "name": "Jim Clark",
+          "slug": "jim-clark"
         }
       ]
     }

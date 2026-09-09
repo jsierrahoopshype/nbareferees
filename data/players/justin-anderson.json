@@ -203,6 +203,29 @@
     },
     {
       "pts": 19,
+      "reb": 8,
+      "ast": 3,
+      "team_abbr": "PHI",
+      "opp_abbr": "DAL",
+      "game_date": "2017-03-17",
+      "game_id": "0021601020",
+      "crew": [
+        {
+          "name": "Scott Twardoski",
+          "slug": "scott-twardoski"
+        },
+        {
+          "name": "Michael Smith",
+          "slug": "michael-smith"
+        },
+        {
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
+        }
+      ]
+    },
+    {
+      "pts": 19,
       "reb": 6,
       "ast": 3,
       "team_abbr": "PHI",
@@ -233,29 +256,6 @@
       "game_date": "2017-03-03",
       "game_id": "0021600909",
       "crew": []
-    },
-    {
-      "pts": 19,
-      "reb": 8,
-      "ast": 3,
-      "team_abbr": "PHI",
-      "opp_abbr": "DAL",
-      "game_date": "2017-03-17",
-      "game_id": "0021601020",
-      "crew": [
-        {
-          "name": "Scott Twardoski",
-          "slug": "scott-twardoski"
-        },
-        {
-          "name": "Michael Smith",
-          "slug": "michael-smith"
-        },
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        }
-      ]
     },
     {
       "pts": 19,
@@ -308,29 +308,6 @@
       "reb": 6,
       "ast": 4,
       "team_abbr": "IND",
-      "opp_abbr": "POR",
-      "game_date": "2022-03-20",
-      "game_id": "0022101062",
-      "crew": [
-        {
-          "name": "Kevin Cutler",
-          "slug": "kevin-cutler"
-        },
-        {
-          "name": "Kane Fitzgerald",
-          "slug": "kane-fitzgerald"
-        },
-        {
-          "name": "Brandon Schwab",
-          "slug": "brandon-schwab"
-        }
-      ]
-    },
-    {
-      "pts": 18,
-      "reb": 6,
-      "ast": 4,
-      "team_abbr": "IND",
       "opp_abbr": "TOR",
       "game_date": "2022-03-26",
       "game_id": "0022101109",
@@ -346,6 +323,29 @@
         {
           "name": "Lauren Holtkamp",
           "slug": "lauren-holtkamp"
+        }
+      ]
+    },
+    {
+      "pts": 18,
+      "reb": 6,
+      "ast": 4,
+      "team_abbr": "IND",
+      "opp_abbr": "POR",
+      "game_date": "2022-03-20",
+      "game_id": "0022101062",
+      "crew": [
+        {
+          "name": "Kevin Cutler",
+          "slug": "kevin-cutler"
+        },
+        {
+          "name": "Kane Fitzgerald",
+          "slug": "kane-fitzgerald"
+        },
+        {
+          "name": "Brandon Schwab",
+          "slug": "brandon-schwab"
         }
       ]
     }

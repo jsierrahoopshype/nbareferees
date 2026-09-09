@@ -1031,6 +1031,25 @@
   "top_games": [
     {
       "pts": 55,
+      "reb": 4,
+      "ast": 2,
+      "team_abbr": "CHI",
+      "opp_abbr": "NYK",
+      "game_date": "1995-03-29",
+      "game_id": "150328018",
+      "crew": [
+        {
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        }
+      ]
+    },
+    {
+      "pts": 55,
       "reb": 7,
       "ast": 2,
       "team_abbr": "CHI",
@@ -1049,25 +1068,6 @@
         {
           "name": "Nolan Fine",
           "slug": "nolan-fine"
-        }
-      ]
-    },
-    {
-      "pts": 55,
-      "reb": 4,
-      "ast": 2,
-      "team_abbr": "CHI",
-      "opp_abbr": "NYK",
-      "game_date": "1995-03-29",
-      "game_id": "150328018",
-      "crew": [
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
         }
       ]
     },
@@ -1092,29 +1092,6 @@
     },
     {
       "pts": 51,
-      "reb": 7,
-      "ast": 4,
-      "team_abbr": "WAS",
-      "opp_abbr": "CHA",
-      "game_date": "2001-12-30",
-      "game_id": "211229027",
-      "crew": [
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
-        },
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
-        }
-      ]
-    },
-    {
-      "pts": 51,
       "reb": 4,
       "ast": 4,
       "team_abbr": "CHI",
@@ -1133,6 +1110,29 @@
         {
           "name": "Tony Brothers",
           "slug": "tony-brothers"
+        }
+      ]
+    },
+    {
+      "pts": 51,
+      "reb": 7,
+      "ast": 4,
+      "team_abbr": "WAS",
+      "opp_abbr": "CHA",
+      "game_date": "2001-12-30",
+      "game_id": "211229027",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
+        },
+        {
+          "name": "Leroy Richardson",
+          "slug": "leroy-richardson"
         }
       ]
     },

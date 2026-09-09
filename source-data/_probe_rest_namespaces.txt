@@ -1,0 +1,136 @@
+
+
+official.nba.com REST namespace probe (probe_rest_namespaces.py)
+==============================================================================
+Run at (local clock): 2026-09-09T14:49:07
+REST base: https://official.nba.com/wp-json/
+Premise: the route index 404s but concrete routes answer, so namespaces
+are probed directly. WordPress's rest_no_route error makes a miss
+distinguishable from a block, which is what makes guessing worthwhile.
+
+==============================================================================
+TIER 0: is the index really disabled, and what post types exist?
+==============================================================================
+Legend: *** marks a response worth chasing.
+
+      / (route index)                                      HTTP 404   NO_ROUTE  (rest_no_route)
+  *** wp/v2 (namespace index)                              HTTP 200   OK
+  *** wp/v2/pages?slug=referee-assignments (known good)    HTTP 200   OK
+
+-- reading --
+  Only the ROOT index is blocked. Namespace indexes still answer, so a
+  custom namespace root in tier 1 should list its own routes.
+  *** wp/v2/types (post type list)                         HTTP 200   OK
+
+-- registered post types (rest_base is the route under wp/v2/) --
+  post                     name=Posts                    rest_base=posts                  ns=wp/v2
+  page                     name=Pages                    rest_base=pages                  ns=wp/v2
+  attachment               name=Media                    rest_base=media                  ns=wp/v2
+  nav_menu_item            name=Navigation Menu Items    rest_base=menu-items             ns=wp/v2
+  wp_block                 name=Reusable blocks          rest_base=blocks                 ns=wp/v2
+  wp_template              name=Templates                rest_base=templates              ns=wp/v2
+  wp_template_part         name=Template Parts           rest_base=template-parts         ns=wp/v2
+  wp_navigation            name=Navigation Menus         rest_base=navigation             ns=wp/v2
+
+  Any type flagged above is directly fetchable at:
+    https://official.nba.com/wp-json/wp/v2/<rest_base>?per_page=100
+
+==============================================================================
+TIER 1: namespace roots tried directly (index not required)
+==============================================================================
+      nba/v1                                               HTTP 404   NO_ROUTE  (rest_no_route)
+      nba/v2                                               HTTP 404   NO_ROUTE  (rest_no_route)
+      officials/v1                                         HTTP 404   NO_ROUTE  (rest_no_route)
+      assignments/v1                                       HTTP 404   NO_ROUTE  (rest_no_route)
+      referees/v1                                          HTTP 404   NO_ROUTE  (rest_no_route)
+      referee/v1                                           HTTP 404   NO_ROUTE  (rest_no_route)
+      official/v1                                          HTTP 404   NO_ROUTE  (rest_no_route)
+      officiating/v1                                       HTTP 404   NO_ROUTE  (rest_no_route)
+      assignment/v1                                        HTTP 404   NO_ROUTE  (rest_no_route)
+      crew/v1                                              HTTP 404   NO_ROUTE  (rest_no_route)
+      crews/v1                                             HTTP 404   NO_ROUTE  (rest_no_route)
+      nba-officials/v1                                     HTTP 404   NO_ROUTE  (rest_no_route)
+      nbaofficial/v1                                       HTTP 404   NO_ROUTE  (rest_no_route)
+      nba-official/v1                                      HTTP 404   NO_ROUTE  (rest_no_route)
+      gameday/v1                                           HTTP 404   NO_ROUTE  (rest_no_route)
+      games/v1                                             HTTP 404   NO_ROUTE  (rest_no_route)
+      game/v1                                              HTTP 404   NO_ROUTE  (rest_no_route)
+      schedule/v1                                          HTTP 404   NO_ROUTE  (rest_no_route)
+      scores/v1                                            HTTP 404   NO_ROUTE  (rest_no_route)
+      stats/v1                                             HTTP 404   NO_ROUTE  (rest_no_route)
+  *** api/v1                                               HTTP 200   OK
+      custom/v1                                            HTTP 404   NO_ROUTE  (rest_no_route)
+      theme/v1                                             HTTP 404   NO_ROUTE  (rest_no_route)
+      site/v1                                              HTTP 404   NO_ROUTE  (rest_no_route)
+      acf/v3                                               HTTP 404   NO_ROUTE  (rest_no_route)
+
+-- 1 of 25 namespace roots answered with something other than 'no route' --
+  *** api/v1 -> OK (-)
+        /api/v1
+        /api/v1/get-game-officials  *** CREW
+        /api/v1/search-rulebook
+
+==============================================================================
+TIER 2: concrete routes (custom post types first, then namespaces)
+==============================================================================
+Probing 17 concrete route(s), ~17s at 1.0s apart.
+
+      api/v1/api/v1/get-game-officials                     HTTP 404   NO_ROUTE  (rest_no_route)
+      nba/v1/referee-assignments                           HTTP 404   NO_ROUTE  (rest_no_route)
+      nba/v1/assignments                                   HTTP 404   NO_ROUTE  (rest_no_route)
+      nba/v1/officials                                     HTTP 404   NO_ROUTE  (rest_no_route)
+      nba/v1/crews                                         HTTP 404   NO_ROUTE  (rest_no_route)
+      officials/v1/referee-assignments                     HTTP 404   NO_ROUTE  (rest_no_route)
+      officials/v1/assignments                             HTTP 404   NO_ROUTE  (rest_no_route)
+      officials/v1/officials                               HTTP 404   NO_ROUTE  (rest_no_route)
+      officials/v1/crews                                   HTTP 404   NO_ROUTE  (rest_no_route)
+      assignments/v1/referee-assignments                   HTTP 404   NO_ROUTE  (rest_no_route)
+      assignments/v1/assignments                           HTTP 404   NO_ROUTE  (rest_no_route)
+      assignments/v1/officials                             HTTP 404   NO_ROUTE  (rest_no_route)
+      assignments/v1/crews                                 HTTP 404   NO_ROUTE  (rest_no_route)
+      referees/v1/referee-assignments                      HTTP 404   NO_ROUTE  (rest_no_route)
+      referees/v1/assignments                              HTTP 404   NO_ROUTE  (rest_no_route)
+      referees/v1/officials                                HTTP 404   NO_ROUTE  (rest_no_route)
+      referees/v1/crews                                    HTTP 404   NO_ROUTE  (rest_no_route)
+
+-- no route answered. Every probe above came back rest_no_route (WP
+   replying normally, route absent) or failed outright. --
+
+==============================================================================
+TIER 3: the full page object (wp/v2/pages/6203, all fields)
+==============================================================================
+GET https://official.nba.com/wp-json/wp/v2/pages/6203
+  *** wp/v2/pages/6203                                     HTTP 200   OK
+
+-- top-level fields --
+  _links, author, comment_status, content, date, date_gmt, excerpt, featured_media, guid, id, link, menu_order, meta, modified, modified_gmt, parent, ping_status, slug, status, template, title, type
+
+  slug:     referee-assignments
+  link:     https://official.nba.com/referee-assignments/
+  modified: 2016-01-20T17:56:05   (how fresh is this page's stored content?)
+  template: (default)
+
+-- content --
+  content.rendered: 0 chars
+  crew words in rendered content: none
+
+-- excerpt --
+      keys: rendered, protected
+
+-- _links (related endpoints WP itself advertises for this page) --
+  self                               https://official.nba.com/wp-json/wp/v2/pages/6203
+  collection                         https://official.nba.com/wp-json/wp/v2/pages
+  about                              https://official.nba.com/wp-json/wp/v2/types/page
+  author                             https://official.nba.com/wp-json/wp/v2/users/88
+  replies                            https://official.nba.com/wp-json/wp/v2/comments?post=6203
+  version-history                    https://official.nba.com/wp-json/wp/v2/pages/6203/revisions
+  wp:attachment                      https://official.nba.com/wp-json/wp/v2/media?parent=6203
+  curies                             https://api.w.org/{rel}
+
+==============================================================================
+SUMMARY
+==============================================================================
+namespace roots that answered: api/v1
+concrete routes that answered: none
+
+Next: fetch the answering route(s) above and look at the payload shape.

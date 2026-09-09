@@ -1515,29 +1515,6 @@
     {
       "pts": 25,
       "reb": 10,
-      "ast": 1,
-      "team_abbr": "ATL",
-      "opp_abbr": "WAS",
-      "game_date": "2015-05-15",
-      "game_id": "0041400206",
-      "crew": [
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        },
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
-        }
-      ]
-    },
-    {
-      "pts": 25,
-      "reb": 10,
       "ast": 0,
       "team_abbr": "ATL",
       "opp_abbr": "LAC",
@@ -1559,58 +1536,25 @@
       ]
     },
     {
-      "pts": 24,
-      "reb": 6,
-      "ast": 2,
-      "team_abbr": "BKN",
-      "opp_abbr": "MEM",
-      "game_date": "2017-11-26",
-      "game_id": "0021700289",
-      "crew": [
-        {
-          "name": "Tre Maddox",
-          "slug": "tre-maddox"
-        },
-        {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
-        },
-        {
-          "name": "Matt Boland",
-          "slug": "matt-boland"
-        }
-      ]
-    },
-    {
-      "pts": 24,
-      "reb": 3,
-      "ast": 0,
+      "pts": 25,
+      "reb": 10,
+      "ast": 1,
       "team_abbr": "ATL",
       "opp_abbr": "WAS",
-      "game_date": "2015-05-03",
-      "game_id": "0041400201",
-      "crew": []
-    },
-    {
-      "pts": 24,
-      "reb": 4,
-      "ast": 2,
-      "team_abbr": "ATL",
-      "opp_abbr": "MIA",
-      "game_date": "2015-03-27",
-      "game_id": "0021401077",
+      "game_date": "2015-05-15",
+      "game_id": "0041400206",
       "crew": [
         {
-          "name": "Mark Lindsay",
-          "slug": "mark-lindsay"
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         },
         {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
         },
         {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
+          "name": "James Capers",
+          "slug": "james-capers"
         }
       ]
     },
@@ -1639,6 +1583,39 @@
     },
     {
       "pts": 24,
+      "reb": 4,
+      "ast": 2,
+      "team_abbr": "ATL",
+      "opp_abbr": "MIA",
+      "game_date": "2015-03-27",
+      "game_id": "0021401077",
+      "crew": [
+        {
+          "name": "Mark Lindsay",
+          "slug": "mark-lindsay"
+        },
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        }
+      ]
+    },
+    {
+      "pts": 24,
+      "reb": 3,
+      "ast": 0,
+      "team_abbr": "ATL",
+      "opp_abbr": "WAS",
+      "game_date": "2015-05-03",
+      "game_id": "0041400201",
+      "crew": []
+    },
+    {
+      "pts": 24,
       "reb": 7,
       "ast": 3,
       "team_abbr": "ATL",
@@ -1657,6 +1634,29 @@
         {
           "name": "James Williams",
           "slug": "james-williams"
+        }
+      ]
+    },
+    {
+      "pts": 24,
+      "reb": 6,
+      "ast": 2,
+      "team_abbr": "BKN",
+      "opp_abbr": "MEM",
+      "game_date": "2017-11-26",
+      "game_id": "0021700289",
+      "crew": [
+        {
+          "name": "Tre Maddox",
+          "slug": "tre-maddox"
+        },
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
         }
       ]
     }

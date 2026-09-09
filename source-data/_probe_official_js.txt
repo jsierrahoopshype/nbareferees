@@ -1,0 +1,44 @@
+
+
+JS bundle analysis (analyze_official_js.py)
+==============================================================================
+Run at (local clock): 2026-09-09T14:55:30
+File: source-data\_assignments_raw\js\ak-static.cms.nba.com_wp-content_themes_nba-official_js_pulse-insights.js
+Size: 419 chars (0.4 KB), 16 line(s)
+Offline: no network requests. Analyzed in full, not sampled.
+
+==============================================================================
+1. EVERY CREW-WORD STRING, AND WHAT IT IS USED AS
+==============================================================================
+11 string literal(s) in the file; 0 contain crew wording.
+  none -- the crew wording found by grep must be in identifiers,
+  comments or regex literals rather than string values (see section 4).
+
+==============================================================================
+2. DATA-FETCHING CALL SITES IN THIS FILE
+==============================================================================
+  NONE. This file makes no AJAX/fetch/XHR call and references no
+  admin-ajax, wp-json, nonce or wpApiSettings global.
+  -> whatever renders the crew list, it is not this file fetching it.
+
+==============================================================================
+3. EVERY URL-SHAPED STRING IN THE FILE (crew-related or not)
+==============================================================================
+  '//js.pulseinsights.com/surveys.js'                          [ABSOLUTE URL]
+
+==============================================================================
+4. CREW WORDING OUTSIDE STRING LITERALS (identifiers, keys, regex)
+==============================================================================
+  none -- all crew wording in this file sits inside string literals.
+
+-- declared function/var names (what this file is for) --
+  w, s, f
+
+==============================================================================
+VERDICT
+==============================================================================
+No crew wording in any string literal in this file.
+
+Either way, no parser is built from this. Next round decides that.
+
+Beautified copy (16 lines) -> source-data\_assignments_raw\js\ak-static.cms.nba.com_wp-content_themes_nba-official_js_pulse-insights.js.beautified.js

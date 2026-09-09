@@ -2203,29 +2203,6 @@
   "top_games": [
     {
       "pts": 41,
-      "reb": 4,
-      "ast": 2,
-      "team_abbr": "MEM",
-      "opp_abbr": "MIA",
-      "game_date": "2009-12-13",
-      "game_id": "0020900341",
-      "crew": [
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
-        },
-        {
-          "name": "John Goble",
-          "slug": "john-goble"
-        },
-        {
-          "name": "Marat Kogut",
-          "slug": "marat-kogut"
-        }
-      ]
-    },
-    {
-      "pts": 41,
       "reb": 8,
       "ast": 5,
       "team_abbr": "SAC",
@@ -2244,6 +2221,29 @@
         {
           "name": "Pat Fraher",
           "slug": "pat-fraher"
+        }
+      ]
+    },
+    {
+      "pts": 41,
+      "reb": 4,
+      "ast": 2,
+      "team_abbr": "MEM",
+      "opp_abbr": "MIA",
+      "game_date": "2009-12-13",
+      "game_id": "0020900341",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "John Goble",
+          "slug": "john-goble"
+        },
+        {
+          "name": "Marat Kogut",
+          "slug": "marat-kogut"
         }
       ]
     },
@@ -2279,29 +2279,6 @@
       "game_date": "2015-03-06",
       "game_id": "0021400913",
       "crew": []
-    },
-    {
-      "pts": 36,
-      "reb": 8,
-      "ast": 3,
-      "team_abbr": "MEM",
-      "opp_abbr": "PHX",
-      "game_date": "2008-04-08",
-      "game_id": "0020701158",
-      "crew": [
-        {
-          "name": "Sean Wright",
-          "slug": "sean-wright"
-        },
-        {
-          "name": "Michael Smith",
-          "slug": "michael-smith"
-        },
-        {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
-        }
-      ]
     },
     {
       "pts": 36,
@@ -2350,25 +2327,48 @@
       ]
     },
     {
-      "pts": 35,
-      "reb": 7,
+      "pts": 36,
+      "reb": 8,
       "ast": 3,
       "team_abbr": "MEM",
-      "opp_abbr": "GSW",
-      "game_date": "2010-11-03",
-      "game_id": "0021000063",
+      "opp_abbr": "PHX",
+      "game_date": "2008-04-08",
+      "game_id": "0020701158",
       "crew": [
         {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
+          "name": "Sean Wright",
+          "slug": "sean-wright"
         },
         {
-          "name": "Kevin Cutler",
-          "slug": "kevin-cutler"
+          "name": "Michael Smith",
+          "slug": "michael-smith"
         },
         {
-          "name": "Bill Spooner",
-          "slug": "bill-spooner"
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        }
+      ]
+    },
+    {
+      "pts": 35,
+      "reb": 12,
+      "ast": 6,
+      "team_abbr": "SAC",
+      "opp_abbr": "DAL",
+      "game_date": "2014-01-31",
+      "game_id": "0021300693",
+      "crew": [
+        {
+          "name": "Steve Anderson",
+          "slug": "steve-anderson"
+        },
+        {
+          "name": "Mark Lindsay",
+          "slug": "mark-lindsay"
+        },
+        {
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         }
       ]
     },
@@ -2397,24 +2397,24 @@
     },
     {
       "pts": 35,
-      "reb": 12,
-      "ast": 6,
-      "team_abbr": "SAC",
-      "opp_abbr": "DAL",
-      "game_date": "2014-01-31",
-      "game_id": "0021300693",
+      "reb": 7,
+      "ast": 3,
+      "team_abbr": "MEM",
+      "opp_abbr": "GSW",
+      "game_date": "2010-11-03",
+      "game_id": "0021000063",
       "crew": [
         {
-          "name": "Steve Anderson",
-          "slug": "steve-anderson"
+          "name": "Rodney Mott",
+          "slug": "rodney-mott"
         },
         {
-          "name": "Mark Lindsay",
-          "slug": "mark-lindsay"
+          "name": "Kevin Cutler",
+          "slug": "kevin-cutler"
         },
         {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
+          "name": "Bill Spooner",
+          "slug": "bill-spooner"
         }
       ]
     }

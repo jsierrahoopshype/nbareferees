@@ -2047,6 +2047,16 @@
     },
     {
       "pts": 32,
+      "reb": 11,
+      "ast": 1,
+      "team_abbr": "CHI",
+      "opp_abbr": "WAS",
+      "game_date": "2007-02-23",
+      "game_id": "0020600820",
+      "crew": []
+    },
+    {
+      "pts": 32,
       "reb": 6,
       "ast": 1,
       "team_abbr": "CHI",
@@ -2065,39 +2075,6 @@
         {
           "name": "Greg Willard",
           "slug": "greg-willard"
-        }
-      ]
-    },
-    {
-      "pts": 32,
-      "reb": 11,
-      "ast": 1,
-      "team_abbr": "CHI",
-      "opp_abbr": "WAS",
-      "game_date": "2007-02-23",
-      "game_id": "0020600820",
-      "crew": []
-    },
-    {
-      "pts": 31,
-      "reb": 7,
-      "ast": 1,
-      "team_abbr": "MIA",
-      "opp_abbr": "CHA",
-      "game_date": "2016-04-17",
-      "game_id": "0041500121",
-      "crew": [
-        {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
-        },
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        },
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
         }
       ]
     },
@@ -2125,25 +2102,48 @@
       ]
     },
     {
-      "pts": 30,
+      "pts": 31,
       "reb": 7,
-      "ast": 3,
-      "team_abbr": "CHI",
-      "opp_abbr": "DET",
-      "game_date": "2007-01-06",
-      "game_id": "0020600494",
+      "ast": 1,
+      "team_abbr": "MIA",
+      "opp_abbr": "CHA",
+      "game_date": "2016-04-17",
+      "game_id": "0041500121",
       "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
+        },
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        }
+      ]
+    },
+    {
+      "pts": 30,
+      "reb": 11,
+      "ast": 0,
+      "team_abbr": "MIA",
+      "opp_abbr": "ATL",
+      "game_date": "2016-02-19",
+      "game_id": "0021500808",
+      "crew": [
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "Kevin Scott",
+          "slug": "kevin-scott"
+        },
         {
           "name": "Scott Foster",
           "slug": "scott-foster"
-        },
-        {
-          "name": "David Guthrie",
-          "slug": "david-guthrie"
-        },
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
         }
       ]
     }

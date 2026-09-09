@@ -1980,6 +1980,26 @@
   "top_games": [
     {
       "pts": 40,
+      "reb": 3,
+      "ast": 3,
+      "team_abbr": "MIN",
+      "opp_abbr": "DEN",
+      "game_date": "2004-04-18",
+      "game_id": "0040300141",
+      "crew": []
+    },
+    {
+      "pts": 40,
+      "reb": 3,
+      "ast": 5,
+      "team_abbr": "MIN",
+      "opp_abbr": "SAC",
+      "game_date": "2004-05-04",
+      "game_id": "0040300221",
+      "crew": []
+    },
+    {
+      "pts": 40,
       "reb": 2,
       "ast": 10,
       "team_abbr": "MIL",
@@ -2002,26 +2022,6 @@
       ]
     },
     {
-      "pts": 40,
-      "reb": 3,
-      "ast": 3,
-      "team_abbr": "MIN",
-      "opp_abbr": "DEN",
-      "game_date": "2004-04-18",
-      "game_id": "0040300141",
-      "crew": []
-    },
-    {
-      "pts": 40,
-      "reb": 3,
-      "ast": 5,
-      "team_abbr": "MIN",
-      "opp_abbr": "SAC",
-      "game_date": "2004-05-04",
-      "game_id": "0040300221",
-      "crew": []
-    },
-    {
       "pts": 39,
       "reb": 10,
       "ast": 10,
@@ -2041,6 +2041,29 @@
         {
           "name": "Blane Reichelt",
           "slug": "blane-reichelt"
+        }
+      ]
+    },
+    {
+      "pts": 36,
+      "reb": 1,
+      "ast": 9,
+      "team_abbr": "NJN",
+      "opp_abbr": "ATL",
+      "game_date": "1999-02-07",
+      "game_id": "190206001",
+      "crew": [
+        {
+          "name": "Bernie Fryer",
+          "slug": "bernie-fryer"
+        },
+        {
+          "name": "Mark Wunderlich",
+          "slug": "mark-wunderlich"
+        },
+        {
+          "name": "Bill Kennedy",
+          "slug": "bill-kennedy"
         }
       ]
     },
@@ -2068,25 +2091,48 @@
       ]
     },
     {
-      "pts": 36,
-      "reb": 1,
-      "ast": 9,
+      "pts": 35,
+      "reb": 3,
+      "ast": 11,
       "team_abbr": "NJN",
-      "opp_abbr": "ATL",
-      "game_date": "1999-02-07",
-      "game_id": "190206001",
+      "opp_abbr": "CHA",
+      "game_date": "1998-04-06",
+      "game_id": "180406017",
       "crew": [
         {
-          "name": "Bernie Fryer",
-          "slug": "bernie-fryer"
+          "name": "Dick Bavetta",
+          "slug": "dick-bavetta"
         },
         {
-          "name": "Mark Wunderlich",
-          "slug": "mark-wunderlich"
+          "name": "Gary Benson",
+          "slug": "gary-benson"
         },
         {
-          "name": "Bill Kennedy",
-          "slug": "bill-kennedy"
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
+        }
+      ]
+    },
+    {
+      "pts": 35,
+      "reb": 6,
+      "ast": 6,
+      "team_abbr": "LAC",
+      "opp_abbr": "DEN",
+      "game_date": "2006-11-02",
+      "game_id": "0020600017",
+      "crew": [
+        {
+          "name": "Steve Javie",
+          "slug": "steve-javie"
+        },
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        },
+        {
+          "name": "Eric Lewis",
+          "slug": "eric-lewis"
         }
       ]
     },
@@ -2117,29 +2163,6 @@
       "pts": 35,
       "reb": 3,
       "ast": 11,
-      "team_abbr": "NJN",
-      "opp_abbr": "CHA",
-      "game_date": "1998-04-06",
-      "game_id": "180406017",
-      "crew": [
-        {
-          "name": "Dick Bavetta",
-          "slug": "dick-bavetta"
-        },
-        {
-          "name": "Gary Benson",
-          "slug": "gary-benson"
-        },
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        }
-      ]
-    },
-    {
-      "pts": 35,
-      "reb": 3,
-      "ast": 11,
       "team_abbr": "MIL",
       "opp_abbr": "HOU",
       "game_date": "1999-11-03",
@@ -2158,16 +2181,6 @@
           "slug": "phil-robinson"
         }
       ]
-    },
-    {
-      "pts": 35,
-      "reb": 3,
-      "ast": 8,
-      "team_abbr": "LAC",
-      "opp_abbr": "IND",
-      "game_date": "2007-11-07",
-      "game_id": "0020700057",
-      "crew": []
     }
   ]
 }

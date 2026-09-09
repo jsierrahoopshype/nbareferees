@@ -592,6 +592,25 @@
     },
     {
       "pts": 16,
+      "reb": 3,
+      "ast": 1,
+      "team_abbr": "HOU",
+      "opp_abbr": "UTA",
+      "game_date": "1994-02-02",
+      "game_id": "140201026",
+      "crew": [
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        }
+      ]
+    },
+    {
+      "pts": 16,
       "reb": 1,
       "ast": 3,
       "team_abbr": "DAL",
@@ -637,44 +656,6 @@
       ]
     },
     {
-      "pts": 16,
-      "reb": 3,
-      "ast": 1,
-      "team_abbr": "HOU",
-      "opp_abbr": "UTA",
-      "game_date": "1994-02-02",
-      "game_id": "140201026",
-      "crew": [
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        }
-      ]
-    },
-    {
-      "pts": 15,
-      "reb": 1,
-      "ast": 4,
-      "team_abbr": "DAL",
-      "opp_abbr": "CHA",
-      "game_date": "1996-03-08",
-      "game_id": "160307003",
-      "crew": [
-        {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
-        },
-        {
-          "name": "Tommie Wood",
-          "slug": "tommie-wood"
-        }
-      ]
-    },
-    {
       "pts": 15,
       "reb": 1,
       "ast": 3,
@@ -694,6 +675,25 @@
         {
           "name": "Gary Benson",
           "slug": "gary-benson"
+        }
+      ]
+    },
+    {
+      "pts": 15,
+      "reb": 1,
+      "ast": 4,
+      "team_abbr": "DAL",
+      "opp_abbr": "CHA",
+      "game_date": "1996-03-08",
+      "game_id": "160307003",
+      "crew": [
+        {
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        },
+        {
+          "name": "Tommie Wood",
+          "slug": "tommie-wood"
         }
       ]
     },

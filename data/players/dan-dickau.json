@@ -471,6 +471,16 @@
     },
     {
       "pts": 23,
+      "reb": 4,
+      "ast": 10,
+      "team_abbr": "NOH",
+      "opp_abbr": "HOU",
+      "game_date": "2005-01-26",
+      "game_id": "0020400618",
+      "crew": []
+    },
+    {
+      "pts": 23,
       "reb": 5,
       "ast": 4,
       "team_abbr": "NOH",
@@ -493,16 +503,6 @@
       ]
     },
     {
-      "pts": 23,
-      "reb": 4,
-      "ast": 10,
-      "team_abbr": "NOH",
-      "opp_abbr": "HOU",
-      "game_date": "2005-01-26",
-      "game_id": "0020400618",
-      "crew": []
-    },
-    {
       "pts": 22,
       "reb": 0,
       "ast": 3,
@@ -522,29 +522,6 @@
         {
           "name": "Mark Wunderlich",
           "slug": "mark-wunderlich"
-        }
-      ]
-    },
-    {
-      "pts": 20,
-      "reb": 0,
-      "ast": 7,
-      "team_abbr": "NOH",
-      "opp_abbr": "DEN",
-      "game_date": "2005-04-06",
-      "game_id": "0020401112",
-      "crew": [
-        {
-          "name": "Derrick Collins",
-          "slug": "derrick-collins"
-        },
-        {
-          "name": "David Jones",
-          "slug": "david-jones"
-        },
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
         }
       ]
     },
@@ -572,25 +549,25 @@
       ]
     },
     {
-      "pts": 19,
-      "reb": 5,
-      "ast": 16,
+      "pts": 20,
+      "reb": 0,
+      "ast": 7,
       "team_abbr": "NOH",
-      "opp_abbr": "PHI",
-      "game_date": "2005-01-28",
-      "game_id": "0020400632",
+      "opp_abbr": "DEN",
+      "game_date": "2005-04-06",
+      "game_id": "0020401112",
       "crew": [
         {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
         },
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "David Jones",
+          "slug": "david-jones"
         },
         {
-          "name": "Pat Fraher",
-          "slug": "pat-fraher"
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
         }
       ]
     },
@@ -614,6 +591,29 @@
         {
           "name": "Tommy Nunez Jr.",
           "slug": "tommy-nunez"
+        }
+      ]
+    },
+    {
+      "pts": 19,
+      "reb": 5,
+      "ast": 16,
+      "team_abbr": "NOH",
+      "opp_abbr": "PHI",
+      "game_date": "2005-01-28",
+      "game_id": "0020400632",
+      "crew": [
+        {
+          "name": "Joe Forte",
+          "slug": "joe-forte"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        },
+        {
+          "name": "Pat Fraher",
+          "slug": "pat-fraher"
         }
       ]
     }

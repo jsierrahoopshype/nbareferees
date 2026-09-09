@@ -1720,29 +1720,6 @@
   "top_games": [
     {
       "pts": 31,
-      "reb": 1,
-      "ast": 1,
-      "team_abbr": "IND",
-      "opp_abbr": "OKC",
-      "game_date": "2021-05-01",
-      "game_id": "0022000963",
-      "crew": [
-        {
-          "name": "Eric Lewis",
-          "slug": "eric-lewis"
-        },
-        {
-          "name": "Karl Lane",
-          "slug": "karl-lane"
-        },
-        {
-          "name": "Haywoode Workman",
-          "slug": "haywoode-workman"
-        }
-      ]
-    },
-    {
-      "pts": 31,
       "reb": 6,
       "ast": 0,
       "team_abbr": "CHI",
@@ -1765,25 +1742,25 @@
       ]
     },
     {
-      "pts": 30,
-      "reb": 4,
+      "pts": 31,
+      "reb": 1,
       "ast": 1,
-      "team_abbr": "CHI",
-      "opp_abbr": "TOR",
-      "game_date": "2016-02-19",
-      "game_id": "0021500809",
+      "team_abbr": "IND",
+      "opp_abbr": "OKC",
+      "game_date": "2021-05-01",
+      "game_id": "0022000963",
       "crew": [
+        {
+          "name": "Eric Lewis",
+          "slug": "eric-lewis"
+        },
         {
           "name": "Karl Lane",
           "slug": "karl-lane"
         },
         {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
-        },
-        {
-          "name": "Sean Wright",
-          "slug": "sean-wright"
+          "name": "Haywoode Workman",
+          "slug": "haywoode-workman"
         }
       ]
     },
@@ -1807,6 +1784,29 @@
         {
           "name": "Nate Green",
           "slug": "nate-green"
+        }
+      ]
+    },
+    {
+      "pts": 30,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "CHI",
+      "opp_abbr": "TOR",
+      "game_date": "2016-02-19",
+      "game_id": "0021500809",
+      "crew": [
+        {
+          "name": "Karl Lane",
+          "slug": "karl-lane"
+        },
+        {
+          "name": "Scott Wall",
+          "slug": "scott-wall"
+        },
+        {
+          "name": "Sean Wright",
+          "slug": "sean-wright"
         }
       ]
     },
@@ -1881,29 +1881,6 @@
     },
     {
       "pts": 25,
-      "reb": 3,
-      "ast": 1,
-      "team_abbr": "CHI",
-      "opp_abbr": "BKN",
-      "game_date": "2016-03-17",
-      "game_id": "0021501016",
-      "crew": [
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
-        },
-        {
-          "name": "Dedric Taylor",
-          "slug": "dedric-taylor"
-        }
-      ]
-    },
-    {
-      "pts": 25,
       "reb": 4,
       "ast": 2,
       "team_abbr": "SAS",
@@ -1926,25 +1903,48 @@
       ]
     },
     {
-      "pts": 24,
-      "reb": 2,
+      "pts": 25,
+      "reb": 3,
       "ast": 1,
-      "team_abbr": "IND",
-      "opp_abbr": "GSW",
-      "game_date": "2020-01-24",
-      "game_id": "0021900679",
+      "team_abbr": "CHI",
+      "opp_abbr": "BKN",
+      "game_date": "2016-03-17",
+      "game_id": "0021501016",
       "crew": [
         {
-          "name": "Bill Kennedy",
-          "slug": "bill-kennedy"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "John Goble",
-          "slug": "john-goble"
+          "name": "Leroy Richardson",
+          "slug": "leroy-richardson"
         },
         {
-          "name": "Ray Acosta",
-          "slug": "ray-acosta"
+          "name": "Dedric Taylor",
+          "slug": "dedric-taylor"
+        }
+      ]
+    },
+    {
+      "pts": 24,
+      "reb": 2,
+      "ast": 2,
+      "team_abbr": "IND",
+      "opp_abbr": "DEN",
+      "game_date": "2020-01-19",
+      "game_id": "0021900638",
+      "crew": [
+        {
+          "name": "David Guthrie",
+          "slug": "david-guthrie"
+        },
+        {
+          "name": "Nate Green",
+          "slug": "nate-green"
+        },
+        {
+          "name": "Scott Twardoski",
+          "slug": "scott-twardoski"
         }
       ]
     }

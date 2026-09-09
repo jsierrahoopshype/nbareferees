@@ -1335,6 +1335,25 @@
     },
     {
       "pts": 31,
+      "reb": 1,
+      "ast": 3,
+      "team_abbr": "LAC",
+      "opp_abbr": "ORL",
+      "game_date": "1997-04-04",
+      "game_id": "170403019",
+      "crew": [
+        {
+          "name": "Ed Middleton",
+          "slug": "ed-middleton"
+        },
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        }
+      ]
+    },
+    {
+      "pts": 31,
       "reb": 2,
       "ast": 9,
       "team_abbr": "LAC",
@@ -1353,25 +1372,6 @@
         {
           "name": "Mark Wunderlich",
           "slug": "mark-wunderlich"
-        }
-      ]
-    },
-    {
-      "pts": 31,
-      "reb": 1,
-      "ast": 3,
-      "team_abbr": "LAC",
-      "opp_abbr": "ORL",
-      "game_date": "1997-04-04",
-      "game_id": "170403019",
-      "crew": [
-        {
-          "name": "Ed Middleton",
-          "slug": "ed-middleton"
-        },
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
         }
       ]
     },
@@ -1469,29 +1469,6 @@
     },
     {
       "pts": 21,
-      "reb": 2,
-      "ast": 8,
-      "team_abbr": "LAC",
-      "opp_abbr": "TOR",
-      "game_date": "1998-03-14",
-      "game_id": "180313012",
-      "crew": [
-        {
-          "name": "Bill Spooner",
-          "slug": "bill-spooner"
-        },
-        {
-          "name": "Jim Clark",
-          "slug": "jim-clark"
-        },
-        {
-          "name": "Blane Reichelt",
-          "slug": "blane-reichelt"
-        }
-      ]
-    },
-    {
-      "pts": 21,
       "reb": 1,
       "ast": 5,
       "team_abbr": "LAC",
@@ -1533,6 +1510,29 @@
         {
           "name": "Monty McCutchen",
           "slug": "monty-mccutchen"
+        }
+      ]
+    },
+    {
+      "pts": 21,
+      "reb": 2,
+      "ast": 8,
+      "team_abbr": "LAC",
+      "opp_abbr": "TOR",
+      "game_date": "1998-03-14",
+      "game_id": "180313012",
+      "crew": [
+        {
+          "name": "Bill Spooner",
+          "slug": "bill-spooner"
+        },
+        {
+          "name": "Jim Clark",
+          "slug": "jim-clark"
+        },
+        {
+          "name": "Blane Reichelt",
+          "slug": "blane-reichelt"
         }
       ]
     }

@@ -1,0 +1,218 @@
+
+
+official.nba.com referee-assignments SOURCE probe (probe_assignments_source.py)
+==============================================================================
+Run at (local clock): 2026-09-09T11:27:49
+Goal: find where the crew data comes from. No parsing, no extracts touched.
+Page: https://official.nba.com/referee-assignments/
+Fetching https://official.nba.com/referee-assignments/ ...
+  HTTP 200, 111801 chars, Content-Type: text/html; charset=UTF-8
+  cached -> source-data\_assignments_raw\referee-assignments.html
+
+==============================================================================
+1. <script> TAGS: embedded JSON blobs and inline data
+==============================================================================
+20 script tag(s): 8 inline, 12 external
+
+-- typed JSON script tags --
+  none (no application/json or application/ld+json script tags)
+
+-- JSON-LD (application/ld+json) --
+  none
+
+-- object/array literals in inline JS (var X = {...}) --
+  e = <js-object (not strict JSON), 27655 chars>
+      top-level keys: a, e, f, beacon, errorBeacon, licenseKey, applicationID, sa, queueTime, applicationTime, ttGuid, user, account, product, extra, jsAttributes, userAttributes, atts, transactionName, tNamePlain, AJAX, PA, UA, BP, WS
+  f = <js-object (not strict JSON), 689 chars>
+      top-level keys: on, addEventListener, removeEventListener, emit, get, listeners, context, buffer, abort, isBuffering, debugId, backlog, isolatedBacklog
+  u = <js-object (not strict JSON), 409 chars>
+  E = <js-object (not strict JSON), 544 chars>
+      top-level keys: activatedFeatures, appMetadata, configured, customTransaction, denyList, disabled, drainRegistry, connector, harvester, v2Target, isolatedBacklog, isRecording, loaderType, maxBytes, obfuscator, onerror, ptid, releaseIds, session, timeKeeper, registeredEntities, jsAttributesMetadata, bytes, listeningForIframeMessages
+  f = <js-object (not strict JSON), 587 chars>
+      top-level keys: addPageAction, deregister, log, customAttributes, measure, noticeError, recordCustomEvent, setApplicationVersion, setCustomAttribute, setUserId, metadata, target, timings, vitals, events, latestTimestamp
+  r = <js-object (not strict JSON), 470 chars>
+      top-level keys: assetUrl, assetType, registerUrl, deregisterUrl, pageUrl, currentUrl, timeAlive, timeToBeRequested, timeToExecute, timeToFetch, timeToLoad, timeToRegister, value
+  digitalData = <json object, 120 chars>   *** CREW WORDS: referee,assignment,official
+      top-level keys: page
+      element/key count: 1
+      ...{"page":{"pageInfo":{"pageName":"nba:official:page"},"content":{"contentID":6203,"contentTitle":"Referee Assignments"}}}...
+
+-- api/endpoint/ajax variables in inline JS --
+  restURL = https:\/\/official.nba.com\/wp-json\/
+
+==============================================================================
+2. data-* ATTRIBUTES and OTHER EMBEDS
+==============================================================================
+4 data-* attribute instance(s) across 3 distinct names
+
+-- data-* attributes whose NAME or VALUE looks assignment-related --
+  none flagged. All data-* names seen: data-esi, data-target, data-toggle
+
+-- iframes (a widget embed would also explain an empty page body) --
+  none
+
+-- <noscript> blocks (may hold a server-rendered fallback) --
+  none
+
+==============================================================================
+3. URLs REFERENCED IN THE PAGE HTML
+==============================================================================
+  47 absolute URL(s), 8 root-relative path(s) in the raw HTML
+  hosts referenced: ak-static.cms.nba.com (18), official.nba.com (12), ogp.me (4), nbaofficials.com (2), github.com (1), js-agent.newrelic.com (1), custom.transaction (1), gmpg.org (1), tags.nba.com (1), videorulebook.nba.com (1), www.nba.com (1), twitter.com (1), cdn.nba.com (1), cdn.cookielaw.org (1), assets.adobedtm.com (1)
+
+    31 endpoint-shaped URL(s) in page HTML (top 31):
+      https://official.nba.com/referee-assignments/   [CREW=referee,assignment,official]
+      http://official.nba.com/referee-assignments/   [CREW=referee,assignment,official]
+      https://official.nba.com/wp-content/uploads/sites/4/2025/10/2025-26-NBA-Referee-Headshots.pdf   [CREW=referee,official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/genericons.min.css   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/theme.css?ver=1.7.0   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/replay-officials.css?ver=1.7.0   [CREW=official]
+      https://official.nba.com/?p=6203   [CREW=official]
+      https://official.nba.com/   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2025/10/Official-2025-26-NBA-Playing-Rules.pdf   [CREW=official]
+      https://nbaofficials.com/?AspxAutoDetectCookieSupport=1   [CREW=official]
+      http://official.nba.com/archive/   [CREW=official]
+      https://official.nba.com/nba-injury-report-2025-26-season/   [CREW=official]
+      https://official.nba.com/2025-26-nba-officiating-last-two-minute-reports/   [CREW=official]
+      https://official.nba.com/2026-playoffs-points-of-emphasis/   [CREW=official]
+      http://official.nba.com/replay/archive/   [CREW=official]
+      https://official.nba.com/replay/triggers/   [CREW=official]
+      http://official.nba.com/nba-last-two-minute-reports-frequently-asked-questions/   [CREW=official]
+      https://nbaofficials.com/   [CREW=official]
+      https://official.nba.com/nba-injury-report-2022-23-season/   [CREW=official]
+      http://twitter.com/nbaofficial   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/bootstrap.min.js?ver=3.2.0   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/fluid-videos.min.js?ver=1.7.0   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/nba-official.min.js?ver=1.7.0   [CREW=official]
+      https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/pulse-insights.js   [CREW=official]
+      https://official.nba.com/called   [CREW=official]
+      https://official.nba.com/wp-content/uploads/sites/4/2025/10/2025-26-NBA-Officials-Guide.pdf   [CREW=official]
+      https://official.nba.com/wp-content/uploads/sites/4/2025/10/2025-26-NBA-Officiating-Staff.pdf   [CREW=official]
+      https://official.nba.com/wp-content/uploads/sites/4/2025/10/2025-26-NBA-Concussion-Summary.pdf   [CREW=official]
+      https://official.nba.com/wp-content/uploads/sites/4/2024/11/2024-25-CBA-101.pdf   [CREW=official]
+      https://official.nba.com/wp-content/uploads/sites/4/2024/06/NBA-Consitution-By-Laws-June-2024.pdf   [CREW=official]
+      https://official.nba.com/Y8eKZ7/XoRT/7-/RBmW/cm7emUI5/ih9NSJN3iYbEOri7/Hls2Ag/AgM7/JSwPDk0B   [CREW=official]
+
+==============================================================================
+4. WORDPRESS REST API (/wp-json/)
+==============================================================================
+REST base: https://official.nba.com/wp-json/
+  discovered via: assumed default (not advertised)
+
+Fetching route index ...
+  HTTP 404, 114 chars
+  site: ?
+  namespaces (0): 
+  routes advertised at root: 0
+
+-- routes matching crew wording --
+  none at the root index
+
+-- custom (non-core) namespaces --
+  none; only WordPress core namespaces are exposed
+
+-- the referee-assignments page as a REST object --
+  GET https://official.nba.com/wp-json/wp/v2/pages?slug=referee-assignments&_fields=id,slug,link,title,modified
+      HTTP 200, 177 chars
+      id=6203 slug=referee-assignments modified=2016-01-20T17:56:05
+      link=https://official.nba.com/referee-assignments/
+      -> full object: https://official.nba.com/wp-json/wp/v2/pages/6203
+
+==============================================================================
+5. LINKED JS BUNDLES: endpoints referenced inside them
+==============================================================================
+12 external script(s); 10 after dropping known analytics/ad noise
+Analyzing up to 12, highest-priority first.
+
+  https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/bootstrap.min.js?ver=3.2.0
+      HTTP 200, 37045 chars, cached as js/ak-static.cms.nba.com_wp-content_themes_nba-official_js_bootstrap.min.js_ver_3.2.0
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/fluid-videos.min.js?ver=1.7.0
+      HTTP 200, 354 chars, cached as js/ak-static.cms.nba.com_wp-content_themes_nba-official_js_fluid-videos.min.js_ver_1.7.0
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/nba-official.min.js?ver=1.7.0
+      HTTP 200, 8583 chars, cached as js/ak-static.cms.nba.com_wp-content_themes_nba-official_js_nba-official.min.js_ver_1.7.0
+      *** CREW WORDS in bundle: assignment, official
+        ...nter_official+"</a>":l+=t.replaycenter_official,a!==i&&(l+=", ")})),l+="</p>"),o+="</tbody></table>",n(".nba-refs-content").html(o),n(".replay-center-assignment").html(l),n(".entry-meta").html((a=n("#ref-date").val(),t=(a=new Date(a)).getDate()+1,e=a.getMonth(),a=a.getFullYear(),["January","February","March","April","May","June","July","August","September","October","November","December"][e]+" "+t...
+        ...t={date:n("#ref-date").val()},t=n(this).serialize()+"&"+n.param(t),n.ajax({async:!0,type:"GET",dataType:"json",url:constants.restURL+"api/v1/get-game-officials",data:t,success:function(a){var i,t,e,c="/wp-content/uploads/sites/4/2025/10/",o='<table cellspacing="0" cellpadding="0" class="table"><thead><tr><th class="tableTitle">Game</th><th class="tableTitle">Official 1</th><th class="tableTitle">O...
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-content/themes/nba-official/js/pulse-insights.js
+      HTTP 200, 419 chars, cached as js/ak-static.cms.nba.com_wp-content_themes_nba-official_js_pulse-insights.js
+      no endpoint-shaped URLs inside
+
+  https://official.nba.com/Y8eKZ7/XoRT/7-/RBmW/cm7emUI5/ih9NSJN3iYbEOri7/Hls2Ag/AgM7/JSwPDk0B
+      HTTP 200, 554968 chars, cached as js/official.nba.com_Y8eKZ7_XoRT_7-_RBmW_cm7emUI5_ih9NSJN3iYbEOri7_Hls2Ag_AgM7_JSwPDk0B
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-includes/js/jquery/jquery.min.js?ver=3.6.4
+      HTTP 200, 89496 chars, cached as js/ak-static.cms.nba.com_wp-includes_js_jquery_jquery.min.js_ver_3.6.4
+      no endpoint-shaped URLs inside
+
+  https://cdn.nba.com/user-consent/index.min.js?ver=1.0.0
+      HTTP 200, 18142 chars, cached as js/cdn.nba.com_user-consent_index.min.js_ver_1.0.0
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-includes/js/jquery/ui/core.min.js?ver=1.13.2
+      HTTP 200, 20787 chars, cached as js/ak-static.cms.nba.com_wp-includes_js_jquery_ui_core.min.js_ver_1.13.2
+      no endpoint-shaped URLs inside
+
+  https://ak-static.cms.nba.com/wp-includes/js/jquery/ui/datepicker.min.js?ver=1.13.2
+      HTTP 200, 36148 chars, cached as js/ak-static.cms.nba.com_wp-includes_js_jquery_ui_datepicker.min.js_ver_1.13.2
+      no endpoint-shaped URLs inside
+
+  https://s.cdn.turner.com/nba/tmpl_asset/static/nba-cms3-base/latest/js/pkgAnalyticsScout-min.js
+      HTTP 404, 10 chars, cached as js/s.cdn.turner.com_nba_tmpl_asset_static_nba-cms3-base_latest_js_pkgAnalyticsScout-min.js
+      no endpoint-shaped URLs inside
+
+==============================================================================
+6. CREW WORDS IN THE RAW HTML (is it data, or just nav text?)
+==============================================================================
+
+-- 'referee': 20 occurrence(s) total, first 6 shown --
+   ..."spa"})})()})();</script> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Referee Assignments | NBA Official</title> <link rel="profile" href="http://gmpg.org/xfn/11"> <meta name='robots' content='max-image-preview:large' /> <link rel='dns-prefetch' href=...
+   ...rate.min.js?ver=3.4.0' id='jquery-migrate-js'></script> <link rel="canonical" href="https://official.nba.com/referee-assignments/" /> <link rel='shortlink' href='https://official.nba.com/?p=6203' /> <meta property="og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="o...
+   ...ortlink' href='https://official.nba.com/?p=6203' /> <meta property="og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="og:title" content="Referee Assignments" /> <meta property="og:updated_time" content="2016-01-20T17:56:05-05:00" /> <meta property="og:type" content="...
+   ...operty="og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="og:title" content="Referee Assignments" /> <meta property="og:updated_time" content="2016-01-20T17:56:05-05:00" /> <meta property="og:type" content="article" /> <meta property="article:published_time" content=...
+   ...rrent-menu-item page_item page-item-6203 current_page_item menu-item-37026"><a href="https://official.nba.com/referee-assignments/" aria-current="page">Today&#8217;s Officials</a></li> <li id="menu-item-16958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu...
+   ...rrent-menu-item page_item page-item-6203 current_page_item menu-item-37027"><a href="https://official.nba.com/referee-assignments/" aria-current="page">Today&#8217;s Officials</a></li> <li id="menu-item-54498" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54498"><a href="...
+
+-- 'assignment': 14 occurrence(s) total, first 6 shown --
+   ...)()})();</script> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Referee Assignments | NBA Official</title> <link rel="profile" href="http://gmpg.org/xfn/11"> <meta name='robots' content='max-image-preview:large' /> <link rel='dns-prefetch' href='//cdn.n...
+   ....js?ver=3.4.0' id='jquery-migrate-js'></script> <link rel="canonical" href="https://official.nba.com/referee-assignments/" /> <link rel='shortlink' href='https://official.nba.com/?p=6203' /> <meta property="og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="og:title"...
+   ...href='https://official.nba.com/?p=6203' /> <meta property="og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="og:title" content="Referee Assignments" /> <meta property="og:updated_time" content="2016-01-20T17:56:05-05:00" /> <meta property="og:type" content="article"...
+   ...og:url" content="https://official.nba.com/referee-assignments/" /> <meta property="og:title" content="Referee Assignments" /> <meta property="og:updated_time" content="2016-01-20T17:56:05-05:00" /> <meta property="og:type" content="article" /> <meta property="article:published_time" content="1453312...
+   ...nu-item page_item page-item-6203 current_page_item menu-item-37026"><a href="https://official.nba.com/referee-assignments/" aria-current="page">Today&#8217;s Officials</a></li> <li id="menu-item-16958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-16...
+   ...nu-item page_item page-item-6203 current_page_item menu-item-37027"><a href="https://official.nba.com/referee-assignments/" aria-current="page">Today&#8217;s Officials</a></li> <li id="menu-item-54498" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54498"><a href="/wp-cont...
+
+-- 'crew': 6 occurrence(s) total, first 6 shown --
+   ...> <th class="tableTitle">Game</th> <th class="tableTitle">Crew Chief</th> <th class="tableTitle">Referee</th> <th class="tableTitle">Umpire</th> <th class="tableTitle">Al...
+   ...> <th class="tableTitle">Game</th> <th class="tableTitle">Crew Chief</th> <th class="tableTitle">Referee</th> <th class="tableTitle">Umpire</th> <th class="tableTitle">Al...
+   ...cle> </section> <div class="col-lg-12"> <div class="col-lg-4 ref-positions"> <h1>Crew Chief Position</h1> <ul> <li>Proficient in Referee and Umpire positions</li> <li>Leader of the crew, on and off the floor</li> <li>High-level play...
+   ...n</h1> <ul> <li>Proficient in Referee and Umpire positions</li> <li>Leader of the crew, on and off the floor</li> <li>High-level play calling, partnering skills, and tools for handling any game situation, including interpersonal communication</li> <li>...
+   ...l> <li>Proficient in all Umpire position requirements</li> <li>Effectively the glue for a crew through consistency, teamwork, and communication - makes partners better by carrying a larger portion of the crew\u2019s load than an Umpire</li> <li>Capable of handling some plays...
+   ...through consistency, teamwork, and communication - makes partners better by carrying a larger portion of the crew\u2019s load than an Umpire</li> <li>Capable of handling some plays in secondary area of coverage</li> <li>Ability to recognize and appropriately manage shifts in game con...
+
+-- 'official': 52 occurrence(s) total, first 6 shown --
+   ...<meta name="viewport" content="width=device-width, initial-scale=1"> <title>Referee Assignments | NBA Official</title> <link rel="profile" href="http://gmpg.org/xfn/11"> <meta name='robots' content='max-image-preview:large' /> <link rel='dns-prefetch' href='//cdn.nba.com' /> <link r...
+   ...'all' /> <link rel='stylesheet' id='genericons-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/genericons.min.css' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/theme.css?...
+   ...ent/themes/nba-official/css/genericons.min.css' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/theme.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-replay-offici...
+   ...ll' /> <link rel='stylesheet' id='nba-official-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/theme.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-replay-officials-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-offic...
+   ...nt/themes/nba-official/css/theme.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-replay-officials-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/replay-officials.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id...
+   ...ficial/css/theme.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id='nba-official-replay-officials-css' href='https://ak-static.cms.nba.com/wp-content/themes/nba-official/css/replay-officials.css?ver=1.7.0' type='text/css' media='all' /> <link rel='stylesheet' id='video-js-css'...
+
+==============================================================================
+NEXT STEP
+==============================================================================
+Look above for, in rough order of usefulness:
+  - a /wp-json/ route or custom namespace with crew wording  -> fetch it directly
+  - an api/endpoint variable or fetch() URL in a bundle      -> replay that request
+  - a JSON blob with crew words already in the page          -> no second request needed
+  - an iframe src                                            -> the data lives in the embed
+If every section came back empty, the next round should capture the
+browser's Network tab (F12 -> Network -> XHR, reload) -- the request
+exists, it is just built at runtime in a way static analysis cannot see.
+
+Cache kept at source-data\_assignments_raw (gitignored) -- rerun with --cached to re-analyze offline.

@@ -1375,6 +1375,29 @@
     },
     {
       "pts": 27,
+      "reb": 14,
+      "ast": 2,
+      "team_abbr": "HOU",
+      "opp_abbr": "WAS",
+      "game_date": "1994-12-14",
+      "game_id": "141213010",
+      "crew": [
+        {
+          "name": "Bill Oakes",
+          "slug": "bill-oakes"
+        },
+        {
+          "name": "Ronnie Nunn",
+          "slug": "ronnie-nunn"
+        },
+        {
+          "name": "Hank Armstrong",
+          "slug": "hank-armstrong"
+        }
+      ]
+    },
+    {
+      "pts": 27,
       "reb": 9,
       "ast": 2,
       "team_abbr": "DET",
@@ -1398,62 +1421,24 @@
     },
     {
       "pts": 27,
-      "reb": 6,
-      "ast": 3,
-      "team_abbr": "DET",
-      "opp_abbr": "PHX",
-      "game_date": "1997-02-03",
-      "game_id": "170202008",
-      "crew": [
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Jim Clark",
-          "slug": "jim-clark"
-        },
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
-        }
-      ]
-    },
-    {
-      "pts": 27,
-      "reb": 12,
-      "ast": 1,
-      "team_abbr": "DET",
-      "opp_abbr": "SEA",
-      "game_date": "1995-11-16",
-      "game_id": "151115008",
-      "crew": [
-        {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
-        }
-      ]
-    },
-    {
-      "pts": 27,
       "reb": 14,
       "ast": 2,
-      "team_abbr": "HOU",
-      "opp_abbr": "WAS",
-      "game_date": "1994-12-14",
-      "game_id": "141213010",
+      "team_abbr": "POR",
+      "opp_abbr": "LAL",
+      "game_date": "1995-03-23",
+      "game_id": "150322013",
       "crew": [
         {
-          "name": "Bill Oakes",
-          "slug": "bill-oakes"
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
         },
         {
-          "name": "Ronnie Nunn",
-          "slug": "ronnie-nunn"
+          "name": "Joe DeRosa",
+          "slug": "joe-derosa"
         },
         {
-          "name": "Hank Armstrong",
-          "slug": "hank-armstrong"
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
         }
       ]
     },
@@ -1482,24 +1467,39 @@
     },
     {
       "pts": 27,
-      "reb": 14,
-      "ast": 2,
-      "team_abbr": "POR",
-      "opp_abbr": "LAL",
-      "game_date": "1995-03-23",
-      "game_id": "150322013",
+      "reb": 12,
+      "ast": 1,
+      "team_abbr": "DET",
+      "opp_abbr": "SEA",
+      "game_date": "1995-11-16",
+      "game_id": "151115008",
       "crew": [
         {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
+          "name": "Rodney Mott",
+          "slug": "rodney-mott"
+        }
+      ]
+    },
+    {
+      "pts": 27,
+      "reb": 6,
+      "ast": 3,
+      "team_abbr": "DET",
+      "opp_abbr": "PHX",
+      "game_date": "1997-02-03",
+      "game_id": "170202008",
+      "crew": [
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
         },
         {
-          "name": "Joe DeRosa",
-          "slug": "joe-derosa"
+          "name": "Jim Clark",
+          "slug": "jim-clark"
         },
         {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         }
       ]
     },
@@ -1528,29 +1528,6 @@
     },
     {
       "pts": 25,
-      "reb": 12,
-      "ast": 2,
-      "team_abbr": "DET",
-      "opp_abbr": "SAS",
-      "game_date": "1996-01-19",
-      "game_id": "160118008",
-      "crew": [
-        {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
-        },
-        {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
-        },
-        {
-          "name": "Tim Donaghy",
-          "slug": "tim-donaghy"
-        }
-      ]
-    },
-    {
-      "pts": 25,
       "reb": 8,
       "ast": 3,
       "team_abbr": "HOU",
@@ -1569,6 +1546,29 @@
         {
           "name": "Joe DeRosa",
           "slug": "joe-derosa"
+        }
+      ]
+    },
+    {
+      "pts": 25,
+      "reb": 12,
+      "ast": 2,
+      "team_abbr": "DET",
+      "opp_abbr": "SAS",
+      "game_date": "1996-01-19",
+      "game_id": "160118008",
+      "crew": [
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
+        },
+        {
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
+        },
+        {
+          "name": "Tim Donaghy",
+          "slug": "tim-donaghy"
         }
       ]
     }
