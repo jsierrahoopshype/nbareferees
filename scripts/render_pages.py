@@ -75,6 +75,8 @@ ATTRIBUTION = [
      "2012-13, and 2023-24 on"),
     ("szymonjwiak's NBA box scores", "https://www.kaggle.com/datasets/szymonjwiak/nba-traditional",
      "Kaggle; player logs for the nbadb-only seasons"),
+    ("National Basketball Referees Association", "https://www.nbra.net/nba-officials/referee-biographies/",
+     "jersey numbers, biography details and official portraits for current officials"),
 ]
 
 
@@ -324,6 +326,44 @@ def stat_chip(label, value, accent=False):
     return ('<div class="chip{a}"><span class="chip-val">{v}</span>'
             '<span class="chip-label">{l}</span></div>').format(
         a=" chip-accent" if accent else "", v=value, l=esc(label))
+
+
+# Headshots live in assets/refs/<slug>.<ext>, downloaded from nbra.net by
+# scripts/local/fetch_nbra_headshots.py. Existence is checked on disk rather
+# than trusted from nbra_bios.csv: the CSV records that a URL EXISTS, which is
+# not the same as the file having been downloaded and committed.
+HEADSHOT_EXTS = (".jpg", ".png", ".webp")
+
+
+def headshot_rel(slug):
+    """Repo-relative path of this referee's headshot, or None if there is none."""
+    for ext in HEADSHOT_EXTS:
+        if os.path.exists(os.path.join(ASSETS, "refs", slug + ext)):
+            return "assets/refs/" + slug + ext
+    return None
+
+
+def ref_photo_img(slug, root):
+    """The identity-block portrait, or "" when we do not have one.
+
+    92 of 166 referees have no photo (NBRA publishes biographies for current
+    officials only), so ABSENCE IS THE COMMON CASE and gets no placeholder --
+    no silhouette, no empty frame, no reserved gap. The text simply starts at
+    the left margin, exactly as every referee page does today. That matches
+    how the jersey badge and the NBRA identity line already behave: present
+    when known, gone when not, never padded. A generic avatar repeated across
+    92 pages would read as broken art, and would add a visual element that
+    carries no information.
+
+    alt is deliberately empty: the <h1> beside it already names the person, so
+    the image is decorative to a screen reader. width/height are set so the
+    layout does not shift while it loads.
+    """
+    rel = headshot_rel(slug)
+    if not rel:
+        return ""
+    return ('<img class="ref-photo" src="{root}{rel}" alt="" width="84" height="84" '
+            'decoding="async">').format(root=root, rel=rel)
 
 
 def nbra_jersey_badge(nbra_bio):
@@ -801,19 +841,25 @@ def render_ref(doc, rf_doc=None, nbra_bio=None):
     if s.get("games_pi"):
         chips.append(stat_chip("Play-in", i(s["games_pi"])))
 
+    # .has-photo only when there is one; without it .ref-hero-main is an
+    # unstyled wrapper and the block renders exactly as it did before.
+    photo = ref_photo_img(s["slug"], ROOT2)
     hero = """<section class="ref-hero">
   <div class="ref-hero-stripe" aria-hidden="true"></div>
-  <div class="ref-hero-body">
+  <div class="ref-hero-body{photo_cls}">{photo}
+    <div class="ref-hero-main">
     <p class="ref-kicker">NBA on-court official</p>
     <h1 class="ref-name">{name}{jersey}</h1>
     <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a>
     <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a>
     <a class="compare-btn" href="{root}matchup/index.html?ref={slug}">Team matchups</a></div>{identity}
     <div class="chip-row">{chips}</div>
+    </div>
   </div>
 </section>""".format(name=esc(name), jersey=nbra_jersey_badge(nbra_bio),
                      identity=nbra_identity_line(nbra_bio),
                      active=active, chips="".join(chips),
+                     photo=photo, photo_cls=" has-photo" if photo else "",
                      root=ROOT2, slug=esc(s["slug"]))
 
     blocks = [back_home(), hero, ref_search(2, "top")]
@@ -2288,6 +2334,18 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 /* ---- referee hero (flat header, Polymarket .phead treatment) ---- */
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
+/* Identity-block portrait (assets/refs/<slug>.jpg, from nbra.net). Only ~74 of
+   166 referees have one, so the flex row is switched on by .has-photo and the
+   other 92 pages keep the plain, full-width block they already had -- no
+   placeholder, no reserved space. */
+.ref-hero-body.has-photo{display:flex;align-items:flex-start;gap:1rem}
+.ref-hero-body.has-photo .ref-hero-main{min-width:0;flex:1 1 auto}
+.ref-photo{flex:0 0 auto;width:84px;height:84px;object-fit:cover;object-position:50% 22%;
+  border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-top:.15rem}
+@media(max-width:520px){
+  .ref-photo{width:64px;height:64px}
+  .ref-hero-body.has-photo{gap:.75rem}
+}
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
   font-size:1.05rem;font-weight:700;color:var(--accent);vertical-align:middle}
@@ -2968,7 +3026,12 @@ JS = r"""(function(){
       if(sub)sub.textContent=data.date;
       body.innerHTML=data.games.map(function(g){
         var crew=(g.crew||[]).map(function(c){
-          return '<a href="referee/'+c.slug+'/index.html">'+escHtml(c.name)+'</a>';
+          // slug is null when the feed could not match an official to a
+          // canonical referee page (a new hire, a name spelling we have not
+          // mapped yet). Render the name as plain text rather than linking to
+          // referee/null/index.html.
+          var nm=escHtml(c.name);
+          return c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
         }).join(", ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+

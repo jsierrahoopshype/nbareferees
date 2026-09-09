@@ -153,6 +153,18 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 /* ---- referee hero (flat header, Polymarket .phead treatment) ---- */
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
+/* Identity-block portrait (assets/refs/<slug>.jpg, from nbra.net). Only ~74 of
+   166 referees have one, so the flex row is switched on by .has-photo and the
+   other 92 pages keep the plain, full-width block they already had -- no
+   placeholder, no reserved space. */
+.ref-hero-body.has-photo{display:flex;align-items:flex-start;gap:1rem}
+.ref-hero-body.has-photo .ref-hero-main{min-width:0;flex:1 1 auto}
+.ref-photo{flex:0 0 auto;width:84px;height:84px;object-fit:cover;object-position:50% 22%;
+  border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-top:.15rem}
+@media(max-width:520px){
+  .ref-photo{width:64px;height:64px}
+  .ref-hero-body.has-photo{gap:.75rem}
+}
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
   font-size:1.05rem;font-weight:700;color:var(--accent);vertical-align:middle}
