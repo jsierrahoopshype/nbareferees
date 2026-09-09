@@ -163,8 +163,19 @@ FIELD_SYNONYMS = {
 }
 CSV_FIELDS = [
     "official_id", "match_status", "nbra_name", "name_source", "jersey_num",
-    "years_experience", "college", "hometown", "birth_date", "bio_url", "extra_fields",
+    "years_experience", "college", "hometown", "birth_date", "bio_url",
+    "headshot_url", "extra_fields",
 ]
+
+# Every bio page carries exactly three images: nbra.net's own logo.png and
+# logo-small.png, plus the official's headshot. The headshot is therefore "the
+# img that is not a logo" -- its upload folder varies (2016/05, 2018/11,
+# 2021/03, ...), so the URL cannot be constructed and must be read from each
+# cached page. Matched on the URL PATH, so a query string cannot hide a logo.
+LOGO_SRC_RE = re.compile(r"/logo(-small)?\.(png|jpe?g|svg|gif|webp)$", re.I)
+# WordPress emits resized copies of the same upload as name-WIDTHxHEIGHT.jpg;
+# the unsuffixed original is the one worth keeping.
+WP_RESIZE_RE = re.compile(r"-\d{2,4}x\d{2,4}(\.[A-Za-z0-9]+)$")
 
 
 def hr(title=""):
@@ -392,10 +403,56 @@ def extract_labeled_facts(soup):
     return facts
 
 
-def parse_bio(html):
+def img_sources(img):
+    """Every URL an <img> might really be pointing at: src, the usual lazy-load
+    attributes, and the first srcset candidate. Lazy-loaded markup often parks
+    a placeholder in src and the real file in data-src."""
+    out = []
+    for attr in ("src", "data-src", "data-lazy-src", "data-original"):
+        val = (img.get(attr) or "").strip()
+        if val:
+            out.append(val)
+    srcset = (img.get("srcset") or img.get("data-srcset") or "").strip()
+    if srcset:
+        first = srcset.split(",")[0].strip().split(" ")[0]
+        if first:
+            out.append(first)
+    return out
+
+
+def extract_headshot(soup, page_url):
+    """Return (headshot_url, note). Reads the img that is not one of the two
+    nbra.net logos, resolved against the page URL. Never guesses a URL: if no
+    non-logo image is present the result is empty, and if several are, the
+    note says so and names them so the ambiguity is visible rather than
+    silently resolved."""
+    candidates = []
+    for img in soup.find_all("img"):
+        for raw in img_sources(img):
+            absolute = urllib.parse.urljoin(page_url, raw)
+            path = urllib.parse.urlsplit(absolute).path
+            if not path or LOGO_SRC_RE.search(path):
+                continue
+            if not re.search(r"\.(jpe?g|png|webp)$", path, re.I):
+                continue
+            # Collapse WordPress's resized variants onto the original upload.
+            full = WP_RESIZE_RE.sub(r"\1", absolute)
+            if full not in candidates:
+                candidates.append(full)
+    if not candidates:
+        return "", "no non-logo image on the page"
+    if len(candidates) > 1:
+        return candidates[0], "%d non-logo images, took the first: %s" % (
+            len(candidates), ", ".join(c.rsplit("/", 1)[-1] for c in candidates))
+    return candidates[0], ""
+
+
+def parse_bio(html, page_url):
     soup = BeautifulSoup(html, "html.parser")
     raw_facts = extract_labeled_facts(soup)
+    headshot, headshot_note = extract_headshot(soup, page_url)
     out = {"years_experience": "", "college": "", "hometown": "", "birth_date": "",
+           "headshot_url": headshot, "headshot_note": headshot_note,
            "extra_fields": {}}
     for label, value in raw_facts.items():
         field = canonical_field(label)
@@ -512,15 +569,19 @@ def main():
         except RuntimeError as ex:
             print("  [{}/{}] {}  FETCH FAILED: {}".format(idx, len(entries), e["name"], ex))
             continue
-        facts = parse_bio(html)
+        facts = parse_bio(html, e["url"])
         row = dict(e)
         row.update(facts)
         bios.append(row)
         found = [k for k in ("years_experience", "college", "hometown", "birth_date") if row.get(k)] \
             + list(row["extra_fields"].keys())
-        print("  [{}/{}] {}  jersey={}  fields={}  ({})".format(
+        print("  [{}/{}] {}  jersey={}  fields={}  headshot={}  ({})".format(
             idx, len(entries), e["name"], e.get("jersey_num") or "?",
-            found or "none found", "cache hit" if cached else "fetched"))
+            found or "none found",
+            (row["headshot_url"].rsplit("/", 1)[-1] if row.get("headshot_url") else "NONE"),
+            "cache hit" if cached else "fetched"))
+        if row.get("headshot_note"):
+            print("        headshot note: {}".format(row["headshot_note"]))
         if not cached:
             time.sleep(DELAY_SECONDS)
 
@@ -531,6 +592,15 @@ def main():
         print("'Label: value' text) likely don't match this site's real markup.")
         print("Raw HTML for every page is cached under {} for debugging --".format(CACHE_DIR))
         print("names, jersey numbers, and URLs below are still usable as-is.")
+
+    with_shot = sum(1 for b in bios if b.get("headshot_url"))
+    print("\nHeadshots: {}/{} pages yielded a headshot URL.".format(with_shot, len(bios)))
+    noted = [b for b in bios if b.get("headshot_note")]
+    if noted:
+        print("  {} page(s) had something to say about their images:".format(len(noted)))
+        for b in noted:
+            print("    {:<28} {}".format(b["name"], b["headshot_note"]))
+    print("  Download them with: python scripts\\local\\fetch_nbra_headshots.py")
 
     referees_index = load_referees_index()
     rows = match_and_report(bios, referees_index)

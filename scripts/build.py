@@ -2726,7 +2726,8 @@ def recent_form_spot_check(referees_index):
 # CSV only, out of scope for a statistics site.
 # ----------------------------------------------------------------------------
 NBRA_BIOS_CSV = os.path.join(SRC, "nbra_bios.csv")
-NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date"]
+NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date",
+                    "headshot_url"]
 # Plausibility bounds for a computed age -- outside this range the parse is
 # treated as bad data (garbled scrape, or a birth-date string missing its
 # year that dateutil silently defaulted), never shown as a wrong age.
