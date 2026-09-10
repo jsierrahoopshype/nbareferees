@@ -80,6 +80,11 @@ OFFICIALS_CSV = os.path.join(SOURCE_DIR, "officials.csv.gz")
 GAMES_CSV = os.path.join(SOURCE_DIR, "games.csv.gz")
 OUT_CALLS = os.path.join(SOURCE_DIR, "referee_calls.csv.gz")
 OUT_COVERAGE = os.path.join(SOURCE_DIR, "referee_calls_coverage.csv.gz")
+# Calls that carry a name-form we could not pin to one official. Written so the
+# ambiguity can be shown ON THE AFFECTED REFEREES' PAGES rather than only in
+# aggregate: a reader comparing two officials' counts needs to know a slice is
+# unattributable, not read it as a lower rate.
+OUT_UNRESOLVED = os.path.join(SOURCE_DIR, "referee_calls_unresolved.csv.gz")
 OUT_REPORT = os.path.join(SOURCE_DIR, "_referee_calls_report.txt")
 
 DEFAULT_DB = r"C:\Users\Jorge Sierra\Downloads\archive\nba.sqlite"
@@ -129,6 +134,8 @@ CSV_FIELDS = ["game_id", "season", "season_type", "period", "clock", "call_type"
               "official_id", "player_name", "player_id"]
 COVERAGE_FIELDS = ["game_id", "season", "season_type", "foul_events",
                    "attributed", "unattributed", "paired_turnovers_dropped"]
+UNRESOLVED_FIELDS = ["name_form", "season", "reason", "candidate_slugs",
+                     "games", "calls"]
 
 _lines = []
 
@@ -326,6 +333,17 @@ class Resolver(object):
         self.ambiguous_games = collections.Counter()   # crew names >1 candidate
         self.no_crew_games = set()
         self.era_failed = collections.Counter()     # era could not narrow it either
+        self.unresolved = {}                        # -> OUT_UNRESOLVED
+
+    def _record_unresolved(self, form, season, reason, candidates, game_id):
+        """Per (form, season, reason): calls, distinct games, and WHICH referees
+        the calls are shared between -- that last part is what lets the site
+        name the ambiguity on each of their pages."""
+        slugs = "|".join(sorted(c["slug"] for c in candidates))
+        key = (form, season or "", reason, slugs)
+        rec = self.unresolved.setdefault(key, {"calls": 0, "games": set()})
+        rec["calls"] += 1
+        rec["games"].add(game_id)
 
     @staticmethod
     def _season_covers(ref, season):
@@ -355,6 +373,7 @@ class Resolver(object):
                 # Both candidates really are on this crew. Nothing can separate
                 # them; this is the only genuinely ambiguous case.
                 self.ambiguous_games[(form, game_id, len(hits))] += 1
+                self._record_unresolved(form, season, "both_on_crew", hits, game_id)
                 return None, "ambiguous"
 
             # No candidate found in the crew list. Whether that is evidence
@@ -375,6 +394,7 @@ class Resolver(object):
                 self.by_era_resolved[form] += 1
                 return alive[0]["slug"], "era"
             self.era_failed[(form, season, len(alive))] += 1
+            self._record_unresolved(form, season, "no_crew_on_file", alive, game_id)
             return None, "no_crew_data"
 
         self.unmatched[form] += 1
@@ -428,6 +448,7 @@ def main():
     ap.add_argument("--limit", type=int, help="stop after N play-by-play rows (smoke test)")
     ap.add_argument("--out-calls", default=OUT_CALLS)
     ap.add_argument("--out-coverage", default=OUT_COVERAGE)
+    ap.add_argument("--out-unresolved", default=OUT_UNRESOLVED)
     args = ap.parse_args()
 
     try:
@@ -600,6 +621,14 @@ def main():
                              "foul_events": foul, "attributed": att,
                              "unattributed": unatt, "paired_turnovers_dropped": dropped})
 
+    with gzip.open(args.out_unresolved, "wt", encoding="utf-8-sig", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=UNRESOLVED_FIELDS)
+        writer.writeheader()
+        for (form, season, reason, slugs), rec in sorted(resolver.unresolved.items()):
+            writer.writerow({"name_form": form, "season": season, "reason": reason,
+                             "candidate_slugs": slugs, "games": len(rec["games"]),
+                             "calls": rec["calls"]})
+
     conn.close()
     report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
            by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver)
@@ -680,6 +709,7 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     emit("games covered        : %d" % len(coverage))
     emit("-> %s" % os.path.relpath(args.out_calls, REPO_ROOT))
     emit("-> %s" % os.path.relpath(args.out_coverage, REPO_ROOT))
+    emit("-> %s" % os.path.relpath(args.out_unresolved, REPO_ROOT))
 
     section("COVERAGE BY SEASON (the denominator, and the ~8% that is missing)")
     per_season = collections.defaultdict(lambda: [0, 0, 0, 0, 0])
