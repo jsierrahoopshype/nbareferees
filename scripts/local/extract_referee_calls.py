@@ -281,19 +281,61 @@ def load_game_crews():
     return crews
 
 
+# A full NBA crew is three officials. A game whose crew list is shorter is
+# missing rows, not staffed differently -- so "this candidate is not in the crew
+# list" only means "not this official" when the list is actually complete.
+FULL_CREW = 3
+
+
 class Resolver(object):
-    """name-form -> canonical slug, with the collision cases handled explicitly."""
+    """name-form -> canonical slug, with the collision cases handled explicitly.
+
+    For a form that collides (J.Goble is Jacyn or John), resolution runs:
+
+      1. THE GAME'S CREW, when we have a complete one. Positive evidence.
+      2. ERA, when the crew is missing or incomplete. A candidate whose career
+         does not include this game's season cannot have called it, and if that
+         leaves exactly one candidate the answer is forced, not guessed. This
+         is the same reasoning that settles J.DeRosa in the overrides file.
+      3. Otherwise DROPPED and reported.
+
+    Step 2 exists because source-data/officials.csv.gz has no crew at all for
+    about 7% of games in nbadb-sourced seasons (see the crew-coverage section of
+    the report). Without it, every colliding call in those games is lost even
+    when only one candidate was alive at the time.
+
+    Crucially, era is NOT applied when a COMPLETE crew is on file and does not
+    contain any candidate. That is contradicting evidence, not absent evidence,
+    and overriding it with an era guess would be exactly the kind of inference
+    this pipeline refuses to make.
+    """
 
     def __init__(self, by_form, overrides, crews):
         self.by_form = by_form
         self.overrides = overrides
         self.crews = crews
         self.unmatched = collections.Counter()
-        self.ambiguous_games = collections.Counter()
         self.by_crew_resolved = collections.Counter()
+        self.by_era_resolved = collections.Counter()
         self.override_used = collections.Counter()
+        # Three distinct failures, counted apart. Lumping them together is what
+        # made a data gap look like a broken join.
+        self.no_crew = collections.Counter()        # no crew on file for the game
+        self.partial_crew = collections.Counter()   # crew on file but incomplete
+        self.crew_contradicts = collections.Counter()  # full crew, no candidate in it
+        self.ambiguous_games = collections.Counter()   # crew names >1 candidate
+        self.no_crew_games = set()
+        self.era_failed = collections.Counter()     # era could not narrow it either
 
-    def resolve(self, form, game_id):
+    @staticmethod
+    def _season_covers(ref, season):
+        """Does this referee's career span include the season, per referees.json?"""
+        first, last = ref.get("first_season"), ref.get("last_season")
+        if not first or not last or not season:
+            return True  # unknown span cannot rule anyone out
+        return first <= season <= last
+
+    def resolve(self, form, game_id, season=None):
         key = form.lower().replace(" ", "")
         if key in self.overrides:
             self.override_used[form] += 1
@@ -304,16 +346,36 @@ class Resolver(object):
             return candidates[0]["slug"], "exact"
 
         if len(candidates) > 1:
-            # A genuine collision (J.Goble: Jacyn and John overlap in the
-            # attribution era). The crew that worked THIS game settles it --
-            # and when it does not, the calls are dropped, not guessed.
             crew = self.crews.get(game_id, {})
             hits = [c for c in candidates if norm_ref_key(c["name"]) in crew]
             if len(hits) == 1:
                 self.by_crew_resolved[form] += 1
                 return hits[0]["slug"], "crew"
-            self.ambiguous_games[(form, game_id, len(hits))] += 1
-            return None, "ambiguous"
+            if len(hits) > 1:
+                # Both candidates really are on this crew. Nothing can separate
+                # them; this is the only genuinely ambiguous case.
+                self.ambiguous_games[(form, game_id, len(hits))] += 1
+                return None, "ambiguous"
+
+            # No candidate found in the crew list. Whether that is evidence
+            # depends entirely on whether the list is complete.
+            crew_size = len(crew)
+            if crew_size >= FULL_CREW:
+                self.crew_contradicts[(form, game_id, crew_size)] += 1
+                return None, "crew_contradicts"
+
+            if crew_size == 0:
+                self.no_crew[form] += 1
+                self.no_crew_games.add(game_id)
+            else:
+                self.partial_crew[form] += 1
+
+            alive = [c for c in candidates if self._season_covers(c, season)]
+            if len(alive) == 1:
+                self.by_era_resolved[form] += 1
+                return alive[0]["slug"], "era"
+            self.era_failed[(form, season, len(alive))] += 1
+            return None, "no_crew_data"
 
         self.unmatched[form] += 1
         return None, "unmatched"
@@ -495,7 +557,7 @@ def main():
                 continue
 
             form = ref_forms[-1]
-            slug, how = resolver.resolve(form, gid)
+            slug, how = resolver.resolve(form, gid, season)
             if is_foulish:
                 if slug:
                     cov[1] += 1
@@ -541,6 +603,72 @@ def main():
     conn.close()
     report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
            by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver)
+
+
+def crew_coverage_report(resolver):
+    """Measure how much of officials.csv.gz actually has a crew, and record it.
+
+    This is NOT specific to call attribution. It is a property of the committed
+    extract that affects anything counting games worked, crewmates or crew
+    chemistry, and it is recorded here because this is the first pipeline that
+    depends on the crew being present for a SPECIFIC game rather than in
+    aggregate. Measured from the two committed extracts, not from the SQLite, so
+    it describes exactly what the site is built on.
+    """
+    section("CREW COVERAGE IN source-data/officials.csv.gz (site-wide finding)")
+    if not (os.path.exists(OFFICIALS_CSV) and os.path.exists(GAMES_CSV)):
+        emit("officials.csv.gz or games.csv.gz missing; cannot measure.")
+        return
+
+    seasons = {}
+    with gzip.open(GAMES_CSV, "rt", encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            seasons[pad_gid(r.get("game_id"))] = (r.get("season") or "").strip()
+    sizes = collections.Counter()
+    with gzip.open(OFFICIALS_CSV, "rt", encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            sizes[pad_gid(r.get("game_id"))] += 1
+
+    per_season = collections.defaultdict(lambda: [0, 0, 0])  # games, no crew, partial
+    for gid, season in seasons.items():
+        if not season:
+            continue
+        row = per_season[season]
+        row[0] += 1
+        n = sizes.get(gid, 0)
+        if n == 0:
+            row[1] += 1
+        elif n < FULL_CREW:
+            row[2] += 1
+
+    emit("%-10s %8s %10s %8s %10s %8s" % ("season", "games", "no crew", "%", "partial", "%"))
+    emit("-" * 78)
+    t_games = t_none = t_part = 0
+    for season in sorted(per_season):
+        games, none, part = per_season[season]
+        t_games += games
+        t_none += none
+        t_part += part
+        emit("%-10s %8d %10d %7.1f%% %10d %7.1f%%"
+             % (season, games, none, 100.0 * none / games, part, 100.0 * part / games))
+    emit("-" * 78)
+    emit("%-10s %8d %10d %7.1f%% %10d %7.1f%%"
+         % ("ALL", t_games, t_none, 100.0 * t_none / t_games, t_part,
+            100.0 * t_part / t_games))
+    emit("")
+    emit("Reading this: a game with NO crew is one no official is credited with")
+    emit("anywhere on the site -- it is absent from every referee's game log, from")
+    emit("crewmate counts, and from crew chemistry. The gap is concentrated in the")
+    emit("nbadb-sourced seasons; the ESPN-sourced ones (2023-24 onward) are nearly")
+    emit("complete, which is what shows this is a property of the source rather")
+    emit("than of our extraction.")
+    emit("")
+    if resolver.no_crew_games:
+        emit("In THIS run, %d game(s) with a colliding name-form had no crew on file."
+             % len(resolver.no_crew_games))
+    emit("Consequence for any copy that promises completeness: a per-referee game")
+    emit("log is every game ON RECORD, not every game officiated. Wording that says")
+    emit("otherwise overstates what the data can support.")
 
 
 def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
@@ -602,36 +730,102 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     for (ctype, emt, eat), n in sorted(crosstab.items(), key=lambda kv: (-kv[1]))[:40]:
         emit("%-22s %10s %10s %12d" % (ctype, emt, eat, n))
 
-    section("NAME-FORM RESOLUTION")
-    emit("resolved by override      : %d call(s) across %d form(s)"
-         % (sum(resolver.override_used.values()), len(resolver.override_used)))
-    for form, n in resolver.override_used.most_common():
-        emit("    %-20s %d" % (form, n))
-    emit("resolved by per-game crew : %d call(s) across %d form(s)"
-         % (sum(resolver.by_crew_resolved.values()), len(resolver.by_crew_resolved)))
-    for form, n in resolver.by_crew_resolved.most_common():
-        emit("    %-20s %d" % (form, n))
+    section("NAME-FORM RESOLUTION -- RESOLVED")
+    emit("Each line below is CALLS KEPT. Nothing here was dropped.")
+    emit("")
+    emit("%-26s %10s   %s" % ("route", "calls", "by form"))
+    emit("-" * 78)
+    for label, counter in (("override file", resolver.override_used),
+                           ("this game's crew", resolver.by_crew_resolved),
+                           ("era (career span)", resolver.by_era_resolved)):
+        total = sum(counter.values())
+        detail = ", ".join("%s=%d" % (f, n) for f, n in counter.most_common(6)) or "-"
+        emit("%-26s %10d   %s" % (label, total, detail))
+    emit("")
+    emit("A form resolved by 'era' had no usable crew on file, but only one")
+    emit("candidate's career covered that season, so the answer was forced rather")
+    emit("than chosen. See the crew-coverage section below for why that happens.")
+
+    section("NAME-FORM RESOLUTION -- DROPPED")
+    emit("Four different failures, counted apart. They are NOT the same problem:")
+    emit("a missing crew list is a gap in our source data, while a full crew that")
+    emit("names neither candidate would mean the form is not who we think it is.")
+    emit("")
+    # Each reason counts calls that were DROPPED. resolver.no_crew is not one of
+    # them -- it counts every call in a crewless game, most of which era then
+    # resolved, so adding it here would report kept calls as lost.
+    reasons = [
+        ("no crew on file, era could not narrow it", sum(resolver.era_failed.values())),
+        ("full crew on file names no candidate", sum(resolver.crew_contradicts.values())),
+        ("crew names BOTH candidates (true tie)", sum(resolver.ambiguous_games.values())),
+        ("form matches no canonical referee", sum(resolver.unmatched.values())),
+    ]
+    dropped_total = sum(n for _, n in reasons)
+    emit("%-40s %10s" % ("reason", "calls"))
+    emit("-" * 78)
+    for label, n in reasons:
+        emit("%-40s %10d" % (label, n))
+    emit("%-40s %10d" % ("TOTAL DROPPED", dropped_total))
+
+    # Reconciliation: every call carrying a colliding form must land in exactly
+    # one bucket. If this line does not balance, a counter is double-counting.
+    resolved_total = (sum(resolver.override_used.values())
+                      + sum(resolver.by_crew_resolved.values())
+                      + sum(resolver.by_era_resolved.values()))
+    emit("")
+    emit("reconciliation: %d resolved + %d dropped = %d"
+         % (resolved_total, dropped_total, resolved_total + dropped_total))
+    emit("  (exact-match forms are not counted above -- they never needed resolving)")
+    emit("  calls in games with no crew on file: %d, of which era saved %d"
+         % (sum(resolver.no_crew.values()), sum(resolver.by_era_resolved.values())))
 
     emit("")
-    if resolver.ambiguous_games:
-        emit("*** AMBIGUOUS -- crew lookup did NOT settle these; calls DROPPED, not guessed:")
-        emit("%-14s %-12s %10s %10s" % ("form", "game_id", "crew hits", "calls"))
-        for (form, gid, hits), n in resolver.ambiguous_games.most_common(40):
-            emit("%-14s %-12s %10d %10d" % (form, gid, hits, n))
-        emit("(crew hits = how many candidates with that form appear in the game's")
-        emit(" crew: 0 means the crew list has neither, 2 means it has both.)")
+    emit("-- no crew on file, era could not narrow it --")
+    if resolver.era_failed:
+        emit("%-14s %-10s %14s %10s" % ("form", "season", "candidates alive", "calls"))
+        for (form, season, alive), n in resolver.era_failed.most_common(25):
+            emit("%-14s %-10s %14d %10d" % (form, season or "?", alive, n))
+        emit("")
+        emit("These are games with NO crew recorded, in a season where more than one")
+        emit("candidate was active. Nothing in our data distinguishes them, so the")
+        emit("calls are dropped. This is the honest floor, not a bug to fix.")
     else:
-        emit("ambiguous games: none -- every colliding form was settled by its game's crew.")
+        emit("  none")
 
     emit("")
+    emit("-- full crew on file, but it names no candidate --")
+    if resolver.crew_contradicts:
+        emit("%-14s %-12s %10s %10s" % ("form", "game_id", "crew size", "calls"))
+        for (form, gid, size), n in resolver.crew_contradicts.most_common(25):
+            emit("%-14s %-12s %10d %10d" % (form, gid, size, n))
+        emit("")
+        emit("*** WORTH INVESTIGATING. A complete crew that contains neither candidate")
+        emit("means the play-by-play names an official the crew sheet does not, so one")
+        emit("of the two sources is wrong about this game. Era was deliberately NOT")
+        emit("applied here: that would be overriding evidence, not filling a gap.")
+    else:
+        emit("  none -- no game had a full crew that contradicted the play-by-play.")
+
+    emit("")
+    emit("-- crew names BOTH candidates (a true tie) --")
+    if resolver.ambiguous_games:
+        emit("%-14s %-12s %10s %10s" % ("form", "game_id", "crew hits", "calls"))
+        for (form, gid, hits), n in resolver.ambiguous_games.most_common(25):
+            emit("%-14s %-12s %10d %10d" % (form, gid, hits, n))
+    else:
+        emit("  none")
+
+    emit("")
+    emit("-- form matches no canonical referee --")
     if resolver.unmatched:
-        emit("*** UNMATCHED FORMS -- no canonical referee, calls DROPPED:")
         for form, n in resolver.unmatched.most_common():
             emit("    %-20s %8d call(s)" % (form, n))
         emit("Add a row to data/referee_callform_overrides.csv for any of these that")
         emit("is a real official under a spelling we do not carry.")
     else:
-        emit("unmatched forms: none.")
+        emit("  none")
+
+    crew_coverage_report(resolver)
 
     section("PAIRING CHECK (sample of %d games)" % len(pair_sample))
     paired = orphan = 0
