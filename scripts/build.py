@@ -2740,6 +2740,9 @@ NBRA_BIOS_CSV = os.path.join(SRC, "nbra_bios.csv")
 # "career total".
 REF_CALLS_CSV = os.path.join(SRC, "referee_calls.csv.gz")
 REF_CALLS_COVERAGE_CSV = os.path.join(SRC, "referee_calls_coverage.csv.gz")
+REF_CALLS_UNRESOLVED_CSV = os.path.join(SRC, "referee_calls_unresolved.csv.gz")
+# A full NBA crew is three officials; a shorter crew list is missing rows.
+FULL_CREW = 3
 # Call types promoted to their own column on the page; everything else is
 # folded into "other" for display but kept whole in the JSON.
 CALL_TYPES_SHOWN = ["personal", "shooting", "loose_ball", "offensive", "technical",
@@ -2800,6 +2803,51 @@ def _parse_nbra_birth_date(raw):
 
 def _age_as_of(birth_date, today):
     return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+
+def build_crew_coverage(off_raw, gm):
+    """How much of officials.csv.gz actually carries a crew.
+
+    Not a call-attribution concern: a game with no officials recorded is
+    credited to nobody anywhere on the site, so it is missing from every game
+    log, crewmate count and crew-chemistry figure. The numbers are computed
+    here so the pages can state the real gap instead of a vague hedge, and so
+    they move with the data rather than being hardcoded in copy.
+
+    Uses off_raw (the untrimmed officials frame) deliberately: alternate
+    exclusion is a later editorial choice, and what matters here is whether the
+    source recorded anybody at all.
+    """
+    hr("SECTION 10  Crew coverage in the officials extract")
+    per_game = off_raw.groupby("game_id").size()
+    sizes = gm[["game_id", "season"]].copy()
+    sizes["n_officials"] = sizes["game_id"].map(per_game).fillna(0).astype(int)
+
+    by_season = {}
+    for season, grp in sizes.groupby("season"):
+        games = int(len(grp))
+        none = int((grp["n_officials"] == 0).sum())
+        partial = int(((grp["n_officials"] > 0) & (grp["n_officials"] < FULL_CREW)).sum())
+        by_season[season] = {"games": games, "no_crew": none, "partial_crew": partial}
+
+    games_total = int(len(sizes))
+    no_crew = int((sizes["n_officials"] == 0).sum())
+    partial = int(((sizes["n_officials"] > 0) & (sizes["n_officials"] < FULL_CREW)).sum())
+    out = {
+        "games": games_total,
+        "no_crew": no_crew,
+        "partial_crew": partial,
+        "no_crew_pct": clean_num(100.0 * no_crew / games_total) if games_total else None,
+        "partial_crew_pct": clean_num(100.0 * partial / games_total) if games_total else None,
+        "worst_season": max(by_season, key=lambda s: by_season[s]["no_crew"]) if by_season else None,
+        "by_season": by_season,
+    }
+    print("  %d game(s); %d with no crew recorded (%.1f%%), %d with a partial crew (%.1f%%)"
+          % (games_total, no_crew, out["no_crew_pct"] or 0.0, partial, out["partial_crew_pct"] or 0.0))
+    assert_no_nan(out, "crew_coverage")
+    with open(os.path.join(DATA, "crew_coverage.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=2)
+    return out
 
 
 def build_referee_calls(referees_index, off_ref, gm):
@@ -2923,9 +2971,43 @@ def build_referee_calls(referees_index, off_ref, gm):
         rows.sort(key=lambda r: -r[key_name])
         return rows[:25]
 
+    # Calls whose name-form could not be pinned to one official. Attached to
+    # EVERY candidate it could have been, so each of their pages can say a slice
+    # is unattributable rather than letting a reader mistake it for a low rate.
+    unresolved_total = 0
+    if os.path.exists(REF_CALLS_UNRESOLVED_CSV):
+        unres = pd.read_csv(REF_CALLS_UNRESOLVED_CSV, dtype=str).fillna("")
+        for col in ("games", "calls"):
+            unres[col] = pd.to_numeric(unres[col], errors="coerce").fillna(0).astype(int)
+        for _, r in unres.iterrows():
+            slugs = [x for x in str(r["candidate_slugs"]).split("|") if x]
+            unresolved_total += int(r["calls"])
+            for slug in slugs:
+                rec = out_refs.get(slug)
+                if rec is None:
+                    continue
+                bucket = rec.setdefault("unattributable", {
+                    "calls": 0, "games": 0, "seasons": [], "shared_with": []})
+                bucket["calls"] += int(r["calls"])
+                bucket["games"] += int(r["games"])
+                if r["season"] and r["season"] not in bucket["seasons"]:
+                    bucket["seasons"].append(r["season"])
+                for other in slugs:
+                    if other != slug and other not in bucket["shared_with"]:
+                        bucket["shared_with"].append(other)
+        for rec in out_refs.values():
+            if "unattributable" in rec:
+                rec["unattributable"]["seasons"].sort()
+                # Share of this referee's own attributed calls, so the size of
+                # the gap is legible next to the count it sits beside.
+                total = rec["calls"] + rec["unattributable"]["calls"]
+                rec["unattributable"]["pct_of_window"] = clean_num(
+                    100.0 * rec["unattributable"]["calls"] / total) if total else None
+
     out = {
         "_meta": {
             "available": True,
+            "unattributable_calls": unresolved_total,
             "first_season": min((r["window_first_season"] for r in out_refs.values()), default=None),
             "last_season": max((r["window_last_season"] for r in out_refs.values()), default=None),
             "total_calls": int(len(calls)),
@@ -3677,6 +3759,7 @@ def main():
     build_crewmates(off_ref, referees_index)
     build_whistle_leaderboards(referees_index)
     build_recent_form(referees_index, off_ref, gm, tg, game_tot)
+    crew_coverage = build_crew_coverage(off_raw, gm)
     ref_calls = build_referee_calls(referees_index, off_ref, gm)
     qa_referee_calls(ref_calls, referees_index)
     nbra_bios = build_nbra_bios(referees_index)

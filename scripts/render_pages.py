@@ -413,6 +413,9 @@ def ref_photo_img(slug, root):
             'decoding="async">').format(root=root, rel=rel)
 
 
+SLUG_NAMES = {}
+
+
 def call_profile_section(rec, meta):
     """Call profile for one referee. Returns "" when there is nothing to show --
     a referee whose career sits outside the attribution window gets no empty
@@ -421,6 +424,11 @@ def call_profile_section(rec, meta):
         return ""
 
     types_present = [t for t in CALL_TYPE_ORDER if rec["by_type"].get(t)]
+    # A referee whose play-by-play name-form is shared with another official
+    # has some calls that cannot be assigned between them. Named here, on the
+    # page, because a reader comparing this count against a peer's would
+    # otherwise read the gap as a lower rate rather than as missing data.
+    unattr = rec.get("unattributable")
     chips = [stat_chip("Calls recorded", i(rec["calls"]), accent=True),
              stat_chip("Seasons covered", i(rec["seasons_covered"]))]
     if rec.get("games"):
@@ -461,8 +469,24 @@ def call_profile_section(rec, meta):
 
     table = ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
              '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
-    inner = ('<div class="chip-row">%s</div><div class="table-wrap">%s</div>'
-             % ("".join(chips), table))
+    caveat = ""
+    if unattr and unattr.get("calls"):
+        shared = ", ".join(SLUG_NAMES.get(x, x) for x in unattr.get("shared_with", []))
+        seasons = unattr.get("seasons") or []
+        span = (seasons[0] if len(seasons) == 1
+                else "%s to %s" % (seasons[0], seasons[-1])) if seasons else "this window"
+        caveat = ('<p class="caption"><b>%s further call%s in %s cannot be assigned '
+                  'between this official and %s.</b> The play-by-play prints only an '
+                  'initial and surname, and for those games our sources record no crew, '
+                  'so the calls are excluded from the counts above rather than guessed. '
+                  'That is %s of everything that could belong to this official in this '
+                  'window — read the totals as a floor, and allow for it before comparing '
+                  'them against an official whose name-form is unambiguous.</p>'
+                  % (i(unattr["calls"]), "" if unattr["calls"] == 1 else "s", esc(span),
+                     esc(shared or "another official of the same name-form"),
+                     ("%.0f%%" % unattr["pct_of_window"]) if unattr.get("pct_of_window") else "a share"))
+    inner = ('<div class="chip-row">%s</div>%s<div class="table-wrap">%s</div>'
+             % ("".join(chips), caveat, table))
     # "Window total", never "career total" -- the bottom row is labelled in the
     # table itself as well as in the note below it.
     return section(None, "Calls recorded in play-by-play", inner,
@@ -1098,18 +1122,24 @@ def referee_game_log_table(games):
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
 
 
-def render_ref_games(doc):
+def render_ref_games(doc, crew_cov=None):
     name = doc["name"]
     n_seasons = len(doc["by_season"])
-    title = "%s — every game officiated, full game log" % name
-    desc = ("Complete game-by-game officiating log for %s: %s games across %d seasons, "
-            "with matchup, final score, playoff round, and co-officials for every game." % (
+    # "on record", not "every game officiated" -- the sources do not carry a
+    # crew for every game, so the log is what they carry. Matches the wording
+    # already used for the matchup game log and the quality-score explainer.
+    title = "%s — every game on record, full game log" % name
+    desc = ("Game-by-game officiating log for %s: %s games on record across %d seasons, "
+            "with matchup, final score, playoff round and co-officials." % (
                 name, i(doc["games_total"]), n_seasons))
     back = '<a class="backlink" href="../index.html">&larr; Back to %s</a>' % esc(name)
-    chips = [stat_chip("Career games", i(doc["games_total"]), accent=True),
+    chips = [stat_chip("Games on record", i(doc["games_total"]), accent=True),
             stat_chip("Seasons logged", i(n_seasons))]
     hero = hero_block("Full game log", name, "", chips)
     blocks = [back, hero]
+    note = crew_coverage_note(crew_cov)
+    if note:
+        blocks.append('<section class="block"><div class="block-head">%s</div></section>' % note)
     for block in doc["by_season"]:
         inner = '<div class="table-wrap">%s</div>' % referee_game_log_table(block["games"])
         blocks.append(section(None, "%s (%d games)" % (block["season"], len(block["games"])), inner))
@@ -1356,6 +1386,33 @@ def render_quality_leaderboard(doc):
     blocks.append(ref_search(2, "bottom"))
     ld = breadcrumb_ld(("Home", ""), ("Quality score", "leaderboard/quality-score/index.html"))
     return page(title, desc, 2, "".join(blocks), ld_json=ld)
+
+
+def crew_coverage_note(cov):
+    """The source gap, in figures rather than a hedge. Rendered on the game-log
+    page because that is where a reader is most likely to assume completeness."""
+    if not cov or not cov.get("games"):
+        return ""
+    parts = []
+    if cov.get("no_crew"):
+        parts.append("%s of the %s games in this database (%s) have no officiating crew "
+                     "recorded at all, so they appear in no official&#39;s log"
+                     % (i(cov["no_crew"]), i(cov["games"]), pct_txt(cov["no_crew_pct"])))
+    if cov.get("partial_crew"):
+        parts.append("a further %s (%s) list only one or two officials rather than the "
+                     "full three, so some co-officials are missing"
+                     % (i(cov["partial_crew"]), pct_txt(cov["partial_crew_pct"])))
+    if not parts:
+        return ""
+    return ('<p class="caption">This log is what the sources carry, not a complete career '
+            'record: %s. The gap sits almost entirely in the seasons taken from the '
+            'historical database rather than the recent ESPN-sourced ones, and it is a '
+            'property of those sources, not a filter applied here.</p>'
+            % ("; and ".join(parts)))
+
+
+def pct_txt(v):
+    return "—" if v is None else ("%.1f%%" % v)
 
 
 def render_calls_leaderboard(doc):
@@ -3616,6 +3673,9 @@ def main():
     team_index = json.load(open(os.path.join(DATA, "teams.json"), encoding="utf-8"))
     player_index = json.load(open(os.path.join(DATA, "players.json"), encoding="utf-8"))
     nbra_bios = json.load(open(os.path.join(DATA, "nbra_bios.json"), encoding="utf-8"))
+    cov_path = os.path.join(DATA, "crew_coverage.json")
+    crew_cov = json.load(open(cov_path, encoding="utf-8")) if os.path.exists(cov_path) else None
+    SLUG_NAMES.update({r["slug"]: r["name"] for r in refs})
     calls_path = os.path.join(DATA, "referee_calls.json")
     ref_calls = (json.load(open(calls_path, encoding="utf-8")) if os.path.exists(calls_path)
                  else {"_meta": {"available": False}, "referees": {}, "leaderboards": {}})
@@ -3707,7 +3767,7 @@ def main():
             games_dir = os.path.join(out_dir, "games")
             os.makedirs(games_dir, exist_ok=True)
             with open(os.path.join(games_dir, "index.html"), "w", encoding="utf-8") as f:
-                f.write(render_ref_games(log_doc))
+                f.write(render_ref_games(log_doc, crew_cov))
             n_game_logs += 1
 
     # team pages
