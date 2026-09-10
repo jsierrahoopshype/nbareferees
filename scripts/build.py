@@ -41,6 +41,7 @@ import os
 import sys
 import re
 import json
+import collections
 import glob
 import datetime
 import unicodedata
@@ -2726,6 +2727,30 @@ def recent_form_spot_check(referees_index):
 # CSV only, out of scope for a statistics site.
 # ----------------------------------------------------------------------------
 NBRA_BIOS_CSV = os.path.join(SRC, "nbra_bios.csv")
+
+# Referee call attribution (scripts/local/extract_referee_calls.py) -- optional,
+# like the NBRA bios. Absent, this stage writes an empty data/referee_calls.json
+# and the call-profile section simply does not render.
+#
+# COVERAGE IS THE WHOLE STORY HERE. The league only began printing the calling
+# official's name in play-by-play with the 2015 playoffs, and nbadb's
+# play-by-play ends in June 2023, so these counts describe a window inside a
+# career, never the career. Every figure derived below is stamped with its own
+# first/last season and its attribution rate, and nothing is summed into a
+# "career total".
+REF_CALLS_CSV = os.path.join(SRC, "referee_calls.csv.gz")
+REF_CALLS_COVERAGE_CSV = os.path.join(SRC, "referee_calls_coverage.csv.gz")
+# Call types promoted to their own column on the page; everything else is
+# folded into "other" for display but kept whole in the JSON.
+CALL_TYPES_SHOWN = ["personal", "shooting", "loose_ball", "offensive", "technical",
+                    "flagrant_1", "flagrant_2", "away_from_play", "clear_path",
+                    "inbound", "punch", "double_technical", "hanging_technical",
+                    "defensive_3_seconds", "delay_of_game", "ejection", "violation",
+                    "other"]
+# A leaderboard on a rate needs a floor under the denominator; on a raw count it
+# does not. Technicals and flagrants are ranked on raw counts, so this gates
+# only the per-game rate column.
+CALLS_MIN_GAMES_FOR_RATE = 100
 NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date",
                     "headshot_url"]
 # Plausibility bounds for a computed age -- outside this range the parse is
@@ -2775,6 +2800,216 @@ def _parse_nbra_birth_date(raw):
 
 def _age_as_of(birth_date, today):
     return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
+
+def build_referee_calls(referees_index, off_ref, gm):
+    """Per-referee call counts by type, per season and across the covered
+    window, with per-game rates. Reads the two optional extracts written by
+    scripts/local/extract_referee_calls.py.
+
+    Deliberately NOT merged into the per-referee docs: those carry career
+    figures spanning 1993-94 onward, and mixing a 2015-2023 window into them is
+    exactly the confusion this data invites. It lives in its own file, keyed by
+    official_id, and the renderer labels it separately.
+    """
+    hr("SECTION 10  Referee call attribution (optional)")
+    known_keys = {r["official_id"] for r in referees_index}
+    empty = {"_meta": {"available": False}, "referees": {}, "leaderboards": {}}
+
+    if not os.path.exists(REF_CALLS_CSV):
+        print("no %s -- referee pages render without the call profile until "
+              "scripts/local/extract_referee_calls.py has been run locally"
+              % os.path.relpath(REF_CALLS_CSV, REPO))
+        with open(os.path.join(DATA, "referee_calls.json"), "w", encoding="utf-8") as fh:
+            json.dump(empty, fh, ensure_ascii=False, indent=2)
+        return empty
+
+    calls = pd.read_csv(REF_CALLS_CSV, dtype=str).fillna("")
+    for col in ("official_id", "season", "season_type", "call_type", "game_id"):
+        if col not in calls.columns:
+            print("  WARNING: %s missing the %s column; call profile skipped"
+                  % (os.path.relpath(REF_CALLS_CSV, REPO), col))
+            with open(os.path.join(DATA, "referee_calls.json"), "w", encoding="utf-8") as fh:
+                json.dump(empty, fh, ensure_ascii=False, indent=2)
+            return empty
+        calls[col] = calls[col].astype(str).str.strip()
+
+    unknown = sorted(set(calls["official_id"]) - known_keys)
+    if unknown:
+        print("  WARNING: %d official_id(s) in the calls extract are not in "
+              "referees.json (stale extract?); their rows are dropped: %s"
+              % (len(unknown), unknown[:10]))
+        calls = calls[calls["official_id"].isin(known_keys)]
+
+    # Coverage: games in the window, and how complete attribution was in them.
+    coverage_by_season = {}
+    covered_games = set()
+    if os.path.exists(REF_CALLS_COVERAGE_CSV):
+        cov = pd.read_csv(REF_CALLS_COVERAGE_CSV, dtype=str).fillna("")
+        for col in ("foul_events", "attributed", "unattributed"):
+            cov[col] = pd.to_numeric(cov[col], errors="coerce").fillna(0).astype(int)
+        covered_games = set(cov["game_id"].astype(str).str.strip())
+        for season, grp in cov.groupby("season"):
+            foul = int(grp["foul_events"].sum())
+            att = int(grp["attributed"].sum())
+            coverage_by_season[season] = {
+                "games": int(len(grp)), "foul_events": foul, "attributed": att,
+                "unattributed": int(grp["unattributed"].sum()),
+                "attributed_pct": clean_num(100.0 * att / foul) if foul else None,
+            }
+    else:
+        print("  NOTE: no coverage extract; per-game rates will be omitted.")
+
+    # Games worked inside the covered window, per referee per season. This is
+    # the honest denominator: a game the official worked in which they happened
+    # to call nothing still belongs in it.
+    games_worked = collections.defaultdict(dict)
+    if covered_games:
+        # off_ref is the reconciled officials frame (one row per game/official,
+        # alternates already excluded upstream); gm carries the season label.
+        sub = off_ref[off_ref["game_id"].isin(covered_games)][["game_id", "ref_key"]]
+        sub = sub.merge(gm[["game_id", "season"]], on="game_id", how="left")
+        for (oid, season), grp in sub.groupby(["ref_key", "season"]):
+            games_worked[oid][season] = int(grp["game_id"].nunique())
+
+    out_refs = {}
+    grouped = calls.groupby(["official_id", "season", "call_type"]).size()
+    per_ref = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+    for (oid, season, ctype), n in grouped.items():
+        per_ref[oid][season][ctype] += int(n)
+
+    for oid, seasons in per_ref.items():
+        per_season = {}
+        career = collections.Counter()
+        for season, types in sorted(seasons.items()):
+            total = sum(types.values())
+            g = games_worked.get(oid, {}).get(season, 0)  # 0 -> rate omitted, not faked
+            per_season[season] = {
+                "calls": total,
+                "games": g or None,
+                "per_game": clean_num(total / g) if g else None,
+                "by_type": {k: int(v) for k, v in sorted(types.items())},
+            }
+            career.update(types)
+        seasons_sorted = sorted(per_season)
+        total_calls = sum(career.values())
+        total_games = sum(v["games"] or 0 for v in per_season.values())
+        out_refs[oid] = {
+            # Named "window", never "career" -- the label travels with the data.
+            "window_first_season": seasons_sorted[0],
+            "window_last_season": seasons_sorted[-1],
+            "seasons_covered": len(seasons_sorted),
+            "calls": total_calls,
+            "games": total_games or None,
+            "per_game": clean_num(total_calls / total_games) if total_games else None,
+            "by_type": {k: int(v) for k, v in sorted(career.items())},
+            "per_season": per_season,
+        }
+
+    def leaderboard(type_keys, key_name):
+        rows = []
+        for oid, rec in out_refs.items():
+            n = sum(rec["by_type"].get(t, 0) for t in type_keys)
+            if not n:
+                continue
+            ref = next(r for r in referees_index if r["official_id"] == oid)
+            games = rec["games"] or 0
+            rows.append({
+                "official_id": oid, "name": ref["name"], "slug": ref["slug"],
+                key_name: n, "games": games or None,
+                "per_game": clean_num(n / games) if games >= CALLS_MIN_GAMES_FOR_RATE else None,
+                "window": "%s to %s" % (rec["window_first_season"], rec["window_last_season"]),
+            })
+        rows.sort(key=lambda r: -r[key_name])
+        return rows[:25]
+
+    out = {
+        "_meta": {
+            "available": True,
+            "first_season": min((r["window_first_season"] for r in out_refs.values()), default=None),
+            "last_season": max((r["window_last_season"] for r in out_refs.values()), default=None),
+            "total_calls": int(len(calls)),
+            "referees": len(out_refs),
+            "coverage_by_season": coverage_by_season,
+            "min_games_for_rate": CALLS_MIN_GAMES_FOR_RATE,
+        },
+        "referees": out_refs,
+        "leaderboards": {
+            "most_technicals": leaderboard(
+                ["technical", "double_technical", "hanging_technical"], "technicals"),
+            "most_flagrants": leaderboard(["flagrant_1", "flagrant_2"], "flagrants"),
+        },
+    }
+    assert_no_nan(out, "referee_calls")
+    with open(os.path.join(DATA, "referee_calls.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=2)
+    print("loaded %d attributed call(s) for %d referee(s), %s to %s"
+          % (out["_meta"]["total_calls"], len(out_refs),
+             out["_meta"]["first_season"], out["_meta"]["last_season"]))
+    return out
+
+
+def qa_referee_calls(ref_calls, referees_index):
+    """Gate the call data before it can reach a page."""
+    hr("SECTION 10  Referee call attribution QA")
+    if not ref_calls.get("_meta", {}).get("available"):
+        print("  call attribution absent -- nothing to check")
+        return
+    meta = ref_calls["_meta"]
+    problems = []
+
+    # 1. The window must be what the source can support. Attribution starts
+    #    with the 2014-15 playoffs and nbadb's play-by-play ends in June 2023;
+    #    anything outside that means the extract is wrong, not the world.
+    if meta["first_season"] < "2014-15" or meta["last_season"] > "2022-23":
+        problems.append("window %s..%s falls outside the 2014-15..2022-23 the source "
+                        "can support" % (meta["first_season"], meta["last_season"]))
+
+    # 2. Coverage rate per season should sit near the ~91-93% the probe measured.
+    for season, cov in sorted(meta.get("coverage_by_season", {}).items()):
+        pct = cov.get("attributed_pct")
+        if pct is None:
+            continue
+        # The 2014-15 window is playoffs-only, so a partial season is expected
+        # there and only there.
+        if season != "2014-15" and not (80.0 <= pct <= 100.0):
+            problems.append("%s attribution rate %.1f%% is outside the expected band"
+                            % (season, pct))
+
+    # 3. No referee may show calls in a season they did not work.
+    by_id = {r["official_id"]: r for r in referees_index}
+    for oid, rec in ref_calls["referees"].items():
+        ref = by_id.get(oid)
+        if not ref:
+            problems.append("%s has calls but is not in referees.json" % oid)
+            continue
+        if rec["window_first_season"] < ref["first_season"] or \
+                rec["window_last_season"] > ref["last_season"]:
+            problems.append("%s has calls in %s..%s but worked %s..%s"
+                            % (oid, rec["window_first_season"], rec["window_last_season"],
+                               ref["first_season"], ref["last_season"]))
+        # 4. A per-game ceiling, set to catch the failure mode that actually
+        #    threatens this pipeline: double-counting. An NBA game carries
+        #    roughly 40 fouls between both teams, split across a three-person
+        #    crew, so 12-15 calls per official per game is ORDINARY. A rate
+        #    above 25 means one event is being attributed more than once --
+        #    the paired turnover halves creeping back in, or a foul credited
+        #    to the whole crew instead of the official who called it.
+        if rec.get("per_game") and rec["per_game"] > 25:
+            problems.append("%s averages %.1f calls per game -- above the "
+                            "double-counting ceiling of 25" % (oid, rec["per_game"]))
+
+    print("  referees with calls        : %d" % len(ref_calls["referees"]))
+    print("  window                     : %s to %s" % (meta["first_season"], meta["last_season"]))
+    for season, cov in sorted(meta.get("coverage_by_season", {}).items()):
+        print("    %-8s %5d games  %7d foul events  %5.1f%% attributed"
+              % (season, cov["games"], cov["foul_events"], cov["attributed_pct"] or 0.0))
+    if problems:
+        print("  PROBLEMS:")
+        for p in problems:
+            print("    - %s" % p)
+        raise SystemExit("referee-call QA failed: %d problem(s)" % len(problems))
+    print("  OK")
 
 
 def build_nbra_bios(referees_index):
@@ -3442,6 +3677,8 @@ def main():
     build_crewmates(off_ref, referees_index)
     build_whistle_leaderboards(referees_index)
     build_recent_form(referees_index, off_ref, gm, tg, game_tot)
+    ref_calls = build_referee_calls(referees_index, off_ref, gm)
+    qa_referee_calls(ref_calls, referees_index)
     nbra_bios = build_nbra_bios(referees_index)
     birthdays = build_birthdays(nbra_bios, referees_index)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}
