@@ -153,6 +153,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 /* ---- referee hero (flat header, Polymarket .phead treatment) ---- */
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
+/* Call-profile "Window total" row -- set apart so it cannot be misread as
+   another season, and labelled window, never career. */
+.totals-row td{font-weight:700;border-top:2px solid var(--border);background:var(--surface)}
 /* Identity-block portrait (assets/refs/<slug>.jpg, from nbra.net). Only ~74 of
    166 referees have one, so the flex row is switched on by .has-photo and the
    other 92 pages keep the plain, full-width block they already had -- no

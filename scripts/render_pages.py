@@ -80,6 +80,53 @@ ATTRIBUTION = [
 ]
 
 
+# Call attribution (data/referee_calls.json, from build.py SECTION 10).
+#
+# FRAMING. These are calls RECORDED AGAINST an official in the league's own
+# play-by-play feed. Two limits travel with every figure, in the copy and not
+# just in a footnote: the window is the 2015 playoffs to June 2023, a slice of
+# an era this site otherwise covers from 1993-94; and inside that window
+# roughly 8% of foul events carry no official's name at all. So a number here
+# is a floor within a window, never a career total, and nothing about it speaks
+# to whether a call was correct.
+CALL_TYPE_LABELS = {
+    "personal": "Personal", "shooting": "Shooting", "loose_ball": "Loose ball",
+    "offensive": "Offensive", "technical": "Technical",
+    "double_technical": "Double technical", "hanging_technical": "Hanging technical",
+    "flagrant_1": "Flagrant 1", "flagrant_2": "Flagrant 2",
+    "away_from_play": "Away from play", "clear_path": "Clear path",
+    "inbound": "Inbound", "punch": "Punch", "defensive_3_seconds": "Defensive 3 sec.",
+    "delay_of_game": "Delay of game", "ejection": "Ejection",
+    "violation": "Violation", "other": "Other",
+}
+# Order for the per-season table's columns: the common calls first, then the
+# rare-but-notable ones. Types with no calls for a given referee are dropped.
+CALL_TYPE_ORDER = ["personal", "shooting", "loose_ball", "offensive", "technical",
+                   "double_technical", "hanging_technical", "flagrant_1", "flagrant_2",
+                   "away_from_play", "clear_path", "inbound", "punch",
+                   "defensive_3_seconds", "delay_of_game", "ejection", "violation", "other"]
+
+
+def calls_scope_note(meta, extra=""):
+    """The one sentence that must accompany every call figure on the site."""
+    first = esc(meta.get("first_season") or "2014-15")
+    last = esc(meta.get("last_season") or "2022-23")
+    cov = meta.get("coverage_by_season") or {}
+    rates = [c["attributed_pct"] for c in cov.values() if c.get("attributed_pct")]
+    rate_txt = ""
+    if rates:
+        lo, hi = round(min(rates)), round(max(rates))
+        span = "about %d%%" % lo if lo == hi else "%d–%d%%" % (lo, hi)
+        rate_txt = (" Across this window %s of foul events carry an official&#39;s "
+                    "name; the rest are unattributed and absent here." % span)
+    return ('<p class="caption"><b>Window: %s to %s only.</b> The NBA began printing the '
+            'calling official in play-by-play with the 2015 playoffs, and this data source '
+            'ends in June 2023 — so these are not career figures, and they cover a fraction '
+            'of the seasons shown elsewhere on this page.%s These are calls recorded against '
+            'an official in the league&#39;s feed; nothing here indicates whether a call was '
+            'correct.%s</p>' % (first, last, rate_txt, (" " + extra) if extra else ""))
+
+
 # ---------------------------------------------------------------------------
 # formatting helpers
 # ---------------------------------------------------------------------------
@@ -364,6 +411,62 @@ def ref_photo_img(slug, root):
         return ""
     return ('<img class="ref-photo" src="{root}{rel}" alt="" width="84" height="84" '
             'decoding="async">').format(root=root, rel=rel)
+
+
+def call_profile_section(rec, meta):
+    """Call profile for one referee. Returns "" when there is nothing to show --
+    a referee whose career sits outside the attribution window gets no empty
+    module, the same way the NBRA identity line simply does not render."""
+    if not rec or not rec.get("calls"):
+        return ""
+
+    types_present = [t for t in CALL_TYPE_ORDER if rec["by_type"].get(t)]
+    chips = [stat_chip("Calls recorded", i(rec["calls"]), accent=True),
+             stat_chip("Seasons covered", i(rec["seasons_covered"]))]
+    if rec.get("games"):
+        chips.append(stat_chip("Games in window", i(rec["games"])))
+    if rec.get("per_game"):
+        chips.append(stat_chip("Per game", dec(rec["per_game"])))
+
+    cols = [("Season", "text"), ("G", "num"), ("Calls", "num"), ("Per game", "num")]
+    cols += [(CALL_TYPE_LABELS.get(t, t), "num") for t in types_present]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+
+    body = []
+    for season in sorted(rec["per_season"]):
+        ps = rec["per_season"][season]
+        cells = ['<td data-label="Season" data-sort="{s}">{s}</td>'.format(s=esc(season)),
+                 '<td data-label="G" data-sort="{n}">{v}</td>'.format(
+                     n=ps.get("games") or 0, v=i(ps["games"]) if ps.get("games") else "—"),
+                 '<td data-label="Calls" data-sort="{n}">{v}</td>'.format(
+                     n=ps["calls"], v=i(ps["calls"])),
+                 '<td data-label="Per game" data-sort="{n}">{v}</td>'.format(
+                     n=ps.get("per_game") or 0,
+                     v=dec(ps["per_game"]) if ps.get("per_game") else "—")]
+        for t in types_present:
+            n = ps["by_type"].get(t, 0)
+            cells.append('<td data-label="{l}" data-sort="{n}">{v}</td>'.format(
+                l=esc(CALL_TYPE_LABELS.get(t, t)), n=n, v=i(n) if n else "—"))
+        body.append("<tr>%s</tr>" % "".join(cells))
+
+    total_cells = ['<td data-label="Season">Window total</td>',
+                   '<td data-label="G">%s</td>' % (i(rec["games"]) if rec.get("games") else "—"),
+                   '<td data-label="Calls">%s</td>' % i(rec["calls"]),
+                   '<td data-label="Per game">%s</td>' % (dec(rec["per_game"]) if rec.get("per_game") else "—")]
+    for t in types_present:
+        total_cells.append('<td data-label="%s">%s</td>'
+                           % (esc(CALL_TYPE_LABELS.get(t, t)), i(rec["by_type"].get(t, 0))))
+    body.append('<tr class="totals-row">%s</tr>' % "".join(total_cells))
+
+    table = ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+    inner = ('<div class="chip-row">%s</div><div class="table-wrap">%s</div>'
+             % ("".join(chips), table))
+    # "Window total", never "career total" -- the bottom row is labelled in the
+    # table itself as well as in the note below it.
+    return section(None, "Calls recorded in play-by-play", inner,
+                   calls_scope_note(meta, "The bottom row totals this window, not a career."))
 
 
 def nbra_jersey_badge(nbra_bio):
@@ -819,7 +922,7 @@ def section(num, title, inner, extra_head=""):
         eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
 
 
-def render_ref(doc, rf_doc=None, nbra_bio=None):
+def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None):
     s = doc["summary"]
     name = s["name"]
     seasons = career_span(s["first_season"], s["last_season"])
@@ -873,6 +976,12 @@ def render_ref(doc, rf_doc=None, nbra_bio=None):
                'shows its sample size (n).</p>')
     blocks.append(section(None, "Whistle profile",
                           whistle_legend() + '<div class="whistle-cols">%s</div>' % cols, caption))
+
+    # call attribution (data/referee_calls.json) -- placed after the whistle
+    # profile because it is the narrower, more heavily caveated dataset of the
+    # two, and absent entirely for referees outside the 2015-2023 window.
+    if calls_rec:
+        blocks.append(call_profile_section(calls_rec, calls_meta or {}))
 
     # season splits (League Context section 5) -- the season selector: a
     # sortable table, not a dropdown that hides data.
@@ -1246,6 +1355,62 @@ def render_quality_leaderboard(doc):
            season_methods))
     blocks.append(ref_search(2, "bottom"))
     ld = breadcrumb_ld(("Home", ""), ("Quality score", "leaderboard/quality-score/index.html"))
+    return page(title, desc, 2, "".join(blocks), ld_json=ld)
+
+
+def render_calls_leaderboard(doc):
+    """Technicals / flagrants ranking. Ranked on the raw count, because a rate
+    would invite reading a per-game figure as a disposition; the per-game column
+    is shown for context only, and only where the window is big enough to make
+    it meaningful."""
+    rows, meta = doc["rows"], doc["meta"]
+    label, unit = doc["label"], doc["unit"]
+    min_games = meta.get("min_games_for_rate") or 0
+    title = "NBA referees by %s recorded in play-by-play, %s to %s" % (
+        label.lower(), meta.get("first_season"), meta.get("last_season"))
+    desc = ("NBA officials ranked by %s recorded against them in the league's own "
+            "play-by-play, %s to %s. Attribution exists only for this window and is "
+            "roughly 92%% complete within it." % (label.lower(), meta.get("first_season"),
+                                                  meta.get("last_season")))
+    chips = [stat_chip("Officials ranked", i(len(rows)), accent=True),
+             stat_chip("Window", "%s–%s" % (meta.get("first_season", ""), meta.get("last_season", ""))),
+             stat_chip("Min. games for a rate", i(min_games))]
+    cols = [("#", "num"), ("Official", "text"), (label, "num"),
+            ("Games in window", "num"), ("Per game", "num"), ("Seasons covered", "text")]
+    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
+        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    body = []
+    for rank, r in enumerate(rows, 1):
+        body.append(
+            "<tr>"
+            '<td data-label="#" class="rank">{rank}</td>'
+            '<td data-label="Official" data-sort="{ns}">{ref}</td>'
+            '<td data-label="{lb}" data-sort="{n}"><span class="big-num">{nv}</span></td>'
+            '<td data-label="Games in window" data-sort="{g}">{gv}</td>'
+            '<td data-label="Per game" data-sort="{pg}">{pgv}</td>'
+            '<td data-label="Seasons covered">{win}</td>'
+            "</tr>".format(
+                rank=rank, ns=esc(r["name"].lower()), ref=ref_link(r["name"], r["slug"]),
+                lb=esc(label), n=r[unit], nv=i(r[unit]),
+                g=r.get("games") or 0, gv=i(r["games"]) if r.get("games") else "—",
+                pg=r.get("per_game") or 0,
+                pgv=dec(r["per_game"]) if r.get("per_game") else "—",
+                win=esc(r.get("window", ""))))
+    table = ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+    methods = ('<p class="caption">Ranked on the raw count. A per-game figure is shown only '
+               'for officials with at least {mn} games inside the window, and is context for '
+               'the count rather than the ranking. An official who worked more of this window '
+               'has more opportunity to appear here, and an official whose career sits mostly '
+               'outside it will be absent or low regardless of how they officiate.</p>'.format(
+                   mn=i(min_games)))
+    blocks = [back_home(), hero_block("Play-by-play attribution", label, "", chips),
+              ref_search(2, "top"),
+              '<section class="block"><div class="block-head"><h2>%s</h2></div>'
+              '<div class="table-wrap">%s</div>%s%s</section>'
+              % (esc(label), table, methods, calls_scope_note(meta)),
+              ref_search(2, "bottom")]
+    ld = breadcrumb_ld(("Home", ""), (label, "leaderboard/%s/index.html" % doc["slug"]))
     return page(title, desc, 2, "".join(blocks), ld_json=ld)
 
 
@@ -2334,6 +2499,9 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 /* ---- referee hero (flat header, Polymarket .phead treatment) ---- */
 .ref-hero{margin-top:1.3rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
 .ref-hero-body{padding:0}
+/* Call-profile "Window total" row -- set apart so it cannot be misread as
+   another season, and labelled window, never career. */
+.totals-row td{font-weight:700;border-top:2px solid var(--border);background:var(--surface)}
 /* Identity-block portrait (assets/refs/<slug>.jpg, from nbra.net). Only ~74 of
    166 referees have one, so the flex row is switched on by .has-photo and the
    other 92 pages keep the plain, full-width block they already had -- no
@@ -3448,6 +3616,9 @@ def main():
     team_index = json.load(open(os.path.join(DATA, "teams.json"), encoding="utf-8"))
     player_index = json.load(open(os.path.join(DATA, "players.json"), encoding="utf-8"))
     nbra_bios = json.load(open(os.path.join(DATA, "nbra_bios.json"), encoding="utf-8"))
+    calls_path = os.path.join(DATA, "referee_calls.json")
+    ref_calls = (json.load(open(calls_path, encoding="utf-8")) if os.path.exists(calls_path)
+                 else {"_meta": {"available": False}, "referees": {}, "leaderboards": {}})
     slug_of = {r["official_id"]: r["slug"] for r in refs}
     age_by_slug = {slug_of[oid]: bio["age"] for oid, bio in nbra_bios.items()
                   if bio.get("age") is not None and oid in slug_of}
@@ -3522,7 +3693,9 @@ def main():
         rf_path = os.path.join(DATA, "recent_form", "%s.json" % official_id)
         rf_doc = json.load(open(rf_path, encoding="utf-8")) if os.path.exists(rf_path) else None
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
-            f.write(render_ref(doc, rf_doc, nbra_bios.get(official_id)))
+            f.write(render_ref(doc, rf_doc, nbra_bios.get(official_id),
+                               ref_calls["referees"].get(official_id),
+                               ref_calls["_meta"]))
         n += 1
 
         # Tier C per-referee game log (docs/TIER_C_SPEC.md section 3) --
@@ -3566,10 +3739,27 @@ def main():
         "min_seasons": lb["_meta"]["min_seasons_for_quality_per_season"],
         "age_by_slug": age_by_slug,
     }
+    # Call-attribution leaderboards -- only when the extract exists, so the
+    # pages never ship empty.
+    if ref_calls["_meta"].get("available"):
+        cl = ref_calls["leaderboards"]
+        for slug, key, label, unit in (
+                ("technical-fouls", "most_technicals", "Technicals", "technicals"),
+                ("flagrant-fouls", "most_flagrants", "Flagrants", "flagrants")):
+            if cl.get(key):
+                leaderboard_docs[slug] = {"kind": "calls", "slug": slug, "label": label,
+                                          "unit": unit, "rows": cl[key],
+                                          "meta": ref_calls["_meta"]}
+
+    def _leaderboard_renderer(d):
+        if d["kind"] == "quality":
+            return render_quality_leaderboard(d)
+        if d["kind"] == "calls":
+            return render_calls_leaderboard(d)
+        return render_whistle_leaderboard(d)
+
     n_leaderboards = _render_dir(
-        os.path.join(REPO, "leaderboard"), leaderboard_docs,
-        lambda d: render_quality_leaderboard(d) if d["kind"] == "quality"
-        else render_whistle_leaderboard(d))
+        os.path.join(REPO, "leaderboard"), leaderboard_docs, _leaderboard_renderer)
 
     # global search index (referees + teams + players) for the navigate-search
     search_index = build_search_index(refs, team_docs, player_docs)

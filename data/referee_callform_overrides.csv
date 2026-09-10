@@ -1,0 +1,35 @@
+# Referee call-form overrides (scripts/local/extract_referee_calls.py).
+#
+# Play-by-play names the calling official as an initial plus surname
+# ("R.Garretson"). Most forms match exactly one canonical referee in
+# data/referees.json and need nothing here. This file is the escape hatch for
+# the ones that do not.
+#
+# Resolution order in the extractor: this file first, then an exact
+# first-initial + surname match, then -- for a form that genuinely collides --
+# the crew that worked THAT game (source-data/officials.csv.gz). A collision
+# the crew lookup settles needs no row here; adding one would replace evidence
+# with an assumption.
+#
+# columns:
+#   name_form      the form exactly as play-by-play prints it (case-insensitive)
+#   official_id    the canonical slug from data/referees.json
+#   why            the reasoning, so a later reader can re-check it
+#
+# NOT overridden, deliberately:
+#
+#   J.Goble   Jacyn Goble (2016-17 to date) and John Goble (2007-08 to date)
+#             both work inside the attribution window, so no era rule can
+#             separate them. Resolved per game from that game's crew; any game
+#             the crew does not settle is reported and its calls are dropped.
+#
+#   S.Anderson  Steve Anderson (2011-12 to 2016-17) overlaps the window;
+#             Steven Anderson worked 10 games in 2012-13 only, entirely before
+#             attribution begins, so on era alone every S.Anderson call in this
+#             window is Steve. That inference is left to the per-game crew
+#             lookup rather than written here, so the extraction report shows
+#             which Anderson the crew sheets actually name. If the report
+#             flags S.Anderson as ambiguous, settle it here with a row.
+#
+name_form,official_id,why
+J.DeRosa,jb-derosa,"Collides with Joe DeRosa, whose last season was 2002-03. Attribution starts with the 2015 playoffs, so every J.DeRosa call in this window is JB DeRosa (2003-04 onward). Era alone settles it; no per-game lookup needed."
