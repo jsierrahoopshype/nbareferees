@@ -20,6 +20,18 @@ on:
         description: 'Season for the stats.nba.com leaguegamelog probe, e.g. 2025-26'
         required: false
         default: '2025-26'
+      pbp_game_2324:
+        description: 'cdn.nba.com play-by-play game id, 2023-24'
+        required: false
+        default: '0022300001'
+      pbp_game_2425:
+        description: 'cdn.nba.com play-by-play game id, 2024-25'
+        required: false
+        default: '0022400001'
+      pbp_game_2526:
+        description: 'cdn.nba.com play-by-play game id, 2025-26'
+        required: false
+        default: '0022500001'
 
 permissions:
   contents: read
@@ -41,6 +53,9 @@ jobs:
         env:
           ESPN_DATE: ${{ inputs.espn_date }}
           NBA_SEASON: ${{ inputs.nba_season }}
+          PBP_2324: ${{ inputs.pbp_game_2324 }}
+          PBP_2425: ${{ inputs.pbp_game_2425 }}
+          PBP_2526: ${{ inputs.pbp_game_2526 }}
         run: |
           python3 - <<'PY'
           import datetime
@@ -48,6 +63,7 @@ jobs:
           import io
           import json
           import os
+          import re
           import ssl
           import time
           import urllib.error
@@ -76,6 +92,17 @@ jobs:
               "Accept-Language": "en-US,en;q=0.9",
               "Accept-Encoding": "gzip, deflate",
           }
+          # cdn.nba.com is the league's public static CDN behind the modern
+          # nba.com scoreboard -- no stats.nba.com-style token headers, just a
+          # plain browser request for a JSON file.
+          CDN_HEADERS = {
+              "User-Agent": UA,
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Accept-Encoding": "gzip, deflate",
+              "Referer": "https://www.nba.com/",
+              "Origin": "https://www.nba.com",
+          }
           NBA_HEADERS = {
               "Host": "stats.nba.com",
               "User-Agent": UA,
@@ -100,6 +127,15 @@ jobs:
           CONTROL_DATE = "20260115"
 
           ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+          CDN_PBP = "https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_%s.json"
+          CDN_BOX = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_%s.json"
+
+          # Game ids to probe. Defaults are the first regular-season game of each
+          # season; any id can be passed in if one turns out to be preseason, a
+          # postponed fixture, or otherwise unrepresentative.
+          pbp_2324 = (os.environ.get("PBP_2324") or "0022300001").strip()
+          pbp_2425 = (os.environ.get("PBP_2425") or "0022400001").strip()
+          pbp_2526 = (os.environ.get("PBP_2526") or "0022500001").strip()
           NBA_GAMELOG = (
               "https://stats.nba.com/stats/leaguegamelog"
               "?Counter=0&Direction=DESC&LeagueID=00&PlayerOrTeam=T"
@@ -137,6 +173,43 @@ jobs:
                   "headers": NBA_HEADERS,
                   "expect": "json",
                   "markers": ["resultSets", "resource"],
+              },
+              # cdn.nba.com liveData. The question these four answer: can
+              # per-referee call attribution extend past June 2023, where the
+              # nbadb play-by-play ends? One game per season, so a season that
+              # dropped the field shows up on its own row rather than being
+              # hidden behind an average.
+              {
+                  "name": "cdn.nba.com play-by-play 2023-24 (%s)" % pbp_2324,
+                  "url": CDN_PBP % pbp_2324,
+                  "headers": CDN_HEADERS,
+                  "expect": "json",
+                  "markers": ["meta", "game"],
+                  "kind": "pbp",
+              },
+              {
+                  "name": "cdn.nba.com play-by-play 2024-25 (%s)" % pbp_2425,
+                  "url": CDN_PBP % pbp_2425,
+                  "headers": CDN_HEADERS,
+                  "expect": "json",
+                  "markers": ["meta", "game"],
+                  "kind": "pbp",
+              },
+              {
+                  "name": "cdn.nba.com play-by-play 2025-26 (%s)" % pbp_2526,
+                  "url": CDN_PBP % pbp_2526,
+                  "headers": CDN_HEADERS,
+                  "expect": "json",
+                  "markers": ["meta", "game"],
+                  "kind": "pbp",
+              },
+              {
+                  "name": "cdn.nba.com boxscore 2023-24 (%s)" % pbp_2324,
+                  "url": CDN_BOX % pbp_2324,
+                  "headers": CDN_HEADERS,
+                  "expect": "json",
+                  "markers": ["meta", "game"],
+                  "kind": "box",
               },
           ]
 
@@ -198,6 +271,24 @@ jobs:
                           note += "; resultSet rows=%d" % rows
                       except Exception:
                           pass
+                  # cdn.nba.com liveData: {"meta":..., "game":{...}}. A 200 that
+                  # carries the envelope but no actions is a different answer
+                  # from a 200 with a full play-by-play, so say which.
+                  if target.get("kind") in ("pbp", "box"):
+                      game = parsed.get("game")
+                      if not isinstance(game, dict):
+                          return "UNEXPECTED", "JSON has 'game' but it is not an object"
+                      note += "; gameId=%s" % game.get("gameId", "?")
+                      if target["kind"] == "pbp":
+                          actions = game.get("actions")
+                          if not isinstance(actions, list):
+                              return "UNEXPECTED", "no 'actions' list under game (keys: %s)" % (
+                                  ", ".join(list(game.keys())[:12]))
+                          note += "; actions=%d" % len(actions)
+                          if not actions:
+                              return "UNEXPECTED", note + " (envelope present but empty)"
+                      else:
+                          note += "; game keys=%s" % ", ".join(list(game.keys())[:10])
                   return "LOOKS EXPECTED", note
 
               # HTML target
@@ -231,7 +322,7 @@ jobs:
                       "status": "-", "ctype": "-", "wire": 0, "size": 0,
                       "verdict": "UNREACHABLE",
                       "detail": "%s: %s" % (type(exc.reason).__name__ if exc.reason is not None else "URLError", exc.reason),
-                      "final_url": target["url"], "preview": "",
+                      "final_url": target["url"], "preview": "", "body": "",
                   }
               except (ssl.SSLError, TimeoutError, OSError) as exc:
                   return {
@@ -239,7 +330,7 @@ jobs:
                       "status": "-", "ctype": "-", "wire": 0, "size": 0,
                       "verdict": "UNREACHABLE",
                       "detail": "%s: %s" % (type(exc).__name__, exc),
-                      "final_url": target["url"], "preview": "",
+                      "final_url": target["url"], "preview": "", "body": "",
                   }
 
               elapsed = time.time() - started
@@ -254,6 +345,9 @@ jobs:
                   "ctype": ctype, "wire": len(raw), "size": len(body),
                   "verdict": verdict, "detail": detail,
                   "final_url": final_url, "preview": preview,
+                  # Kept only so the official-attribution pass below can re-read
+                  # the play-by-play without a second request.
+                  "body": text,
               }
 
 
@@ -274,6 +368,89 @@ jobs:
               if r["preview"]:
                   print("  Body preview    : %s" % r["preview"])
               print()
+
+          # ------------------------------------------------------------------
+          # Does cdn.nba.com play-by-play name the calling official?
+          #
+          # This is the whole point of the three pbp probes. nbadb's play-by-play
+          # ends in June 2023, and its referee attribution is a trailing
+          # parenthetical in a description string. If the modern CDN feed carries
+          # an officialId field instead, attribution can extend to the present AND
+          # stop depending on initial-plus-surname name matching. If it carries
+          # nothing, it cannot.
+          #
+          # Report only -- no parsing beyond finding the field and showing one
+          # action, and nothing is written anywhere.
+          # ------------------------------------------------------------------
+          OFFICIAL_KEY_RE = re.compile(r"official|referee|crew|ref(?:id|_id)$", re.I)
+
+          def describe_official_fields(name, body_text):
+              print("=" * 78)
+              print("OFFICIAL ATTRIBUTION: %s" % name)
+              print("=" * 78)
+              try:
+                  actions = json.loads(body_text)["game"]["actions"]
+              except Exception as exc:
+                  print("  could not read actions: %s: %s" % (type(exc).__name__, exc))
+                  print()
+                  return
+
+              # Union of every key seen across every action -- the feed is not
+              # uniform (a shot action and a foul action carry different keys),
+              # so looking at only the first action would miss the field.
+              keys = {}
+              for a in actions:
+                  if isinstance(a, dict):
+                      for k, v in a.items():
+                          keys.setdefault(k, 0)
+                          if v not in (None, "", 0):
+                              keys[k] += 1
+              print("  actions            : %d" % len(actions))
+              print("  distinct keys      : %d" % len(keys))
+              print("  all keys           : %s" % ", ".join(sorted(keys)))
+
+              matches = sorted(k for k in keys if OFFICIAL_KEY_RE.search(k))
+              if matches:
+                  print("  *** OFFICIAL-LIKE KEYS FOUND: %s" % ", ".join(matches))
+                  for k in matches:
+                      print("      %-22s non-empty in %d of %d actions" % (k, keys[k], len(actions)))
+              else:
+                  print("  *** NO official/referee-like key on ANY action.")
+                  print("      Attribution cannot come from this feed's action fields;")
+                  print("      the only remaining hope would be a description string,")
+                  print("      checked below.")
+
+              # A foul action, printed whole. The one thing a summary cannot
+              # substitute for: seeing every field the league actually sends.
+              foul = None
+              for a in actions:
+                  if not isinstance(a, dict):
+                      continue
+                  blob = " ".join(str(a.get(f, "")) for f in
+                                  ("actionType", "subType", "description")).lower()
+                  if "foul" in blob:
+                      foul = a
+                      break
+              print()
+              if foul is None:
+                  print("  no foul action found in this game's actions.")
+              else:
+                  print("  SAMPLE FOUL ACTION (verbatim, every field):")
+                  for line in json.dumps(foul, indent=2, sort_keys=True).split("\n"):
+                      print("      " + line)
+                  desc = str(foul.get("description") or "")
+                  if desc:
+                      # nbadb's attribution lives in a trailing "(R.Garretson)".
+                      # Say plainly whether this feed's description does too.
+                      tail = re.findall(r"\(([^()]*)\)", desc)
+                      print()
+                      print("  description        : %s" % desc)
+                      print("  parentheticals     : %s" % (", ".join(tail) if tail else "none"))
+              print()
+
+          for r in results:
+              if r["target"].get("kind") == "pbp" and r["verdict"] == "LOOKS EXPECTED":
+                  describe_official_fields(r["target"]["name"], r["body"])
 
           print("=" * 78)
           print("SUMMARY")
