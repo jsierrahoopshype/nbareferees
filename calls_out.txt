@@ -1,0 +1,266 @@
+referee call attribution extract (extract_referee_calls.py)
+==============================================================================
+Run at (local clock): 2026-09-11T10:08:09
+DB: C:\Users\Jorge Sierra\Downloads\archive\nba.sqlite
+canonical referees: 166 | callform overrides: 1 | games with a known crew: 39008
+former/variant name-forms folded in from referee_identity_overrides.csv: 5
+play-by-play table (located by column signature): play_by_play
+
+==============================================================================
+SCANNING
+==============================================================================
+SELECT "game_id", "eventmsgtype", "eventmsgactiontype", "period", "pctimestring", "eventnum", "homedescription", "visitordescription", "neutraldescription", "player1_name", "player1_id" FROM "play_by_play"
+    ...1000000 rows scanned, 0 calls written
+    ...2000000 rows scanned, 0 calls written
+    ...3000000 rows scanned, 0 calls written
+    ...4000000 rows scanned, 0 calls written
+    ...5000000 rows scanned, 0 calls written
+    ...6000000 rows scanned, 0 calls written
+    ...7000000 rows scanned, 0 calls written
+    ...8000000 rows scanned, 0 calls written
+    ...9000000 rows scanned, 0 calls written
+    ...10000000 rows scanned, 85314 calls written
+    ...11000000 rows scanned, 170564 calls written
+    ...12000000 rows scanned, 262528 calls written
+    ...13000000 rows scanned, 346986 calls written
+
+==============================================================================
+OUTPUT
+==============================================================================
+rows scanned         : 13592899
+attributed calls kept: 397397
+calls dropped (form could not be resolved): 1054
+games covered        : 10449
+-> source-data\referee_calls.csv.gz
+-> source-data\referee_calls_coverage.csv.gz
+-> source-data\referee_calls_unresolved.csv.gz
+
+==============================================================================
+COVERAGE BY SEASON (the denominator, and the ~8% that is missing)
+==============================================================================
+season        games  foul events   attributed unattributed     rate    TO halves
+------------------------------------------------------------------------------
+2014-15        1173        48639         3285        45354     6.8%         4194
+2015-16        1194        49728        49722            6   100.0%         3989
+2016-17        1203        49271        49119          152    99.7%         3941
+2017-18        1200        49068        48913          155    99.7%         3921
+2018-19        1200        51701        51517          184    99.6%         4404
+2019-20        1039        44496        44351          145    99.7%         4223
+2020-21        1065        42164        42093           71    99.8%         3547
+2021-22        1195        48600        48417          183    99.6%         4064
+2022-23        1180        48252        48046          206    99.6%         4509
+
+'TO halves' are the paired turnover rows, excluded from every column
+to their left. Counting them as unattributed fouls would understate the
+rate; counting them as calls would double-count the offensive foul.
+
+==============================================================================
+CALL TYPES
+==============================================================================
+call_type                     calls    share   most common wording
+------------------------------------------------------------------------------
+shooting                     178818    45.0%   Green S.FOUL
+personal                     136601    34.4%   Green P.FOUL
+offensive                     32637     8.2%   Green OFF.Foul
+loose_ball                    22049     5.5%   Green L.B.FOUL
+violation                     11231     2.8%   Green Violation:Kicked Ball
+technical                      6383     1.6%   Green T.FOUL
+defensive_3_seconds            3418     0.9%   Raptors T.Foul
+other                          3004     0.8%   Speights Shooting Block Foul
+flagrant_1                     1058     0.3%   Howard FLAGRANT.FOUL.TYPE1
+away_from_play                  772     0.2%   Brown AWAY.FROM.PLAY.FOUL
+double_technical                645     0.2%   Double Technical - Beverley, Westbrook
+clear_path                      420     0.1%   Green C.P.FOUL
+inbound                         195     0.0%   Green IN.FOUL
+flagrant_2                      110     0.0%   Drummond FLAGRANT.FOUL.TYPE2
+hanging_technical                55     0.0%   Valanciunas HANGING.TECH.FOUL
+punch                             1     0.0%   Barton PUNCH.FOUL
+
+Descriptions that fell into 'other' -- if a real call type is hiding
+here, CALL_TYPES needs a rule for it:
+    Beal Shooting Block Foul (P1.T1) (M.McCutchen)
+    Carroll Shooting Block Foul (P3.T2) (M.Davis)
+    Middleton Shooting Block Foul (P2.T1) (B.Spooner)
+    Porter Jr. Shooting Block Foul (P1.T4) (S.Foster)
+    A. Johnson Shooting Block Foul (P4.PN) (S.Foster)
+    Gooden Shooting Block Foul (P2.PN) (B.Kennedy)
+    Seraphin Shooting Block Foul (P4.T2) (S.Foster)
+    Villanueva Shooting Block Foul (P2.T2) (D.Jones)
+    Ariza Shooting Block Foul (P4.T1) (E.Malloy)
+    Smith Shooting Block Foul (P2.T1) (D.Guthrie)
+    Datome Shooting Block Foul (P2.T2) (J.Phillips)
+    Speights Shooting Block Foul (P4.PN) (K.Fitzgerald)
+    Brooks Shooting Block Foul (P3.PN) (K.Mauer)
+    Barnes Shooting Block Foul (P2.T3) (G.Zielinski)
+    Davis Shooting Block Foul (P1.T3) (M.McCutchen)
+    Smith Shooting Block Foul (P2.T3) (M.Smith)
+    Brewer Shooting Block Foul (P2.T2) (M.Smith)
+    Green Shooting Block Foul (P1.T2) (D.Collins)
+    Crowder Shooting Block Foul (P1.T2) (L.Richardson)
+    Thompson Shooting Block Foul (P1.T1) (T.Brothers)
+    Howard Shooting Block Foul (P3.T2) (M.McCutchen)
+    Ellis Shooting Block Foul (P2.PN) (J.Tiven)
+    Jefferson Shooting Block Foul (P3.PN) (D.Stafford)
+    Mills Shooting Block Foul (P1.T1) (T.Washington)
+    Brewer Shooting Block Foul (P2.T1) (J.Goble)
+
+==============================================================================
+CALL TYPE vs. THE NBA'S OWN EVENT CODES
+==============================================================================
+Text is the classifier; the code pair is carried on every row. If one
+call_type spans several action types (personal-block and personal-take
+both print 'P.FOUL'), that is visible here and can be split later
+without re-reading the DB.
+
+call_type                 msgtype     action        calls
+------------------------------------------------------------------------------
+shooting                        6          2       178818
+personal                        6          1       121328
+offensive                       6          4        22594
+loose_ball                      6          3        22049
+personal                        6         28        12935
+offensive                       6         26        10043
+violation                       7          5         6964
+technical                       6         11         6372
+violation                       7          2         4015
+defensive_3_seconds             6         17         3418
+other                           6         29         2743
+personal                        6         27         2150
+flagrant_1                      6         14         1058
+away_from_play                  6          6          772
+double_technical                6         16          645
+clear_path                      6          9          420
+other                           6         31          200
+inbound                         6          5          195
+personal                        6         10          188
+violation                       7          3          138
+flagrant_2                      6         15          110
+violation                       7          4          106
+hanging_technical               6         13           55
+other                           6         12           40
+other                           6         19           21
+technical                       6         16           11
+violation                       7          6            8
+punch                           6          8            1
+
+==============================================================================
+NAME-FORM RESOLUTION -- RESOLVED
+==============================================================================
+Each line below is CALLS KEPT. Nothing here was dropped.
+
+route                           calls   by form
+------------------------------------------------------------------------------
+override file                    4023   J.DeRosa=4023
+this game's crew                12612   J.Goble=11452, S.Anderson=1160
+era (career span)                 129   J.Goble=66, S.Anderson=63
+
+A form resolved by 'era' had no usable crew on file, but only one
+candidate's career covered that season, so the answer was forced rather
+than chosen. See the crew-coverage section below for why that happens.
+
+==============================================================================
+NAME-FORM RESOLUTION -- DROPPED
+==============================================================================
+Four different failures, counted apart. They are NOT the same problem:
+a missing crew list is a gap in our source data, while a full crew that
+names neither candidate would mean the form is not who we think it is.
+
+reason                                        calls
+------------------------------------------------------------------------------
+no crew on file, era could not narrow it       1054
+full crew on file names no candidate              0
+crew names BOTH candidates (true tie)             0
+form matches no canonical referee                 0
+TOTAL DROPPED                                  1054
+
+reconciliation: 16764 resolved + 1054 dropped = 17818
+  (exact-match forms are not counted above -- they never needed resolving)
+  calls in games with no crew on file: 1183, of which era saved 129
+
+-- no crew on file, era could not narrow it --
+form           season     candidates alive      calls
+J.Goble        2022-23                 2        195
+J.Goble        2018-19                 2        185
+J.Goble        2021-22                 2        181
+J.Goble        2019-20                 2        148
+J.Goble        2016-17                 2        147
+J.Goble        2017-18                 2        133
+J.Goble        2020-21                 2         65
+
+These are games with NO crew recorded, in a season where more than one
+candidate was active. Nothing in our data distinguishes them, so the
+calls are dropped. This is the honest floor, not a bug to fix.
+
+-- full crew on file, but it names no candidate --
+  none -- no game had a full crew that contradicted the play-by-play.
+
+-- crew names BOTH candidates (a true tie) --
+  none
+
+-- form matches no canonical referee --
+  none
+
+==============================================================================
+CREW COVERAGE IN source-data/officials.csv.gz (site-wide finding)
+==============================================================================
+season        games    no crew        %    partial        %
+------------------------------------------------------------------------------
+1993-94        1181          0     0.0%        441    37.3%
+1994-95        1175          2     0.2%        331    28.2%
+1995-96        1253        106     8.5%        365    29.1%
+1996-97        1256          0     0.0%        211    16.8%
+1997-98        1257          4     0.3%        121     9.6%
+1998-99         830         45     5.4%         32     3.9%
+1999-00        1317         88     6.7%         61     4.6%
+2000-01        1251          2     0.2%         25     2.0%
+2001-02        1261          1     0.1%          2     0.2%
+2002-03        1278          1     0.1%          0     0.0%
+2003-04        1271        153    12.0%          0     0.0%
+2004-05        1314        135    10.3%          0     0.0%
+2005-06        1230        133    10.8%          1     0.1%
+2006-07        1309        150    11.5%          0     0.0%
+2007-08        1316        127     9.7%          1     0.1%
+2008-09        1315        142    10.8%          0     0.0%
+2009-10        1312        129     9.8%          1     0.1%
+2010-11        1311        104     7.9%          0     0.0%
+2011-12        1074        106     9.9%          0     0.0%
+2012-13        1317          3     0.2%          0     0.0%
+2013-14        1319        119     9.0%          0     0.0%
+2014-15        1311        111     8.5%          1     0.1%
+2015-16        1316        117     8.9%          1     0.1%
+2016-17        1309        123     9.4%          1     0.1%
+2017-18        1312        112     8.5%          0     0.0%
+2018-19        1312        115     8.8%          0     0.0%
+2019-20        1142        110     9.6%          0     0.0%
+2020-21        1165         93     8.0%          0     0.0%
+2021-22        1317        124     9.4%          0     0.0%
+2022-23        1314        127     9.7%          0     0.0%
+2023-24        1321         20     1.5%          0     0.0%
+2024-25        1326          5     0.4%          0     0.0%
+2025-26        1326          3     0.2%          0     0.0%
+------------------------------------------------------------------------------
+ALL           41618       2610     6.3%       1595     3.8%
+
+Reading this: a game with NO crew is one no official is credited with
+anywhere on the site -- it is absent from every referee's game log, from
+crewmate counts, and from crew chemistry. The gap is concentrated in the
+nbadb-sourced seasons; the ESPN-sourced ones (2023-24 onward) are nearly
+complete, which is what shows this is a property of the source rather
+than of our extraction.
+
+In THIS run, 80 game(s) with a colliding name-form had no crew on file.
+Consequence for any copy that promises completeness: a per-referee game
+log is every game ON RECORD, not every game officiated. Wording that says
+otherwise overstates what the data can support.
+
+==============================================================================
+PAIRING CHECK (sample of 300 games)
+==============================================================================
+turnover halves in the sample : 1187
+  paired with a foul at the same (game, period, clock): 1187 (100.0%)
+  no foul at that clock (orphan)                      : 0 (0.0%)
+
+A high pairing rate is the evidence that dropping these rows removes
+the duplicate half rather than losing real calls.
+
+-> appended QA report to source-data\_referee_calls_report.txt

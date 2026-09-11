@@ -1,0 +1,545 @@
+nbadb play-by-play referee-attribution probe
+==============================================================================
+Run at (local clock): 2026-09-10T11:55:48
+DB: C:\Users\Jorge Sierra\Downloads\archive\nba.sqlite (2.2 GB)
+READ-ONLY: opened with SQLite's read-only URI; writes nothing to any extract.
+
+==============================================================================
+0. SCHEMA
+==============================================================================
+16 table(s)/view(s) in the file.
+play-by-play table located by column signature: play_by_play
+  34 columns: game_id, eventnum, eventmsgtype, eventmsgactiontype, period, wctimestring, pctimestring, homedescription, neutraldescription, visitordescription, score, scoremargin, person1type, player1_id, player1_name, player1_team_id, player1_team_city, player1_team_nickname, player1_team_abbreviation, person2type, player2_id, player2_name, player2_team_id, player2_team_city, player2_team_nickname, player2_team_abbreviation, person3type, player3_id, player3_name, player3_team_id, player3_team_city, player3_team_nickname, player3_team_abbreviation, video_available_flag
+  13592899 rows
+per-game table (for cross-checking the season decode): game
+  cross-check on 5 games (game_id decode vs. stored date):
+    0042200405 -> decoded 2022-23 PO  | stored date 2023-06-12
+    0042200404 -> decoded 2022-23 PO  | stored date 2023-06-09
+    0042200403 -> decoded 2022-23 PO  | stored date 2023-06-07
+    0042200402 -> decoded 2022-23 PO  | stored date 2023-06-04
+    0042200401 -> decoded 2022-23 PO  | stored date 2023-06-01
+
+==============================================================================
+PASS 1: scanning play-by-play
+==============================================================================
+columns used: game_id, eventmsgtype, eventmsgactiontype, eventnum, homedescription, visitordescription, neutraldescription
+query: SELECT "game_id", "eventmsgtype", "eventmsgactiontype", "eventnum", "homedescription", "visitordescription", "neutraldescription" FROM "play_by_play"
+
+    ...1000000 rows scanned
+    ...2000000 rows scanned
+    ...3000000 rows scanned
+    ...4000000 rows scanned
+    ...5000000 rows scanned
+    ...6000000 rows scanned
+    ...7000000 rows scanned
+    ...8000000 rows scanned
+    ...9000000 rows scanned
+    ...10000000 rows scanned
+    ...11000000 rows scanned
+    ...12000000 rows scanned
+    ...13000000 rows scanned
+rows scanned              : 13592899
+rows with any description : 13592053
+rows with home AND visitor description: 748549
+rows with a referee token : 419515
+
+==============================================================================
+1. PER-SEASON ATTRIBUTION COVERAGE
+==============================================================================
+'Foul rows' = rows whose description contains 'foul' (case-insensitive),
+which includes the paired turnover rows counted in section 4 -- so the
+rate below is a FLOOR until those are excluded.
+
+season        foul rows     with ref     rate       all rows     with ref     rate
+------------------------------------------------------------------------------
+1996-97           55245            0     0.0%         507595            0     0.0%
+1997-98           55620            0     0.0%         512461            0     0.0%
+1998-99           33804            0     0.0%         311570            0     0.0%
+1999-00           55071            0     0.0%         482487            0     0.0%
+2000-01           56168            0     0.0%         503025            0     0.0%
+2001-02           49763            0     0.0%         462101            0     0.0%
+2002-03           55667            0     0.0%         506379            0     0.0%
+2003-04           54914            0     0.0%         506450            0     0.0%
+2004-05           58508            0     0.0%         524310            0     0.0%
+2005-06           54874            0     0.0%         481816            0     0.0%
+2006-07           58535            0     0.0%         525417            0     0.0%
+2007-08           55001            0     0.0%         523003            0     0.0%
+2008-09           54938            0     0.0%         516006            0     0.0%
+2009-10           55672            0     0.0%         528540            0     0.0%
+2010-11           55961            0     0.0%         533517            0     0.0%
+2011-12           41872            0     0.0%         418572            0     0.0%
+2012-13            3915            0     0.0%          35959            0     0.0%
+2013-14           61816            0     0.0%         594888            0     0.0%
+2014-15           58986         3285     5.6%         589557         3380     0.6%  <-- first season with any attribution
+2015-16           59087        54563    92.3%         600605        56175     9.4%
+2016-17           57895        53539    92.5%         597807        55189     9.2%
+2017-18           56584        52294    92.4%         582898        53880     9.2%
+2018-19           56135        51728    92.1%         569453        53263     9.4%
+2019-20           48757        44530    91.3%         494746        45922     9.3%
+2020-21           48240        44433    92.1%         516194        45847     8.9%
+2021-22           55452        51110    92.2%         583102        52663     9.0%
+2022-23           56371        51478    91.3%         584441        53196     9.1%
+
+By season type (attribution rate over ALL rows), where it is non-zero:
+season     type          rows     with ref     rate
+------------------------------------------------------------------------------
+2014-15    PO           34731         3380     9.7%
+2015-16    AS            1098           34     3.1%
+2015-16    PO           33682         3191     9.5%
+2015-16    Pre          47668         4948    10.4%
+2015-16    RS          518142        48002     9.3%
+2016-17    AS            1034           32     3.1%
+2016-17    PO           33864         3239     9.6%
+2016-17    Pre          42544         4386    10.3%
+2016-17    RS          520347        47532     9.1%
+2017-18    AS            1086           60     5.5%
+2017-18    PO           32894         3169     9.6%
+2017-18    Pre          33200         3249     9.8%
+2017-18    RS          515639        47402     9.2%
+2018-19    AS            1076           30     2.8%
+2018-19    PO           37254         3641     9.8%
+2018-19    RS          531051        49592     9.3%
+2019-20    AS             563           35     6.2%
+2019-20    PO           35375         3478     9.8%
+2019-20    RS          458740        42409     9.2%
+2020-21    AS             876           32     3.7%
+2020-21    PO           35359         3328     9.4%
+2020-21    Pre          23050         2299    10.0%
+2020-21    RS          456836        40188     8.8%
+2021-22    AS             448            8     1.8%
+2021-22    PO           37449         3681     9.8%
+2021-22    Pre          28883         2596     9.0%
+2021-22    RS          516260        46378     9.0%
+2022-23    AS             884           14     1.6%
+2022-23    PO           33607         3041     9.0%
+2022-23    Pre          33411         3341    10.0%
+2022-23    RS          516539        46800     9.1%
+
+This is the check on 'coverage began with the 2015 playoffs': if that
+holds, 2014-15 PO is the first row above and 2014-15 RS is absent.
+
+==============================================================================
+2a. PARENTHETICAL VOCABULARY (every group, by shape)
+==============================================================================
+Shapes: A=uppercase run, a=lowercase run, #=digit run, + = 2 or more.
+So 'R.Garretson' is A.Aa+ and 'P1.T1' is A#.A#. Nothing is assumed to
+be a referee; the census shows what is actually in the text.
+
+shape                         count   samples
+------------------------------------------------------------------------------
+# A+                        2753017   1 BLK, 1 STL, 2 PTS
+Aa+:# Aa+:#                 2487840   Off:0 Def:1, Off:1 Def:0, Off:0 Def:2
+A#.A#                       1365610   P1.T1, P1.T2, P2.T2
+#+ A+                       1332933   10 PTS, 11 PTS, 13 PTS
+Aa+ # A+                    1189998   Jones 1 AST, Kleine 1 AST, Jones 2 AST
+A.Aa+                        404252   J.Crawford, T.Brown, R.Garretson *** referee-shaped
+A#.A+                        323495   P1.PN, P2.PN, P3.PN
+A#.A#+                       319722   P5.T10, P6.T11, P2.T12
+Aa+.# Aa+ #                  172042   Reg.1 Short 0, Reg.2 Short 0, Reg.2 Short 1
+Aa+ # Aa+ #                  169323   Full 1 Short 0, Full 2 Short 0, Full 3 Short
+#:#+ A+ A+                   166065   1:01 PM EST, 1:28 PM EST, 1:30 PM EST
+A#                           101075   P3, P5, P1
+#+:#+ A+ A+                   93426   14:43 PM EST, 15:15 PM EST, 15:18 PM EST
+Aa+:# Aa+:#+                  54994   Off:4 Def:10, Off:1 Def:10, Off:2 Def:10
+A#+                           37563   T#18, T#21, T#7
+AaAa+ # A+                    31657   McDaniel 1 AST, DeClercq 1 AST, McCloud 1 AS
+Aa+ #+ A+                     31595   Hardaway 10 AST, Hardaway 11 AST, Hardaway 1
+A. Aa+ # A+                   26834   B. Williams 1 AST, L. Ellis 1 AST, D. Davis 
+Aa+. # Aa+ Aa+                13761   Def. 3 Sec Brandon, Def. 3 Sec Schrempf, Def
+Aa+-Aa+ # A+                  11148   Abdul-Rauf 1 AST, Abdul-Rauf 2 AST, Abdul-Ra
+Aa+ Aa. # A+                  10106   Mason Jr. 1 AST, Mason Jr. 2 AST, Mason Jr. 
+Aa+ Aa+ # A+                   8360   Van Exel 1 AST, Van Exel 2 AST, Van Exel 3 A
+A.AaAa+                        7020   M.McCutchen, J.DeRosa *** referee-shaped
+A'Aa+ # A+                     5255   O'Neal 1 AST, O'Neal 2 AST, O'Neal 3 AST
+A.Aa+ Aa+                      4502   J.Van Duyne *** referee-shaped
+Aa+ A+ # A+                    2729   Lucas III 1 AST, Lucas III 2 AST, Lucas III 
+Aa+Aa+ # A+                    2297   MacLean 1 AST, MacLean 2 AST, MacLean 3 AST
+A.Aa+-Aa+                      2152   V.Voyard-Tadal, A.Moyer-Gleich *** referee-shaped
+A.Aa+Aa+                       1439   J.VanDuyne *** referee-shaped
+Aa. Aa+ # A+                   1290   Er. Johnson 1 AST, Er. Johnson 2 AST, Er. Jo
+A. Aa+ #+ A+                   1076   B. Thompson 10 AST, B. Thompson 11 AST, B. T
+Aa+. Aa+ # A+                  1049   Mic. Smith 1 AST, Mic. Smith 2 AST, Mic. Smi
+Aa+:#+ Aa+:#                    836   Off:10 Def:5, Off:10 Def:3, Off:11 Def:3
+Aa+ a Aa+ # A+                  520   Mbah a Moute 1 AST, Mbah a Moute 2 AST, Mbah
+AaAa+ #+ A+                     441   McCloud 10 AST, McCloud 11 AST, McCloud 12 A
+.                               363   .
+A+                              338   BLK, CC
+Aa+ Aa+ #+ A+                   333   Van Exel 10 AST, Van Exel 11 AST, Van Exel 1
+Aa+:#+ Aa+:#+                   332   Off:11 Def:10, Off:10 Def:13, Off:10 Def:14
+Aa+. # Aa+ A'Aa+                309   Def. 3 Sec O'Neal, Def. 3 Sec O'Bryant, Def.
+... and 44 more distinct shapes
+
+Position check: is the referee always the LAST parenthetical?
+  rows with a referee token          : 419515
+  rows with MORE THAN ONE ref token  : 0
+  rows where a ref token is not last : 0
+  -> 'last parenthetical, if it is referee-shaped' is a safe rule here.
+
+==============================================================================
+2b. EVENT VOCABULARY CARRYING ATTRIBUTION
+==============================================================================
+Grouped by the NBA's own codes (eventmsgtype, eventmsgactiontype), so
+this is the real scope -- fouls, technicals, ejections, violations --
+without guessing from the text.
+
+msgtype  action           rows     with ref     rate
+------------------------------------------------------------------------------
+6        2              588453       188346    32.0%
+        Howard S.FOUL (P1.T3) (T.Brown)
+        Nowitzki S.FOUL (P1.T2) (T.Brown)
+        Harris S.FOUL (P1.T3) (R.Garretson)
+6        1              445646       128437    28.8%
+        Terry P.FOUL (P1.T2) (J.Crawford)
+        Chandler P.FOUL (P1.T1) (J.Crawford)
+        Capela P.FOUL (P1.PN) (R.Garretson)
+6        4               95925        24187    25.2%
+        Howard OFF.Foul (P5) (T.Brown)
+        Rose OFF.Foul (P2) (K.Fitzgerald)
+        Middleton OFF.Foul (P2) (K.Fitzgerald)
+6        3               78961        23259    29.5%
+        Howard L.B.FOUL (P2.T4) (J.Crawford)
+        Stoudemire L.B.FOUL (P2.T3) (R.Garretson)
+        Jones L.B.FOUL (P1.T2) (J.Crawford)
+6        28              17291        13342    77.2%
+        Barea Personal Take Foul (P1.PN) (J.Crawford)
+        Chandler Personal Take Foul (P2.PN) (T.Brown)
+        Brewer Personal Take Foul (P2.T4) (R.Garretson)
+6        26              16430        10693    65.1%
+        Harden Offensive Charge Foul (P1.T1) (J.Crawford)
+        Antetokounmpo Offensive Charge Foul (P1.T1) (S.Foster)
+        Brooks Offensive Charge Foul (P1.T2) (K.Fitzgerald)
+7        5               17100         7346    43.0%
+        Rondo Violation:Kicked Ball (T.Brown)
+        Hansbrough Violation:Kicked Ball (D.Stafford)
+        Ross Violation:Kicked Ball (M.McCutchen)
+6        11              21741         6583    30.3%
+        Rick Carlisle Foul:T.FOUL (R.Garretson)
+        Pondexter T.FOUL (P1.T1) (J.Phillips)
+        Aldridge T.FOUL (P0.T2) (J.Capers)
+7        2               17383         4219    24.3%
+        Clark Violation:Defensive Goaltending (D.Crawford)
+        Jordan Violation:Defensive Goaltending (S.Wright)
+        Mozgov Violation:Defensive Goaltending (J.Phillips)
+6        17              16955         3677    21.7%
+        BULLS T.Foul (Def. 3 Sec Noah ) (K.Fitzgerald)
+        RAPTORS T.Foul (Def. 3 Sec Valanciunas ) (B.Kennedy)
+        HAWKS T.Foul (Def. 3 Sec Carroll ) (M.Callahan)
+6        29               6166         2936    47.6%
+        Beal Shooting Block Foul (P1.T1) (M.McCutchen)
+        Carroll Shooting Block Foul (P3.T2) (M.Davis)
+        Middleton Shooting Block Foul (P2.T1) (B.Spooner)
+6        27               4917         2329    47.4%
+        Prigioni Personal Block Foul (P1.PN) (J.Crawford)
+        Barea Personal Block Foul (P3.T2) (J.Crawford)
+        Gortat Personal Block Foul (P2.T3) (M.McCutchen)
+6        14               3055         1092    35.7%
+        Jefferson FLAGRANT.FOUL.TYPE1 (P1.PN) (T.Brown)
+        Gibson FLAGRANT.FOUL.TYPE1 (P1.PN) (B.Kennedy)
+        Howard FLAGRANT.FOUL.TYPE1 (P4.T3) (K.Mauer)
+6        6                1667          818    49.1%
+        Thompson AWAY.FROM.PLAY.FOUL (P3.PN) (D.Stafford)
+        Gooden AWAY.FROM.PLAY.FOUL (P2.T3) (J.Goble)
+        Barbosa AWAY.FROM.PLAY.FOUL (P2.PN) (D.Collins)
+6        16               2522          673    26.7%
+        Double Technical - Ariza, Parsons (J.Crawford)
+        Double Technical - Butler, Mayo (M.McCutchen)
+        Double Technical - Noah, Henson (B.Spooner)
+6        9                1918          436    22.7%
+        Harden C.P.FOUL (P4.PN) (Z.Zarba)
+        Diaw C.P.FOUL (P5.PN) (D.Crawford)
+        Parker C.P.FOUL (P1.T2) (G.Petraitis)
+6        31                228          228   100.0%
+        Brown Transition Take Foul (P1.PN) (J.Capers)
+        Wagner Transition Take Foul (P1.PN) (D.Guthrie)
+        Bane Transition Take Foul (P1.T2) (B.Kennedy)
+6        5                 823          211    25.6%
+        Ginobili IN.FOUL (P1.T2) (D.Crawford)
+        Parker IN.FOUL (P1.PN) (M.Davis)
+        Green IN.FOUL (P3.T4) (J.Phillips)
+6        10               1417          197    13.9%
+         Foul : Double Personal - Randolph (3 PF), Green (4 PF) (M.McCutchen)
+         Foul : Double Personal - Gasol (2 PF), Bogut (1 PF) (T.Brothers)
+         Foul : Double Personal - Nene (1 PF), Millsap (1 PF) (M.McCutchen)
+7        3                4794          152     3.2%
+        Splitter Violation:Lane (M.Davis)
+        Allen Violation:Lane (T.Brown)
+        Ginobili Violation:Lane (J.Goble)
+6        15                292          115    39.4%
+        Smith FLAGRANT.FOUL.TYPE2 (P3.T3) (T.Brothers)
+        Antetokounmpo FLAGRANT.FOUL.TYPE2 (P1.T4) (M.Callahan)
+        Gibson FLAGRANT.FOUL.TYPE2 (P5.T2) (J.Crawford)
+7        4                 869          109    12.5%
+        Turner Violation:Jump Ball (E.Roe)
+        Paul Violation:Jump Ball (S.Wright)
+        Beal Violation:Jump Ball (B.Spooner)
+6        13                352           57    16.2%
+        Ja. Green HANGING.TECH.FOUL (P2.T1) (E.Roe)
+        Harrell HANGING.TECH.FOUL (P0.PN) (K.Mauer)
+        Green HANGING.TECH.FOUL (P4.PN) (D.Crawford)
+6        12                 87           41    47.1%
+        Carter-Williams Non-Unsportsmanlike (P2.T0) (M.Smith)
+        Acy Non-Unsportsmanlike (P0.T2) (S.Wright)
+        Whiteside Non-Unsportsmanlike (P1.T4) (M.Callahan)
+6        19                227           22     9.7%
+        Rivers Taunting (P0.T2) (D.Crawford)
+        Jokic Taunting (P2.T1) (M.Davis)
+        Gobert Taunting (P2.T3) (M.Davis)
+7        6                2924            9     0.3%
+        Ingles Violation:Double Lane (H.Workman)
+        Jokic Violation:Double Lane (B.Taylor)
+        Lee Violation:Double Lane (N.Buchert)
+6        8                   7            1    14.3%
+        Barton PUNCH.FOUL (P3.T3) (B.Taylor)
+
+Event types with NO attribution at all (top 15 by volume) -- these are
+what a parser must not treat as gaps:
+msgtype  action           rows   sample
+------------------------------------------------------------------------------
+4        0             2884891   O'Neal REBOUND (Off:0 Def:1)
+2        1             1651742   MISS Cassell 15' Jump Shot
+8        0             1226322   SUB: Fisher FOR Van Exel
+1        1              883246   Fisher 25' 3PT Jump Shot (3 PTS) (Campbell 1 AST)
+3        11             612592   Cassell Free Throw 1 of 2 (1 PTS)
+3        12             611993   Cassell Free Throw 2 of 2 (2 PTS)
+5        1              354109   Cassell Bad Pass Turnover (P1.T1)
+2        5              309689   MISS Ceballos 1' Layup
+9        1              294925   LAKERS Timeout: Regular (Full 1 Short 0)
+1        5              272879   Ceballos  Layup (2 PTS) (Jones 1 AST)
+5        2              182974   Ceballos Lost Ball Turnover (P1.T1)
+4        1              160676   Mills REBOUND (Off:2 Def:4)
+3        10             133013   Tisdale Free Throw 1 of 1 (3 PTS)
+13       0              121423   End of 1st Period (15:15 PM EST)
+12       0              121193   Start of 1st Period (14:43 PM EST)
+
+==============================================================================
+3. DISTINCT REFEREE NAME-FORMS, AND WHETHER THEY MAP
+==============================================================================
+114 distinct name-form(s) observed.
+Matched against the 166 canonical referees in data/referees.json by
+first-initial + surname. NOTHING is auto-resolved here -- collisions are
+reported for a human to settle, which is the point of this section.
+
+-- 101 form(s) matching exactly ONE canonical referee --
+  S.Foster                   8657 calls  2014-15..2022-23   -> scott-foster  <-- 32-season span
+  S.Wright                   8617 calls  2014-15..2022-23   -> sean-wright
+  T.Brothers                 8490 calls  2014-15..2022-23   -> tony-brothers  <-- 32-season span
+  Z.Zarba                    8403 calls  2014-15..2022-23   -> zach-zarba
+  E.Lewis                    8319 calls  2014-15..2022-23   -> eric-lewis
+  J.Tiven                    7897 calls  2014-15..2022-23   -> josh-tiven
+  J.Capers                   7673 calls  2014-15..2022-23   -> james-capers  <-- 31-season span
+  M.Davis                    7604 calls  2014-15..2022-23   -> marc-davis  <-- 28-season span
+  J.Williams                 7528 calls  2014-15..2022-23   -> james-williams
+  B.Taylor                   7441 calls  2015-16..2022-23   -> ben-taylor
+  D.Guthrie                  7429 calls  2014-15..2022-23   -> david-guthrie
+  T.Ford                     7392 calls  2015-16..2022-23   -> tyler-ford
+  C.Kirkland                 7372 calls  2014-15..2022-23   -> courtney-kirkland
+  N.Buchert                  6988 calls  2015-16..2022-23   -> nick-buchert
+  M.Smith                    6862 calls  2014-15..2022-23   -> michael-smith
+  K.Lane                     6861 calls  2015-16..2022-23   -> karl-lane
+  K.Fitzgerald               6830 calls  2014-15..2021-22   -> kane-fitzgerald
+  B.Forte                    6787 calls  2014-15..2022-23   -> brian-forte
+  R.Mott                     6683 calls  2015-16..2022-23   -> rodney-mott  <-- 31-season span
+  E.Malloy                   6638 calls  2014-15..2022-23   -> ed-malloy
+  M.Ervin                    6559 calls  2015-16..2022-23   -> mitchell-ervin
+  K.Scott                    6497 calls  2015-16..2022-23   -> kevin-scott
+  P.Fraher                   6439 calls  2014-15..2022-23   -> pat-fraher  <-- 31-season span
+  M.Kogut                    6438 calls  2015-16..2022-23   -> marat-kogut
+  C.Blair                    6201 calls  2015-16..2022-23   -> curtis-blair
+  G.Petraitis                6142 calls  2015-16..2022-23   -> gediminas-petraitis
+  D.Taylor                   6128 calls  2015-16..2022-23   -> dedric-taylor
+  B.Barnaky                  6066 calls  2015-16..2022-23   -> brent-barnaky
+  T.Maddox                   6044 calls  2015-16..2022-23   -> tre-maddox
+  S.Corbin                   6030 calls  2014-15..2022-23   -> sean-corbin  <-- 33-season span
+  S.Wall                     5937 calls  2015-16..2022-23   -> scott-wall  <-- 29-season span
+  B.Kennedy                  5879 calls  2014-15..2022-23   -> bill-kennedy  <-- 31-season span
+  M.Lindsay                  5878 calls  2015-16..2022-23   -> mark-lindsay
+  D.Collins                  5872 calls  2014-15..2022-23   -> derrick-collins
+  M.Boland                   5762 calls  2015-16..2022-23   -> matt-boland
+  K.Cutler                   5746 calls  2015-16..2022-23   -> kevin-cutler
+  S.Twardoski                5722 calls  2015-16..2022-23   -> scott-twardoski
+  J.Orr                      5603 calls  2015-16..2022-23   -> j-t-orr
+  T.Washington               5552 calls  2014-15..2022-23   -> tom-washington  <-- 32-season span
+  K.Mauer                    5541 calls  2014-15..2020-21   -> ken-mauer  <-- 28-season span
+  T.Brown                    5468 calls  2014-15..2020-21   -> tony-brown
+  L.Wood                     5331 calls  2015-16..2022-23   -> leon-wood  <-- 31-season span
+  M.Ayotte                   4753 calls  2014-15..2020-21   -> mark-ayotte
+  D.Richardson               4748 calls  2015-16..2022-23   -> derek-richardson  <-- 30-season span
+  E.Dalen                    4652 calls  2015-16..2022-23   -> eric-dalen
+  A.Smith                    4610 calls  2015-16..2022-23   -> aaron-smith
+  J.Van Duyne                4502 calls  2015-16..2022-23   -> justin-van-duyne
+  B.Nansel                   4456 calls  2015-16..2022-23   -> brett-nansel
+  L.Richardson               4407 calls  2014-15..2020-21   -> leroy-richardson
+  C.Washington               4237 calls  2015-16..2022-23   -> cj-washington
+  R.Acosta                   4169 calls  2015-16..2022-23   -> ray-acosta
+  L.Holtkamp                 4027 calls  2015-16..2022-23   -> lauren-holtkamp
+  M.Callahan                 4013 calls  2014-15..2018-19   -> mike-callahan
+  B.Adams                    3777 calls  2015-16..2021-22   -> bennie-adams
+  J.Goldenberg               3558 calls  2015-16..2022-23   -> jason-goldenberg
+  H.Workman                  3463 calls  2015-16..2020-21   -> haywoode-workman
+  J.Sterling                 3401 calls  2016-17..2022-23   -> jonathan-sterling
+  R.Garretson                3220 calls  2014-15..2018-19   -> ron-garretson
+  J.Phillips                 3003 calls  2014-15..2018-19   -> jason-phillips
+  D.Stafford                 2950 calls  2014-15..2017-18   -> derrick-stafford
+  M.McCutchen                2770 calls  2014-15..2017-18   -> monty-mccutchen
+  N.Sago                     2685 calls  2018-19..2022-23   -> natalie-sago
+  P.Ransom                   2588 calls  2016-17..2022-23   -> phenizee-ransom
+  M.Dagher                   2563 calls  2018-19..2022-23   -> mousa-dagher
+  B.Adair                    2500 calls  2016-17..2022-23   -> brandon-adair
+  G.Zielinski                2494 calls  2014-15..2017-18   -> gary-zielinski
+  M.Myers                    2491 calls  2017-18..2022-23   -> matt-myers
+  D.Crawford                 2485 calls  2014-15..2016-17   -> dan-crawford
+  B.Spooner                  2148 calls  2014-15..2020-21   -> bill-spooner  <-- 28-season span
+  J.Butler                   2114 calls  2018-19..2022-23   -> john-butler
+  E.Scott                    1938 calls  2018-19..2022-23   -> evan-scott
+  N.Green                    1899 calls  2018-19..2022-23   -> nate-green
+  A.Moyer-Gleich             1850 calls  2018-19..2022-23   -> ashley-moyer-gleich
+  A.Nagy                     1838 calls  2019-20..2022-23   -> andy-nagy
+  S.Mehta                    1619 calls  2019-20..2022-23   -> suyash-mehta
+  J.Schroeder                1581 calls  2019-20..2022-23   -> jenna-schroeder
+  J.VanDuyne                 1439 calls  2015-16..2016-17   -> justin-van-duyne
+  B.Schwab                   1186 calls  2020-21..2022-23   -> brandon-schwab
+  J.Conley                   1171 calls  2019-20..2022-23   -> john-conley
+  R.Hussey                    793 calls  2020-21..2022-23   -> robert-hussey
+  M.Kallio                    755 calls  2020-21..2022-23   -> matt-kallio
+  D.Scott                     727 calls  2020-21..2022-23   -> danielle-scott
+  E.Roe                       716 calls  2015-16..2015-16   -> eli-roe
+  S.Jelks                     660 calls  2019-20..2022-23   -> simone-jelks
+  C.Flores                    652 calls  2021-22..2022-23   -> che-flores
+  D.Jones                     642 calls  2014-15..2015-16   -> david-jones
+  J.Crawford                  330 calls  2014-15..2015-16   -> joe-crawford
+  J.Ralls                     319 calls  2021-22..2022-23   -> jd-ralls
+  V.Voyard-Tadal              302 calls  2015-16..2017-18   -> vladimir-voyard-tadal
+  J.Reneau                    291 calls  2021-22..2022-23   -> jenna-reneau
+  T.Ricks                     226 calls  2021-22..2022-23   -> tyler-ricks
+  B.Haskill                   182 calls  2021-22..2022-23   -> brent-haskill
+  S.Mitchell                  159 calls  2021-22..2022-23   -> sharae-mitchell
+  P.O'Connell                 150 calls  2021-22..2022-23   -> pat-oconnell
+  T.Mirkovich                 130 calls  2021-22..2022-23   -> tyler-mirkovich
+  I.Hwang                     110 calls  2022-23..2022-23   -> intae-hwang
+  R.Richardson                 94 calls  2017-18..2017-18   -> randy-richardson
+  B.Burns                      89 calls  2021-22..2021-22   -> blanca-burns
+  B.Salvatore                  48 calls  2014-15..2014-15   -> bennett-salvatore
+  V.Palmer                     14 calls  2015-16..2015-16   -> violet-palmer
+  I.Barnett                    14 calls  2021-22..2021-22   -> isaac-barnett
+
+  Longest spans among the matched referees. Careers this long are
+  genuinely common in officiating (Dick Bavetta worked 39 seasons), so
+  this is NOT a claim that any of them is wrong. It is the shortlist
+  where a merged Sr./Jr. identity would hide -- and if one IS merged,
+  attribution cannot be split correctly however the name-form is
+  mapped. Worth checking against NBRA's roster, no more than that:
+    S.Foster               Scott Foster             1994-95..2025-26 (32 seasons)
+    T.Brothers             Tony Brothers            1994-95..2025-26 (32 seasons)
+    J.Capers               James Capers             1995-96..2025-26 (31 seasons)
+    M.Davis                Marc Davis               1998-99..2025-26 (28 seasons)
+    R.Mott                 Rodney Mott              1995-96..2025-26 (31 seasons)
+    P.Fraher               Pat Fraher               1995-96..2025-26 (31 seasons)
+    S.Corbin               Sean Corbin              1993-94..2025-26 (33 seasons)
+    S.Wall                 Scott Wall               1995-96..2023-24 (29 seasons)
+    B.Kennedy              Bill Kennedy             1995-96..2025-26 (31 seasons)
+    T.Washington           Tom Washington           1993-94..2024-25 (32 seasons)
+    K.Mauer                Ken Mauer                1993-94..2020-21 (28 seasons)
+    L.Wood                 Leon Wood                1995-96..2025-26 (31 seasons)
+    D.Richardson           Derek Richardson         1995-96..2024-25 (30 seasons)
+    B.Spooner              Bill Spooner             1993-94..2020-21 (28 seasons)
+
+-- 3 form(s) COLLIDING with more than one canonical referee --
+  *** J.Goble               12998 calls  seen 2014-15..2022-23
+        candidate: jacyn-goble            Jacyn Goble                2016-17..2025-26
+        candidate: john-goble             John Goble                 2007-08..2025-26
+        -> the observed seasons above vs. each candidate's own span is
+           the tiebreak; where they overlap, this needs a manual call.
+  *** J.DeRosa               4250 calls  seen 2015-16..2022-23
+        candidate: jb-derosa              JB DeRosa                  2003-04..2025-26
+        candidate: joe-derosa             Joe DeRosa                 1993-94..2002-03
+        -> the observed seasons above vs. each candidate's own span is
+           the tiebreak; where they overlap, this needs a manual call.
+  *** S.Anderson             1327 calls  seen 2015-16..2016-17
+        candidate: steve-anderson         Steve Anderson             2011-12..2016-17
+        candidate: steven-anderson        Steven Anderson            2012-13..2012-13
+        -> the observed seasons above vs. each candidate's own span is
+           the tiebreak; where they overlap, this needs a manual call.
+
+-- 10 form(s) matching NOTHING in referees.json --
+  D.Mosher                    789 calls  2020-21..2022-23
+  D.Javor                      21 calls  2016-17..2016-17
+  L.Lamonica                   20 calls  2015-16..2015-16
+  S.Radovic                    17 calls  2016-17..2016-17
+  M.Benito                     16 calls  2015-16..2015-16
+  D.Carr                       16 calls  2020-21..2020-21
+  A.Brown                      14 calls  2017-18..2017-18
+  M.Hill                       14 calls  2017-18..2017-18
+  C.Aubry                      10 calls  2021-22..2021-22
+  O.Latiseus                    9 calls  2015-16..2015-16
+  These are either officials missing from our canonical list, a
+  surname spelling that differs, or a parenthetical that merely looks
+  referee-shaped. Worth eyeballing before any mapping is built.
+
+==============================================================================
+4. PAIRED TURNOVER ROWS (the double-count trap)
+==============================================================================
+Pulling only foul/turnover rows, ordered by game and event number, and
+pairing them on (game_id, period, clock).
+
+rows whose text has both 'foul' and 'turnover' : 112719
+  paired with an ATTRIBUTED foul at the same clock        34866  ( 30.9%)
+  paired with an unattributed foul (pre-2015, presumably)    77345  ( 68.6%)
+  no foul row at that clock at all (orphan)                 508  (  0.5%)
+
+Reading: a paired row is the turnover HALF of an offensive foul. It
+carries no referee by design, so a parser must exclude these rather
+than count them as missing attribution -- and must not count the foul
+twice either.
+
+Examples (one clock, both halves):
+  game 0011300005  period 3  9:01
+      Young Offensive Foul Turnover (P5.T13)
+  game 0011300023  period 3  8:37
+      Afflalo Offensive Foul Turnover (P1.T10)
+  game 0011300096  period 1  0:25
+      Gee Foul Turnover (P1.T4)
+  game 0011300099  period 1  3:25
+      Dragic Offensive Foul Turnover (P2.T4)
+  game 0011400006  period 1  10:50
+      Olynyk Offensive Foul Turnover (P1.T1)
+  game 0011400015  period 4  10:43
+      Hawes Offensive Foul Turnover (P4.T18)
+  game 0011400048  period 2  10:43
+      Johnson Foul Turnover (P1.T7)
+  game 0011400064  period 3  1:52
+      Tyler Offensive Foul Turnover (P2.T17)
+
+==============================================================================
+5. SAMPLES
+==============================================================================
+-- foul rows WITHOUT a referee token (the gaps, or the paired halves) --
+  [1996-97] Van Exel P.FOUL (P1.T1)
+  [1996-97] Van Exel S.FOUL (P2.T2)
+  [1996-97] Kleine S.FOUL (P1.T1)
+  [1996-97] Campbell L.B.FOUL (P1.T3)
+  [1996-97] Fisher P.FOUL (P1.T4)
+  [1996-97] Jones S.FOUL (P1.PN)
+  [1996-97] Finley P.FOUL (P1.T2)
+  [1996-97] Jones S.FOUL (P2.PN)
+  [1996-97] O'Neal S.FOUL (P1.PN)
+  [1996-97] O'Neal S.FOUL (P2.PN)
+  [1996-97] Tisdale S.FOUL (P1.T3)
+  [1996-97] Cassell P.FOUL (P1.T4)
+  [1996-97] Manning S.FOUL (P1.T1)
+  [1996-97] Jones P.FOUL (P3.T1)
+  [1996-97] Van Exel OFF.Foul (P3)
+
+==============================================================================
+WHAT THIS DOES NOT SETTLE
+==============================================================================
+* Which of two same-initial officials a colliding form refers to. The
+  seasons in section 3 narrow it; overlapping careers need a human call.
+* Whether a foul row without a referee is a real gap or the turnover
+  half of a pair -- section 4 measures the pairing, and the section 1
+  rate should be recomputed with those excluded before it is trusted.
+* Whether attribution is complete WITHIN a covered season, or only for
+  certain event types -- compare sections 1 and 2b before assuming.
+* Nothing here is written to any extract. Design comes next, once the
+  numbers above are read.
+
+-> appended findings to source-data\_probe_pbp_attribution.txt
