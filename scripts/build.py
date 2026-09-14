@@ -2892,11 +2892,34 @@ def build_referee_calls(referees_index, off_ref, gm):
     # Coverage: games in the window, and how complete attribution was in them.
     coverage_by_season = {}
     covered_games = set()
+    # Slices (season + season type) the attribution window does not reach. The
+    # extract admits whole seasons, but the league only began printing the
+    # calling official's name in the 2015 PLAYOFFS -- so the 2014-15 regular
+    # season sits in the coverage file with 45,354 foul events and zero names.
+    # Those games contribute no call to any page, so leaving them in the
+    # denominator of a rate that describes what the pages show would understate
+    # it badly: it drags 2014-15 to 7% and the site-wide figure from 99.6% to
+    # 89.2%. They are excluded from the rate and listed, not silently dropped.
+    window_foul = 0
+    window_att = 0
+    outside_window = []
     if os.path.exists(REF_CALLS_COVERAGE_CSV):
         cov = pd.read_csv(REF_CALLS_COVERAGE_CSV, dtype=str).fillna("")
         for col in ("foul_events", "attributed", "unattributed"):
             cov[col] = pd.to_numeric(cov[col], errors="coerce").fillna(0).astype(int)
         covered_games = set(cov["game_id"].astype(str).str.strip())
+        for (season, stype), grp in cov.groupby(["season", "season_type"]):
+            foul = int(grp["foul_events"].sum())
+            att = int(grp["attributed"].sum())
+            if att == 0:
+                # Not "attribution failed here" -- attribution does not exist
+                # here. A slice with no named official at all is before the
+                # window, not a coverage failure inside it.
+                outside_window.append({"season": season, "season_type": stype,
+                                       "games": int(len(grp)), "foul_events": foul})
+                continue
+            window_foul += foul
+            window_att += att
         for season, grp in cov.groupby("season"):
             foul = int(grp["foul_events"].sum())
             att = int(grp["attributed"].sum())
@@ -3004,10 +3027,23 @@ def build_referee_calls(referees_index, off_ref, gm):
                 rec["unattributable"]["pct_of_window"] = clean_num(
                     100.0 * rec["unattributable"]["calls"] / total) if total else None
 
+    # Weighted overall rate: total attributed over total foul events. The
+    # per-season numbers stay for the QA gate, but anything user-facing quotes
+    # this. A min/max across seasons is not a range of the real figure -- one
+    # season type with a handful of foul events drags an endpoint to 7% or
+    # 100% while moving the actual rate by a fraction of a point.
+    # Denominator is the in-window slices only (see outside_window above).
+    _cov_foul = window_foul
+    _cov_att = window_att
+
     out = {
         "_meta": {
             "available": True,
             "unattributable_calls": unresolved_total,
+            "attributed_pct_overall": clean_num(100.0 * _cov_att / _cov_foul) if _cov_foul else None,
+            "foul_events_total": _cov_foul,
+            "attributed_total": _cov_att,
+            "outside_window": outside_window,
             "first_season": min((r["window_first_season"] for r in out_refs.values()), default=None),
             "last_season": max((r["window_last_season"] for r in out_refs.values()), default=None),
             "total_calls": int(len(calls)),

@@ -11,12 +11,17 @@ WHAT THIS IS, AND ITS LIMITS (both are carried into the extract's own header
 and repeated on every page that shows these numbers):
 
   * The NBA began printing the calling official's name in play-by-play with the
-    2015 playoffs. nbadb's play-by-play ends in June 2023. So attribution
-    covers 2014-15 PLAYOFFS through 2022-23 and nothing else -- roughly a
-    third of the era this site covers (1993-94 onward).
-  * Within that window the probe measured 91-93% of foul events carrying a
-    name. The rest are unattributed and simply absent here. A count from this
-    extract is therefore a FLOOR, never a total.
+    2015 playoffs, so attribution starts at the 2014-15 PLAYOFFS and nothing
+    earlier -- a window inside the era this site covers (1993-94 onward), not
+    the whole of it.
+  * Two sources feed it. nbadb's play-by-play runs to June 2023 and covers
+    2014-15 PO through 2022-23. shufinskiy/nba_data (Apache-2.0) publishes the
+    same stats.nba.com play-by-play per season and carries 2023-24 and 2024-25,
+    in the same description format, so both run through one parser.
+  * Coverage measured here: 91-93% of foul events carry a name in the
+    nbadb-sourced seasons, 96-97% in 2023-24 and 2024-25. The rest are
+    unattributed and simply absent. A count from this extract is therefore a
+    FLOOR, never a total.
   * These are calls RECORDED AGAINST an official in the league's feed. Nothing
     here measures whether a call was correct.
 
@@ -59,9 +64,13 @@ import gzip
 import json
 import os
 import re
+import io
 import sqlite3
 import sys
+import tarfile
 import unicodedata
+import urllib.error
+import urllib.request
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
@@ -88,6 +97,29 @@ OUT_UNRESOLVED = os.path.join(SOURCE_DIR, "referee_calls_unresolved.csv.gz")
 OUT_REPORT = os.path.join(SOURCE_DIR, "_referee_calls_report.txt")
 
 DEFAULT_DB = r"C:\Users\Jorge Sierra\Downloads\archive\nba.sqlite"
+
+# shufinskiy/nba_data (Apache-2.0) publishes stats.nba.com play-by-play as one
+# tar.xz per season, in stats.nba.com's own columns and description format --
+# the same "Brown S.FOUL (P1.T1) (R.Acosta)" the nbadb parser already reads.
+# That is what lets these seasons share the parser rather than needing a second
+# one. The index is read at run time; URLs are never hardcoded here.
+INDEX_URL = "https://raw.githubusercontent.com/shufinskiy/nba_data/main/list_data.txt"
+DATASET_CACHE = os.path.join(SOURCE_DIR, "_nba_data_cache")
+
+# (season label, dataset key). The label is documentation and a cross-check --
+# the season actually stored on each row still comes from its game_id, so a
+# mislabelled file cannot put rows in the wrong season.
+#
+# nbadb's play-by-play stops in June 2023, so these pick up where it ends.
+# 2025-26 is deliberately absent: its files are a different format and are
+# probed separately (see scripts/local/probe_nba_data_2025.py) rather than
+# being parsed on an assumption.
+EXTRA_SOURCES = [
+    ("2023-24", "nbastats_2023"),
+    ("2023-24", "nbastats_po_2023"),
+    ("2024-25", "nbastats_2024"),
+    ("2024-25", "nbastats_po_2024"),
+]
 
 # Attribution starts with the 2014-15 playoffs; earlier seasons carry none.
 MIN_SEASON_START_YEAR = 2014
@@ -333,6 +365,16 @@ class Resolver(object):
         self.ambiguous_games = collections.Counter()   # crew names >1 candidate
         self.no_crew_games = set()
         self.era_failed = collections.Counter()     # era could not narrow it either
+        # A fifth failure, and a different animal from the four above: the crew
+        # IS on file, keyed under a game_id scheme the play-by-play does not
+        # use. officials.csv.gz stores 2023-24 onward under 9-digit ESPN ids
+        # (401584690) while stats.nba.com play-by-play gives 10-char NBA ids
+        # (0022300001). Reporting that as "no crew on file" would blame our
+        # source for a gap it does not have -- the crew-coverage table below
+        # measures those same seasons at 0.4-1.5% crewless.
+        self.id_scheme_miss = collections.Counter()
+        self.id_scheme_games = set()
+        self.nba_keyed_prefixes = {k[:5] for k in crews if len(k) == 10}
         self.unresolved = {}                        # -> OUT_UNRESOLVED
 
     def _record_unresolved(self, form, season, reason, candidates, game_id):
@@ -384,8 +426,14 @@ class Resolver(object):
                 return None, "crew_contradicts"
 
             if crew_size == 0:
-                self.no_crew[form] += 1
-                self.no_crew_games.add(game_id)
+                # Is this season keyed in this id scheme at all? If not, the
+                # miss is a scheme mismatch, not a missing crew.
+                if len(game_id) == 10 and game_id[:5] not in self.nba_keyed_prefixes:
+                    self.id_scheme_miss[form] += 1
+                    self.id_scheme_games.add(game_id)
+                else:
+                    self.no_crew[form] += 1
+                    self.no_crew_games.add(game_id)
             else:
                 self.partial_crew[form] += 1
 
@@ -394,11 +442,264 @@ class Resolver(object):
                 self.by_era_resolved[form] += 1
                 return alive[0]["slug"], "era"
             self.era_failed[(form, season, len(alive))] += 1
-            self._record_unresolved(form, season, "no_crew_on_file", alive, game_id)
+            reason = ("crew_keyed_under_other_id_scheme"
+                      if game_id in self.id_scheme_games else "no_crew_on_file")
+            self._record_unresolved(form, season, reason, alive, game_id)
             return None, "no_crew_data"
 
         self.unmatched[form] += 1
         return None, "unmatched"
+
+
+# --------------------------------------------------------------------------- #
+# Row handling -- ONE implementation, shared by every source
+# --------------------------------------------------------------------------- #
+class ScanState(object):
+    """Everything the row handler accumulates. Passing this around rather than
+    closing over locals is what lets the SQLite reader and the CSV reader run
+    the exact same handler instead of two lookalike loops that drift apart."""
+
+    def __init__(self, writer, resolver):
+        self.writer = writer
+        self.resolver = resolver
+        self.coverage = collections.defaultdict(lambda: [0, 0, 0, 0])
+        self.game_meta = {}
+        self.by_type = collections.Counter()
+        self.by_season = collections.Counter()
+        self.crosstab = collections.Counter()
+        self.phrases = collections.defaultdict(collections.Counter)
+        self.other_samples = []
+        self.pair_sample = {}
+        self.by_source = collections.Counter()
+        self.rows_scanned = 0
+        self.rows_written = 0
+        self.dropped_unresolved = 0
+
+
+def handle_row(rec, st, source):
+    """Process one play-by-play row. rec is a normalized dict:
+    game_id, msgtype, action, period, clock, home, visitor, neutral,
+    player_name, player_id.
+
+    This is the original SQLite loop body, unchanged in behavior -- same
+    season filter, same turnover-half rule, same parenthetical parse, same
+    resolver call. Sources differ only in how they produce rec.
+    """
+    st.rows_scanned += 1
+    if st.rows_scanned % PROGRESS_EVERY == 0:
+        print("    ...%d rows scanned, %d calls written" % (st.rows_scanned, st.rows_written))
+
+    gid = pad_gid(rec.get("game_id"))
+    year = season_start_year_from_gid(gid)
+    if year is None or year < MIN_SEASON_START_YEAR:
+        return
+    stype = season_type_from_gid(gid)
+    if stype not in KEEP_SEASON_TYPES:
+        return
+    season = season_str(year)
+
+    descs = [d for d in (rec.get("home"), rec.get("visitor"), rec.get("neutral")) if d]
+    if not descs:
+        return
+    desc = descs[0]
+    low = desc.lower()
+    is_foulish = "foul" in low
+
+    cov = st.coverage[gid]
+    st.game_meta[gid] = (season, stype)
+    period, clock = rec.get("period"), rec.get("clock")
+
+    # The turnover half of an offensive foul: no official by design.
+    # Excluded from the numerator AND the denominator -- see the header.
+    if is_foulish and "turnover" in low:
+        cov[3] += 1
+        if len(st.pair_sample) < PAIR_SAMPLE_GAMES or gid in st.pair_sample:
+            st.pair_sample.setdefault(gid, []).append((period, clock, "turnover", desc[:80]))
+        return
+
+    groups = PAREN_RE.findall(desc)
+    ref_forms = [g.strip() for g in groups if REF_TOKEN_RE.match(g.strip())]
+
+    if is_foulish:
+        cov[0] += 1
+        if len(st.pair_sample) < PAIR_SAMPLE_GAMES or gid in st.pair_sample:
+            st.pair_sample.setdefault(gid, []).append(
+                (period, clock, "foul_ref" if ref_forms else "foul_noref", desc[:80]))
+
+    if not ref_forms:
+        if is_foulish:
+            cov[2] += 1
+        return
+
+    form = ref_forms[-1]
+    slug, how = st.resolver.resolve(form, gid, season)
+    if is_foulish:
+        if slug:
+            cov[1] += 1
+        else:
+            cov[2] += 1
+    if not slug:
+        st.dropped_unresolved += 1
+        return
+
+    ctype = call_type_of(desc)
+    phrase = call_phrase_of(desc)
+    emt = rec.get("action")
+    st.crosstab[(ctype, rec.get("msgtype"), emt)] += 1
+    st.by_type[ctype] += 1
+    st.by_season[(season, ctype)] += 1
+    st.phrases[ctype][phrase] += 1
+    st.by_source[(source, season, stype)] += 1
+    if ctype == "other" and len(st.other_samples) < 25:
+        st.other_samples.append(desc[:120])
+
+    st.writer.writerow({
+        "game_id": gid, "season": season, "season_type": stype,
+        "period": period if period is not None else "",
+        "clock": clock if clock is not None else "",
+        "call_type": ctype, "call_phrase": phrase,
+        "eventmsgtype": rec.get("msgtype") if rec.get("msgtype") is not None else "",
+        "eventmsgactiontype": emt if emt is not None else "",
+        "ref_form": form, "official_id": slug,
+        "player_name": rec.get("player_name") or "",
+        "player_id": rec.get("player_id") or "",
+    })
+    st.rows_written += 1
+
+
+def iter_sqlite_rows(conn, sql, idx, c_gid, c_type, c_action, c_period, c_clock,
+                     c_home, c_vis, c_neutral, c_p1name, c_p1id):
+    """nbadb rows -> normalized recs."""
+    def g(row, col):
+        return row[idx[col]] if col else None
+    for row in conn.execute(sql):
+        yield {"game_id": g(row, c_gid), "msgtype": g(row, c_type),
+               "action": g(row, c_action), "period": g(row, c_period),
+               "clock": g(row, c_clock), "home": g(row, c_home),
+               "visitor": g(row, c_vis), "neutral": g(row, c_neutral),
+               "player_name": g(row, c_p1name), "player_id": g(row, c_p1id)}
+
+
+# shufinskiy's CSVs use stats.nba.com's own uppercase column names, which are
+# the same fields nbadb stores lowercase. Resolved case-insensitively rather
+# than hardcoded, so a casing change upstream does not silently empty a column.
+DATASET_COLUMNS = {
+    "game_id": ("gameid",), "msgtype": ("eventmsgtype",),
+    "action": ("eventmsgactiontype",), "period": ("period",),
+    "clock": ("pctimestring",), "home": ("homedescription",),
+    "visitor": ("visitordescription",), "neutral": ("neutraldescription",),
+    "player_name": ("player1name",), "player_id": ("player1id",),
+}
+
+
+def iter_dataset_rows(path, key, limit=None):
+    """One shufinskiy tar.xz -> normalized recs, streamed (the CSVs run to
+    ~95MB uncompressed, so nothing is held in memory)."""
+    with tarfile.open(path, "r:xz") as tf:
+        member = next((m for m in tf.getmembers() if m.name.endswith(".csv")), None)
+        if member is None:
+            emit("  WARNING: %s contains no .csv member; skipped" % os.path.basename(path))
+            return
+        fh = tf.extractfile(member)
+        if fh is None:
+            return
+        text = io.TextIOWrapper(fh, encoding="utf-8", errors="replace", newline="")
+        reader = csv.DictReader(text)
+        colmap = {}
+        for want, pats in DATASET_COLUMNS.items():
+            col = pick(reader.fieldnames or [], *pats)
+            if col:
+                colmap[want] = col
+        missing = [w for w in ("game_id", "home", "visitor") if w not in colmap]
+        if missing:
+            emit("  WARNING: %s missing column(s) %s -- skipped"
+                 % (member.name, ", ".join(missing)))
+            return
+        for n, row in enumerate(reader):
+            if limit and n >= limit:
+                break
+            yield {want: (row.get(col) or None) for want, col in colmap.items()}
+
+
+# --------------------------------------------------------------------------- #
+# shufinskiy/nba_data -- seasons the local SQLite cannot reach
+# --------------------------------------------------------------------------- #
+def load_index(args):
+    """dataset key -> URL, read from the published index.
+
+    Read rather than hardcoded: the repo adds a file per season, and an index
+    lookup picks those up without this script being edited. A key that is not
+    in the index is reported, not guessed at.
+    """
+    if args.skip_extra:
+        return {}
+    cached = os.path.join(DATASET_CACHE, "list_data.txt")
+    os.makedirs(DATASET_CACHE, exist_ok=True)
+    text = None
+    if args.no_download and os.path.exists(cached):
+        text = open(cached, encoding="utf-8").read()
+    else:
+        try:
+            req = urllib.request.Request(INDEX_URL, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+                text = resp.read().decode("utf-8", "replace")
+            with open(cached, "w", encoding="utf-8") as fh:
+                fh.write(text)
+        except Exception as exc:  # noqa: BLE001
+            if os.path.exists(cached):
+                emit("  index fetch failed (%s); using cached copy" % exc)
+                text = open(cached, encoding="utf-8").read()
+            else:
+                emit("  INDEX UNREACHABLE (%s) and no cached copy -- extra seasons skipped" % exc)
+                return {}
+    out = {}
+    for line in text.splitlines():
+        if "=" in line:
+            k, v = line.split("=", 1)
+            out[k.strip()] = v.strip()
+    return out
+
+
+def ensure_dataset(key, args):
+    """Local path to one dataset archive, downloading it once. Returns None if
+    it cannot be obtained, having said why."""
+    os.makedirs(DATASET_CACHE, exist_ok=True)
+    path = os.path.join(DATASET_CACHE, key + ".tar.xz")
+    if os.path.exists(path) and os.path.getsize(path) > 100000:
+        return path
+    if args.no_download:
+        emit("  %s not cached and --no-download given; skipped" % key)
+        return None
+    url = args.index.get(key)
+    if not url:
+        emit("  %s is not in the index; skipped (the repo may not publish it yet)" % key)
+        return None
+    # The index points at github.com/.../raw/...; some networks serve only
+    # raw.githubusercontent.com. Same object either way, so fall back rather
+    # than fail.
+    candidates = [url]
+    alt = url.replace("https://github.com/", "https://raw.githubusercontent.com/").replace("/raw/", "/")
+    if alt != url:
+        candidates.append(alt)
+    for candidate in candidates:
+        try:
+            emit("  downloading %s" % candidate)
+            req = urllib.request.Request(candidate, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=TIMEOUT * 10) as resp:
+                data = resp.read()
+            if len(data) < 100000:
+                emit("    only %d bytes -- not an archive, trying next" % len(data))
+                continue
+            tmp = path + ".part"
+            with open(tmp, "wb") as fh:
+                fh.write(data)
+            os.replace(tmp, path)
+            emit("    %.1f MB cached" % (len(data) / 1048576.0))
+            return path
+        except Exception as exc:  # noqa: BLE001
+            emit("    failed: %s: %s" % (type(exc).__name__, exc))
+    emit("  %s could not be downloaded; skipped" % key)
+    return None
 
 
 # --------------------------------------------------------------------------- #
@@ -446,9 +747,20 @@ def main():
     ap = argparse.ArgumentParser(description="Extract per-referee call attribution from nbadb.")
     ap.add_argument("db", nargs="?", default=DEFAULT_DB, help="path to nba.sqlite")
     ap.add_argument("--limit", type=int, help="stop after N play-by-play rows (smoke test)")
+    ap.add_argument("--skip-extra", action="store_true",
+                    help="read only the local SQLite; skip the shufinskiy seasons")
+    ap.add_argument("--skip-sqlite", action="store_true",
+                    help="read only the shufinskiy seasons; skip the local SQLite")
+    ap.add_argument("--no-download", action="store_true",
+                    help="use only already-cached dataset archives; fetch nothing")
     ap.add_argument("--out-calls", default=OUT_CALLS)
     ap.add_argument("--out-coverage", default=OUT_COVERAGE)
     ap.add_argument("--out-unresolved", default=OUT_UNRESOLVED)
+    ap.add_argument("--out-report", default=OUT_REPORT,
+                    help="where the QA report is appended. Point a verification "
+                         "run (one that writes its extracts to a scratch path) "
+                         "here too, so the committed report stays the record of "
+                         "the last real full run rather than of a partial one.")
     args = ap.parse_args()
 
     try:
@@ -456,8 +768,9 @@ def main():
     except Exception:  # noqa: BLE001
         pass
 
-    if not os.path.exists(args.db):
+    if not args.skip_sqlite and not os.path.exists(args.db):
         print("ERROR: no SQLite file at %s" % args.db)
+        print("(pass --skip-sqlite to build from the shufinskiy seasons alone)")
         sys.exit(1)
 
     emit("referee call attribution extract (extract_referee_calls.py)")
@@ -474,143 +787,82 @@ def main():
          % variant_forms)
     resolver = Resolver(by_form, overrides, crews)
 
-    uri = "file:%s?mode=ro" % args.db.replace("?", "%3f").replace("#", "%23")
-    try:
-        conn = sqlite3.connect(uri, uri=True)
-    except sqlite3.OperationalError:
-        conn = sqlite3.connect(args.db)
-    conn.text_factory = lambda b: b.decode("utf-8", "replace")
+    args.index = load_index(args)
+    if args.index:
+        emit("dataset index: %d entries from %s" % (len(args.index), INDEX_URL))
 
-    info = introspect(conn)
-    pbp = locate_pbp(info)
-    if not pbp:
-        emit("ERROR: no play-by-play table found.")
-        sys.exit(1)
-    cols = info[pbp]
-    emit("play-by-play table (located by column signature): %s" % pbp)
+    conn = None
+    pbp = cols = None
+    c_gid = c_type = c_action = c_period = c_clock = c_num = None
+    c_home = c_vis = c_neutral = c_p1name = c_p1id = None
+    selected, idx = [], {}
+    if not args.skip_sqlite:
+        uri = "file:%s?mode=ro" % args.db.replace("?", "%3f").replace("#", "%23")
+        try:
+            conn = sqlite3.connect(uri, uri=True)
+        except sqlite3.OperationalError:
+            conn = sqlite3.connect(args.db)
+        conn.text_factory = lambda b: b.decode("utf-8", "replace")
 
-    c_gid = pick(cols, "gameid")
-    c_type = pick(cols, "eventmsgtype")
-    c_action = pick(cols, "eventmsgactiontype")
-    c_period = pick(cols, "period")
-    c_clock = pick(cols, "pctimestring")
-    c_num = pick(cols, "eventnum")
-    c_home = pick(cols, "homedescription")
-    c_vis = pick(cols, "visitordescription")
-    c_neutral = pick(cols, "neutraldescription")
-    c_p1name = pick(cols, "player1name")
-    c_p1id = pick(cols, "player1id")
-    selected = [c for c in (c_gid, c_type, c_action, c_period, c_clock, c_num,
-                            c_home, c_vis, c_neutral, c_p1name, c_p1id) if c]
-    idx = {c: i for i, c in enumerate(selected)}
+        info = introspect(conn)
+        pbp = locate_pbp(info)
+        if not pbp:
+            emit("ERROR: no play-by-play table found.")
+            sys.exit(1)
+        cols = info[pbp]
+        emit("play-by-play table (located by column signature): %s" % pbp)
+
+        c_gid = pick(cols, "gameid")
+        c_type = pick(cols, "eventmsgtype")
+        c_action = pick(cols, "eventmsgactiontype")
+        c_period = pick(cols, "period")
+        c_clock = pick(cols, "pctimestring")
+        c_num = pick(cols, "eventnum")
+        c_home = pick(cols, "homedescription")
+        c_vis = pick(cols, "visitordescription")
+        c_neutral = pick(cols, "neutraldescription")
+        c_p1name = pick(cols, "player1name")
+        c_p1id = pick(cols, "player1id")
+        selected = [c for c in (c_gid, c_type, c_action, c_period, c_clock, c_num,
+                                c_home, c_vis, c_neutral, c_p1name, c_p1id) if c]
+        idx = {c: i for i, c in enumerate(selected)}
 
     section("SCANNING")
-    sql = 'SELECT %s FROM "%s"' % (", ".join('"%s"' % c for c in selected), pbp)
-    if args.limit:
-        sql += " LIMIT %d" % args.limit
-    emit(sql)
 
-    coverage = collections.defaultdict(lambda: [0, 0, 0, 0])  # foul, attributed, unattributed, dropped
-    game_meta = {}
-    by_type = collections.Counter()
-    by_season = collections.Counter()
-    crosstab = collections.Counter()
-    phrases = collections.defaultdict(collections.Counter)
-    other_samples = []
-    pair_sample = {}
-    rows_scanned = 0
-    rows_written = 0
-    dropped_unresolved = 0
-
+    st = ScanState(writer=None, resolver=resolver)
     os.makedirs(SOURCE_DIR, exist_ok=True)
     with gzip.open(args.out_calls, "wt", encoding="utf-8-sig", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=CSV_FIELDS)
         writer.writeheader()
+        st.writer = writer
 
-        for row in conn.execute(sql):
-            rows_scanned += 1
-            if rows_scanned % PROGRESS_EVERY == 0:
-                print("    ...%d rows scanned, %d calls written" % (rows_scanned, rows_written))
+        if conn is not None:
+            sql = 'SELECT %s FROM "%s"' % (", ".join('"%s"' % c for c in selected), pbp)
+            if args.limit:
+                sql += " LIMIT %d" % args.limit
+            emit(sql)
+            for rec in iter_sqlite_rows(conn, sql, idx, c_gid, c_type, c_action,
+                                        c_period, c_clock, c_home, c_vis, c_neutral,
+                                        c_p1name, c_p1id):
+                handle_row(rec, st, "nbadb SQLite")
 
-            gid = pad_gid(row[idx[c_gid]]) if c_gid else ""
-            year = season_start_year_from_gid(gid)
-            if year is None or year < MIN_SEASON_START_YEAR:
-                continue
-            stype = season_type_from_gid(gid)
-            if stype not in KEEP_SEASON_TYPES:
-                continue
-            season = season_str(year)
+        # Seasons the SQLite cannot reach: shufinskiy/nba_data publishes
+        # stats.nba.com play-by-play per season, in the same columns and the
+        # same description format, so these rows go through handle_row above
+        # completely unchanged -- same parser, same pairing rule, same
+        # name-form resolution.
+        if not args.skip_extra:
+            for season_label, key in EXTRA_SOURCES:
+                path = ensure_dataset(key, args)
+                if path is None:
+                    continue
+                n0, w0 = st.rows_scanned, st.rows_written
+                for rec in iter_dataset_rows(path, key, args.limit):
+                    handle_row(rec, st, key)
+                emit("  %-20s %9d rows -> %6d attributed call(s)"
+                     % (key, st.rows_scanned - n0, st.rows_written - w0))
 
-            descs = [d for d in (row[idx[c_home]] if c_home else None,
-                                 row[idx[c_vis]] if c_vis else None,
-                                 row[idx[c_neutral]] if c_neutral else None) if d]
-            if not descs:
-                continue
-            desc = descs[0]
-            low = desc.lower()
-            is_foulish = "foul" in low
-
-            cov = coverage[gid]
-            game_meta[gid] = (season, stype)
-
-            # The turnover half of an offensive foul: no official by design.
-            # Excluded from the numerator AND the denominator -- see the header.
-            if is_foulish and "turnover" in low:
-                cov[3] += 1
-                if len(pair_sample) < PAIR_SAMPLE_GAMES or gid in pair_sample:
-                    pair_sample.setdefault(gid, []).append(
-                        (row[idx[c_period]], row[idx[c_clock]], "turnover", desc[:80]))
-                continue
-
-            groups = PAREN_RE.findall(desc)
-            ref_forms = [g.strip() for g in groups if REF_TOKEN_RE.match(g.strip())]
-
-            if is_foulish:
-                cov[0] += 1
-                if len(pair_sample) < PAIR_SAMPLE_GAMES or gid in pair_sample:
-                    pair_sample.setdefault(gid, []).append(
-                        (row[idx[c_period]], row[idx[c_clock]],
-                         "foul_ref" if ref_forms else "foul_noref", desc[:80]))
-
-            if not ref_forms:
-                if is_foulish:
-                    cov[2] += 1
-                continue
-
-            form = ref_forms[-1]
-            slug, how = resolver.resolve(form, gid, season)
-            if is_foulish:
-                if slug:
-                    cov[1] += 1
-                else:
-                    cov[2] += 1
-            if not slug:
-                dropped_unresolved += 1
-                continue
-
-            ctype = call_type_of(desc)
-            phrase = call_phrase_of(desc)
-            emt = row[idx[c_action]] if c_action else None
-            crosstab[(ctype, row[idx[c_type]] if c_type else None, emt)] += 1
-            by_type[ctype] += 1
-            by_season[(season, ctype)] += 1
-            phrases[ctype][phrase] += 1
-            if ctype == "other" and len(other_samples) < 25:
-                other_samples.append(desc[:120])
-
-            writer.writerow({
-                "game_id": gid, "season": season, "season_type": stype,
-                "period": row[idx[c_period]] if c_period else "",
-                "clock": row[idx[c_clock]] if c_clock else "",
-                "call_type": ctype, "call_phrase": phrase,
-                "eventmsgtype": row[idx[c_type]] if c_type else "",
-                "eventmsgactiontype": emt if emt is not None else "",
-                "ref_form": form, "official_id": slug,
-                "player_name": (row[idx[c_p1name]] if c_p1name else "") or "",
-                "player_id": (row[idx[c_p1id]] if c_p1id else "") or "",
-            })
-            rows_written += 1
-
+    coverage, game_meta = st.coverage, st.game_meta
     with gzip.open(args.out_coverage, "wt", encoding="utf-8-sig", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=COVERAGE_FIELDS)
         writer.writeheader()
@@ -629,9 +881,11 @@ def main():
                              "candidate_slugs": slugs, "games": len(rec["games"]),
                              "calls": rec["calls"]})
 
-    conn.close()
-    report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
-           by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver)
+    if conn is not None:
+        conn.close()
+    report(args, st.rows_scanned, st.rows_written, st.dropped_unresolved,
+           st.coverage, st.game_meta, st.by_type, st.by_season, st.crosstab,
+           st.phrases, st.other_samples, st.pair_sample, resolver, st.by_source)
 
 
 def crew_coverage_report(resolver):
@@ -695,13 +949,20 @@ def crew_coverage_report(resolver):
     if resolver.no_crew_games:
         emit("In THIS run, %d game(s) with a colliding name-form had no crew on file."
              % len(resolver.no_crew_games))
+    if resolver.id_scheme_games:
+        emit("A further %d game(s) DO have a crew on file, keyed by ESPN game id"
+             % len(resolver.id_scheme_games))
+        emit("while the play-by-play uses NBA ids. Those are not counted as")
+        emit("crewless above, and the table's near-complete 2023-24 and 2024-25")
+        emit("rows are correct: the gap there is a join, not the data.")
     emit("Consequence for any copy that promises completeness: a per-referee game")
     emit("log is every game ON RECORD, not every game officiated. Wording that says")
     emit("otherwise overstates what the data can support.")
 
 
 def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
-           by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver):
+           by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver,
+           by_source=None):
     section("OUTPUT")
     emit("rows scanned         : %d" % rows_scanned)
     emit("attributed calls kept: %d" % rows_written)
@@ -711,7 +972,17 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     emit("-> %s" % os.path.relpath(args.out_coverage, REPO_ROOT))
     emit("-> %s" % os.path.relpath(args.out_unresolved, REPO_ROOT))
 
-    section("COVERAGE BY SEASON (the denominator, and the ~8% that is missing)")
+    if by_source:
+        section("WHERE EACH SEASON CAME FROM")
+        emit("Every row below went through the same parser, pairing rule and")
+        emit("name-form resolution -- the source only decides where rows are read.")
+        emit("")
+        emit("%-22s %-10s %-5s %12s" % ("source", "season", "type", "calls"))
+        emit("-" * 78)
+        for (src, season, stype), n in sorted(by_source.items()):
+            emit("%-22s %-10s %-5s %12d" % (src, season, stype, n))
+
+    section("COVERAGE BY SEASON (the denominator, and the share with no name)")
     per_season = collections.defaultdict(lambda: [0, 0, 0, 0, 0])
     for gid, (foul, att, unatt, dropped) in coverage.items():
         season, stype = game_meta[gid]
@@ -729,6 +1000,19 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
         rate = (100.0 * att / foul) if foul else 0.0
         emit("%-10s %8d %12d %12d %12d %7.1f%% %12d"
              % (season, games, foul, att, unatt, rate, dropped))
+    tg = sum(v[0] for v in per_season.values())
+    tf = sum(v[1] for v in per_season.values())
+    ta = sum(v[2] for v in per_season.values())
+    tu = sum(v[3] for v in per_season.values())
+    td = sum(v[4] for v in per_season.values())
+    emit("-" * 78)
+    emit("%-10s %8d %12d %12d %12d %7.1f%% %12d"
+         % ("ALL", tg, tf, ta, tu, (100.0 * ta / tf) if tf else 0.0, td))
+    emit("")
+    emit("The ALL row is the weighted figure -- total attributed over total foul")
+    emit("events. Quote that, not the min and max of the season column: a season")
+    emit("with a handful of foul events swings a range wildly while moving the")
+    emit("real rate almost not at all.")
     emit("")
     emit("'TO halves' are the paired turnover rows, excluded from every column")
     emit("to their left. Counting them as unattributed fouls would understate the")
@@ -777,7 +1061,7 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     emit("than chosen. See the crew-coverage section below for why that happens.")
 
     section("NAME-FORM RESOLUTION -- DROPPED")
-    emit("Four different failures, counted apart. They are NOT the same problem:")
+    emit("Different failures, counted apart. They are NOT the same problem:")
     emit("a missing crew list is a gap in our source data, while a full crew that")
     emit("names neither candidate would mean the form is not who we think it is.")
     emit("")
@@ -809,6 +1093,28 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     emit("  calls in games with no crew on file: %d, of which era saved %d"
          % (sum(resolver.no_crew.values()), sum(resolver.by_era_resolved.values())))
 
+    # The id-scheme split. Both halves are inside 'no crew on file, era could
+    # not narrow it' above -- this says how much of it is a real source gap and
+    # how much is a join our own two extracts cannot make.
+    scheme_calls = sum(resolver.id_scheme_miss.values())
+    if scheme_calls:
+        emit("")
+        emit("-- of which: crew IS on file, under a different game_id scheme --")
+        emit("%-14s %10s %10s" % ("form", "games", "calls"))
+        emit("-" * 78)
+        for form, n in resolver.id_scheme_miss.most_common(10):
+            emit("%-14s %10s %10d" % (form, "", n))
+        emit("%-14s %10d %10d" % ("TOTAL", len(resolver.id_scheme_games), scheme_calls))
+        emit("")
+        emit("These games are NOT missing a crew. source-data/officials.csv.gz")
+        emit("keys 2023-24 onward by 9-digit ESPN game id (401584690) because")
+        emit("those seasons were built from ESPN, while the play-by-play keys")
+        emit("everything by 10-char NBA id (0022300001). Nothing joins the two")
+        emit("schemes today, so a colliding name-form in those seasons cannot be")
+        emit("settled by its crew and the calls are dropped. This is fixable -- a")
+        emit("date-plus-tricode bridge would do it -- and is reported here rather")
+        emit("than filed under a source gap it is not.")
+
     emit("")
     emit("-- no crew on file, era could not narrow it --")
     if resolver.era_failed:
@@ -816,9 +1122,11 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
         for (form, season, alive), n in resolver.era_failed.most_common(25):
             emit("%-14s %-10s %14d %10d" % (form, season or "?", alive, n))
         emit("")
-        emit("These are games with NO crew recorded, in a season where more than one")
-        emit("candidate was active. Nothing in our data distinguishes them, so the")
-        emit("calls are dropped. This is the honest floor, not a bug to fix.")
+        emit("These are games whose crew the resolver could not read, in a season")
+        emit("where more than one candidate was active. Nothing in our data")
+        emit("distinguishes them, so the calls are dropped. Two causes, split")
+        emit("above: a genuinely crewless game, and a game whose crew is on file")
+        emit("under the other id scheme.")
     else:
         emit("  none")
 
@@ -883,9 +1191,10 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
         emit("no turnover halves in the sampled games.")
 
     os.makedirs(SOURCE_DIR, exist_ok=True)
-    with open(OUT_REPORT, "a", encoding="utf-8") as fh:
+    report_path = getattr(args, "out_report", None) or OUT_REPORT
+    with open(report_path, "a", encoding="utf-8") as fh:
         fh.write("\n\n" + "\n".join(_lines) + "\n")
-    print("\n-> appended QA report to %s" % os.path.relpath(OUT_REPORT, REPO_ROOT))
+    print("\n-> appended QA report to %s" % os.path.relpath(report_path, REPO_ROOT))
 
 
 if __name__ == "__main__":

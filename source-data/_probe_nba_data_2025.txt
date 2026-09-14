@@ -1,0 +1,144 @@
+probe_nba_data_2025 -- what the 2025-26 files actually contain
+officials.csv.gz: 301 distinct official id(s) known
+
+========================================================================
+cdnnba_2025
+========================================================================
+
+1. SHAPE
+   57 column(s), 708268 row(s) read
+   columns: actionNumber, clock, timeActual, period, periodType, actionType, subType, qualifiers, personId, x, y, possession, scoreHome, scoreAway, edited, orderNumber, isTargetScoreLastPeriod, xLegacy, yLegacy, isFieldGoal, side, description, personIdsFilter, teamId, teamTricode, descriptor, jumpBallRecoveredName, jumpBallRecoverdPersonId, playerName, playerNameI, jumpBallWonPlayerName, jumpBallWonPersonId, jumpBallLostPlayerName, jumpBallLostPersonId, area, areaDetail, shotDistance, shotResult, shotActionNumber, reboundTotal, reboundDefensiveTotal, reboundOffensiveTotal, pointsTotal, assistPlayerNameInitial, assistPersonId, assistTotal, officialId, foulPersonalTotal, foulTechnicalTotal, foulDrawnPlayerName, foulDrawnPersonId, turnoverTotal, stealPlayerName, stealPersonId, blockPlayerName, blockPersonId, gameId
+   foul rows: 50190 (a further 3627 paired turnover half/halves excluded,
+     same rule the extractor applies, so this denominator is comparable)
+
+   sample foul row, in full:
+     actionNumber                 12
+     clock                        PT11M26.00S
+     timeActual                   2025-10-21T23:44:14.300Z
+     period                       1
+     periodType                   REGULAR
+     actionType                   foul
+     subType                      personal
+     qualifiers                   1freethrow
+     personId                     1631095
+     x                            
+     y                            
+     possession                   1610612760
+     scoreHome                    2
+     scoreAway                    0
+     edited                       2025-10-21T23:44:24Z
+     orderNumber                  120000
+     isTargetScoreLastPeriod      FALSE
+     xLegacy                      
+     yLegacy                      
+     isFieldGoal                  0
+     side                         
+     description                  J. Smith Jr. shooting personal FOUL (1 PF) (Holmgren 1 FT)
+     personIdsFilter              1631095, 1631096
+     teamId                       1610612745
+     teamTricode                  HOU
+     descriptor                   shooting
+     jumpBallRecoveredName        
+     jumpBallRecoverdPersonId     
+     playerName                   Smith Jr.
+     playerNameI                  J. Smith Jr.
+     jumpBallWonPlayerName        
+     jumpBallWonPersonId          
+     jumpBallLostPlayerName       
+     jumpBallLostPersonId         
+     area                         Restricted Area
+     areaDetail                   0-8 Center
+     shotDistance                 
+     shotResult                   
+     shotActionNumber             
+     reboundTotal                 
+     reboundDefensiveTotal        
+     reboundOffensiveTotal        
+     pointsTotal                  
+     assistPlayerNameInitial      
+     assistPersonId               
+     assistTotal                  
+     officialId                   200833
+     foulPersonalTotal            1
+     foulTechnicalTotal           0
+     foulDrawnPlayerName          Holmgren
+     foulDrawnPersonId            1631096
+     turnoverTotal                
+     stealPlayerName              
+     stealPersonId                
+     blockPlayerName              
+     blockPersonId                
+     gameId                       22500001
+
+2. STRUCTURED OFFICIAL ID
+   officialId           populated on 50170/50190 foul rows (100.0%)
+
+3. NAME PARENTHETICAL (what the existing parser reads)
+   0/50190 foul descriptions end in a name parenthetical (0.0%)
+     J. Smith Jr. shooting personal FOUL (1 PF) (Holmgren 1 FT)
+     C. Wallace shooting personal FOUL (1 PF) (Thompson 1 FT)
+     J. Smith Jr. shooting personal FOUL (2 PF) (Holmgren 2 FT)
+     I. Hartenstein shooting personal FOUL (1 PF) (Thompson 1 FT)
+     I. Hartenstein loose ball personal FOUL (2 PF)
+   -> the existing parser would read NOTHING here; the description
+      format has changed and attribution must come from a field.
+
+4. DISTINCT IDS vs officials.csv.gz
+   84 distinct id(s); 74 resolve against officials.csv.gz, 10 do not
+     1162         Scott Foster             1031 call(s)
+     1627962      Jacyn Goble              984 call(s)
+     203591       Mitchell Ervin           969 call(s)
+     204059       Tyler Ford               958 call(s)
+     1155         JB DeRosa                952 call(s)
+   unmatched: 11629177, 1629171, 1629176, 1629177, 1629771, 1630879, 1630887, 1630888, 1641518, 623127
+
+========================================================================
+nbastatsv3_2025
+========================================================================
+
+1. SHAPE
+   24 column(s), 621887 row(s) read
+   columns: actionNumber, clock, period, teamId, teamTricode, personId, playerName, playerNameI, xLegacy, yLegacy, shotDistance, shotResult, isFieldGoal, scoreHome, scoreAway, pointsTotal, location, description, actionType, subType, videoAvailable, shotValue, actionId, gameId
+   foul rows: 49885 (a further 3627 paired turnover half/halves excluded,
+     same rule the extractor applies, so this denominator is comparable)
+
+   sample foul row, in full:
+     actionNumber                 12
+     clock                        PT11M26.00S
+     period                       1
+     teamId                       1610612745
+     teamTricode                  HOU
+     personId                     1631095
+     playerName                   Smith Jr.
+     playerNameI                  J. Smith Jr.
+     xLegacy                      0
+     yLegacy                      0
+     shotDistance                 0
+     shotResult                   
+     isFieldGoal                  0
+     scoreHome                    
+     scoreAway                    
+     pointsTotal                  0
+     location                     v
+     description                  Smith Jr. S.FOUL (P1.T1) (E.Dalen)
+     actionType                   Foul
+     subType                      Shooting
+     videoAvailable               1
+     shotValue                    0
+     actionId                     6
+     gameId                       22500001
+
+2. STRUCTURED OFFICIAL ID
+   NO official-ish column. Columns matching /official/i: none.
+
+3. NAME PARENTHETICAL (what the existing parser reads)
+   49883/49885 foul descriptions end in a name parenthetical (100.0%)
+     Smith Jr. S.FOUL (P1.T1) (E.Dalen)
+     Wallace S.FOUL (P1.T1) (Z.Zarba)
+     Smith Jr. S.FOUL (P2.T2) (J.Goldenberg)
+     Hartenstein S.FOUL (P1.T2) (E.Dalen)
+     Hartenstein L.B.FOUL (P2.T3) (E.Dalen)
+   -> the existing parser would read this file unchanged.
+
+4. DISTINCT IDS vs officials.csv.gz
+   none found.
