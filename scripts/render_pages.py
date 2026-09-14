@@ -111,20 +111,27 @@ def calls_scope_note(meta, extra=""):
     """The one sentence that must accompany every call figure on the site."""
     first = esc(meta.get("first_season") or "2014-15")
     last = esc(meta.get("last_season") or "2022-23")
-    cov = meta.get("coverage_by_season") or {}
-    rates = [c["attributed_pct"] for c in cov.values() if c.get("attributed_pct")]
+    # The weighted figure, never a min/max across seasons: a season type with a
+    # handful of foul events swings a range to something like "7-100%" while
+    # barely moving the real rate.
+    overall = meta.get("attributed_pct_overall")
     rate_txt = ""
-    if rates:
-        lo, hi = round(min(rates)), round(max(rates))
-        span = "about %d%%" % lo if lo == hi else "%d–%d%%" % (lo, hi)
-        rate_txt = (" Across this window %s of foul events carry an official&#39;s "
-                    "name; the rest are unattributed and absent here." % span)
+    if overall:
+        # One decimal once the figure rounds to 100: writing "100%" when 1,100
+        # calls in the window carry no name claims completeness the data does
+        # not have.
+        fmt = "%.1f" if overall >= 99.0 else "%.0f"
+        rate_txt = ((" Across this window " + fmt + "%% of foul events carry an official&#39;s "
+                     "name; the rest are unattributed and absent here.") % overall)
+    # The window's end is read from the data, not written in. It moves whenever
+    # a season is added, and a hardcoded date would quietly go stale.
     return ('<p class="caption"><b>Window: %s to %s only.</b> The NBA began printing the '
-            'calling official in play-by-play with the 2015 playoffs, and this data source '
-            'ends in June 2023 — so these are not career figures, and they cover a fraction '
-            'of the seasons shown elsewhere on this page.%s These are calls recorded against '
-            'an official in the league&#39;s feed; nothing here indicates whether a call was '
-            'correct.%s</p>' % (first, last, rate_txt, (" " + extra) if extra else ""))
+            'calling official in play-by-play with the 2015 playoffs, and the play-by-play '
+            'behind this site runs through %s — so these are not career figures, and they '
+            'cover a fraction of the seasons shown elsewhere on this page.%s These are calls '
+            'recorded against an official in the league&#39;s feed; nothing here indicates '
+            'whether a call was correct.%s</p>'
+            % (first, last, last, rate_txt, (" " + extra) if extra else ""))
 
 
 # ---------------------------------------------------------------------------

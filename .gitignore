@@ -30,3 +30,8 @@ Thumbs.db
 nbra_out.txt 
 calls_out.txt
 pbp_out.txt
+
+# Play-by-play archives downloaded by extract_referee_calls.py and
+# probe_nba_data_2025.py from shufinskiy/nba_data. Tens of MB of tar.xz, and
+# reproducible from the published index -- cache, not a source extract.
+source-data/_nba_data_cache/
