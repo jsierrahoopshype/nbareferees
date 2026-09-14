@@ -16,12 +16,19 @@ and repeated on every page that shows these numbers):
     the whole of it.
   * Two sources feed it. nbadb's play-by-play runs to June 2023 and covers
     2014-15 PO through 2022-23. shufinskiy/nba_data (Apache-2.0) publishes the
-    same stats.nba.com play-by-play per season and carries 2023-24 and 2024-25,
-    in the same description format, so both run through one parser.
-  * Coverage measured here: 91-93% of foul events carry a name in the
-    nbadb-sourced seasons, 96-97% in 2023-24 and 2024-25. The rest are
+    same stats.nba.com play-by-play per season and carries 2023-24 onward --
+    as nbastats files through 2024-25 and nbastatsv3 for 2025-26, a different
+    column layout printing the same "(E.Dalen)" description, so every season
+    runs through one parser.
+  * Coverage measured here, out-of-window slices excluded: 99.6-100% of foul
+    events carry a name in every season of the window. The rest are
     unattributed and simply absent. A count from this extract is therefore a
     FLOOR, never a total.
+  * The 2014-15 REGULAR season is inside the extract and outside the window:
+    the league started naming officials in the 2015 playoffs, so those 1,100
+    games carry no name at all. build.py drops any slice with zero attribution
+    from both the coverage rate and per-referee game denominators. Leaving them
+    in read as 7% coverage and as a 6x-too-low per-game rate.
   * These are calls RECORDED AGAINST an official in the league's feed. Nothing
     here measures whether a call was correct.
 
@@ -49,6 +56,11 @@ NAME-FORM RESOLUTION. Play-by-play gives an initial-plus-surname form
      era. J.Goble is Jacyn or John depending on the game, so the crew for that
      game (source-data/officials.csv.gz) decides. A game where the crew does
      not settle it is REPORTED and its calls are dropped, never guessed.
+     From 2023-24 the crew sheet is keyed by ESPN game id while the
+     play-by-play is keyed by NBA id, so the lookup goes through
+     source-data/game_id_bridge.csv.gz (built by build_game_id_bridge.py).
+     Without that bridge this step reaches nothing for those seasons and every
+     colliding call in them is lost; the run says so at the top of its report.
   3. Exact match against data/referees.json on first-initial + surname.
 Anything left over is reported by form, with counts, and dropped.
 
@@ -69,10 +81,12 @@ import sqlite3
 import sys
 import tarfile
 import unicodedata
-import urllib.error
-import urllib.request
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPT_DIR)
+
+import nba_data_source as nds  # noqa: E402
+
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 SOURCE_DIR = os.path.join(REPO_ROOT, "source-data")
 DATA_DIR = os.path.join(REPO_ROOT, "data")
@@ -103,8 +117,10 @@ DEFAULT_DB = r"C:\Users\Jorge Sierra\Downloads\archive\nba.sqlite"
 # the same "Brown S.FOUL (P1.T1) (R.Acosta)" the nbadb parser already reads.
 # That is what lets these seasons share the parser rather than needing a second
 # one. The index is read at run time; URLs are never hardcoded here.
-INDEX_URL = "https://raw.githubusercontent.com/shufinskiy/nba_data/main/list_data.txt"
-DATASET_CACHE = os.path.join(SOURCE_DIR, "_nba_data_cache")
+# Index URL and archive cache live in nba_data_source, shared with the bridge
+# builder and the 2025-26 probe so all three resolve the same URLs.
+INDEX_URL = nds.INDEX_URL
+DATASET_CACHE = nds.DATASET_CACHE
 
 # (season label, dataset key). The label is documentation and a cross-check --
 # the season actually stored on each row still comes from its game_id, so a
@@ -119,6 +135,14 @@ EXTRA_SOURCES = [
     ("2023-24", "nbastats_po_2023"),
     ("2024-25", "nbastats_2024"),
     ("2024-25", "nbastats_po_2024"),
+    # 2025-26 has no nbastats file, only nbastatsv3 -- a different column
+    # layout carrying the SAME description format. The probe
+    # (scripts/local/probe_nba_data_2025.py) measured the trailing "(E.Dalen)"
+    # on 49,883 of 49,885 foul rows there, so the parser reads it unchanged;
+    # only the reader differs. The other 2025-26 file, cdnnba, carries a
+    # structured officialId but no name at all, and is left for a later round.
+    ("2025-26", "nbastatsv3_2025"),
+    ("2025-26", "nbastatsv3_po_2025"),
 ]
 
 # Attribution starts with the 2014-15 playoffs; earlier seasons carry none.
@@ -307,17 +331,41 @@ def load_overrides():
 
 
 def load_game_crews():
-    """game_id -> {norm_ref_key(name): official_name} from the committed extract."""
+    """game_id -> {norm_ref_key(name): official_name} from the committed extract.
+
+    Keyed in BOTH id schemes. officials.csv.gz stores 2023-24 onward under
+    9-digit ESPN ids because those seasons were built from ESPN, while the
+    play-by-play keys everything by 10-char NBA id. Aliasing the crew onto its
+    NBA id here means the resolver looks a crew up by whatever id it has, and
+    needs no knowledge of the two schemes.
+
+    Returns (crews, bridged_games) so the report can say how many games the
+    bridge reached -- a silent alias would hide whether it worked.
+    """
     crews = collections.defaultdict(dict)
     if not os.path.exists(OFFICIALS_CSV):
-        return crews
+        return crews, 0
     with gzip.open(OFFICIALS_CSV, "rt", encoding="utf-8-sig", newline="") as fh:
         for r in csv.DictReader(fh):
             gid = pad_gid(r.get("game_id"))
             name = (r.get("official_name") or "").strip()
             if gid and name:
                 crews[gid][norm_ref_key(name)] = name
-    return crews
+
+    nba_to_espn, _ = nds.load_game_id_bridge()
+    bridged = 0
+    for nba_id, espn_id in nba_to_espn.items():
+        # pad_gid zero-fills anything shorter than 10 characters, so a 9-digit
+        # ESPN id is stored above as 0401584690. Try the id as published and as
+        # padded rather than assuming either -- looking up only the raw form is
+        # what made the first run of this bridge alias nothing at all.
+        src = espn_id if espn_id in crews else pad_gid(espn_id)
+        # Alias only where the NBA id has nothing of its own. A real crew under
+        # the NBA id always wins over a bridged one.
+        if nba_id not in crews and src in crews:
+            crews[nba_id] = crews[src]
+            bridged += 1
+    return crews, bridged
 
 
 # A full NBA crew is three officials. A game whose crew list is shorter is
@@ -580,9 +628,23 @@ def iter_sqlite_rows(conn, sql, idx, c_gid, c_type, c_action, c_period, c_clock,
                "player_name": g(row, c_p1name), "player_id": g(row, c_p1id)}
 
 
-# shufinskiy's CSVs use stats.nba.com's own uppercase column names, which are
-# the same fields nbadb stores lowercase. Resolved case-insensitively rather
-# than hardcoded, so a casing change upstream does not silently empty a column.
+# shufinskiy publishes two formats this extraction can read, and they disagree
+# about column names but NOT about the thing that matters: both print the
+# calling official as a trailing "(E.Dalen)" in the event description, which is
+# what call_type_of/call_phrase_of and the parenthetical parse work from.
+#
+#   nbastats    stats.nba.com's classic columns, the same fields nbadb stores
+#               lowercase. Home and visitor descriptions in separate columns.
+#   nbastatsv3  stats.nba.com's v3 shape: ONE description column plus a
+#               location flag, and a PT11M26.00S clock instead of "11:26".
+#
+# Columns are resolved case-insensitively rather than hardcoded, so a casing
+# change upstream does not silently empty one.
+#
+# EVENTMSGTYPE/EVENTMSGACTIONTYPE are absent from v3. They are carried through
+# to the extract and the QA crosstab but nothing derives a call type from them
+# -- that comes from the description text -- so v3 rows simply leave them
+# empty rather than needing a synthetic code.
 DATASET_COLUMNS = {
     "game_id": ("gameid",), "msgtype": ("eventmsgtype",),
     "action": ("eventmsgactiontype",), "period": ("period",),
@@ -591,10 +653,62 @@ DATASET_COLUMNS = {
     "player_name": ("player1name",), "player_id": ("player1id",),
 }
 
+DATASET_COLUMNS_V3 = {
+    "game_id": ("gameid",), "period": ("period",), "clock": ("clock",),
+    "description": ("description",), "location": ("location",),
+    "player_name": ("playername",), "player_id": ("personid",),
+}
+
+V3_CLOCK_RE = re.compile(r"^PT(\d+)M([\d.]+)S$", re.I)
+
+
+def v3_clock(v):
+    """PT11M26.00S -> 11:26, the form every other source writes.
+
+    The extract's clock column is what the pairing check joins on, so a second
+    format in the same column would make an offensive foul and its turnover
+    half look like different moments."""
+    s = (v or "").strip()
+    m = V3_CLOCK_RE.match(s)
+    if not m:
+        return s or None
+    return "%d:%02d" % (int(m.group(1)), int(float(m.group(2))))
+
+
+def v3_to_rec(row, colmap):
+    """One v3 row -> the normalized rec handle_row expects.
+
+    The single description is routed to home or visitor by the location flag,
+    so the home/visitor split survives exactly as it does for every other
+    source. handle_row reads the first non-empty of the three either way."""
+    desc = row.get(colmap["description"]) or None
+    side = (row.get(colmap.get("location", "")) or "").strip().lower()
+    rec = {"game_id": row.get(colmap["game_id"]) or None,
+           "msgtype": None, "action": None,
+           "period": row.get(colmap.get("period", "")) or None,
+           "clock": v3_clock(row.get(colmap.get("clock", ""))),
+           "home": None, "visitor": None, "neutral": None,
+           "player_name": row.get(colmap.get("player_name", "")) or None,
+           "player_id": row.get(colmap.get("player_id", "")) or None}
+    if side == "h":
+        rec["home"] = desc
+    elif side == "v":
+        rec["visitor"] = desc
+    else:
+        rec["neutral"] = desc
+    return rec
+
 
 def iter_dataset_rows(path, key, limit=None):
     """One shufinskiy tar.xz -> normalized recs, streamed (the CSVs run to
-    ~95MB uncompressed, so nothing is held in memory)."""
+    ~95MB uncompressed, so nothing is held in memory).
+
+    The format is chosen by the dataset key, not guessed from the columns: the
+    key is what the caller asked for, and a silent fallback to the wrong reader
+    would produce an empty season rather than an error."""
+    is_v3 = key.startswith("nbastatsv3")
+    spec = DATASET_COLUMNS_V3 if is_v3 else DATASET_COLUMNS
+    required = ("game_id", "description") if is_v3 else ("game_id", "home", "visitor")
     with tarfile.open(path, "r:xz") as tf:
         member = next((m for m in tf.getmembers() if m.name.endswith(".csv")), None)
         if member is None:
@@ -606,11 +720,11 @@ def iter_dataset_rows(path, key, limit=None):
         text = io.TextIOWrapper(fh, encoding="utf-8", errors="replace", newline="")
         reader = csv.DictReader(text)
         colmap = {}
-        for want, pats in DATASET_COLUMNS.items():
+        for want, pats in spec.items():
             col = pick(reader.fieldnames or [], *pats)
             if col:
                 colmap[want] = col
-        missing = [w for w in ("game_id", "home", "visitor") if w not in colmap]
+        missing = [w for w in required if w not in colmap]
         if missing:
             emit("  WARNING: %s missing column(s) %s -- skipped"
                  % (member.name, ", ".join(missing)))
@@ -618,88 +732,30 @@ def iter_dataset_rows(path, key, limit=None):
         for n, row in enumerate(reader):
             if limit and n >= limit:
                 break
-            yield {want: (row.get(col) or None) for want, col in colmap.items()}
+            if is_v3:
+                yield v3_to_rec(row, colmap)
+            else:
+                yield {want: (row.get(col) or None) for want, col in colmap.items()}
 
 
 # --------------------------------------------------------------------------- #
 # shufinskiy/nba_data -- seasons the local SQLite cannot reach
 # --------------------------------------------------------------------------- #
 def load_index(args):
-    """dataset key -> URL, read from the published index.
+    """dataset key -> URL, from the published index (see nba_data_source).
 
     Read rather than hardcoded: the repo adds a file per season, and an index
-    lookup picks those up without this script being edited. A key that is not
-    in the index is reported, not guessed at.
+    lookup picks those up without this script being edited.
     """
     if args.skip_extra:
         return {}
-    cached = os.path.join(DATASET_CACHE, "list_data.txt")
-    os.makedirs(DATASET_CACHE, exist_ok=True)
-    text = None
-    if args.no_download and os.path.exists(cached):
-        text = open(cached, encoding="utf-8").read()
-    else:
-        try:
-            req = urllib.request.Request(INDEX_URL, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
-                text = resp.read().decode("utf-8", "replace")
-            with open(cached, "w", encoding="utf-8") as fh:
-                fh.write(text)
-        except Exception as exc:  # noqa: BLE001
-            if os.path.exists(cached):
-                emit("  index fetch failed (%s); using cached copy" % exc)
-                text = open(cached, encoding="utf-8").read()
-            else:
-                emit("  INDEX UNREACHABLE (%s) and no cached copy -- extra seasons skipped" % exc)
-                return {}
-    out = {}
-    for line in text.splitlines():
-        if "=" in line:
-            k, v = line.split("=", 1)
-            out[k.strip()] = v.strip()
-    return out
+    return nds.load_index(emit=emit, no_download=args.no_download)
 
 
 def ensure_dataset(key, args):
-    """Local path to one dataset archive, downloading it once. Returns None if
-    it cannot be obtained, having said why."""
-    os.makedirs(DATASET_CACHE, exist_ok=True)
-    path = os.path.join(DATASET_CACHE, key + ".tar.xz")
-    if os.path.exists(path) and os.path.getsize(path) > 100000:
-        return path
-    if args.no_download:
-        emit("  %s not cached and --no-download given; skipped" % key)
-        return None
-    url = args.index.get(key)
-    if not url:
-        emit("  %s is not in the index; skipped (the repo may not publish it yet)" % key)
-        return None
-    # The index points at github.com/.../raw/...; some networks serve only
-    # raw.githubusercontent.com. Same object either way, so fall back rather
-    # than fail.
-    candidates = [url]
-    alt = url.replace("https://github.com/", "https://raw.githubusercontent.com/").replace("/raw/", "/")
-    if alt != url:
-        candidates.append(alt)
-    for candidate in candidates:
-        try:
-            emit("  downloading %s" % candidate)
-            req = urllib.request.Request(candidate, headers={"User-Agent": USER_AGENT})
-            with urllib.request.urlopen(req, timeout=TIMEOUT * 10) as resp:
-                data = resp.read()
-            if len(data) < 100000:
-                emit("    only %d bytes -- not an archive, trying next" % len(data))
-                continue
-            tmp = path + ".part"
-            with open(tmp, "wb") as fh:
-                fh.write(data)
-            os.replace(tmp, path)
-            emit("    %.1f MB cached" % (len(data) / 1048576.0))
-            return path
-        except Exception as exc:  # noqa: BLE001
-            emit("    failed: %s: %s" % (type(exc).__name__, exc))
-    emit("  %s could not be downloaded; skipped" % key)
-    return None
+    """Local path to one dataset archive, downloading it once. None if it
+    cannot be obtained, having said why."""
+    return nds.ensure_dataset(key, args.index, emit=emit, no_download=args.no_download)
 
 
 # --------------------------------------------------------------------------- #
@@ -780,9 +836,15 @@ def main():
 
     refs, by_form, _, variant_forms = load_referees()
     overrides = load_overrides()
-    crews = load_game_crews()
+    crews, bridged_games = load_game_crews()
     emit("canonical referees: %d | callform overrides: %d | games with a known crew: %d"
          % (len(refs), len(overrides), len(crews)))
+    if bridged_games:
+        emit("of those, %d reached via source-data/game_id_bridge.csv.gz "
+             "(ESPN-keyed crew, NBA-keyed play-by-play)" % bridged_games)
+    else:
+        emit("NOTE: no game-id bridge on file. 2023-24 onward cannot reach its own "
+             "crew sheet; run scripts/local/build_game_id_bridge.py first.")
     emit("former/variant name-forms folded in from referee_identity_overrides.csv: %d"
          % variant_forms)
     resolver = Resolver(by_form, overrides, crews)

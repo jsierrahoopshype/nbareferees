@@ -1,0 +1,91 @@
+game-id bridge (build_game_id_bridge.py)
+==============================================================================
+Run at (local clock): 2026-09-14T08:52:16
+dataset index: 514 entries
+
+==============================================================================
+SCANNING cdn.nba.com PLAY-BY-PLAY (NBA ids)
+==============================================================================
+  cdnnba_2023           674937 row(s),  1230 game(s)
+  cdnnba_po_2023         43452 row(s),    82 game(s)
+  cdnnba_2024           686008 row(s),  1230 game(s)
+  cdnnba_po_2024         47569 row(s),    84 game(s)
+  cdnnba_2025           708268 row(s),  1230 game(s)
+  cdnnba_po_2025         34579 row(s),    60 game(s)
+
+3916 NBA-keyed game(s) from the primary source
+
+==============================================================================
+FILLING GAPS FROM shotdetail
+==============================================================================
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2023.tar.xz
+    failed: HTTPError: HTTP Error 403: Forbidden
+  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2023.tar.xz
+    2.7 MB cached
+  shotdetail_2023       218701 row(s),     0 game(s) not already covered
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_po_2023.tar.xz
+    failed: HTTPError: HTTP Error 403: Forbidden
+  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_po_2023.tar.xz
+    0.2 MB cached
+  shotdetail_po_2023     13840 row(s),     0 game(s) not already covered
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2024.tar.xz
+    failed: HTTPError: HTTP Error 403: Forbidden
+  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2024.tar.xz
+    2.7 MB cached
+  shotdetail_2024       219527 row(s),     0 game(s) not already covered
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_po_2024.tar.xz
+    failed: HTTPError: HTTP Error 403: Forbidden
+  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_po_2024.tar.xz
+    0.2 MB cached
+  shotdetail_po_2024     14377 row(s),     0 game(s) not already covered
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2025.tar.xz
+    failed: HTTPError: HTTP Error 403: Forbidden
+  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2025.tar.xz
+    2.7 MB cached
+  shotdetail_2025       219160 row(s),     0 game(s) not already covered
+  shotdetail_po_2025     14473 row(s),    25 game(s) not already covered
+
+25 game(s) the primary source does not carry, bridged from shotdetail
+3973 ESPN-keyed game(s) in 2023-24, 2024-25, 2025-26 from games.csv.gz
+
+==============================================================================
+MATCHING
+==============================================================================
+bridged            : 3941
+unbridged          : 0
+
+date offset (cdn timeActual date vs games.csv.gz date)
+  +0 day : 3919 game(s)
+  +1 day : 22 game(s)
+
+final-score check (independent of the match key)
+  agrees exactly        : 3914
+  within 2 point(s)     : 2
+  a different game      : 0
+  unknown               : 25
+
+home/away check (only where the source names them: shotdetail does)
+  agrees    : 25
+  flipped   : 0
+    0022400072 2024-25 cdn 104-139 vs espn 104-140 (gap 1)
+    0022500029 2025-26 cdn 114-148 vs espn 115-148 (gap 1)
+
+A gap of a point or two is the two feeds disagreeing about the last
+basket, not a mispairing: the teams and the date still agree, and a
+wrong pairing would produce two unrelated scorelines. Those rows are
+kept, flagged score_check=near.
+
+==============================================================================
+UNBRIDGED GAMES
+==============================================================================
+None. Every NBA-keyed game found its ESPN counterpart.
+
+The reverse direction is not one-to-one and is not meant to be:
+games.csv.gz carries every SCHEDULED game, cdn only every PLAYED one,
+so an in-progress season leaves ESPN ids with nothing to bridge to
+until those games are played.
+
+==============================================================================
+OUTPUT
+==============================================================================
+-> source-data/game_id_bridge.csv.gz (3941 row(s))

@@ -2892,14 +2892,25 @@ def build_referee_calls(referees_index, off_ref, gm):
     # Coverage: games in the window, and how complete attribution was in them.
     coverage_by_season = {}
     covered_games = set()
-    # Slices (season + season type) the attribution window does not reach. The
-    # extract admits whole seasons, but the league only began printing the
-    # calling official's name in the 2015 PLAYOFFS -- so the 2014-15 regular
-    # season sits in the coverage file with 45,354 foul events and zero names.
-    # Those games contribute no call to any page, so leaving them in the
-    # denominator of a rate that describes what the pages show would understate
-    # it badly: it drags 2014-15 to 7% and the site-wide figure from 99.6% to
-    # 89.2%. They are excluded from the rate and listed, not silently dropped.
+    # OUT-OF-WINDOW SLICES. The extract admits whole seasons, but the league
+    # only began printing the calling official's name in the 2015 PLAYOFFS --
+    # so the 2014-15 REGULAR SEASON sits in the coverage file with 1,100 games
+    # and 45,354 foul events, none of them carrying a name. Attribution does
+    # not exist there; it did not fail there.
+    #
+    # A slice like that must be excluded from BOTH denominators, for the same
+    # reason in each:
+    #   * the coverage rate -- it dragged 2014-15 to 7% and the site-wide
+    #     figure from 99.7% to 89.2%, which is what produced the "7-100%"
+    #     caption;
+    #   * per-referee GAMES WORKED -- 1,100 nameless games were landing in
+    #     per-game rate denominators, so Monty McCutchen's 2014-15 published as
+    #     3.00 calls per game against 18.56 the following season. Roughly a 6x
+    #     understatement, on 36 referees' pages.
+    # A slice is out of window when nothing in it carries a name at all. That
+    # is a property of the data, not a date written into this file, so it stays
+    # right as the window moves. The excluded slices are listed in _meta rather
+    # than silently dropped.
     window_foul = 0
     window_att = 0
     outside_window = []
@@ -2907,19 +2918,27 @@ def build_referee_calls(referees_index, off_ref, gm):
         cov = pd.read_csv(REF_CALLS_COVERAGE_CSV, dtype=str).fillna("")
         for col in ("foul_events", "attributed", "unattributed"):
             cov[col] = pd.to_numeric(cov[col], errors="coerce").fillna(0).astype(int)
-        covered_games = set(cov["game_id"].astype(str).str.strip())
+        dead_slices = set()
         for (season, stype), grp in cov.groupby(["season", "season_type"]):
-            foul = int(grp["foul_events"].sum())
-            att = int(grp["attributed"].sum())
-            if att == 0:
-                # Not "attribution failed here" -- attribution does not exist
-                # here. A slice with no named official at all is before the
-                # window, not a coverage failure inside it.
-                outside_window.append({"season": season, "season_type": stype,
-                                       "games": int(len(grp)), "foul_events": foul})
-                continue
-            window_foul += foul
-            window_att += att
+            if int(grp["attributed"].sum()) == 0:
+                dead_slices.add((season, stype))
+                outside_window.append({
+                    "season": season, "season_type": stype,
+                    "games": int(len(grp)),
+                    "foul_events": int(grp["foul_events"].sum()),
+                })
+        if dead_slices:
+            keep = ~cov.set_index(["season", "season_type"]).index.isin(dead_slices)
+            cov = cov[keep]
+            print("  %d out-of-window slice(s) excluded from coverage and from "
+                  "per-game denominators: %s"
+                  % (len(outside_window),
+                     ", ".join("%s %s (%d games)" % (d["season"], d["season_type"], d["games"])
+                               for d in outside_window)))
+        # Everything downstream reads the in-window frame only.
+        covered_games = set(cov["game_id"].astype(str).str.strip())
+        window_foul = int(cov["foul_events"].sum())
+        window_att = int(cov["attributed"].sum())
         for season, grp in cov.groupby("season"):
             foul = int(grp["foul_events"].sum())
             att = int(grp["attributed"].sum())
@@ -3076,14 +3095,22 @@ def qa_referee_calls(ref_calls, referees_index):
     meta = ref_calls["_meta"]
     problems = []
 
-    # 1. The window must be what the source can support. Attribution starts
-    #    with the 2014-15 playoffs and nbadb's play-by-play ends in June 2023;
-    #    anything outside that means the extract is wrong, not the world.
-    if meta["first_season"] < "2014-15" or meta["last_season"] > "2022-23":
-        problems.append("window %s..%s falls outside the 2014-15..2022-23 the source "
-                        "can support" % (meta["first_season"], meta["last_season"]))
+    # 1. The window must be what the sources can support. Attribution starts
+    #    with the 2014-15 playoffs, and it cannot run past the season we are
+    #    actually in. The ceiling is derived from today rather than written
+    #    down, so adding a season does not silently trip a stale gate -- and a
+    #    season from the future still does.
+    _now = datetime.date.today()
+    _start = _now.year if _now.month >= 9 else _now.year - 1
+    max_season = "%d-%02d" % (_start, (_start + 1) % 100)
+    if meta["first_season"] < "2014-15" or meta["last_season"] > max_season:
+        problems.append("window %s..%s falls outside the 2014-15..%s the sources "
+                        "can support" % (meta["first_season"], meta["last_season"],
+                                         max_season))
 
-    # 2. Coverage rate per season should sit near the ~91-93% the probe measured.
+    # 2. Coverage rate per season, once out-of-window slices are excluded, runs
+    #    99.6-100%. The band below is deliberately looser than that: it is a
+    #    tripwire for a broken parse, not a target to tune against.
     for season, cov in sorted(meta.get("coverage_by_season", {}).items()):
         pct = cov.get("attributed_pct")
         if pct is None:
