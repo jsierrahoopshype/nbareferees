@@ -205,6 +205,29 @@
     },
     {
       "pts": 18,
+      "reb": 8,
+      "ast": 2,
+      "team_abbr": "DET",
+      "opp_abbr": "DAL",
+      "game_date": "2024-04-13",
+      "game_id": "401585809",
+      "crew": [
+        {
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
+        },
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
+        {
+          "name": "Ashley Moyer-Gleich",
+          "slug": "ashley-moyer-gleich"
+        }
+      ]
+    },
+    {
+      "pts": 18,
       "reb": 11,
       "ast": 0,
       "team_abbr": "SAC",
@@ -235,52 +258,6 @@
       "game_date": "2022-04-01",
       "game_id": "0022101154",
       "crew": []
-    },
-    {
-      "pts": 18,
-      "reb": 8,
-      "ast": 2,
-      "team_abbr": "DET",
-      "opp_abbr": "DAL",
-      "game_date": "2024-04-13",
-      "game_id": "401585809",
-      "crew": [
-        {
-          "name": "Derek Richardson",
-          "slug": "derek-richardson"
-        },
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "Ashley Moyer-Gleich",
-          "slug": "ashley-moyer-gleich"
-        }
-      ]
-    },
-    {
-      "pts": 17,
-      "reb": 8,
-      "ast": 0,
-      "team_abbr": "DET",
-      "opp_abbr": "MEM",
-      "game_date": "2024-04-01",
-      "game_id": "401585716",
-      "crew": [
-        {
-          "name": "Brent Barnaky",
-          "slug": "brent-barnaky"
-        },
-        {
-          "name": "Kevin Cutler",
-          "slug": "kevin-cutler"
-        },
-        {
-          "name": "Dannica Baroody",
-          "slug": "dannica-baroody"
-        }
-      ]
     },
     {
       "pts": 17,
@@ -329,25 +306,48 @@
       ]
     },
     {
-      "pts": 16,
-      "reb": 10,
+      "pts": 17,
+      "reb": 8,
       "ast": 0,
-      "team_abbr": "SAC",
-      "opp_abbr": "DET",
-      "game_date": "2021-11-15",
-      "game_id": "0022100200",
+      "team_abbr": "DET",
+      "opp_abbr": "MEM",
+      "game_date": "2024-04-01",
+      "game_id": "401585716",
       "crew": [
         {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
+          "name": "Brent Barnaky",
+          "slug": "brent-barnaky"
         },
         {
-          "name": "Brandon Adair",
-          "slug": "brandon-adair"
+          "name": "Kevin Cutler",
+          "slug": "kevin-cutler"
         },
         {
-          "name": "Jenna Schroeder",
-          "slug": "jenna-schroeder"
+          "name": "Dannica Baroody",
+          "slug": "dannica-baroody"
+        }
+      ]
+    },
+    {
+      "pts": 16,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "SAC",
+      "opp_abbr": "MIN",
+      "game_date": "2021-04-20",
+      "game_id": "0022000880",
+      "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
+        },
+        {
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
         }
       ]
     }

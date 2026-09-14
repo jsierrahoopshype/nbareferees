@@ -1503,29 +1503,6 @@
     },
     {
       "pts": 32,
-      "reb": 11,
-      "ast": 0,
-      "team_abbr": "UTA",
-      "opp_abbr": "DAL",
-      "game_date": "2006-03-11",
-      "game_id": "0020500924",
-      "crew": [
-        {
-          "name": "Greg Willard",
-          "slug": "greg-willard"
-        },
-        {
-          "name": "Tony Brown",
-          "slug": "tony-brown"
-        },
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        }
-      ]
-    },
-    {
-      "pts": 32,
       "reb": 9,
       "ast": 3,
       "team_abbr": "UTA",
@@ -1548,25 +1525,25 @@
       ]
     },
     {
-      "pts": 31,
+      "pts": 32,
       "reb": 11,
-      "ast": 2,
+      "ast": 0,
       "team_abbr": "UTA",
-      "opp_abbr": "SAS",
-      "game_date": "2007-01-31",
-      "game_id": "0020600684",
+      "opp_abbr": "DAL",
+      "game_date": "2006-03-11",
+      "game_id": "0020500924",
       "crew": [
         {
-          "name": "Derrick Collins",
-          "slug": "derrick-collins"
+          "name": "Greg Willard",
+          "slug": "greg-willard"
         },
         {
-          "name": "Jimmy Clark",
-          "slug": "jimmy-clark"
+          "name": "Tony Brown",
+          "slug": "tony-brown"
         },
         {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
+          "name": "Marc Davis",
+          "slug": "marc-davis"
         }
       ]
     },
@@ -1594,14 +1571,27 @@
       ]
     },
     {
-      "pts": 30,
+      "pts": 31,
       "reb": 11,
-      "ast": 3,
+      "ast": 2,
       "team_abbr": "UTA",
-      "opp_abbr": "ORL",
-      "game_date": "2006-03-15",
-      "game_id": "0020500952",
-      "crew": []
+      "opp_abbr": "SAS",
+      "game_date": "2007-01-31",
+      "game_id": "0020600684",
+      "crew": [
+        {
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
+        },
+        {
+          "name": "Jimmy Clark",
+          "slug": "jimmy-clark"
+        },
+        {
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
+        }
+      ]
     },
     {
       "pts": 30,
@@ -1627,14 +1617,37 @@
       ]
     },
     {
-      "pts": 29,
-      "reb": 5,
+      "pts": 30,
+      "reb": 11,
       "ast": 3,
       "team_abbr": "UTA",
-      "opp_abbr": "NOK",
-      "game_date": "2007-03-10",
-      "game_id": "0020600933",
+      "opp_abbr": "ORL",
+      "game_date": "2006-03-15",
+      "game_id": "0020500952",
       "crew": []
+    },
+    {
+      "pts": 29,
+      "reb": 8,
+      "ast": 1,
+      "team_abbr": "UTA",
+      "opp_abbr": "ORL",
+      "game_date": "2008-01-12",
+      "game_id": "0020700537",
+      "crew": [
+        {
+          "name": "Bennie Adams",
+          "slug": "bennie-adams"
+        },
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
+        }
+      ]
     }
   ]
 }

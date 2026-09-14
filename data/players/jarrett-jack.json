@@ -1875,6 +1875,16 @@
     },
     {
       "pts": 31,
+      "reb": 6,
+      "ast": 2,
+      "team_abbr": "IND",
+      "opp_abbr": "CHA",
+      "game_date": "2009-03-21",
+      "game_id": "0020801035",
+      "crew": []
+    },
+    {
+      "pts": 31,
       "reb": 5,
       "ast": 10,
       "team_abbr": "CLE",
@@ -1897,14 +1907,27 @@
       ]
     },
     {
-      "pts": 31,
-      "reb": 6,
-      "ast": 2,
-      "team_abbr": "IND",
-      "opp_abbr": "CHA",
-      "game_date": "2009-03-21",
-      "game_id": "0020801035",
-      "crew": []
+      "pts": 30,
+      "reb": 2,
+      "ast": 7,
+      "team_abbr": "POR",
+      "opp_abbr": "LAL",
+      "game_date": "2007-02-21",
+      "game_id": "0020600809",
+      "crew": [
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        },
+        {
+          "name": "Tommy Nunez Jr.",
+          "slug": "tommy-nunez"
+        },
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
+        }
+      ]
     },
     {
       "pts": 30,
@@ -1976,25 +1999,25 @@
       ]
     },
     {
-      "pts": 30,
-      "reb": 2,
-      "ast": 7,
-      "team_abbr": "POR",
-      "opp_abbr": "LAL",
-      "game_date": "2007-02-21",
-      "game_id": "0020600809",
+      "pts": 29,
+      "reb": 5,
+      "ast": 2,
+      "team_abbr": "IND",
+      "opp_abbr": "NYK",
+      "game_date": "2009-01-02",
+      "game_id": "0020800478",
       "crew": [
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "Tommy Nunez Jr.",
-          "slug": "tommy-nunez"
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
         },
         {
-          "name": "Ron Garretson",
-          "slug": "ron-garretson"
+          "name": "Tom Washington",
+          "slug": "tom-washington"
         }
       ]
     },
@@ -2018,29 +2041,6 @@
         {
           "name": "Kane Fitzgerald",
           "slug": "kane-fitzgerald"
-        }
-      ]
-    },
-    {
-      "pts": 29,
-      "reb": 5,
-      "ast": 2,
-      "team_abbr": "IND",
-      "opp_abbr": "NYK",
-      "game_date": "2009-01-02",
-      "game_id": "0020800478",
-      "crew": [
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
-        },
-        {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
         }
       ]
     }

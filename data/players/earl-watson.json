@@ -1818,6 +1818,29 @@
     },
     {
       "pts": 23,
+      "reb": 10,
+      "ast": 10,
+      "team_abbr": "SEA",
+      "opp_abbr": "SAC",
+      "game_date": "2008-02-06",
+      "game_id": "0020700721",
+      "crew": [
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
+        },
+        {
+          "name": "Jack Nies",
+          "slug": "jack-nies"
+        }
+      ]
+    },
+    {
+      "pts": 23,
       "reb": 1,
       "ast": 9,
       "team_abbr": "SEA",
@@ -1836,29 +1859,6 @@
         {
           "name": "Dick Bavetta",
           "slug": "dick-bavetta"
-        }
-      ]
-    },
-    {
-      "pts": 23,
-      "reb": 2,
-      "ast": 7,
-      "team_abbr": "SEA",
-      "opp_abbr": "DET",
-      "game_date": "2008-03-04",
-      "game_id": "0020700891",
-      "crew": [
-        {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
-        },
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "Derek Richardson",
-          "slug": "derek-richardson"
         }
       ]
     },
@@ -1887,36 +1887,26 @@
     },
     {
       "pts": 23,
-      "reb": 10,
-      "ast": 10,
+      "reb": 2,
+      "ast": 7,
       "team_abbr": "SEA",
-      "opp_abbr": "SAC",
-      "game_date": "2008-02-06",
-      "game_id": "0020700721",
+      "opp_abbr": "DET",
+      "game_date": "2008-03-04",
+      "game_id": "0020700891",
       "crew": [
         {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
+          "name": "Joe Forte",
+          "slug": "joe-forte"
         },
         {
-          "name": "Matt Boland",
-          "slug": "matt-boland"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
         }
       ]
-    },
-    {
-      "pts": 22,
-      "reb": 5,
-      "ast": 8,
-      "team_abbr": "SEA",
-      "opp_abbr": "DAL",
-      "game_date": "2008-04-08",
-      "game_id": "0020701160",
-      "crew": []
     },
     {
       "pts": 22,
@@ -1942,25 +1932,35 @@
       ]
     },
     {
-      "pts": 21,
-      "reb": 8,
-      "ast": 10,
+      "pts": 22,
+      "reb": 5,
+      "ast": 8,
       "team_abbr": "SEA",
       "opp_abbr": "DAL",
-      "game_date": "2008-04-13",
-      "game_id": "0020701202",
+      "game_date": "2008-04-08",
+      "game_id": "0020701160",
+      "crew": []
+    },
+    {
+      "pts": 21,
+      "reb": 8,
+      "ast": 6,
+      "team_abbr": "MEM",
+      "opp_abbr": "NJN",
+      "game_date": "2003-02-13",
+      "game_id": "230212029",
       "crew": [
         {
-          "name": "JB DeRosa",
-          "slug": "jb-derosa"
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
         },
         {
-          "name": "Eric Lewis",
-          "slug": "eric-lewis"
+          "name": "Kevin Fehr",
+          "slug": "kevin-fehr"
         },
         {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
+          "name": "Scott Foster",
+          "slug": "scott-foster"
         }
       ]
     }

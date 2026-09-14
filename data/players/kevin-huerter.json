@@ -1532,29 +1532,6 @@
     },
     {
       "pts": 29,
-      "reb": 3,
-      "ast": 3,
-      "team_abbr": "ATL",
-      "opp_abbr": "PHI",
-      "game_date": "2019-01-11",
-      "game_id": "0021800621",
-      "crew": [
-        {
-          "name": "Michael Smith",
-          "slug": "michael-smith"
-        },
-        {
-          "name": "Josh Tiven",
-          "slug": "josh-tiven"
-        },
-        {
-          "name": "Mousa Dagher",
-          "slug": "mousa-dagher"
-        }
-      ]
-    },
-    {
-      "pts": 29,
       "reb": 9,
       "ast": 5,
       "team_abbr": "SAC",
@@ -1573,6 +1550,29 @@
         {
           "name": "Andy Nagy",
           "slug": "andy-nagy"
+        }
+      ]
+    },
+    {
+      "pts": 29,
+      "reb": 3,
+      "ast": 3,
+      "team_abbr": "ATL",
+      "opp_abbr": "PHI",
+      "game_date": "2019-01-11",
+      "game_id": "0021800621",
+      "crew": [
+        {
+          "name": "Michael Smith",
+          "slug": "michael-smith"
+        },
+        {
+          "name": "Josh Tiven",
+          "slug": "josh-tiven"
+        },
+        {
+          "name": "Mousa Dagher",
+          "slug": "mousa-dagher"
         }
       ]
     },
@@ -1601,70 +1601,24 @@
     },
     {
       "pts": 28,
-      "reb": 4,
-      "ast": 7,
-      "team_abbr": "SAC",
-      "opp_abbr": "LAL",
-      "game_date": "2023-11-16",
-      "game_id": "401584826",
-      "crew": [
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "Rodney Mott",
-          "slug": "rodney-mott"
-        },
-        {
-          "name": "Ashley Moyer-Gleich",
-          "slug": "ashley-moyer-gleich"
-        }
-      ]
-    },
-    {
-      "pts": 28,
-      "reb": 2,
+      "reb": 1,
       "ast": 3,
-      "team_abbr": "ATL",
-      "opp_abbr": "CHA",
-      "game_date": "2021-12-05",
-      "game_id": "0022100350",
-      "crew": [
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "Brian Forte",
-          "slug": "brian-forte"
-        },
-        {
-          "name": "Aaron Smith",
-          "slug": "aaron-smith"
-        }
-      ]
-    },
-    {
-      "pts": 28,
-      "reb": 9,
-      "ast": 2,
       "team_abbr": "SAC",
-      "opp_abbr": "OKC",
-      "game_date": "2023-11-11",
-      "game_id": "401584104",
+      "opp_abbr": "MIL",
+      "game_date": "2023-03-13",
+      "game_id": "0022201026",
       "crew": [
         {
-          "name": "Ben Taylor",
-          "slug": "ben-taylor"
+          "name": "Bill Kennedy",
+          "slug": "bill-kennedy"
         },
         {
-          "name": "Aaron Smith",
-          "slug": "aaron-smith"
+          "name": "Eric Dalen",
+          "slug": "eric-dalen"
         },
         {
-          "name": "Ray Acosta",
-          "slug": "ray-acosta"
+          "name": "Karl Lane",
+          "slug": "karl-lane"
         }
       ]
     },
@@ -1693,24 +1647,70 @@
     },
     {
       "pts": 28,
-      "reb": 1,
+      "reb": 2,
       "ast": 3,
-      "team_abbr": "SAC",
-      "opp_abbr": "MIL",
-      "game_date": "2023-03-13",
-      "game_id": "0022201026",
+      "team_abbr": "ATL",
+      "opp_abbr": "CHA",
+      "game_date": "2021-12-05",
+      "game_id": "0022100350",
       "crew": [
         {
-          "name": "Bill Kennedy",
-          "slug": "bill-kennedy"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "Eric Dalen",
-          "slug": "eric-dalen"
+          "name": "Brian Forte",
+          "slug": "brian-forte"
         },
         {
-          "name": "Karl Lane",
-          "slug": "karl-lane"
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
+        }
+      ]
+    },
+    {
+      "pts": 28,
+      "reb": 4,
+      "ast": 7,
+      "team_abbr": "SAC",
+      "opp_abbr": "LAL",
+      "game_date": "2023-11-16",
+      "game_id": "401584826",
+      "crew": [
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
+        {
+          "name": "Rodney Mott",
+          "slug": "rodney-mott"
+        },
+        {
+          "name": "Ashley Moyer-Gleich",
+          "slug": "ashley-moyer-gleich"
+        }
+      ]
+    },
+    {
+      "pts": 28,
+      "reb": 9,
+      "ast": 2,
+      "team_abbr": "SAC",
+      "opp_abbr": "OKC",
+      "game_date": "2023-11-11",
+      "game_id": "401584104",
+      "crew": [
+        {
+          "name": "Ben Taylor",
+          "slug": "ben-taylor"
+        },
+        {
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
+        },
+        {
+          "name": "Ray Acosta",
+          "slug": "ray-acosta"
         }
       ]
     }

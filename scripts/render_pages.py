@@ -84,11 +84,20 @@ ATTRIBUTION = [
 #
 # FRAMING. These are calls RECORDED AGAINST an official in the league's own
 # play-by-play feed. Two limits travel with every figure, in the copy and not
-# just in a footnote: the window is the 2015 playoffs to June 2023, a slice of
-# an era this site otherwise covers from 1993-94; and inside that window
-# roughly 8% of foul events carry no official's name at all. So a number here
-# is a floor within a window, never a career total, and nothing about it speaks
-# to whether a call was correct.
+# just in a footnote: the window starts at the 2015 playoffs, a slice of an era
+# this site otherwise covers from 1993-94, and it ends wherever the sources do
+# (read from the data, never written down here); and inside that window a small
+# share of foul events carry no official's name at all. So a number here is a
+# floor within a window, never a career total, and nothing about it speaks to
+# whether a call was correct.
+
+# The same ceiling build.py's QA gate applies. An NBA game carries roughly 40
+# fouls between both teams across a three-person crew, so 12-15 per official is
+# ordinary and anything above 25 means an event is counted more than once, or a
+# rate is being divided by the wrong games. Checked HERE as well as in build.py
+# because render is a separate command: a build that aborted still leaves a
+# data/ directory on disk, and without this check render will publish it.
+CALLS_MAX_PER_GAME = 25
 CALL_TYPE_LABELS = {
     "personal": "Personal", "shooting": "Shooting", "loose_ball": "Loose ball",
     "offensive": "Offensive", "technical": "Technical",
@@ -105,6 +114,39 @@ CALL_TYPE_ORDER = ["personal", "shooting", "loose_ball", "offensive", "technical
                    "double_technical", "hanging_technical", "flagrant_1", "flagrant_2",
                    "away_from_play", "clear_path", "inbound", "punch",
                    "defensive_3_seconds", "delay_of_game", "ejection", "violation", "other"]
+
+
+def assert_calls_are_possible(ref_calls, path):
+    """Refuse to render call figures that cannot be true.
+
+    build.py gates the same values, but it is a different command run at a
+    different time, so a stale or hand-edited data/referee_calls.json would
+    otherwise reach the pages unchecked. This is the last point before publish
+    at which a physically impossible rate can still be stopped.
+    """
+    # build.py exports its own ceiling, so the two cannot drift. The literal
+    # is only the fallback for a file written before that field existed.
+    ceiling = (ref_calls.get("_meta") or {}).get("max_per_game") or CALLS_MAX_PER_GAME
+    bad = []
+    for oid, rec in sorted((ref_calls.get("referees") or {}).items()):
+        rate = rec.get("per_game")
+        if rate and rate > ceiling:
+            bad.append((rate, oid, rec.get("calls"), rec.get("games")))
+    if not bad:
+        return
+    bad.sort(reverse=True)
+    print("REFUSING TO RENDER: %d referee(s) in %s average more than %d calls "
+          "per game, which no officiating crew does."
+          % (len(bad), os.path.relpath(path, REPO), ceiling))
+    for rate, oid, calls, games in bad[:10]:
+        print("  %-28s %8.1f per game  (%s calls over %s games)"
+              % (oid, rate, calls, games))
+    if len(bad) > 10:
+        print("  ... and %d more" % (len(bad) - 10))
+    print("")
+    print("Rebuild with scripts/build.py and fix what its QA gate reports. "
+          "Nothing was rendered.")
+    raise SystemExit(1)
 
 
 def calls_scope_note(meta, extra=""):
@@ -3686,6 +3728,7 @@ def main():
     calls_path = os.path.join(DATA, "referee_calls.json")
     ref_calls = (json.load(open(calls_path, encoding="utf-8")) if os.path.exists(calls_path)
                  else {"_meta": {"available": False}, "referees": {}, "leaderboards": {}})
+    assert_calls_are_possible(ref_calls, calls_path)
     slug_of = {r["official_id"]: r["slug"] for r in refs}
     age_by_slug = {slug_of[oid]: bio["age"] for oid, bio in nbra_bios.items()
                   if bio.get("age") is not None and oid in slug_of}

@@ -1691,6 +1691,29 @@
     },
     {
       "pts": 32,
+      "reb": 10,
+      "ast": 3,
+      "team_abbr": "CLE",
+      "opp_abbr": "MIA",
+      "game_date": "1999-04-19",
+      "game_id": "190419005",
+      "crew": [
+        {
+          "name": "Joe Forte",
+          "slug": "joe-forte"
+        },
+        {
+          "name": "Nolan Fine",
+          "slug": "nolan-fine"
+        },
+        {
+          "name": "Violet Palmer",
+          "slug": "violet-palmer"
+        }
+      ]
+    },
+    {
+      "pts": 32,
       "reb": 12,
       "ast": 2,
       "team_abbr": "SEA",
@@ -1709,29 +1732,6 @@
         {
           "name": "Ted Bernhardt",
           "slug": "ted-bernhardt"
-        }
-      ]
-    },
-    {
-      "pts": 32,
-      "reb": 16,
-      "ast": 7,
-      "team_abbr": "SEA",
-      "opp_abbr": "GSW",
-      "game_date": "1995-12-16",
-      "game_id": "151215025",
-      "crew": [
-        {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
-        },
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Blane Reichelt",
-          "slug": "blane-reichelt"
         }
       ]
     },
@@ -1760,47 +1760,47 @@
     },
     {
       "pts": 32,
-      "reb": 10,
-      "ast": 3,
-      "team_abbr": "CLE",
-      "opp_abbr": "MIA",
-      "game_date": "1999-04-19",
-      "game_id": "190419005",
-      "crew": [
-        {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
-        },
-        {
-          "name": "Nolan Fine",
-          "slug": "nolan-fine"
-        },
-        {
-          "name": "Violet Palmer",
-          "slug": "violet-palmer"
-        }
-      ]
-    },
-    {
-      "pts": 32,
-      "reb": 8,
-      "ast": 2,
+      "reb": 16,
+      "ast": 7,
       "team_abbr": "SEA",
-      "opp_abbr": "CHI",
-      "game_date": "1996-06-06",
-      "game_id": "160605004",
+      "opp_abbr": "GSW",
+      "game_date": "1995-12-16",
+      "game_id": "151215025",
       "crew": [
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        },
         {
           "name": "Joe Crawford",
           "slug": "joe-crawford"
         },
         {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        },
+        {
+          "name": "Blane Reichelt",
+          "slug": "blane-reichelt"
+        }
+      ]
+    },
+    {
+      "pts": 32,
+      "reb": 15,
+      "ast": 0,
+      "team_abbr": "SEA",
+      "opp_abbr": "HOU",
+      "game_date": "1996-05-12",
+      "game_id": "160512010",
+      "crew": [
+        {
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        },
+        {
+          "name": "Ron Garretson",
+          "slug": "ron-garretson"
+        },
+        {
+          "name": "Bernie Fryer",
+          "slug": "bernie-fryer"
         }
       ]
     }
