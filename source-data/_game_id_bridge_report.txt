@@ -1,16 +1,28 @@
 game-id bridge (build_game_id_bridge.py)
 ==============================================================================
-Run at (local clock): 2026-09-14T08:52:16
+Run at (local clock): 2026-09-14T11:32:54
 dataset index: 514 entries
 
 ==============================================================================
 SCANNING cdn.nba.com PLAY-BY-PLAY (NBA ids)
 ==============================================================================
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_2023.tar.xz
+    17.7 MB cached
   cdnnba_2023           674937 row(s),  1230 game(s)
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_po_2023.tar.xz
+    1.1 MB cached
   cdnnba_po_2023         43452 row(s),    82 game(s)
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_2024.tar.xz
+    18.0 MB cached
   cdnnba_2024           686008 row(s),  1230 game(s)
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_po_2024.tar.xz
+    1.2 MB cached
   cdnnba_po_2024         47569 row(s),    84 game(s)
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_2025.tar.xz
+    18.4 MB cached
   cdnnba_2025           708268 row(s),  1230 game(s)
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/cdnnba_po_2025.tar.xz
+    0.9 MB cached
   cdnnba_po_2025         34579 row(s),    60 game(s)
 
 3916 NBA-keyed game(s) from the primary source
@@ -19,30 +31,22 @@ SCANNING cdn.nba.com PLAY-BY-PLAY (NBA ids)
 FILLING GAPS FROM shotdetail
 ==============================================================================
   downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2023.tar.xz
-    failed: HTTPError: HTTP Error 403: Forbidden
-  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2023.tar.xz
     2.7 MB cached
   shotdetail_2023       218701 row(s),     0 game(s) not already covered
   downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_po_2023.tar.xz
-    failed: HTTPError: HTTP Error 403: Forbidden
-  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_po_2023.tar.xz
     0.2 MB cached
   shotdetail_po_2023     13840 row(s),     0 game(s) not already covered
   downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2024.tar.xz
-    failed: HTTPError: HTTP Error 403: Forbidden
-  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2024.tar.xz
     2.7 MB cached
   shotdetail_2024       219527 row(s),     0 game(s) not already covered
   downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_po_2024.tar.xz
-    failed: HTTPError: HTTP Error 403: Forbidden
-  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_po_2024.tar.xz
     0.2 MB cached
   shotdetail_po_2024     14377 row(s),     0 game(s) not already covered
   downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_2025.tar.xz
-    failed: HTTPError: HTTP Error 403: Forbidden
-  downloading https://raw.githubusercontent.com/shufinskiy/nba_data/main/datasets/shotdetail_2025.tar.xz
     2.7 MB cached
   shotdetail_2025       219160 row(s),     0 game(s) not already covered
+  downloading https://github.com/shufinskiy/nba_data/raw/main/datasets/shotdetail_po_2025.tar.xz
+    0.2 MB cached
   shotdetail_po_2025     14473 row(s),    25 game(s) not already covered
 
 25 game(s) the primary source does not carry, bridged from shotdetail
@@ -88,4 +92,4 @@ until those games are played.
 ==============================================================================
 OUTPUT
 ==============================================================================
--> source-data/game_id_bridge.csv.gz (3941 row(s))
+-> source-data\game_id_bridge.csv.gz (3941 row(s))
