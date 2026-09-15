@@ -110,6 +110,12 @@ CALL_TYPE_LABELS = {
 }
 # Order for the per-season table's columns: the common calls first, then the
 # rare-but-notable ones. Types with no calls for a given referee are dropped.
+# Columns the calls table shows before the toggle: the four everyday foul
+# types plus technicals, which is the one rare type readers come looking for.
+# Everything else (flagrants, clear path, away from play, punch, ejection...)
+# is real but sparse -- mostly dashes across a row -- and goes behind the
+# toggle rather than pushing the table off the side of the screen.
+CALL_TYPES_ALWAYS_SHOWN = {"personal", "shooting", "loose_ball", "offensive", "technical"}
 CALL_TYPE_ORDER = ["personal", "shooting", "loose_ball", "offensive", "technical",
                    "double_technical", "hanging_technical", "flagrant_1", "flagrant_2",
                    "away_from_play", "clear_path", "inbound", "punch",
@@ -163,17 +169,20 @@ def calls_scope_note(meta, extra=""):
         # calls in the window carry no name claims completeness the data does
         # not have.
         fmt = "%.1f" if overall >= 99.0 else "%.0f"
-        rate_txt = ((" Across this window " + fmt + "%% of foul events carry an official&#39;s "
-                     "name; the rest are unattributed and absent here.") % overall)
+        rate_txt = ((" " + fmt + "%% of foul events in it carry an official&#39;s name; "
+                     "the rest are absent here.") % overall)
     # The window's end is read from the data, not written in. It moves whenever
     # a season is added, and a hardcoded date would quietly go stale.
-    return ('<p class="caption"><b>Window: %s to %s only.</b> The NBA began printing the '
-            'calling official in play-by-play with the 2015 playoffs, and the play-by-play '
-            'behind this site runs through %s — so these are not career figures, and they '
-            'cover a fraction of the seasons shown elsewhere on this page.%s These are calls '
-            'recorded against an official in the league&#39;s feed; nothing here indicates '
-            'whether a call was correct.%s</p>'
-            % (first, last, last, rate_txt, (" " + extra) if extra else ""))
+    #
+    # Two sentences. The earlier version explained WHY the window starts where
+    # it does and WHY it ends where it does, which is the extraction's business
+    # rather than the reader's -- what they need is that these are not career
+    # figures, how complete the window is, and that a count is not a judgement.
+    return ('<p class="caption"><b>Window: %s to %s only.</b> Not career figures, and a '
+            'fraction of the seasons shown elsewhere on this page.%s These are calls recorded '
+            'against an official in the league&#39;s feed; nothing here indicates whether a '
+            'call was correct.%s</p>'
+            % (first, last, rate_txt, (" " + extra) if extra else ""))
 
 
 # ---------------------------------------------------------------------------
@@ -485,10 +494,22 @@ def call_profile_section(rec, meta):
     if rec.get("per_game"):
         chips.append(stat_chip("Per game", dec(rec["per_game"])))
 
-    cols = [("Season", "text"), ("G", "num"), ("Calls", "num"), ("Per game", "num")]
-    cols += [(CALL_TYPE_LABELS.get(t, t), "num") for t in types_present]
-    ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
-        c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
+    # ELEVEN COLUMNS DO NOT FIT. Season/G/Calls/Per game plus one column per
+    # call type present ran to eleven for a busy official and scrolled
+    # sideways on a desktop window, which hides the tail of the table behind a
+    # gesture people do not make. The four fixed columns and the common call
+    # types stay; the rest go behind the same toggle the directory uses, with
+    # one difference -- there the button is mobile-only, here it shows at every
+    # width, because this is not a narrow-screen problem.
+    extra = [t for t in types_present if t not in CALL_TYPES_ALWAYS_SHOWN]
+    cols = [("Season", "text", False), ("G", "num", False),
+            ("Calls", "num", False), ("Per game", "num", False)]
+    cols += [(CALL_TYPE_LABELS.get(t, t), "num", t in extra) for t in types_present]
+    ths = "".join(
+        '<th class="sortable {c}{x}" data-type="{t}" scope="col">{l}</th>'.format(
+            c="col-text" if t == "text" else "col-num",
+            x=" col-extra" if is_extra else "", t=t, l=esc(l))
+        for l, t, is_extra in cols)
 
     body = []
     for season in sorted(rec["per_season"]):
@@ -503,8 +524,9 @@ def call_profile_section(rec, meta):
                      v=dec(ps["per_game"]) if ps.get("per_game") else "—")]
         for t in types_present:
             n = ps["by_type"].get(t, 0)
-            cells.append('<td data-label="{l}" data-sort="{n}">{v}</td>'.format(
-                l=esc(CALL_TYPE_LABELS.get(t, t)), n=n, v=i(n) if n else "—"))
+            cells.append('<td data-label="{l}" class="{x}" data-sort="{n}">{v}</td>'.format(
+                l=esc(CALL_TYPE_LABELS.get(t, t)), x="col-extra" if t in extra else "",
+                n=n, v=i(n) if n else "—"))
         body.append("<tr>%s</tr>" % "".join(cells))
 
     total_cells = ['<td data-label="Season">Window total</td>',
@@ -512,8 +534,10 @@ def call_profile_section(rec, meta):
                    '<td data-label="Calls">%s</td>' % i(rec["calls"]),
                    '<td data-label="Per game">%s</td>' % (dec(rec["per_game"]) if rec.get("per_game") else "—")]
     for t in types_present:
-        total_cells.append('<td data-label="%s">%s</td>'
-                           % (esc(CALL_TYPE_LABELS.get(t, t)), i(rec["by_type"].get(t, 0))))
+        total_cells.append('<td data-label="%s" class="%s">%s</td>'
+                           % (esc(CALL_TYPE_LABELS.get(t, t)),
+                              "col-extra" if t in extra else "",
+                              i(rec["by_type"].get(t, 0))))
     body.append('<tr class="totals-row">%s</tr>' % "".join(total_cells))
 
     table = ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
@@ -534,12 +558,64 @@ def call_profile_section(rec, meta):
                   % (i(unattr["calls"]), "" if unattr["calls"] == 1 else "s", esc(span),
                      esc(shared or "another official of the same name-form"),
                      ("%.0f%%" % unattr["pct_of_window"]) if unattr.get("pct_of_window") else "a share"))
-    inner = ('<div class="chip-row">%s</div>%s<div class="table-wrap">%s</div>'
-             % ("".join(chips), caveat, table))
+    toggle = ""
+    if extra:
+        lab = "Show %d more call type%s" % (len(extra), "" if len(extra) == 1 else "s")
+        toggle = ('<button type="button" class="col-toggle col-toggle-always" '
+                  'data-label-collapsed="{lab}" data-label-expanded="Show fewer columns">'
+                  '{lab}</button>').format(lab=esc(lab))
+    # The toggle must sit immediately before the wrapper it expands: the shared
+    # handler reads button.nextElementSibling.
+    wrap_cls = "table-wrap cols-toggleable" if extra else "table-wrap"
+    inner = ('<div class="chip-row">%s</div>%s%s<div class="%s">%s</div>'
+             % ("".join(chips), caveat, toggle, wrap_cls, table))
     # "Window total", never "career total" -- the bottom row is labelled in the
     # table itself as well as in the note below it.
     return section(None, "Calls recorded in play-by-play", inner,
                    calls_scope_note(meta, "The bottom row totals this window, not a career."))
+
+
+def technicals_against_section(rec, meta):
+    """Who this official's technicals went to, ranked. "" when there are none."""
+    rows = (rec or {}).get("technicals_against") or []
+    if not rows:
+        return ""
+    people = rec.get("technicals_against_people") or len(rows)
+    total = rec.get("technicals") or 0
+    named = rec.get("technicals_named") or 0
+
+    body = []
+    for rank, r in enumerate(rows, 1):
+        share = (100.0 * r["n"] / total) if total else 0
+        kind = ('<span class="tag-bench">bench</span>' if r.get("kind") == "bench" else "")
+        body.append(
+            '<tr><td data-label="#" class="rank">{rank}</td>'
+            '<td data-label="Received by" data-sort="{ns}">{nm}{kind}</td>'
+            '<td data-label="Technicals" data-sort="{n}"><span class="big-num">{nv}</span></td>'
+            '<td data-label="Share" data-sort="{sh:.4f}">{shv}</td></tr>'.format(
+                rank=rank, ns=esc(r["name"].lower()), nm=esc(r["name"]), kind=kind,
+                n=r["n"], nv=i(r["n"]), sh=share, shv=dec(share) + "%"))
+    ths = ('<th class="sortable col-num" data-type="num" scope="col">#</th>'
+           '<th class="sortable col-text" data-type="text" scope="col">Received by</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Technicals</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Share</th>')
+    table = ('<table class="data-table sortable-table calls-lb"><thead><tr>{ths}</tr></thead>'
+             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
+
+    shown = "the %d most frequent of %s" % (len(rows), i(people)) if people > len(rows) \
+        else "all %d" % len(rows)
+    note = ('<p class="caption">Showing %s recipient(s), ranked by count. Share is of this '
+            'official&#39;s %s technicals in the window. A recipient marked <b>bench</b> is a '
+            'coach or the bench rather than a player, which the league files without a player '
+            'id. A double technical names two people and the feed records one, so these are '
+            'floors. Who received a technical is not evidence about why.</p>'
+            % (shown, i(total)))
+    if named and total and named < total:
+        note += ('<p class="caption">%s of %s carry no name in the feed at all and are absent '
+                 'from the list while still counting in the total.</p>'
+                 % (i(total - named), i(total)))
+    return section(None, "Technicals issued, by recipient",
+                   '<div class="table-wrap">%s</div>%s' % (table, note))
 
 
 def nbra_jersey_badge(nbra_bio):
@@ -1016,6 +1092,14 @@ def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None)
     ]
     if s.get("games_pi"):
         chips.append(stat_chip("Play-in", i(s["games_pi"])))
+    # Technicals sit beside CAREER games but are not a career figure -- they
+    # exist only inside the attribution window. The label carries the start
+    # season so the chip cannot be read as spanning the same era as the one
+    # next to it, and the season is read from the data rather than written in.
+    if calls_rec and calls_rec.get("technicals"):
+        since = (calls_meta or {}).get("first_season")
+        chips.append(stat_chip("Technicals since %s" % since if since else "Technicals recorded",
+                               i(calls_rec["technicals"])))
 
     # .has-photo only when there is one; without it .ref-hero-main is an
     # unstyled wrapper and the block renders exactly as it did before.
@@ -1055,6 +1139,7 @@ def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None)
     # two, and absent entirely for referees outside the 2015-2023 window.
     if calls_rec:
         blocks.append(call_profile_section(calls_rec, calls_meta or {}))
+        blocks.append(technicals_against_section(calls_rec, calls_meta or {}))
 
     # season splits (League Context section 5) -- the season selector: a
     # sortable table, not a dropdown that hides data.
@@ -1474,13 +1559,20 @@ def render_calls_leaderboard(doc):
     min_games = meta.get("min_games_for_rate") or 0
     title = "NBA referees by %s recorded in play-by-play, %s to %s" % (
         label.lower(), meta.get("first_season"), meta.get("last_season"))
+    # Completeness is read from the data. It was written in as "roughly 92%"
+    # and went stale the moment the window was extended; it is 99.8% now.
+    _pct = meta.get("attributed_pct_overall")
     desc = ("NBA officials ranked by %s recorded against them in the league's own "
-            "play-by-play, %s to %s. Attribution exists only for this window and is "
-            "roughly 92%% complete within it." % (label.lower(), meta.get("first_season"),
-                                                  meta.get("last_season")))
+            "play-by-play, %s to %s. Attribution exists only for this window%s"
+            % (label.lower(), meta.get("first_season"), meta.get("last_season"),
+               (", and is %.1f%% complete within it." % _pct) if _pct else "."))
     chips = [stat_chip("Officials ranked", i(len(rows)), accent=True),
              stat_chip("Window", "%s–%s" % (meta.get("first_season", ""), meta.get("last_season", ""))),
              stat_chip("Min. games for a rate", i(min_games))]
+    # Rank and name read as labels, so they stay left. Everything countable is
+    # centred, which is what .calls-lb does -- scoped to this table rather than
+    # changed on .data-table, where right-aligned numerals are the site-wide
+    # convention every other page is built around.
     cols = [("#", "num"), ("Official", "text"), (label, "num"),
             ("Games in window", "num"), ("Per game", "num"), ("Seasons covered", "text")]
     ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
@@ -1500,9 +1592,11 @@ def render_calls_leaderboard(doc):
                 lb=esc(label), n=r[unit], nv=i(r[unit]),
                 g=r.get("games") or 0, gv=i(r["games"]) if r.get("games") else "—",
                 pg=r.get("per_game") or 0,
-                pgv=dec(r["per_game"]) if r.get("per_game") else "—",
+                # Three places: these cluster between 0.3 and 0.4, and at two
+                # the whole leaderboard collapses onto three distinct values.
+                pgv=dec(r["per_game"], 3) if r.get("per_game") else "—",
                 win=esc(r.get("window", ""))))
-    table = ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
+    table = ('<table class="data-table sortable-table calls-lb"><thead><tr>{ths}</tr></thead>'
              '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
     methods = ('<p class="caption">Ranked on the raw count. A per-game figure is shown only '
                'for officials with at least {mn} games inside the window, and is context for '
@@ -2720,6 +2814,33 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
    RS and PO are one tap away instead of stacked into every one of 166
    cards. No-op on desktop, where every column already shows in the table. */
 .col-toggle{display:none}
+/* The calls table's toggle is NOT mobile-only: eleven columns overflow a
+   desktop window too, so this variant shows at every width. Scoped by
+   .cols-toggleable on the wrapper so the referee directory keeps its
+   mobile-only behaviour untouched. */
+.col-toggle-always{display:inline-block;margin:0 0 .7rem;padding:.42rem .8rem;
+  font-family:var(--mono);font-size:.68rem;font-weight:600;border:1px solid var(--border);
+  border-radius:8px;background:var(--surface);color:var(--accent);cursor:pointer}
+.col-toggle-always:hover{background:var(--surface-hover)}
+.cols-toggleable .data-table th.col-extra,
+.cols-toggleable .data-table td.col-extra{display:none}
+.cols-toggleable.cols-expanded .data-table th.col-extra,
+.cols-toggleable.cols-expanded .data-table td.col-extra{display:table-cell}
+
+/* Play-by-play leaderboards and the technicals-by-recipient table: rank and
+   name are labels and stay left, every countable column is centred. Scoped
+   here rather than on .data-table, whose right-aligned numerals are the
+   site-wide convention. */
+.calls-lb th,.calls-lb td{text-align:center}
+.calls-lb th.col-text,.calls-lb td[data-label="Official"],
+.calls-lb td[data-label="Received by"],
+.calls-lb td[data-label="Seasons covered"],
+.calls-lb th:first-child,.calls-lb td:first-child{text-align:left}
+.calls-lb td[data-label="Official"],.calls-lb td[data-label="Received by"]{
+  font-family:var(--sans);font-weight:600}
+.tag-bench{display:inline-block;margin-left:.4rem;font-family:var(--mono);font-size:.56rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.08rem .34rem;
+  border-radius:4px;background:var(--accent-dim);color:var(--accent);vertical-align:middle}
 .crew{font-family:var(--sans);font-size:.76rem;color:var(--text-secondary);
   line-height:1.5;min-width:12rem}
 .team-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
