@@ -268,6 +268,33 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
    RS and PO are one tap away instead of stacked into every one of 166
    cards. No-op on desktop, where every column already shows in the table. */
 .col-toggle{display:none}
+/* The calls table's toggle is NOT mobile-only: eleven columns overflow a
+   desktop window too, so this variant shows at every width. Scoped by
+   .cols-toggleable on the wrapper so the referee directory keeps its
+   mobile-only behaviour untouched. */
+.col-toggle-always{display:inline-block;margin:0 0 .7rem;padding:.42rem .8rem;
+  font-family:var(--mono);font-size:.68rem;font-weight:600;border:1px solid var(--border);
+  border-radius:8px;background:var(--surface);color:var(--accent);cursor:pointer}
+.col-toggle-always:hover{background:var(--surface-hover)}
+.cols-toggleable .data-table th.col-extra,
+.cols-toggleable .data-table td.col-extra{display:none}
+.cols-toggleable.cols-expanded .data-table th.col-extra,
+.cols-toggleable.cols-expanded .data-table td.col-extra{display:table-cell}
+
+/* Play-by-play leaderboards and the technicals-by-recipient table: rank and
+   name are labels and stay left, every countable column is centred. Scoped
+   here rather than on .data-table, whose right-aligned numerals are the
+   site-wide convention. */
+.calls-lb th,.calls-lb td{text-align:center}
+.calls-lb th.col-text,.calls-lb td[data-label="Official"],
+.calls-lb td[data-label="Received by"],
+.calls-lb td[data-label="Seasons covered"],
+.calls-lb th:first-child,.calls-lb td:first-child{text-align:left}
+.calls-lb td[data-label="Official"],.calls-lb td[data-label="Received by"]{
+  font-family:var(--sans);font-weight:600}
+.tag-bench{display:inline-block;margin-left:.4rem;font-family:var(--mono);font-size:.56rem;
+  font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.08rem .34rem;
+  border-radius:4px;background:var(--accent-dim);color:var(--accent);vertical-align:middle}
 .crew{font-family:var(--sans);font-size:.76rem;color:var(--text-secondary);
   line-height:1.5;min-width:12rem}
 .team-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}

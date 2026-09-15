@@ -243,6 +243,22 @@ def norm_ref_key(name):
     return "-".join(toks)
 
 
+def clean_num_at(x, places):
+    """clean_num with the rounding spelled out, for the few figures whose
+    useful precision is finer than the site-wide two places. Technical and
+    flagrant rates per game sit between 0.3 and 0.4: at two places the whole
+    leaderboard collapses onto a handful of distinct values and the ordering
+    stops being visible, so those are stored at four and shown at three."""
+    if x is None:
+        return None
+    try:
+        if pd.isna(x):
+            return None
+    except (TypeError, ValueError):
+        pass
+    return round(float(x), places) if isinstance(x, float) else x
+
+
 def clean_num(x):
     """Convert to a JSON-safe number (None for NaN), rounding floats."""
     if x is None:
@@ -2763,6 +2779,13 @@ CALLS_MIN_GAMES_FOR_RATE = 100
 # by the wrong set of games -- both have happened here. Exported in _meta so
 # render_pages.py checks the same number.
 CALLS_MAX_PER_GAME = 25
+# The call types that are a technical foul. One list, used by the leaderboard,
+# the per-referee count and the recipient ranking, so they cannot disagree.
+TECHNICAL_TYPES = ["technical", "double_technical", "hanging_technical"]
+# How many recipients a referee page lists. Long enough to show a pattern,
+# short enough that the tail of one-offs does not bury it; the page says how
+# many people the list is drawn from.
+TECHNICAL_RECIPIENTS_SHOWN = 15
 NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date",
                     "headshot_url"]
 # Plausibility bounds for a computed age -- outside this range the parse is
@@ -3046,6 +3069,65 @@ def build_referee_calls(referees_index, off_ref, gm):
             "per_season": per_season,
         }
 
+    # WHO A TECHNICAL WENT TO. The extract names the person each call was made
+    # against, so a referee's technicals can be ranked by recipient.
+    #
+    # Two kinds of recipient, kept apart rather than pooled: a PLAYER, named in
+    # the extract's own player_name column, and a BENCH figure (head coach,
+    # assistant, the bench as a unit), whose row carries an empty player_name
+    # because stats.nba.com files coaches outside its player table. Their name
+    # is in the call phrase instead -- "Rick Carlisle Foul:T.FOUL" -- and the
+    # parse below is the only place this pipeline reads a name out of phrase
+    # text. It is narrow on purpose: everything before " Foul:", nothing else.
+    # Dropping those rows would silently discard 1,524 technicals, a fifth of
+    # the total, and every coach technical in the window.
+    #
+    # A double technical names two people and the extract's column carries one.
+    # The other is a surname inside the phrase, which this does NOT try to
+    # resolve -- a surname is not a person, and guessing which Green or Smith
+    # is meant is exactly the inference this pipeline refuses elsewhere. So a
+    # recipient list is a floor on double technicals, and the page says so.
+    bench_name_re = re.compile(r"^(.+?)\s+Foul:")
+
+    def technical_recipients(sub):
+        """(top rows, distinct people, named total) for one referee's
+        technical-type calls."""
+        tally = {}
+        for _, row in sub.iterrows():
+            name = (row.get("player_name") or "").strip()
+            kind = "player"
+            if not name:
+                m = bench_name_re.match((row.get("call_phrase") or "").strip())
+                if not m:
+                    continue  # no name anywhere; counted in the total, not here
+                name, kind = m.group(1).strip(), "bench"
+                if not name:
+                    continue
+            key = (name, kind)
+            rec = tally.setdefault(key, {"name": name, "kind": kind, "n": 0,
+                                         "player_id": (row.get("player_id") or "").strip()})
+            rec["n"] += 1
+        ranked = sorted(tally.values(), key=lambda r: (-r["n"], r["name"]))
+        # named is across EVERY recipient, not the shown slice -- it exists to
+        # measure the rows that carry no name anywhere, and totalling only the
+        # top N would report the whole tail as nameless.
+        named = sum(r["n"] for r in ranked)
+        return ranked[:TECHNICAL_RECIPIENTS_SHOWN], len(ranked), named
+
+    tech_calls = calls[calls["call_type"].isin(TECHNICAL_TYPES)]
+    for oid, sub in tech_calls.groupby("official_id"):
+        rec = out_refs.get(oid)
+        if rec is None:
+            continue
+        ranked, distinct, named = technical_recipients(sub)
+        rec["technicals"] = int(len(sub))
+        if ranked:
+            rec["technicals_against"] = ranked
+            rec["technicals_against_people"] = distinct
+            # Named can fall short of the technical count: a row with no name
+            # anywhere contributes to one and not the other.
+            rec["technicals_named"] = int(named)
+
     def leaderboard(type_keys, key_name):
         rows = []
         for oid, rec in out_refs.items():
@@ -3057,7 +3139,8 @@ def build_referee_calls(referees_index, off_ref, gm):
             rows.append({
                 "official_id": oid, "name": ref["name"], "slug": ref["slug"],
                 key_name: n, "games": games or None,
-                "per_game": clean_num(n / games) if games >= CALLS_MIN_GAMES_FOR_RATE else None,
+                "per_game": (clean_num_at(n / games, 4)
+                             if games >= CALLS_MIN_GAMES_FOR_RATE else None),
                 "window": "%s to %s" % (rec["window_first_season"], rec["window_last_season"]),
             })
         rows.sort(key=lambda r: -r[key_name])
@@ -3125,8 +3208,7 @@ def build_referee_calls(referees_index, off_ref, gm):
         },
         "referees": out_refs,
         "leaderboards": {
-            "most_technicals": leaderboard(
-                ["technical", "double_technical", "hanging_technical"], "technicals"),
+            "most_technicals": leaderboard(TECHNICAL_TYPES, "technicals"),
             "most_flagrants": leaderboard(["flagrant_1", "flagrant_2"], "flagrants"),
         },
     }
