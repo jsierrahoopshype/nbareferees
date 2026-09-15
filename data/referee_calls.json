@@ -103,7 +103,8 @@
         "attributed_pct": 100.0
       }
     },
-    "min_games_for_rate": 100
+    "min_games_for_rate": 100,
+    "max_per_game": 25
   },
   "referees": {
     "aaron-smith": {
@@ -111,8 +112,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 5625,
-      "games": 331,
-      "per_game": 16.99,
+      "games": 434,
+      "per_game": 12.96,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 8,
         "clear_path": 2,
@@ -262,8 +264,8 @@
         },
         "2023-24": {
           "calls": 769,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 12.21,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -279,8 +281,8 @@
         },
         "2024-25": {
           "calls": 275,
-          "games": null,
-          "per_game": null,
+          "games": 21,
+          "per_game": 13.1,
           "by_type": {
             "away_from_play": 2,
             "double_technical": 1,
@@ -294,8 +296,8 @@
         },
         "2025-26": {
           "calls": 218,
-          "games": null,
-          "per_game": null,
+          "games": 19,
+          "per_game": 11.47,
           "by_type": {
             "defensive_3_seconds": 1,
             "double_technical": 1,
@@ -315,8 +317,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 2,
       "calls": 63,
-      "games": null,
-      "per_game": null,
+      "games": 4,
+      "per_game": 15.75,
+      "rate_seasons": 2,
       "by_type": {
         "flagrant_1": 1,
         "loose_ball": 4,
@@ -327,8 +330,8 @@
       "per_season": {
         "2024-25": {
           "calls": 34,
-          "games": null,
-          "per_game": null,
+          "games": 2,
+          "per_game": 17.0,
           "by_type": {
             "loose_ball": 1,
             "offensive": 1,
@@ -338,8 +341,8 @@
         },
         "2025-26": {
           "calls": 29,
-          "games": null,
-          "per_game": null,
+          "games": 2,
+          "per_game": 14.5,
           "by_type": {
             "flagrant_1": 1,
             "loose_ball": 3,
@@ -355,8 +358,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 7,
       "calls": 4443,
-      "games": 127,
-      "per_game": 34.98,
+      "games": 313,
+      "per_game": 14.19,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 1,
@@ -433,8 +437,8 @@
         },
         "2023-24": {
           "calls": 734,
-          "games": null,
-          "per_game": null,
+          "games": 52,
+          "per_game": 14.12,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 1,
@@ -450,8 +454,8 @@
         },
         "2024-25": {
           "calls": 1007,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 14.81,
           "by_type": {
             "defensive_3_seconds": 1,
             "double_technical": 2,
@@ -467,8 +471,8 @@
         },
         "2025-26": {
           "calls": 964,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 14.61,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -489,8 +493,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 3051,
-      "games": 139,
-      "per_game": 21.95,
+      "games": 246,
+      "per_game": 12.4,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 6,
         "defensive_3_seconds": 1,
@@ -581,8 +586,8 @@
         },
         "2023-24": {
           "calls": 663,
-          "games": null,
-          "per_game": null,
+          "games": 56,
+          "per_game": 11.84,
           "by_type": {
             "away_from_play": 2,
             "double_technical": 1,
@@ -597,8 +602,8 @@
         },
         "2024-25": {
           "calls": 85,
-          "games": null,
-          "per_game": null,
+          "games": 9,
+          "per_game": 9.44,
           "by_type": {
             "away_from_play": 1,
             "double_technical": 1,
@@ -612,8 +617,8 @@
         },
         "2025-26": {
           "calls": 509,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 12.12,
           "by_type": {
             "away_from_play": 1,
             "flagrant_1": 1,
@@ -631,8 +636,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 9146,
-      "games": 410,
-      "per_game": 22.31,
+      "games": 546,
+      "per_game": 16.75,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 24,
         "clear_path": 11,
@@ -801,8 +807,8 @@
         },
         "2023-24": {
           "calls": 734,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 15.62,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -821,8 +827,8 @@
         },
         "2024-25": {
           "calls": 1089,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 15.34,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -842,8 +848,8 @@
         },
         "2025-26": {
           "calls": 299,
-          "games": null,
-          "per_game": null,
+          "games": 18,
+          "per_game": 16.61,
           "by_type": {
             "away_from_play": 1,
             "double_technical": 2,
@@ -867,6 +873,7 @@
       "calls": 48,
       "games": 3,
       "per_game": 16.0,
+      "rate_seasons": 1,
       "by_type": {
         "loose_ball": 3,
         "offensive": 2,
@@ -896,6 +903,7 @@
       "calls": 3618,
       "games": 224,
       "per_game": 16.15,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 13,
         "clear_path": 2,
@@ -1026,8 +1034,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7456,
-      "games": 376,
-      "per_game": 19.83,
+      "games": 532,
+      "per_game": 14.02,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 19,
         "clear_path": 8,
@@ -1190,8 +1199,8 @@
         },
         "2023-24": {
           "calls": 861,
-          "games": null,
-          "per_game": null,
+          "games": 73,
+          "per_game": 11.79,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 15,
@@ -1209,8 +1218,8 @@
         },
         "2024-25": {
           "calls": 564,
-          "games": null,
-          "per_game": null,
+          "games": 48,
+          "per_game": 11.75,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -1228,8 +1237,8 @@
         },
         "2025-26": {
           "calls": 437,
-          "games": null,
-          "per_game": null,
+          "games": 35,
+          "per_game": 12.49,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -1253,6 +1262,7 @@
       "calls": 1941,
       "games": 142,
       "per_game": 13.67,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 2,
         "clear_path": 4,
@@ -1376,8 +1386,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 3,
       "calls": 533,
-      "games": null,
-      "per_game": null,
+      "games": 43,
+      "per_game": 12.4,
+      "rate_seasons": 3,
       "by_type": {
         "away_from_play": 1,
         "clear_path": 2,
@@ -1395,8 +1406,8 @@
       "per_season": {
         "2023-24": {
           "calls": 29,
-          "games": null,
-          "per_game": null,
+          "games": 2,
+          "per_game": 14.5,
           "by_type": {
             "flagrant_1": 1,
             "loose_ball": 1,
@@ -1407,8 +1418,8 @@
         },
         "2024-25": {
           "calls": 17,
-          "games": null,
-          "per_game": null,
+          "games": 2,
+          "per_game": 8.5,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -1420,8 +1431,8 @@
         },
         "2025-26": {
           "calls": 487,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 12.49,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 3,
@@ -1445,6 +1456,7 @@
       "calls": 89,
       "games": 7,
       "per_game": 12.71,
+      "rate_seasons": 1,
       "by_type": {
         "clear_path": 1,
         "flagrant_1": 1,
@@ -1478,8 +1490,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 9,
       "calls": 3775,
-      "games": 193,
-      "per_game": 19.56,
+      "games": 318,
+      "per_game": 11.87,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 3,
@@ -1587,8 +1600,8 @@
         },
         "2023-24": {
           "calls": 473,
-          "games": null,
-          "per_game": null,
+          "games": 44,
+          "per_game": 10.75,
           "by_type": {
             "defensive_3_seconds": 3,
             "loose_ball": 23,
@@ -1602,8 +1615,8 @@
         },
         "2024-25": {
           "calls": 464,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 11.05,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 2,
@@ -1617,8 +1630,8 @@
         },
         "2025-26": {
           "calls": 484,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 12.41,
           "by_type": {
             "away_from_play": 1,
             "double_technical": 1,
@@ -1638,8 +1651,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 6,
       "calls": 2832,
-      "games": 76,
-      "per_game": 37.26,
+      "games": 217,
+      "per_game": 13.05,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 1,
         "clear_path": 1,
@@ -1704,8 +1718,8 @@
         },
         "2023-24": {
           "calls": 520,
-          "games": null,
-          "per_game": null,
+          "games": 37,
+          "per_game": 14.05,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 11,
@@ -1722,8 +1736,8 @@
         },
         "2024-25": {
           "calls": 536,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 11.4,
           "by_type": {
             "defensive_3_seconds": 4,
             "double_technical": 1,
@@ -1739,8 +1753,8 @@
         },
         "2025-26": {
           "calls": 687,
-          "games": null,
-          "per_game": null,
+          "games": 57,
+          "per_game": 12.05,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 4,
@@ -1760,8 +1774,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8276,
-      "games": 399,
-      "per_game": 20.74,
+      "games": 607,
+      "per_game": 13.63,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 15,
         "clear_path": 9,
@@ -1923,8 +1938,8 @@
         },
         "2023-24": {
           "calls": 834,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 12.64,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 15,
@@ -1940,8 +1955,8 @@
         },
         "2024-25": {
           "calls": 811,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 11.42,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 12,
@@ -1957,8 +1972,8 @@
         },
         "2025-26": {
           "calls": 865,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 12.18,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 1,
@@ -1979,8 +1994,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 386,
-      "games": 9,
-      "per_game": 42.89,
+      "games": 30,
+      "per_game": 12.87,
+      "rate_seasons": 5,
       "by_type": {
         "double_technical": 1,
         "loose_ball": 17,
@@ -2019,8 +2035,8 @@
         },
         "2023-24": {
           "calls": 108,
-          "games": null,
-          "per_game": null,
+          "games": 8,
+          "per_game": 13.5,
           "by_type": {
             "double_technical": 1,
             "loose_ball": 4,
@@ -2033,8 +2049,8 @@
         },
         "2024-25": {
           "calls": 46,
-          "games": null,
-          "per_game": null,
+          "games": 5,
+          "per_game": 9.2,
           "by_type": {
             "loose_ball": 1,
             "offensive": 4,
@@ -2045,8 +2061,8 @@
         },
         "2025-26": {
           "calls": 117,
-          "games": null,
-          "per_game": null,
+          "games": 8,
+          "per_game": 14.62,
           "by_type": {
             "loose_ball": 7,
             "offensive": 10,
@@ -2062,8 +2078,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 5682,
-      "games": 267,
-      "per_game": 21.28,
+      "games": 391,
+      "per_game": 14.53,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 8,
         "clear_path": 2,
@@ -2214,8 +2231,8 @@
         },
         "2023-24": {
           "calls": 637,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 11.58,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 5,
@@ -2233,8 +2250,8 @@
         },
         "2024-25": {
           "calls": 595,
-          "games": null,
-          "per_game": null,
+          "games": 52,
+          "per_game": 11.44,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 2,
@@ -2250,8 +2267,8 @@
         },
         "2025-26": {
           "calls": 226,
-          "games": null,
-          "per_game": null,
+          "games": 17,
+          "per_game": 13.29,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -2272,8 +2289,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 8900,
-      "games": 448,
-      "per_game": 19.87,
+      "games": 648,
+      "per_game": 13.73,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 18,
         "clear_path": 4,
@@ -2441,8 +2459,8 @@
         },
         "2023-24": {
           "calls": 821,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 12.25,
           "by_type": {
             "defensive_3_seconds": 10,
             "flagrant_1": 3,
@@ -2458,8 +2476,8 @@
         },
         "2024-25": {
           "calls": 777,
-          "games": null,
-          "per_game": null,
+          "games": 73,
+          "per_game": 10.64,
           "by_type": {
             "defensive_3_seconds": 4,
             "double_technical": 1,
@@ -2475,8 +2493,8 @@
         },
         "2025-26": {
           "calls": 777,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 12.95,
           "by_type": {
             "away_from_play": 5,
             "defensive_3_seconds": 4,
@@ -2497,8 +2515,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1966,
-      "games": 43,
-      "per_game": 45.72,
+      "games": 154,
+      "per_game": 12.77,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 4,
         "defensive_3_seconds": 6,
@@ -2543,8 +2562,8 @@
         },
         "2023-24": {
           "calls": 419,
-          "games": null,
-          "per_game": null,
+          "games": 33,
+          "per_game": 12.7,
           "by_type": {
             "flagrant_1": 2,
             "hanging_technical": 1,
@@ -2559,8 +2578,8 @@
         },
         "2024-25": {
           "calls": 350,
-          "games": null,
-          "per_game": null,
+          "games": 31,
+          "per_game": 11.29,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 3,
@@ -2576,8 +2595,8 @@
         },
         "2025-26": {
           "calls": 617,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 13.13,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 3,
@@ -2598,8 +2617,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 1,
       "calls": 45,
-      "games": null,
-      "per_game": null,
+      "games": 3,
+      "per_game": 15.0,
+      "rate_seasons": 1,
       "by_type": {
         "flagrant_1": 1,
         "loose_ball": 4,
@@ -2611,8 +2631,8 @@
       "per_season": {
         "2025-26": {
           "calls": 45,
-          "games": null,
-          "per_game": null,
+          "games": 3,
+          "per_game": 15.0,
           "by_type": {
             "flagrant_1": 1,
             "loose_ball": 4,
@@ -2629,8 +2649,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 6278,
-      "games": 239,
-      "per_game": 26.27,
+      "games": 397,
+      "per_game": 15.81,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 11,
         "clear_path": 5,
@@ -2784,8 +2805,8 @@
         },
         "2023-24": {
           "calls": 835,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 15.18,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 14,
@@ -2802,8 +2823,8 @@
         },
         "2024-25": {
           "calls": 865,
-          "games": null,
-          "per_game": null,
+          "games": 62,
+          "per_game": 13.95,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 11,
@@ -2819,8 +2840,8 @@
         },
         "2025-26": {
           "calls": 586,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 14.29,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 11,
@@ -2841,8 +2862,9 @@
       "window_last_season": "2023-24",
       "seasons_covered": 2,
       "calls": 40,
-      "games": 1,
-      "per_game": 40.0,
+      "games": 4,
+      "per_game": 10.0,
+      "rate_seasons": 2,
       "by_type": {
         "offensive": 3,
         "personal": 17,
@@ -2862,8 +2884,8 @@
         },
         "2023-24": {
           "calls": 30,
-          "games": null,
-          "per_game": null,
+          "games": 3,
+          "per_game": 10.0,
           "by_type": {
             "offensive": 2,
             "personal": 13,
@@ -2878,8 +2900,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 10053,
-      "games": 435,
-      "per_game": 23.11,
+      "games": 638,
+      "per_game": 15.76,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 24,
         "clear_path": 9,
@@ -3058,8 +3081,8 @@
         },
         "2023-24": {
           "calls": 895,
-          "games": null,
-          "per_game": null,
+          "games": 62,
+          "per_game": 14.44,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 7,
@@ -3076,8 +3099,8 @@
         },
         "2024-25": {
           "calls": 1033,
-          "games": null,
-          "per_game": null,
+          "games": 72,
+          "per_game": 14.35,
           "by_type": {
             "away_from_play": 4,
             "clear_path": 1,
@@ -3097,8 +3120,8 @@
         },
         "2025-26": {
           "calls": 1071,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 15.52,
           "by_type": {
             "away_from_play": 6,
             "clear_path": 1,
@@ -3121,8 +3144,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8797,
-      "games": 401,
-      "per_game": 21.94,
+      "games": 606,
+      "per_game": 14.52,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 24,
         "clear_path": 4,
@@ -3277,8 +3301,8 @@
         },
         "2023-24": {
           "calls": 1003,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 14.13,
           "by_type": {
             "away_from_play": 5,
             "defensive_3_seconds": 19,
@@ -3296,8 +3320,8 @@
         },
         "2024-25": {
           "calls": 916,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 13.28,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -3316,8 +3340,8 @@
         },
         "2025-26": {
           "calls": 956,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 14.71,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 14,
@@ -3341,6 +3365,7 @@
       "calls": 2405,
       "games": 135,
       "per_game": 17.81,
+      "rate_seasons": 3,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 4,
@@ -3425,8 +3450,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 6,
       "calls": 2144,
-      "games": 49,
-      "per_game": 43.76,
+      "games": 177,
+      "per_game": 12.11,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 1,
@@ -3489,8 +3515,8 @@
         },
         "2023-24": {
           "calls": 427,
-          "games": null,
-          "per_game": null,
+          "games": 35,
+          "per_game": 12.2,
           "by_type": {
             "double_technical": 1,
             "loose_ball": 27,
@@ -3504,8 +3530,8 @@
         },
         "2024-25": {
           "calls": 534,
-          "games": null,
-          "per_game": null,
+          "games": 48,
+          "per_game": 11.12,
           "by_type": {
             "flagrant_2": 1,
             "loose_ball": 28,
@@ -3519,8 +3545,8 @@
         },
         "2025-26": {
           "calls": 579,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 12.87,
           "by_type": {
             "away_from_play": 2,
             "double_technical": 1,
@@ -3541,8 +3567,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1650,
-      "games": 54,
-      "per_game": 30.56,
+      "games": 127,
+      "per_game": 12.99,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 3,
         "defensive_3_seconds": 13,
@@ -3601,8 +3628,8 @@
         },
         "2023-24": {
           "calls": 450,
-          "games": null,
-          "per_game": null,
+          "games": 34,
+          "per_game": 13.24,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 6,
@@ -3618,8 +3645,8 @@
         },
         "2025-26": {
           "calls": 491,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 12.59,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -3640,8 +3667,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 8726,
-      "games": 432,
-      "per_game": 20.2,
+      "games": 550,
+      "per_game": 15.87,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 25,
         "clear_path": 14,
@@ -3824,8 +3852,8 @@
         },
         "2023-24": {
           "calls": 777,
-          "games": null,
-          "per_game": null,
+          "games": 61,
+          "per_game": 12.74,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 18,
@@ -3842,8 +3870,8 @@
         },
         "2024-25": {
           "calls": 604,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 13.42,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 9,
@@ -3861,8 +3889,8 @@
         },
         "2025-26": {
           "calls": 175,
-          "games": null,
-          "per_game": null,
+          "games": 12,
+          "per_game": 14.58,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -3885,6 +3913,7 @@
       "calls": 571,
       "games": 48,
       "per_game": 11.9,
+      "rate_seasons": 2,
       "by_type": {
         "defensive_3_seconds": 3,
         "flagrant_2": 1,
@@ -3936,8 +3965,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7665,
-      "games": 393,
-      "per_game": 19.5,
+      "games": 539,
+      "per_game": 14.22,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 13,
         "clear_path": 6,
@@ -4093,8 +4123,8 @@
         },
         "2023-24": {
           "calls": 783,
-          "games": null,
-          "per_game": null,
+          "games": 64,
+          "per_game": 12.23,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -4113,8 +4143,8 @@
         },
         "2024-25": {
           "calls": 277,
-          "games": null,
-          "per_game": null,
+          "games": 21,
+          "per_game": 13.19,
           "by_type": {
             "flagrant_1": 1,
             "loose_ball": 17,
@@ -4127,8 +4157,8 @@
         },
         "2025-26": {
           "calls": 763,
-          "games": null,
-          "per_game": null,
+          "games": 61,
+          "per_game": 12.51,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -4148,8 +4178,9 @@
       "window_last_season": "2024-25",
       "seasons_covered": 10,
       "calls": 5503,
-      "games": 311,
-      "per_game": 17.69,
+      "games": 391,
+      "per_game": 14.07,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 7,
         "clear_path": 4,
@@ -4307,8 +4338,8 @@
         },
         "2023-24": {
           "calls": 496,
-          "games": null,
-          "per_game": null,
+          "games": 40,
+          "per_game": 12.4,
           "by_type": {
             "defensive_3_seconds": 2,
             "flagrant_1": 2,
@@ -4324,8 +4355,8 @@
         },
         "2024-25": {
           "calls": 486,
-          "games": null,
-          "per_game": null,
+          "games": 40,
+          "per_game": 12.15,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 6,
@@ -4346,8 +4377,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 7136,
-      "games": 383,
-      "per_game": 18.63,
+      "games": 514,
+      "per_game": 13.88,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 10,
         "clear_path": 7,
@@ -4518,8 +4550,8 @@
         },
         "2023-24": {
           "calls": 546,
-          "games": null,
-          "per_game": null,
+          "games": 48,
+          "per_game": 11.38,
           "by_type": {
             "defensive_3_seconds": 3,
             "flagrant_1": 1,
@@ -4533,8 +4565,8 @@
         },
         "2024-25": {
           "calls": 533,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 12.69,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -4548,8 +4580,8 @@
         },
         "2025-26": {
           "calls": 502,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 12.24,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 3,
@@ -4573,6 +4605,7 @@
       "calls": 2850,
       "games": 189,
       "per_game": 15.08,
+      "rate_seasons": 4,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 3,
@@ -4666,8 +4699,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 8865,
-      "games": 415,
-      "per_game": 21.36,
+      "games": 592,
+      "per_game": 14.97,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 6,
         "clear_path": 6,
@@ -4846,8 +4880,8 @@
         },
         "2023-24": {
           "calls": 817,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 12.97,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -4867,8 +4901,8 @@
         },
         "2024-25": {
           "calls": 965,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 13.99,
           "by_type": {
             "defensive_3_seconds": 6,
             "double_technical": 3,
@@ -4883,8 +4917,8 @@
         },
         "2025-26": {
           "calls": 626,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 13.91,
           "by_type": {
             "defensive_3_seconds": 4,
             "double_technical": 4,
@@ -4907,6 +4941,7 @@
       "calls": 657,
       "games": 50,
       "per_game": 13.14,
+      "rate_seasons": 1,
       "by_type": {
         "defensive_3_seconds": 4,
         "double_technical": 1,
@@ -4948,8 +4983,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 6617,
-      "games": 347,
-      "per_game": 19.07,
+      "games": 528,
+      "per_game": 12.53,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 11,
         "clear_path": 6,
@@ -5107,8 +5143,8 @@
         },
         "2023-24": {
           "calls": 773,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 12.27,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 6,
@@ -5125,8 +5161,8 @@
         },
         "2024-25": {
           "calls": 573,
-          "games": null,
-          "per_game": null,
+          "games": 51,
+          "per_game": 11.24,
           "by_type": {
             "defensive_3_seconds": 3,
             "loose_ball": 22,
@@ -5140,8 +5176,8 @@
         },
         "2025-26": {
           "calls": 885,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 13.21,
           "by_type": {
             "defensive_3_seconds": 5,
             "flagrant_1": 3,
@@ -5161,8 +5197,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 10,
       "calls": 8232,
-      "games": 459,
-      "per_game": 17.93,
+      "games": 473,
+      "per_game": 17.4,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 18,
         "clear_path": 5,
@@ -5345,8 +5382,8 @@
         },
         "2025-26": {
           "calls": 264,
-          "games": null,
-          "per_game": null,
+          "games": 14,
+          "per_game": 18.86,
           "by_type": {
             "defensive_3_seconds": 2,
             "flagrant_1": 3,
@@ -5366,8 +5403,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 3571,
-      "games": 132,
-      "per_game": 27.05,
+      "games": 273,
+      "per_game": 13.08,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 4,
         "clear_path": 2,
@@ -5466,8 +5504,8 @@
         },
         "2023-24": {
           "calls": 575,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 14.02,
           "by_type": {
             "defensive_3_seconds": 7,
             "loose_ball": 32,
@@ -5481,8 +5519,8 @@
         },
         "2024-25": {
           "calls": 693,
-          "games": null,
-          "per_game": null,
+          "games": 57,
+          "per_game": 12.16,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -5498,8 +5536,8 @@
         },
         "2025-26": {
           "calls": 471,
-          "games": null,
-          "per_game": null,
+          "games": 43,
+          "per_game": 10.95,
           "by_type": {
             "flagrant_1": 1,
             "hanging_technical": 1,
@@ -5520,6 +5558,7 @@
       "calls": 2198,
       "games": 143,
       "per_game": 15.37,
+      "rate_seasons": 4,
       "by_type": {
         "away_from_play": 2,
         "clear_path": 4,
@@ -5606,8 +5645,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8770,
-      "games": 392,
-      "per_game": 22.37,
+      "games": 598,
+      "per_game": 14.67,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 12,
         "clear_path": 13,
@@ -5766,8 +5806,8 @@
         },
         "2023-24": {
           "calls": 887,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 13.24,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 3,
@@ -5785,8 +5825,8 @@
         },
         "2024-25": {
           "calls": 960,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 14.33,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 3,
@@ -5803,8 +5843,8 @@
         },
         "2025-26": {
           "calls": 1078,
-          "games": null,
-          "per_game": null,
+          "games": 72,
+          "per_game": 14.97,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 5,
@@ -5826,8 +5866,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 1,
       "calls": 44,
-      "games": null,
-      "per_game": null,
+      "games": 3,
+      "per_game": 14.67,
+      "rate_seasons": 1,
       "by_type": {
         "loose_ball": 2,
         "offensive": 1,
@@ -5839,8 +5880,8 @@
       "per_season": {
         "2025-26": {
           "calls": 44,
-          "games": null,
-          "per_game": null,
+          "games": 3,
+          "per_game": 14.67,
           "by_type": {
             "loose_ball": 2,
             "offensive": 1,
@@ -5859,6 +5900,7 @@
       "calls": 3226,
       "games": 215,
       "per_game": 15.0,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 4,
@@ -5987,8 +6029,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 4,
       "calls": 1030,
-      "games": 7,
-      "per_game": 147.14,
+      "games": 96,
+      "per_game": 10.73,
+      "rate_seasons": 4,
       "by_type": {
         "away_from_play": 1,
         "defensive_3_seconds": 4,
@@ -6017,8 +6060,8 @@
         },
         "2023-24": {
           "calls": 326,
-          "games": null,
-          "per_game": null,
+          "games": 32,
+          "per_game": 10.19,
           "by_type": {
             "defensive_3_seconds": 3,
             "flagrant_1": 3,
@@ -6032,8 +6075,8 @@
         },
         "2024-25": {
           "calls": 466,
-          "games": null,
-          "per_game": null,
+          "games": 43,
+          "per_game": 10.84,
           "by_type": {
             "double_technical": 1,
             "flagrant_1": 1,
@@ -6047,8 +6090,8 @@
         },
         "2025-26": {
           "calls": 162,
-          "games": null,
-          "per_game": null,
+          "games": 14,
+          "per_game": 11.57,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -6070,6 +6113,7 @@
       "calls": 14,
       "games": 1,
       "per_game": 14.0,
+      "rate_seasons": 1,
       "by_type": {
         "loose_ball": 1,
         "personal": 2,
@@ -6093,8 +6137,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7406,
-      "games": 321,
-      "per_game": 23.07,
+      "games": 476,
+      "per_game": 15.56,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 15,
         "clear_path": 6,
@@ -6248,8 +6293,8 @@
         },
         "2023-24": {
           "calls": 781,
-          "games": null,
-          "per_game": null,
+          "games": 56,
+          "per_game": 13.95,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 20,
@@ -6265,8 +6310,8 @@
         },
         "2024-25": {
           "calls": 751,
-          "games": null,
-          "per_game": null,
+          "games": 58,
+          "per_game": 12.95,
           "by_type": {
             "defensive_3_seconds": 12,
             "double_technical": 1,
@@ -6282,8 +6327,8 @@
         },
         "2025-26": {
           "calls": 588,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 14.34,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 10,
@@ -6305,8 +6350,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 10,
       "calls": 6805,
-      "games": 284,
-      "per_game": 23.96,
+      "games": 495,
+      "per_game": 13.75,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 17,
         "clear_path": 8,
@@ -6444,8 +6490,8 @@
         },
         "2023-24": {
           "calls": 812,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 11.94,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -6464,8 +6510,8 @@
         },
         "2024-25": {
           "calls": 782,
-          "games": null,
-          "per_game": null,
+          "games": 73,
+          "per_game": 10.71,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -6483,8 +6529,8 @@
         },
         "2025-26": {
           "calls": 1060,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 15.14,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 2,
@@ -6523,8 +6569,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 9933,
-      "games": 432,
-      "per_game": 22.99,
+      "games": 609,
+      "per_game": 16.31,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 14,
         "clear_path": 14,
@@ -6709,8 +6756,8 @@
         },
         "2023-24": {
           "calls": 826,
-          "games": null,
-          "per_game": null,
+          "games": 58,
+          "per_game": 14.24,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -6728,8 +6775,8 @@
         },
         "2024-25": {
           "calls": 631,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 14.02,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -6747,8 +6794,8 @@
         },
         "2025-26": {
           "calls": 1049,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 14.18,
           "by_type": {
             "away_from_play": 2,
             "double_technical": 5,
@@ -6769,8 +6816,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 10305,
-      "games": 461,
-      "per_game": 22.35,
+      "games": 686,
+      "per_game": 15.02,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 37,
         "clear_path": 8,
@@ -6947,8 +6995,8 @@
         },
         "2023-24": {
           "calls": 964,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 13.58,
           "by_type": {
             "away_from_play": 4,
             "clear_path": 2,
@@ -6968,8 +7016,8 @@
         },
         "2024-25": {
           "calls": 1077,
-          "games": null,
-          "per_game": null,
+          "games": 78,
+          "per_game": 13.81,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -6989,8 +7037,8 @@
         },
         "2025-26": {
           "calls": 1074,
-          "games": null,
-          "per_game": null,
+          "games": 76,
+          "per_game": 14.13,
           "by_type": {
             "away_from_play": 9,
             "defensive_3_seconds": 10,
@@ -7013,8 +7061,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 10,
       "calls": 5407,
-      "games": 206,
-      "per_game": 26.25,
+      "games": 371,
+      "per_game": 14.57,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 7,
         "clear_path": 3,
@@ -7143,8 +7192,8 @@
         },
         "2023-24": {
           "calls": 579,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 14.12,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 6,
@@ -7159,8 +7208,8 @@
         },
         "2024-25": {
           "calls": 731,
-          "games": null,
-          "per_game": null,
+          "games": 61,
+          "per_game": 11.98,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 10,
@@ -7175,8 +7224,8 @@
         },
         "2025-26": {
           "calls": 755,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 11.98,
           "by_type": {
             "away_from_play": 2,
             "flagrant_1": 7,
@@ -7198,6 +7247,7 @@
       "calls": 2890,
       "games": 190,
       "per_game": 15.21,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 4,
         "clear_path": 1,
@@ -7307,8 +7357,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 9,
       "calls": 6702,
-      "games": 265,
-      "per_game": 25.29,
+      "games": 437,
+      "per_game": 15.34,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 11,
         "clear_path": 4,
@@ -7426,8 +7477,8 @@
         },
         "2023-24": {
           "calls": 975,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 15.0,
           "by_type": {
             "defensive_3_seconds": 2,
             "double_technical": 3,
@@ -7445,8 +7496,8 @@
         },
         "2024-25": {
           "calls": 635,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 16.28,
           "by_type": {
             "away_from_play": 1,
             "flagrant_1": 2,
@@ -7461,8 +7512,8 @@
         },
         "2025-26": {
           "calls": 1069,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 15.72,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -7485,8 +7536,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1477,
-      "games": 13,
-      "per_game": 113.62,
+      "games": 101,
+      "per_game": 14.62,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 9,
         "defensive_3_seconds": 2,
@@ -7530,8 +7582,8 @@
         },
         "2023-24": {
           "calls": 107,
-          "games": null,
-          "per_game": null,
+          "games": 8,
+          "per_game": 13.38,
           "by_type": {
             "loose_ball": 8,
             "offensive": 5,
@@ -7543,8 +7595,8 @@
         },
         "2024-25": {
           "calls": 549,
-          "games": null,
-          "per_game": null,
+          "games": 37,
+          "per_game": 14.84,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 1,
@@ -7560,8 +7612,8 @@
         },
         "2025-26": {
           "calls": 603,
-          "games": null,
-          "per_game": null,
+          "games": 43,
+          "per_game": 14.02,
           "by_type": {
             "away_from_play": 6,
             "defensive_3_seconds": 1,
@@ -7583,8 +7635,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 776,
-      "games": 13,
-      "per_game": 59.69,
+      "games": 64,
+      "per_game": 12.12,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 1,
         "defensive_3_seconds": 3,
@@ -7627,8 +7680,8 @@
         },
         "2023-24": {
           "calls": 83,
-          "games": null,
-          "per_game": null,
+          "games": 7,
+          "per_game": 11.86,
           "by_type": {
             "defensive_3_seconds": 1,
             "loose_ball": 5,
@@ -7641,8 +7694,8 @@
         },
         "2024-25": {
           "calls": 73,
-          "games": null,
-          "per_game": null,
+          "games": 6,
+          "per_game": 12.17,
           "by_type": {
             "loose_ball": 2,
             "offensive": 6,
@@ -7653,8 +7706,8 @@
         },
         "2025-26": {
           "calls": 422,
-          "games": null,
-          "per_game": null,
+          "games": 38,
+          "per_game": 11.11,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 2,
@@ -7674,8 +7727,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 7,
       "calls": 3243,
-      "games": 112,
-      "per_game": 28.96,
+      "games": 257,
+      "per_game": 12.62,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 10,
         "clear_path": 3,
@@ -7761,8 +7815,8 @@
         },
         "2023-24": {
           "calls": 549,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 13.07,
           "by_type": {
             "defensive_3_seconds": 3,
             "flagrant_1": 3,
@@ -7778,8 +7832,8 @@
         },
         "2024-25": {
           "calls": 631,
-          "games": null,
-          "per_game": null,
+          "games": 56,
+          "per_game": 11.27,
           "by_type": {
             "away_from_play": 2,
             "double_technical": 1,
@@ -7796,8 +7850,8 @@
         },
         "2025-26": {
           "calls": 583,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 12.4,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 1,
@@ -7820,6 +7874,7 @@
       "calls": 293,
       "games": 12,
       "per_game": 24.42,
+      "rate_seasons": 2,
       "by_type": {
         "clear_path": 1,
         "double_technical": 1,
@@ -7871,8 +7926,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 4211,
-      "games": 149,
-      "per_game": 28.26,
+      "games": 327,
+      "per_game": 12.88,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 16,
         "clear_path": 2,
@@ -7967,8 +8023,8 @@
         },
         "2023-24": {
           "calls": 700,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 12.73,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 7,
@@ -7984,8 +8040,8 @@
         },
         "2024-25": {
           "calls": 685,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 11.42,
           "by_type": {
             "defensive_3_seconds": 4,
             "loose_ball": 36,
@@ -7999,8 +8055,8 @@
         },
         "2025-26": {
           "calls": 826,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 13.11,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 6,
@@ -8020,8 +8076,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 7,
       "calls": 2533,
-      "games": 86,
-      "per_game": 29.45,
+      "games": 201,
+      "per_game": 12.6,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 1,
@@ -8100,8 +8157,8 @@
         },
         "2023-24": {
           "calls": 442,
-          "games": null,
-          "per_game": null,
+          "games": 36,
+          "per_game": 12.28,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 3,
@@ -8116,8 +8173,8 @@
         },
         "2024-25": {
           "calls": 491,
-          "games": null,
-          "per_game": null,
+          "games": 40,
+          "per_game": 12.28,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 4,
@@ -8132,8 +8189,8 @@
         },
         "2025-26": {
           "calls": 523,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 13.41,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -8153,8 +8210,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 10079,
-      "games": 479,
-      "per_game": 21.04,
+      "games": 658,
+      "per_game": 15.32,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 39,
         "clear_path": 7,
@@ -8342,8 +8400,8 @@
         },
         "2023-24": {
           "calls": 544,
-          "games": null,
-          "per_game": null,
+          "games": 38,
+          "per_game": 14.32,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 2,
@@ -8360,8 +8418,8 @@
         },
         "2024-25": {
           "calls": 1077,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 15.61,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 7,
@@ -8379,8 +8437,8 @@
         },
         "2025-26": {
           "calls": 1091,
-          "games": null,
-          "per_game": null,
+          "games": 72,
+          "per_game": 15.15,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 8,
@@ -8420,8 +8478,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 9,
       "calls": 4969,
-      "games": 213,
-      "per_game": 23.33,
+      "games": 344,
+      "per_game": 14.44,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 18,
         "clear_path": 4,
@@ -8546,8 +8605,8 @@
         },
         "2023-24": {
           "calls": 519,
-          "games": null,
-          "per_game": null,
+          "games": 37,
+          "per_game": 14.03,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 11,
@@ -8563,8 +8622,8 @@
         },
         "2024-25": {
           "calls": 615,
-          "games": null,
-          "per_game": null,
+          "games": 48,
+          "per_game": 12.81,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -8580,8 +8639,8 @@
         },
         "2025-26": {
           "calls": 584,
-          "games": null,
-          "per_game": null,
+          "games": 46,
+          "per_game": 12.7,
           "by_type": {
             "defensive_3_seconds": 3,
             "double_technical": 1,
@@ -8603,8 +8662,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 10731,
-      "games": 454,
-      "per_game": 23.64,
+      "games": 681,
+      "per_game": 15.76,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 20,
         "clear_path": 7,
@@ -8781,8 +8841,8 @@
         },
         "2023-24": {
           "calls": 974,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 13.16,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 6,
@@ -8801,8 +8861,8 @@
         },
         "2024-25": {
           "calls": 1057,
-          "games": null,
-          "per_game": null,
+          "games": 75,
+          "per_game": 14.09,
           "by_type": {
             "away_from_play": 4,
             "clear_path": 1,
@@ -8820,8 +8880,8 @@
         },
         "2025-26": {
           "calls": 1107,
-          "games": null,
-          "per_game": null,
+          "games": 78,
+          "per_game": 14.19,
           "by_type": {
             "defensive_3_seconds": 6,
             "double_technical": 4,
@@ -8842,8 +8902,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8562,
-      "games": 347,
-      "per_game": 24.67,
+      "games": 544,
+      "per_game": 15.74,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 12,
         "clear_path": 7,
@@ -9002,8 +9063,8 @@
         },
         "2023-24": {
           "calls": 962,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 14.8,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -9021,8 +9082,8 @@
         },
         "2024-25": {
           "calls": 922,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 14.18,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 9,
@@ -9039,8 +9100,8 @@
         },
         "2025-26": {
           "calls": 1107,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 16.52,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -9065,6 +9126,7 @@
       "calls": 6597,
       "games": 384,
       "per_game": 17.18,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 21,
         "clear_path": 10,
@@ -9236,8 +9298,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 9075,
-      "games": 411,
-      "per_game": 22.08,
+      "games": 597,
+      "per_game": 15.2,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 26,
         "clear_path": 6,
@@ -9392,8 +9455,8 @@
         },
         "2023-24": {
           "calls": 923,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 13.57,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 10,
@@ -9410,8 +9473,8 @@
         },
         "2024-25": {
           "calls": 796,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 13.27,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 8,
@@ -9429,8 +9492,8 @@
         },
         "2025-26": {
           "calls": 890,
-          "games": null,
-          "per_game": null,
+          "games": 58,
+          "per_game": 15.34,
           "by_type": {
             "defensive_3_seconds": 4,
             "double_technical": 1,
@@ -9453,6 +9516,7 @@
       "calls": 5323,
       "games": 327,
       "per_game": 16.28,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 9,
         "clear_path": 7,
@@ -9608,8 +9672,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7792,
-      "games": 387,
-      "per_game": 20.13,
+      "games": 575,
+      "per_game": 13.55,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 12,
         "clear_path": 9,
@@ -9765,8 +9830,8 @@
         },
         "2023-24": {
           "calls": 740,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 13.45,
           "by_type": {
             "clear_path": 2,
             "defensive_3_seconds": 14,
@@ -9782,8 +9847,8 @@
         },
         "2024-25": {
           "calls": 818,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 12.58,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -9800,8 +9865,8 @@
         },
         "2025-26": {
           "calls": 878,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 12.91,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -9825,8 +9890,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 9058,
-      "games": 400,
-      "per_game": 22.64,
+      "games": 600,
+      "per_game": 15.1,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 15,
         "clear_path": 12,
@@ -9989,8 +10055,8 @@
         },
         "2023-24": {
           "calls": 967,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 14.43,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 1,
@@ -10007,8 +10073,8 @@
         },
         "2024-25": {
           "calls": 872,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 13.42,
           "by_type": {
             "clear_path": 1,
             "double_technical": 2,
@@ -10024,8 +10090,8 @@
         },
         "2025-26": {
           "calls": 1046,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 15.38,
           "by_type": {
             "away_from_play": 5,
             "clear_path": 1,
@@ -10048,8 +10114,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 1,
       "calls": 44,
-      "games": null,
-      "per_game": null,
+      "games": 3,
+      "per_game": 14.67,
+      "rate_seasons": 1,
       "by_type": {
         "offensive": 2,
         "other": 1,
@@ -10061,8 +10128,8 @@
       "per_season": {
         "2025-26": {
           "calls": 44,
-          "games": null,
-          "per_game": null,
+          "games": 3,
+          "per_game": 14.67,
           "by_type": {
             "offensive": 2,
             "other": 1,
@@ -10079,8 +10146,9 @@
       "window_last_season": "2023-24",
       "seasons_covered": 8,
       "calls": 3877,
-      "games": 247,
-      "per_game": 15.7,
+      "games": 261,
+      "per_game": 14.85,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 7,
         "clear_path": 7,
@@ -10213,8 +10281,8 @@
         },
         "2023-24": {
           "calls": 200,
-          "games": null,
-          "per_game": null,
+          "games": 14,
+          "per_game": 14.29,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -10236,8 +10304,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 5949,
-      "games": 341,
-      "per_game": 17.45,
+      "games": 409,
+      "per_game": 14.55,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 19,
         "clear_path": 7,
@@ -10390,8 +10459,8 @@
         },
         "2023-24": {
           "calls": 391,
-          "games": null,
-          "per_game": null,
+          "games": 28,
+          "per_game": 13.96,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -10406,8 +10475,8 @@
         },
         "2024-25": {
           "calls": 3,
-          "games": null,
-          "per_game": null,
+          "games": 1,
+          "per_game": 3.0,
           "by_type": {
             "shooting": 2,
             "violation": 1
@@ -10415,8 +10484,8 @@
         },
         "2025-26": {
           "calls": 523,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 13.41,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -10439,6 +10508,7 @@
       "calls": 4162,
       "games": 268,
       "per_game": 15.53,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 4,
         "clear_path": 3,
@@ -10579,8 +10649,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8587,
-      "games": 363,
-      "per_game": 23.66,
+      "games": 549,
+      "per_game": 15.64,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 19,
         "clear_path": 10,
@@ -10746,8 +10817,8 @@
         },
         "2023-24": {
           "calls": 841,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 14.02,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 9,
@@ -10765,8 +10836,8 @@
         },
         "2024-25": {
           "calls": 825,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 12.5,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 15,
@@ -10781,8 +10852,8 @@
         },
         "2025-26": {
           "calls": 820,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 13.67,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 14,
@@ -10804,8 +10875,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 10340,
-      "games": 499,
-      "per_game": 20.72,
+      "games": 722,
+      "per_game": 14.32,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 30,
         "clear_path": 13,
@@ -10992,8 +11064,8 @@
         },
         "2023-24": {
           "calls": 888,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 12.0,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -11012,8 +11084,8 @@
         },
         "2024-25": {
           "calls": 968,
-          "games": null,
-          "per_game": null,
+          "games": 75,
+          "per_game": 12.91,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 5,
@@ -11030,8 +11102,8 @@
         },
         "2025-26": {
           "calls": 1092,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 14.76,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -11054,8 +11126,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 1,
       "calls": 28,
-      "games": null,
-      "per_game": null,
+      "games": 2,
+      "per_game": 14.0,
+      "rate_seasons": 1,
       "by_type": {
         "loose_ball": 3,
         "offensive": 3,
@@ -11066,8 +11139,8 @@
       "per_season": {
         "2025-26": {
           "calls": 28,
-          "games": null,
-          "per_game": null,
+          "games": 2,
+          "per_game": 14.0,
           "by_type": {
             "loose_ball": 3,
             "offensive": 3,
@@ -11085,6 +11158,7 @@
       "calls": 4473,
       "games": 301,
       "per_game": 14.86,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 2,
         "clear_path": 8,
@@ -11221,8 +11295,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8684,
-      "games": 363,
-      "per_game": 23.92,
+      "games": 570,
+      "per_game": 15.24,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 10,
         "clear_path": 9,
@@ -11383,8 +11458,8 @@
         },
         "2023-24": {
           "calls": 965,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 14.19,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 34,
@@ -11403,8 +11478,8 @@
         },
         "2024-25": {
           "calls": 1142,
-          "games": null,
-          "per_game": null,
+          "games": 71,
+          "per_game": 16.08,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -11422,8 +11497,8 @@
         },
         "2025-26": {
           "calls": 974,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 14.32,
           "by_type": {
             "defensive_3_seconds": 10,
             "double_technical": 5,
@@ -11444,8 +11519,9 @@
       "window_last_season": "2024-25",
       "seasons_covered": 10,
       "calls": 6338,
-      "games": 343,
-      "per_game": 18.48,
+      "games": 414,
+      "per_game": 15.31,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 20,
         "clear_path": 7,
@@ -11608,8 +11684,8 @@
         },
         "2023-24": {
           "calls": 446,
-          "games": null,
-          "per_game": null,
+          "games": 34,
+          "per_game": 13.12,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 7,
@@ -11626,8 +11702,8 @@
         },
         "2024-25": {
           "calls": 421,
-          "games": null,
-          "per_game": null,
+          "games": 37,
+          "per_game": 11.38,
           "by_type": {
             "defensive_3_seconds": 2,
             "flagrant_1": 3,
@@ -11647,8 +11723,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 6,
       "calls": 2034,
-      "games": 49,
-      "per_game": 41.51,
+      "games": 165,
+      "per_game": 12.33,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 5,
         "defensive_3_seconds": 38,
@@ -11710,8 +11787,8 @@
         },
         "2023-24": {
           "calls": 409,
-          "games": null,
-          "per_game": null,
+          "games": 34,
+          "per_game": 12.03,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 13,
@@ -11726,8 +11803,8 @@
         },
         "2024-25": {
           "calls": 456,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 11.12,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 5,
@@ -11744,8 +11821,8 @@
         },
         "2025-26": {
           "calls": 475,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 11.59,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 5,
@@ -11767,8 +11844,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 9,
       "calls": 4334,
-      "games": 154,
-      "per_game": 28.14,
+      "games": 300,
+      "per_game": 14.45,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 9,
         "clear_path": 1,
@@ -11874,8 +11952,8 @@
         },
         "2023-24": {
           "calls": 645,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 14.33,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 6,
@@ -11891,8 +11969,8 @@
         },
         "2024-25": {
           "calls": 721,
-          "games": null,
-          "per_game": null,
+          "games": 54,
+          "per_game": 13.35,
           "by_type": {
             "away_from_play": 5,
             "defensive_3_seconds": 4,
@@ -11908,8 +11986,8 @@
         },
         "2025-26": {
           "calls": 595,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 12.66,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -11930,8 +12008,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 8550,
-      "games": 391,
-      "per_game": 21.87,
+      "games": 521,
+      "per_game": 16.41,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 20,
         "clear_path": 5,
@@ -12110,8 +12189,8 @@
         },
         "2023-24": {
           "calls": 842,
-          "games": null,
-          "per_game": null,
+          "games": 53,
+          "per_game": 15.89,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 29,
@@ -12127,8 +12206,8 @@
         },
         "2024-25": {
           "calls": 577,
-          "games": null,
-          "per_game": null,
+          "games": 38,
+          "per_game": 15.18,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 5,
@@ -12146,8 +12225,8 @@
         },
         "2025-26": {
           "calls": 580,
-          "games": null,
-          "per_game": null,
+          "games": 39,
+          "per_game": 14.87,
           "by_type": {
             "defensive_3_seconds": 10,
             "flagrant_1": 2,
@@ -12169,6 +12248,7 @@
       "calls": 3876,
       "games": 261,
       "per_game": 14.85,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 4,
         "clear_path": 6,
@@ -12289,8 +12369,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 9380,
-      "games": 376,
-      "per_game": 24.95,
+      "games": 582,
+      "per_game": 16.12,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 26,
         "clear_path": 6,
@@ -12456,8 +12537,8 @@
         },
         "2023-24": {
           "calls": 1070,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 15.29,
           "by_type": {
             "away_from_play": 6,
             "defensive_3_seconds": 12,
@@ -12474,8 +12555,8 @@
         },
         "2024-25": {
           "calls": 923,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 13.98,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 2,
@@ -12495,8 +12576,8 @@
         },
         "2025-26": {
           "calls": 1146,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 16.37,
           "by_type": {
             "away_from_play": 5,
             "defensive_3_seconds": 14,
@@ -12520,6 +12601,7 @@
       "calls": 2580,
       "games": 142,
       "per_game": 18.17,
+      "rate_seasons": 4,
       "by_type": {
         "away_from_play": 4,
         "defensive_3_seconds": 55,
@@ -12619,8 +12701,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 4658,
-      "games": 169,
-      "per_game": 27.56,
+      "games": 328,
+      "per_game": 14.2,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 4,
@@ -12719,8 +12802,8 @@
         },
         "2023-24": {
           "calls": 575,
-          "games": null,
-          "per_game": null,
+          "games": 46,
+          "per_game": 12.5,
           "by_type": {
             "flagrant_1": 3,
             "loose_ball": 47,
@@ -12734,8 +12817,8 @@
         },
         "2024-25": {
           "calls": 734,
-          "games": null,
-          "per_game": null,
+          "games": 57,
+          "per_game": 12.88,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -12753,8 +12836,8 @@
         },
         "2025-26": {
           "calls": 845,
-          "games": null,
-          "per_game": null,
+          "games": 56,
+          "per_game": 15.09,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 2,
@@ -12777,8 +12860,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 4929,
-      "games": 186,
-      "per_game": 26.5,
+      "games": 379,
+      "per_game": 13.01,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 5,
@@ -12878,8 +12962,8 @@
         },
         "2023-24": {
           "calls": 708,
-          "games": null,
-          "per_game": null,
+          "games": 64,
+          "per_game": 11.06,
           "by_type": {
             "defensive_3_seconds": 5,
             "flagrant_1": 2,
@@ -12895,8 +12979,8 @@
         },
         "2024-25": {
           "calls": 769,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 11.83,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 1,
@@ -12913,8 +12997,8 @@
         },
         "2025-26": {
           "calls": 842,
-          "games": null,
-          "per_game": null,
+          "games": 64,
+          "per_game": 13.16,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -12936,8 +13020,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 1,
       "calls": 120,
-      "games": null,
-      "per_game": null,
+      "games": 8,
+      "per_game": 15.0,
+      "rate_seasons": 1,
       "by_type": {
         "flagrant_1": 1,
         "loose_ball": 6,
@@ -12950,8 +13035,8 @@
       "per_season": {
         "2025-26": {
           "calls": 120,
-          "games": null,
-          "per_game": null,
+          "games": 8,
+          "per_game": 15.0,
           "by_type": {
             "flagrant_1": 1,
             "loose_ball": 6,
@@ -12969,8 +13054,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 8,
       "calls": 3862,
-      "games": 119,
-      "per_game": 32.45,
+      "games": 271,
+      "per_game": 14.25,
+      "rate_seasons": 8,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 2,
@@ -13066,8 +13152,8 @@
         },
         "2023-24": {
           "calls": 503,
-          "games": null,
-          "per_game": null,
+          "games": 38,
+          "per_game": 13.24,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 5,
@@ -13081,8 +13167,8 @@
         },
         "2024-25": {
           "calls": 721,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 13.11,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 7,
@@ -13098,8 +13184,8 @@
         },
         "2025-26": {
           "calls": 838,
-          "games": null,
-          "per_game": null,
+          "games": 59,
+          "per_game": 14.2,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 4,
@@ -13120,8 +13206,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 9816,
-      "games": 403,
-      "per_game": 24.36,
+      "games": 604,
+      "per_game": 16.25,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 31,
         "clear_path": 5,
@@ -13286,8 +13373,8 @@
         },
         "2023-24": {
           "calls": 974,
-          "games": null,
-          "per_game": null,
+          "games": 62,
+          "per_game": 15.71,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 14,
@@ -13304,8 +13391,8 @@
         },
         "2024-25": {
           "calls": 1101,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 15.96,
           "by_type": {
             "away_from_play": 6,
             "defensive_3_seconds": 9,
@@ -13323,8 +13410,8 @@
         },
         "2025-26": {
           "calls": 1126,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 16.09,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -13347,8 +13434,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 9057,
-      "games": 422,
-      "per_game": 21.46,
+      "games": 630,
+      "per_game": 14.38,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 16,
         "clear_path": 4,
@@ -13522,8 +13610,8 @@
         },
         "2023-24": {
           "calls": 928,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 13.65,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 16,
@@ -13540,8 +13628,8 @@
         },
         "2024-25": {
           "calls": 1002,
-          "games": null,
-          "per_game": null,
+          "games": 72,
+          "per_game": 13.92,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 8,
@@ -13559,8 +13647,8 @@
         },
         "2025-26": {
           "calls": 988,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 14.53,
           "by_type": {
             "defensive_3_seconds": 8,
             "double_technical": 2,
@@ -13581,8 +13669,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 867,
-      "games": 8,
-      "per_game": 108.38,
+      "games": 63,
+      "per_game": 13.76,
+      "rate_seasons": 5,
       "by_type": {
         "defensive_3_seconds": 1,
         "flagrant_1": 8,
@@ -13621,8 +13710,8 @@
         },
         "2023-24": {
           "calls": 92,
-          "games": null,
-          "per_game": null,
+          "games": 7,
+          "per_game": 13.14,
           "by_type": {
             "flagrant_1": 1,
             "hanging_technical": 1,
@@ -13636,8 +13725,8 @@
         },
         "2024-25": {
           "calls": 94,
-          "games": null,
-          "per_game": null,
+          "games": 6,
+          "per_game": 15.67,
           "by_type": {
             "loose_ball": 6,
             "offensive": 6,
@@ -13649,8 +13738,8 @@
         },
         "2025-26": {
           "calls": 583,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 13.88,
           "by_type": {
             "defensive_3_seconds": 1,
             "flagrant_1": 7,
@@ -13670,8 +13759,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 10,
       "calls": 4822,
-      "games": 165,
-      "per_game": 29.22,
+      "games": 339,
+      "per_game": 14.22,
+      "rate_seasons": 10,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 1,
@@ -13795,8 +13885,8 @@
         },
         "2023-24": {
           "calls": 734,
-          "games": null,
-          "per_game": null,
+          "games": 55,
+          "per_game": 13.35,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 1,
@@ -13812,8 +13902,8 @@
         },
         "2024-25": {
           "calls": 910,
-          "games": null,
-          "per_game": null,
+          "games": 65,
+          "per_game": 14.0,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 4,
@@ -13831,8 +13921,8 @@
         },
         "2025-26": {
           "calls": 778,
-          "games": null,
-          "per_game": null,
+          "games": 54,
+          "per_game": 14.41,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 3,
@@ -13857,6 +13947,7 @@
       "calls": 70,
       "games": 6,
       "per_game": 11.67,
+      "rate_seasons": 1,
       "by_type": {
         "defensive_3_seconds": 2,
         "loose_ball": 6,
@@ -13888,8 +13979,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 9,
       "calls": 6632,
-      "games": 259,
-      "per_game": 25.61,
+      "games": 464,
+      "per_game": 14.29,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 14,
         "clear_path": 6,
@@ -14009,8 +14101,8 @@
         },
         "2023-24": {
           "calls": 820,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 12.42,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -14029,8 +14121,8 @@
         },
         "2024-25": {
           "calls": 886,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 12.84,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 4,
@@ -14047,8 +14139,8 @@
         },
         "2025-26": {
           "calls": 988,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 14.11,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 5,
@@ -14070,8 +14162,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 6,
       "calls": 2447,
-      "games": 51,
-      "per_game": 47.98,
+      "games": 180,
+      "per_game": 13.59,
+      "rate_seasons": 6,
       "by_type": {
         "away_from_play": 3,
         "defensive_3_seconds": 3,
@@ -14129,8 +14222,8 @@
         },
         "2023-24": {
           "calls": 472,
-          "games": null,
-          "per_game": null,
+          "games": 35,
+          "per_game": 13.49,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 1,
@@ -14146,8 +14239,8 @@
         },
         "2024-25": {
           "calls": 638,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 13.57,
           "by_type": {
             "loose_ball": 28,
             "offensive": 44,
@@ -14160,8 +14253,8 @@
         },
         "2025-26": {
           "calls": 628,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 13.36,
           "by_type": {
             "defensive_3_seconds": 1,
             "double_technical": 1,
@@ -14181,8 +14274,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 8094,
-      "games": 394,
-      "per_game": 20.54,
+      "games": 518,
+      "per_game": 15.63,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 22,
         "clear_path": 12,
@@ -14350,8 +14444,8 @@
         },
         "2023-24": {
           "calls": 495,
-          "games": null,
-          "per_game": null,
+          "games": 29,
+          "per_game": 17.07,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 8,
@@ -14368,8 +14462,8 @@
         },
         "2024-25": {
           "calls": 663,
-          "games": null,
-          "per_game": null,
+          "games": 53,
+          "per_game": 12.51,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 6,
@@ -14385,8 +14479,8 @@
         },
         "2025-26": {
           "calls": 600,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 14.29,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -14409,6 +14503,7 @@
       "calls": 3047,
       "games": 212,
       "per_game": 14.37,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 7,
         "clear_path": 1,
@@ -14516,8 +14611,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 11785,
-      "games": 463,
-      "per_game": 25.45,
+      "games": 663,
+      "per_game": 17.78,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 19,
         "clear_path": 9,
@@ -14705,8 +14801,8 @@
         },
         "2023-24": {
           "calls": 1307,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 17.66,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 13,
@@ -14725,8 +14821,8 @@
         },
         "2024-25": {
           "calls": 852,
-          "games": null,
-          "per_game": null,
+          "games": 52,
+          "per_game": 16.38,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 3,
@@ -14743,8 +14839,8 @@
         },
         "2025-26": {
           "calls": 1277,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 17.26,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -14767,8 +14863,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7538,
-      "games": 356,
-      "per_game": 21.17,
+      "games": 525,
+      "per_game": 14.36,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 17,
         "clear_path": 3,
@@ -14919,8 +15016,8 @@
         },
         "2023-24": {
           "calls": 789,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 13.15,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -14937,8 +15034,8 @@
         },
         "2024-25": {
           "calls": 628,
-          "games": null,
-          "per_game": null,
+          "games": 53,
+          "per_game": 11.85,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 4,
@@ -14953,8 +15050,8 @@
         },
         "2025-26": {
           "calls": 674,
-          "games": null,
-          "per_game": null,
+          "games": 56,
+          "per_game": 12.04,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 6,
@@ -14976,8 +15073,9 @@
       "window_last_season": "2023-24",
       "seasons_covered": 9,
       "calls": 6121,
-      "games": 336,
-      "per_game": 18.22,
+      "games": 374,
+      "per_game": 16.37,
+      "rate_seasons": 9,
       "by_type": {
         "away_from_play": 5,
         "clear_path": 3,
@@ -15125,8 +15223,8 @@
         },
         "2023-24": {
           "calls": 574,
-          "games": null,
-          "per_game": null,
+          "games": 38,
+          "per_game": 15.11,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -15146,8 +15244,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 8238,
-      "games": 331,
-      "per_game": 24.89,
+      "games": 524,
+      "per_game": 15.72,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 21,
         "clear_path": 11,
@@ -15321,8 +15420,8 @@
         },
         "2023-24": {
           "calls": 770,
-          "games": null,
-          "per_game": null,
+          "games": 60,
+          "per_game": 12.83,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 8,
@@ -15339,8 +15438,8 @@
         },
         "2024-25": {
           "calls": 918,
-          "games": null,
-          "per_game": null,
+          "games": 67,
+          "per_game": 13.7,
           "by_type": {
             "away_from_play": 3,
             "clear_path": 1,
@@ -15356,8 +15455,8 @@
         },
         "2025-26": {
           "calls": 841,
-          "games": null,
-          "per_game": null,
+          "games": 66,
+          "per_game": 12.74,
           "by_type": {
             "away_from_play": 4,
             "clear_path": 1,
@@ -15378,8 +15477,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 11300,
-      "games": 444,
-      "per_game": 25.45,
+      "games": 640,
+      "per_game": 17.66,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 25,
         "clear_path": 15,
@@ -15560,8 +15660,8 @@
         },
         "2023-24": {
           "calls": 1063,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 15.41,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 5,
@@ -15578,8 +15678,8 @@
         },
         "2024-25": {
           "calls": 859,
-          "games": null,
-          "per_game": null,
+          "games": 58,
+          "per_game": 14.81,
           "by_type": {
             "away_from_play": 1,
             "double_technical": 1,
@@ -15595,8 +15695,8 @@
         },
         "2025-26": {
           "calls": 1110,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 16.09,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -15619,8 +15719,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1533,
-      "games": 8,
-      "per_game": 191.62,
+      "games": 118,
+      "per_game": 12.99,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 2,
         "defensive_3_seconds": 4,
@@ -15664,8 +15765,8 @@
         },
         "2023-24": {
           "calls": 403,
-          "games": null,
-          "per_game": null,
+          "games": 33,
+          "per_game": 12.21,
           "by_type": {
             "loose_ball": 22,
             "offensive": 33,
@@ -15677,8 +15778,8 @@
         },
         "2024-25": {
           "calls": 547,
-          "games": null,
-          "per_game": null,
+          "games": 42,
+          "per_game": 13.02,
           "by_type": {
             "defensive_3_seconds": 2,
             "flagrant_1": 1,
@@ -15693,8 +15794,8 @@
         },
         "2025-26": {
           "calls": 453,
-          "games": null,
-          "per_game": null,
+          "games": 35,
+          "per_game": 12.94,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -15715,8 +15816,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1573,
-      "games": 49,
-      "per_game": 32.1,
+      "games": 137,
+      "per_game": 11.48,
+      "rate_seasons": 5,
       "by_type": {
         "away_from_play": 2,
         "clear_path": 2,
@@ -15776,8 +15878,8 @@
         },
         "2024-25": {
           "calls": 496,
-          "games": null,
-          "per_game": null,
+          "games": 48,
+          "per_game": 10.33,
           "by_type": {
             "away_from_play": 1,
             "flagrant_1": 2,
@@ -15792,8 +15894,8 @@
         },
         "2025-26": {
           "calls": 476,
-          "games": null,
-          "per_game": null,
+          "games": 40,
+          "per_game": 11.9,
           "by_type": {
             "clear_path": 1,
             "flagrant_1": 2,
@@ -15814,6 +15916,7 @@
       "calls": 1223,
       "games": 80,
       "per_game": 15.29,
+      "rate_seasons": 2,
       "by_type": {
         "defensive_3_seconds": 13,
         "flagrant_1": 2,
@@ -15865,8 +15968,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 7,
       "calls": 3246,
-      "games": 110,
-      "per_game": 29.51,
+      "games": 238,
+      "per_game": 13.64,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 3,
         "clear_path": 5,
@@ -15948,8 +16052,8 @@
         },
         "2023-24": {
           "calls": 495,
-          "games": null,
-          "per_game": null,
+          "games": 36,
+          "per_game": 13.75,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 4,
@@ -15964,8 +16068,8 @@
         },
         "2024-25": {
           "calls": 595,
-          "games": null,
-          "per_game": null,
+          "games": 45,
+          "per_game": 13.22,
           "by_type": {
             "defensive_3_seconds": 1,
             "double_technical": 1,
@@ -15981,8 +16085,8 @@
         },
         "2025-26": {
           "calls": 632,
-          "games": null,
-          "per_game": null,
+          "games": 47,
+          "per_game": 13.45,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -16004,8 +16108,9 @@
       "window_last_season": "2024-25",
       "seasons_covered": 11,
       "calls": 6446,
-      "games": 365,
-      "per_game": 17.66,
+      "games": 459,
+      "per_game": 14.04,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 6,
         "clear_path": 5,
@@ -16173,8 +16278,8 @@
         },
         "2023-24": {
           "calls": 618,
-          "games": null,
-          "per_game": null,
+          "games": 53,
+          "per_game": 11.66,
           "by_type": {
             "defensive_3_seconds": 4,
             "loose_ball": 25,
@@ -16188,8 +16293,8 @@
         },
         "2024-25": {
           "calls": 444,
-          "games": null,
-          "per_game": null,
+          "games": 41,
+          "per_game": 10.83,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 1,
@@ -16209,8 +16314,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 11569,
-      "games": 478,
-      "per_game": 24.2,
+      "games": 692,
+      "per_game": 16.72,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 23,
         "clear_path": 8,
@@ -16398,8 +16504,8 @@
         },
         "2023-24": {
           "calls": 1117,
-          "games": null,
-          "per_game": null,
+          "games": 73,
+          "per_game": 15.3,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 25,
@@ -16416,8 +16522,8 @@
         },
         "2024-25": {
           "calls": 1123,
-          "games": null,
-          "per_game": null,
+          "games": 68,
+          "per_game": 16.51,
           "by_type": {
             "away_from_play": 1,
             "clear_path": 1,
@@ -16436,8 +16542,8 @@
         },
         "2025-26": {
           "calls": 1170,
-          "games": null,
-          "per_game": null,
+          "games": 73,
+          "per_game": 16.03,
           "by_type": {
             "away_from_play": 3,
             "defensive_3_seconds": 18,
@@ -16461,6 +16567,7 @@
       "calls": 5139,
       "games": 286,
       "per_game": 17.97,
+      "rate_seasons": 7,
       "by_type": {
         "away_from_play": 17,
         "clear_path": 5,
@@ -16611,8 +16718,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 7554,
-      "games": 372,
-      "per_game": 20.31,
+      "games": 505,
+      "per_game": 14.96,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 13,
         "clear_path": 5,
@@ -16768,8 +16876,8 @@
         },
         "2023-24": {
           "calls": 308,
-          "games": null,
-          "per_game": null,
+          "games": 23,
+          "per_game": 13.39,
           "by_type": {
             "defensive_3_seconds": 2,
             "hanging_technical": 1,
@@ -16783,8 +16891,8 @@
         },
         "2024-25": {
           "calls": 796,
-          "games": null,
-          "per_game": null,
+          "games": 58,
+          "per_game": 13.72,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 1,
@@ -16801,8 +16909,8 @@
         },
         "2025-26": {
           "calls": 659,
-          "games": null,
-          "per_game": null,
+          "games": 52,
+          "per_game": 12.67,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 2,
@@ -16825,8 +16933,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 11,
       "calls": 10450,
-      "games": 394,
-      "per_game": 26.52,
+      "games": 596,
+      "per_game": 17.53,
+      "rate_seasons": 11,
       "by_type": {
         "away_from_play": 17,
         "clear_path": 7,
@@ -16984,8 +17093,8 @@
         },
         "2023-24": {
           "calls": 1057,
-          "games": null,
-          "per_game": null,
+          "games": 69,
+          "per_game": 15.32,
           "by_type": {
             "away_from_play": 1,
             "defensive_3_seconds": 16,
@@ -17003,8 +17112,8 @@
         },
         "2024-25": {
           "calls": 1124,
-          "games": null,
-          "per_game": null,
+          "games": 70,
+          "per_game": 16.06,
           "by_type": {
             "away_from_play": 2,
             "defensive_3_seconds": 10,
@@ -17022,8 +17131,8 @@
         },
         "2025-26": {
           "calls": 1177,
-          "games": null,
-          "per_game": null,
+          "games": 63,
+          "per_game": 18.68,
           "by_type": {
             "away_from_play": 2,
             "clear_path": 1,
@@ -17047,8 +17156,9 @@
       "window_last_season": "2024-25",
       "seasons_covered": 4,
       "calls": 236,
-      "games": 8,
-      "per_game": 29.5,
+      "games": 19,
+      "per_game": 12.42,
+      "rate_seasons": 4,
       "by_type": {
         "away_from_play": 2,
         "loose_ball": 19,
@@ -17086,8 +17196,8 @@
         },
         "2023-24": {
           "calls": 90,
-          "games": null,
-          "per_game": null,
+          "games": 7,
+          "per_game": 12.86,
           "by_type": {
             "away_from_play": 1,
             "loose_ball": 9,
@@ -17100,8 +17210,8 @@
         },
         "2024-25": {
           "calls": 54,
-          "games": null,
-          "per_game": null,
+          "games": 4,
+          "per_game": 13.5,
           "by_type": {
             "away_from_play": 1,
             "loose_ball": 5,
@@ -17118,8 +17228,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 5,
       "calls": 1134,
-      "games": 12,
-      "per_game": 94.5,
+      "games": 86,
+      "per_game": 13.19,
+      "rate_seasons": 5,
       "by_type": {
         "clear_path": 3,
         "defensive_3_seconds": 6,
@@ -17165,8 +17276,8 @@
         },
         "2023-24": {
           "calls": 136,
-          "games": null,
-          "per_game": null,
+          "games": 7,
+          "per_game": 19.43,
           "by_type": {
             "flagrant_1": 1,
             "hanging_technical": 1,
@@ -17181,8 +17292,8 @@
         },
         "2024-25": {
           "calls": 320,
-          "games": null,
-          "per_game": null,
+          "games": 27,
+          "per_game": 11.85,
           "by_type": {
             "defensive_3_seconds": 1,
             "loose_ball": 24,
@@ -17196,8 +17307,8 @@
         },
         "2025-26": {
           "calls": 528,
-          "games": null,
-          "per_game": null,
+          "games": 40,
+          "per_game": 13.2,
           "by_type": {
             "clear_path": 1,
             "defensive_3_seconds": 4,
@@ -17221,6 +17332,7 @@
       "calls": 168,
       "games": 10,
       "per_game": 16.8,
+      "rate_seasons": 2,
       "by_type": {
         "loose_ball": 13,
         "offensive": 14,
@@ -17263,8 +17375,9 @@
       "window_last_season": "2025-26",
       "seasons_covered": 12,
       "calls": 11302,
-      "games": 498,
-      "per_game": 22.69,
+      "games": 723,
+      "per_game": 15.63,
+      "rate_seasons": 12,
       "by_type": {
         "away_from_play": 24,
         "clear_path": 16,
@@ -17448,8 +17561,8 @@
         },
         "2023-24": {
           "calls": 1096,
-          "games": null,
-          "per_game": null,
+          "games": 77,
+          "per_game": 14.23,
           "by_type": {
             "away_from_play": 4,
             "defensive_3_seconds": 6,
@@ -17466,8 +17579,8 @@
         },
         "2024-25": {
           "calls": 965,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 13.04,
           "by_type": {
             "away_from_play": 5,
             "clear_path": 1,
@@ -17485,8 +17598,8 @@
         },
         "2025-26": {
           "calls": 1107,
-          "games": null,
-          "per_game": null,
+          "games": 74,
+          "per_game": 14.96,
           "by_type": {
             "away_from_play": 6,
             "defensive_3_seconds": 7,
@@ -17511,8 +17624,8 @@
         "name": "James Williams",
         "slug": "james-williams",
         "technicals": 304,
-        "games": 461,
-        "per_game": 0.66,
+        "games": 686,
+        "per_game": 0.44,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17520,8 +17633,8 @@
         "name": "Marc Davis",
         "slug": "marc-davis",
         "technicals": 292,
-        "games": 499,
-        "per_game": 0.59,
+        "games": 722,
+        "per_game": 0.4,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17529,8 +17642,8 @@
         "name": "Tony Brothers",
         "slug": "tony-brothers",
         "technicals": 270,
-        "games": 478,
-        "per_game": 0.56,
+        "games": 692,
+        "per_game": 0.39,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17538,8 +17651,8 @@
         "name": "David Guthrie",
         "slug": "david-guthrie",
         "technicals": 246,
-        "games": 432,
-        "per_game": 0.57,
+        "games": 550,
+        "per_game": 0.45,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17547,8 +17660,8 @@
         "name": "Josh Tiven",
         "slug": "josh-tiven",
         "technicals": 237,
-        "games": 454,
-        "per_game": 0.52,
+        "games": 681,
+        "per_game": 0.35,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17556,8 +17669,8 @@
         "name": "John Goble",
         "slug": "john-goble",
         "technicals": 232,
-        "games": 479,
-        "per_game": 0.48,
+        "games": 658,
+        "per_game": 0.35,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17565,8 +17678,8 @@
         "name": "Scott Foster",
         "slug": "scott-foster",
         "technicals": 230,
-        "games": 463,
-        "per_game": 0.5,
+        "games": 663,
+        "per_game": 0.35,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17574,8 +17687,8 @@
         "name": "Ben Taylor",
         "slug": "ben-taylor",
         "technicals": 227,
-        "games": 410,
-        "per_game": 0.55,
+        "games": 546,
+        "per_game": 0.42,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17583,8 +17696,8 @@
         "name": "Tyler Ford",
         "slug": "tyler-ford",
         "technicals": 217,
-        "games": 394,
-        "per_game": 0.55,
+        "games": 596,
+        "per_game": 0.36,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17592,8 +17705,8 @@
         "name": "Brian Forte",
         "slug": "brian-forte",
         "technicals": 212,
-        "games": 448,
-        "per_game": 0.47,
+        "games": 648,
+        "per_game": 0.33,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17601,8 +17714,8 @@
         "name": "James Capers",
         "slug": "james-capers",
         "technicals": 207,
-        "games": 432,
-        "per_game": 0.48,
+        "games": 609,
+        "per_game": 0.34,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17610,8 +17723,8 @@
         "name": "Zach Zarba",
         "slug": "zach-zarba",
         "technicals": 201,
-        "games": 498,
-        "per_game": 0.4,
+        "games": 723,
+        "per_game": 0.28,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17628,8 +17741,8 @@
         "name": "Eric Lewis",
         "slug": "eric-lewis",
         "technicals": 195,
-        "games": 459,
-        "per_game": 0.42,
+        "games": 473,
+        "per_game": 0.41,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17637,8 +17750,8 @@
         "name": "Ed Malloy",
         "slug": "ed-malloy",
         "technicals": 191,
-        "games": 415,
-        "per_game": 0.46,
+        "games": 592,
+        "per_game": 0.32,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17646,8 +17759,8 @@
         "name": "Jacyn Goble",
         "slug": "jacyn-goble",
         "technicals": 179,
-        "games": 284,
-        "per_game": 0.63,
+        "games": 495,
+        "per_game": 0.36,
         "window": "2016-17 to 2025-26"
       },
       {
@@ -17655,8 +17768,8 @@
         "name": "Sean Wright",
         "slug": "sean-wright",
         "technicals": 178,
-        "games": 444,
-        "per_game": 0.4,
+        "games": 640,
+        "per_game": 0.28,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17664,8 +17777,8 @@
         "name": "Kevin Scott",
         "slug": "kevin-scott",
         "technicals": 170,
-        "games": 400,
-        "per_game": 0.42,
+        "games": 600,
+        "per_game": 0.28,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17673,8 +17786,8 @@
         "name": "Gediminas Petraitis",
         "slug": "gediminas-petraitis",
         "technicals": 169,
-        "games": 392,
-        "per_game": 0.43,
+        "games": 598,
+        "per_game": 0.28,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17682,8 +17795,8 @@
         "name": "Ray Acosta",
         "slug": "ray-acosta",
         "technicals": 164,
-        "games": 259,
-        "per_game": 0.63,
+        "games": 464,
+        "per_game": 0.35,
         "window": "2017-18 to 2025-26"
       },
       {
@@ -17691,8 +17804,8 @@
         "name": "Marat Kogut",
         "slug": "marat-kogut",
         "technicals": 163,
-        "games": 363,
-        "per_game": 0.45,
+        "games": 549,
+        "per_game": 0.3,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17700,8 +17813,8 @@
         "name": "Nick Buchert",
         "slug": "nick-buchert",
         "technicals": 163,
-        "games": 403,
-        "per_game": 0.4,
+        "games": 604,
+        "per_game": 0.27,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17709,8 +17822,8 @@
         "name": "Pat Fraher",
         "slug": "pat-fraher",
         "technicals": 156,
-        "games": 422,
-        "per_game": 0.37,
+        "games": 630,
+        "per_game": 0.25,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17718,8 +17831,8 @@
         "name": "J.T. Orr",
         "slug": "j-t-orr",
         "technicals": 144,
-        "games": 321,
-        "per_game": 0.45,
+        "games": 476,
+        "per_game": 0.3,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17727,8 +17840,8 @@
         "name": "Rodney Mott",
         "slug": "rodney-mott",
         "technicals": 143,
-        "games": 394,
-        "per_game": 0.36,
+        "games": 518,
+        "per_game": 0.28,
         "window": "2015-16 to 2025-26"
       }
     ],
@@ -17738,8 +17851,8 @@
         "name": "Tony Brothers",
         "slug": "tony-brothers",
         "flagrants": 62,
-        "games": 478,
-        "per_game": 0.13,
+        "games": 692,
+        "per_game": 0.09,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17747,8 +17860,8 @@
         "name": "James Williams",
         "slug": "james-williams",
         "flagrants": 53,
-        "games": 461,
-        "per_game": 0.11,
+        "games": 686,
+        "per_game": 0.08,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17756,8 +17869,8 @@
         "name": "Scott Foster",
         "slug": "scott-foster",
         "flagrants": 47,
-        "games": 463,
-        "per_game": 0.1,
+        "games": 663,
+        "per_game": 0.07,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17765,8 +17878,8 @@
         "name": "Josh Tiven",
         "slug": "josh-tiven",
         "flagrants": 46,
-        "games": 454,
-        "per_game": 0.1,
+        "games": 681,
+        "per_game": 0.07,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17774,8 +17887,8 @@
         "name": "Mitchell Ervin",
         "slug": "mitchell-ervin",
         "flagrants": 45,
-        "games": 376,
-        "per_game": 0.12,
+        "games": 582,
+        "per_game": 0.08,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17783,8 +17896,8 @@
         "name": "Marc Davis",
         "slug": "marc-davis",
         "flagrants": 43,
-        "games": 499,
-        "per_game": 0.09,
+        "games": 722,
+        "per_game": 0.06,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17792,8 +17905,8 @@
         "name": "Sean Wright",
         "slug": "sean-wright",
         "flagrants": 43,
-        "games": 444,
-        "per_game": 0.1,
+        "games": 640,
+        "per_game": 0.07,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17801,8 +17914,8 @@
         "name": "James Capers",
         "slug": "james-capers",
         "flagrants": 39,
-        "games": 432,
-        "per_game": 0.09,
+        "games": 609,
+        "per_game": 0.06,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17810,8 +17923,8 @@
         "name": "Zach Zarba",
         "slug": "zach-zarba",
         "flagrants": 38,
-        "games": 498,
-        "per_game": 0.08,
+        "games": 723,
+        "per_game": 0.05,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17819,8 +17932,8 @@
         "name": "John Goble",
         "slug": "john-goble",
         "flagrants": 37,
-        "games": 479,
-        "per_game": 0.08,
+        "games": 658,
+        "per_game": 0.06,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17828,8 +17941,8 @@
         "name": "Nick Buchert",
         "slug": "nick-buchert",
         "flagrants": 35,
-        "games": 403,
-        "per_game": 0.09,
+        "games": 604,
+        "per_game": 0.06,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17837,8 +17950,8 @@
         "name": "David Guthrie",
         "slug": "david-guthrie",
         "flagrants": 32,
-        "games": 432,
-        "per_game": 0.07,
+        "games": 550,
+        "per_game": 0.06,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17846,8 +17959,8 @@
         "name": "Kevin Scott",
         "slug": "kevin-scott",
         "flagrants": 32,
-        "games": 400,
-        "per_game": 0.08,
+        "games": 600,
+        "per_game": 0.05,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17855,8 +17968,8 @@
         "name": "Mark Lindsay",
         "slug": "mark-lindsay",
         "flagrants": 32,
-        "games": 363,
-        "per_game": 0.09,
+        "games": 570,
+        "per_game": 0.06,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17864,8 +17977,8 @@
         "name": "Pat Fraher",
         "slug": "pat-fraher",
         "flagrants": 32,
-        "games": 422,
-        "per_game": 0.08,
+        "games": 630,
+        "per_game": 0.05,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17873,8 +17986,8 @@
         "name": "Ben Taylor",
         "slug": "ben-taylor",
         "flagrants": 31,
-        "games": 410,
-        "per_game": 0.08,
+        "games": 546,
+        "per_game": 0.06,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17882,8 +17995,8 @@
         "name": "Ed Malloy",
         "slug": "ed-malloy",
         "flagrants": 31,
-        "games": 415,
-        "per_game": 0.07,
+        "games": 592,
+        "per_game": 0.05,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17891,8 +18004,8 @@
         "name": "Rodney Mott",
         "slug": "rodney-mott",
         "flagrants": 31,
-        "games": 394,
-        "per_game": 0.08,
+        "games": 518,
+        "per_game": 0.06,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17900,8 +18013,8 @@
         "name": "Gediminas Petraitis",
         "slug": "gediminas-petraitis",
         "flagrants": 30,
-        "games": 392,
-        "per_game": 0.08,
+        "games": 598,
+        "per_game": 0.05,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17909,7 +18022,7 @@
         "name": "Eric Lewis",
         "slug": "eric-lewis",
         "flagrants": 27,
-        "games": 459,
+        "games": 473,
         "per_game": 0.06,
         "window": "2014-15 to 2025-26"
       },
@@ -17918,8 +18031,8 @@
         "name": "Curtis Blair",
         "slug": "curtis-blair",
         "flagrants": 26,
-        "games": 401,
-        "per_game": 0.06,
+        "games": 606,
+        "per_game": 0.04,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17927,8 +18040,8 @@
         "name": "Justin Van Duyne",
         "slug": "justin-van-duyne",
         "flagrants": 26,
-        "games": 347,
-        "per_game": 0.07,
+        "games": 544,
+        "per_game": 0.05,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17936,8 +18049,8 @@
         "name": "Brian Forte",
         "slug": "brian-forte",
         "flagrants": 25,
-        "games": 448,
-        "per_game": 0.06,
+        "games": 648,
+        "per_game": 0.04,
         "window": "2014-15 to 2025-26"
       },
       {
@@ -17945,8 +18058,8 @@
         "name": "Tyler Ford",
         "slug": "tyler-ford",
         "flagrants": 25,
-        "games": 394,
-        "per_game": 0.06,
+        "games": 596,
+        "per_game": 0.04,
         "window": "2015-16 to 2025-26"
       },
       {
@@ -17954,8 +18067,8 @@
         "name": "Brent Barnaky",
         "slug": "brent-barnaky",
         "flagrants": 24,
-        "games": 399,
-        "per_game": 0.06,
+        "games": 607,
+        "per_game": 0.04,
         "window": "2015-16 to 2025-26"
       }
     ]

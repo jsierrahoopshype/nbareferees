@@ -51,9 +51,11 @@ import pandas as pd
 import numpy as np
 from dateutil import parser as date_parser
 
-# Shared tricode normalization lives with the local scripts.
+# Shared tricode normalization and the NBA<->ESPN game-id bridge live with the
+# local scripts.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "local"))
 import nba_tricodes  # noqa: E402
+import nba_data_source  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(REPO, "source-data")
@@ -2754,6 +2756,13 @@ CALL_TYPES_SHOWN = ["personal", "shooting", "loose_ball", "offensive", "technica
 # does not. Technicals and flagrants are ranked on raw counts, so this gates
 # only the per-game rate column.
 CALLS_MIN_GAMES_FOR_RATE = 100
+# Hard ceiling on calls per game, and the gate that enforces it is fatal. An
+# NBA game carries roughly 40 fouls between both teams, split across a
+# three-person crew, so 12-15 per official per game is ORDINARY. Anything above
+# this means an event is counted more than once, or the count is being divided
+# by the wrong set of games -- both have happened here. Exported in _meta so
+# render_pages.py checks the same number.
+CALLS_MAX_PER_GAME = 25
 NBRA_BIOS_FIELDS = ["jersey_num", "years_experience", "college", "hometown", "birth_date",
                     "headshot_url"]
 # Plausibility bounds for a computed age -- outside this range the parse is
@@ -2937,6 +2946,35 @@ def build_referee_calls(referees_index, off_ref, gm):
                                for d in outside_window)))
         # Everything downstream reads the in-window frame only.
         covered_games = set(cov["game_id"].astype(str).str.strip())
+        # TWO ID SCHEMES, ONE SET. The calls extract is keyed by NBA game id
+        # throughout, but officials.csv.gz (and so off_ref and gm below) keys
+        # 2023-24 onward by ESPN id. Filtering off_ref with NBA-keyed ids alone
+        # matched nothing in those seasons, so games worked collapsed to zero
+        # there while the calls still counted -- Intae Hwang published at 147.1
+        # calls per game over 7 games, because his 1,030 calls were divided by
+        # the 2022-23 games alone. Carrying BOTH forms of every covered game
+        # makes the filter match whichever scheme a frame happens to use.
+        _nba_to_espn, _espn_to_nba = nba_data_source.load_game_id_bridge()
+        _both = set(covered_games)
+        for _gid in covered_games:
+            _alt = _nba_to_espn.get(_gid) or _espn_to_nba.get(_gid)
+            if _alt:
+                _both.add(_alt)
+        _gained = len(_both) - len(covered_games)
+        if _gained:
+            print("  game-id bridge: %d covered game(s) also carried under their "
+                  "other id scheme, so games-worked matches in both" % _gained)
+        elif _nba_to_espn:
+            print("  NOTE: the game-id bridge matched none of the covered games. "
+                  "If the window reaches 2023-24 or later, per-game rates there "
+                  "will be wrong -- rebuild it with "
+                  "scripts/local/build_game_id_bridge.py.")
+        else:
+            print("  NOTE: no game-id bridge on file "
+                  "(source-data/game_id_bridge.csv.gz). Seasons from 2023-24 "
+                  "cannot match their crew sheet, so their games-worked "
+                  "denominators will be missing.")
+        covered_games = _both
         window_foul = int(cov["foul_events"].sum())
         window_att = int(cov["attributed"].sum())
         for season, grp in cov.groupby("season"):
@@ -2984,6 +3022,17 @@ def build_referee_calls(referees_index, off_ref, gm):
         seasons_sorted = sorted(per_season)
         total_calls = sum(career.values())
         total_games = sum(v["games"] or 0 for v in per_season.values())
+        # THE RATE'S NUMERATOR AND DENOMINATOR MUST COVER THE SAME SEASONS.
+        # A season whose games could not be counted contributes no games, so it
+        # must contribute no calls to the rate either -- otherwise the whole
+        # window's calls get divided by part of the window's games. That is
+        # exactly how Intae Hwang published at 147.1 per game: 1,030 calls over
+        # the 7 games of the one season that matched. The displayed `calls`
+        # stays the full window total; only the rate is restricted, and
+        # `rate_seasons` says how many seasons it actually spans so a reader
+        # (and the QA gate) can see when it is not the whole window.
+        rate_calls = sum(v["calls"] for v in per_season.values() if v["games"])
+        rate_seasons = sum(1 for v in per_season.values() if v["games"])
         out_refs[oid] = {
             # Named "window", never "career" -- the label travels with the data.
             "window_first_season": seasons_sorted[0],
@@ -2991,7 +3040,8 @@ def build_referee_calls(referees_index, off_ref, gm):
             "seasons_covered": len(seasons_sorted),
             "calls": total_calls,
             "games": total_games or None,
-            "per_game": clean_num(total_calls / total_games) if total_games else None,
+            "per_game": clean_num(rate_calls / total_games) if total_games else None,
+            "rate_seasons": rate_seasons,
             "by_type": {k: int(v) for k, v in sorted(career.items())},
             "per_season": per_season,
         }
@@ -3069,6 +3119,9 @@ def build_referee_calls(referees_index, off_ref, gm):
             "referees": len(out_refs),
             "coverage_by_season": coverage_by_season,
             "min_games_for_rate": CALLS_MIN_GAMES_FOR_RATE,
+            # Exported so render_pages.py checks the same ceiling this gate
+            # does, without a second literal to drift.
+            "max_per_game": CALLS_MAX_PER_GAME,
         },
         "referees": out_refs,
         "leaderboards": {
@@ -3078,12 +3131,20 @@ def build_referee_calls(referees_index, off_ref, gm):
         },
     }
     assert_no_nan(out, "referee_calls")
-    with open(os.path.join(DATA, "referee_calls.json"), "w", encoding="utf-8") as fh:
-        json.dump(out, fh, ensure_ascii=False, indent=2)
     print("loaded %d attributed call(s) for %d referee(s), %s to %s"
           % (out["_meta"]["total_calls"], len(out_refs),
              out["_meta"]["first_season"], out["_meta"]["last_season"]))
+    # NOT written here. The QA gate runs first and the caller writes only if it
+    # passes -- see write_referee_calls. Writing before the check is what let a
+    # run that aborted on impossible per-game rates still leave those rates on
+    # disk for render_pages.py to publish.
     return out
+
+
+def write_referee_calls(ref_calls):
+    """Write data/referee_calls.json. Called only after the QA gate passes."""
+    with open(os.path.join(DATA, "referee_calls.json"), "w", encoding="utf-8") as fh:
+        json.dump(ref_calls, fh, ensure_ascii=False, indent=2)
 
 
 def qa_referee_calls(ref_calls, referees_index):
@@ -3140,9 +3201,19 @@ def qa_referee_calls(ref_calls, referees_index):
         #    above 25 means one event is being attributed more than once --
         #    the paired turnover halves creeping back in, or a foul credited
         #    to the whole crew instead of the official who called it.
-        if rec.get("per_game") and rec["per_game"] > 25:
+        # A rate spanning fewer seasons than the referee has calls in means a
+        # season's games could not be counted. Not impossible on its face, so
+        # it is reported rather than fatal -- but it is the shape of the bug
+        # that produced 147.1 calls per game, so it must never pass unnoticed.
+        if (rec.get("per_game") and rec.get("rate_seasons") is not None
+                and rec["rate_seasons"] < rec["seasons_covered"]):
+            problems.append("%s has calls in %d season(s) but a per-game rate "
+                            "covering only %d -- a games denominator is missing"
+                            % (oid, rec["seasons_covered"], rec["rate_seasons"]))
+        if rec.get("per_game") and rec["per_game"] > CALLS_MAX_PER_GAME:
             problems.append("%s averages %.1f calls per game -- above the "
-                            "double-counting ceiling of 25" % (oid, rec["per_game"]))
+                            "double-counting ceiling of %d"
+                            % (oid, rec["per_game"], CALLS_MAX_PER_GAME))
 
     print("  referees with calls        : %d" % len(ref_calls["referees"]))
     print("  window                     : %s to %s" % (meta["first_season"], meta["last_season"]))
@@ -3153,6 +3224,10 @@ def qa_referee_calls(ref_calls, referees_index):
         print("  PROBLEMS:")
         for p in problems:
             print("    - %s" % p)
+        print("")
+        print("  data/referee_calls.json was NOT written. The file on disk is")
+        print("  the last one that passed, so nothing new reaches a page until")
+        print("  these are fixed. render_pages.py refuses this data too.")
         raise SystemExit("referee-call QA failed: %d problem(s)" % len(problems))
     print("  OK")
 
@@ -3824,7 +3899,11 @@ def main():
     build_recent_form(referees_index, off_ref, gm, tg, game_tot)
     crew_coverage = build_crew_coverage(off_raw, gm)
     ref_calls = build_referee_calls(referees_index, off_ref, gm)
+    # Check, then write. A failure raises before the file is touched, so a bad
+    # build leaves the previous good data/referee_calls.json in place rather
+    # than replacing it with numbers the gate just rejected.
     qa_referee_calls(ref_calls, referees_index)
+    write_referee_calls(ref_calls)
     nbra_bios = build_nbra_bios(referees_index)
     birthdays = build_birthdays(nbra_bios, referees_index)
     ref_lookup = {r["official_id"]: (r["name"], r["slug"]) for r in referees_index}

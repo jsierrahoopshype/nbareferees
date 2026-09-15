@@ -1308,29 +1308,6 @@
     },
     {
       "pts": 22,
-      "reb": 9,
-      "ast": 0,
-      "team_abbr": "MIA",
-      "opp_abbr": "CHI",
-      "game_date": "2003-02-23",
-      "game_id": "230222014",
-      "crew": [
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
-        },
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
-        }
-      ]
-    },
-    {
-      "pts": 22,
       "reb": 7,
       "ast": 1,
       "team_abbr": "MIA",
@@ -1345,6 +1322,29 @@
         {
           "name": "Phil Robinson",
           "slug": "phil-robinson"
+        },
+        {
+          "name": "Bennett Salvatore",
+          "slug": "bennett-salvatore"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 9,
+      "ast": 0,
+      "team_abbr": "MIA",
+      "opp_abbr": "CHI",
+      "game_date": "2003-02-23",
+      "game_id": "230222014",
+      "crew": [
+        {
+          "name": "James Capers",
+          "slug": "james-capers"
+        },
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
         },
         {
           "name": "Bennett Salvatore",
@@ -1423,39 +1423,6 @@
     },
     {
       "pts": 17,
-      "reb": 4,
-      "ast": 0,
-      "team_abbr": "MIA",
-      "opp_abbr": "NYK",
-      "game_date": "2002-12-23",
-      "game_id": "221222018",
-      "crew": [
-        {
-          "name": "Steve Javie",
-          "slug": "steve-javie"
-        },
-        {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
-        },
-        {
-          "name": "Mark Wunderlich",
-          "slug": "mark-wunderlich"
-        }
-      ]
-    },
-    {
-      "pts": 17,
-      "reb": 8,
-      "ast": 0,
-      "team_abbr": "NJN",
-      "opp_abbr": "POR",
-      "game_date": "2008-01-14",
-      "game_id": "0020700549",
-      "crew": []
-    },
-    {
-      "pts": 17,
       "reb": 6,
       "ast": 0,
       "team_abbr": "MIA",
@@ -1478,25 +1445,58 @@
       ]
     },
     {
-      "pts": 16,
-      "reb": 5,
-      "ast": 1,
+      "pts": 17,
+      "reb": 8,
+      "ast": 0,
+      "team_abbr": "NJN",
+      "opp_abbr": "POR",
+      "game_date": "2008-01-14",
+      "game_id": "0020700549",
+      "crew": []
+    },
+    {
+      "pts": 17,
+      "reb": 4,
+      "ast": 0,
       "team_abbr": "MIA",
-      "opp_abbr": "ORL",
-      "game_date": "2002-04-12",
-      "game_id": "220412014",
+      "opp_abbr": "NYK",
+      "game_date": "2002-12-23",
+      "game_id": "221222018",
       "crew": [
         {
-          "name": "Joe DeRosa",
-          "slug": "joe-derosa"
+          "name": "Steve Javie",
+          "slug": "steve-javie"
         },
         {
           "name": "Scott Wall",
           "slug": "scott-wall"
         },
         {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
+          "name": "Mark Wunderlich",
+          "slug": "mark-wunderlich"
+        }
+      ]
+    },
+    {
+      "pts": 16,
+      "reb": 6,
+      "ast": 0,
+      "team_abbr": "CHI",
+      "opp_abbr": "PHI",
+      "game_date": "2006-02-16",
+      "game_id": "0020500777",
+      "crew": [
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
+        {
+          "name": "Kevin Fehr",
+          "slug": "kevin-fehr"
+        },
+        {
+          "name": "Joe Forte",
+          "slug": "joe-forte"
         }
       ]
     }

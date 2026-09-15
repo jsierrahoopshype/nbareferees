@@ -1949,6 +1949,16 @@
     },
     {
       "pts": 32,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "PHX",
+      "opp_abbr": "CHI",
+      "game_date": "2009-01-31",
+      "game_id": "0020800700",
+      "crew": []
+    },
+    {
+      "pts": 32,
       "reb": 3,
       "ast": 4,
       "team_abbr": "PHX",
@@ -1969,16 +1979,6 @@
           "slug": "bob-delaney"
         }
       ]
-    },
-    {
-      "pts": 32,
-      "reb": 5,
-      "ast": 1,
-      "team_abbr": "PHX",
-      "opp_abbr": "CHI",
-      "game_date": "2009-01-31",
-      "game_id": "0020800700",
-      "crew": []
     },
     {
       "pts": 31,
@@ -2005,39 +2005,6 @@
     },
     {
       "pts": 30,
-      "reb": 2,
-      "ast": 2,
-      "team_abbr": "PHX",
-      "opp_abbr": "CHA",
-      "game_date": "2008-02-04",
-      "game_id": "0020700704",
-      "crew": [
-        {
-          "name": "Phil Robinson",
-          "slug": "phil-robinson"
-        },
-        {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
-        },
-        {
-          "name": "Luis Grillo",
-          "slug": "luis-grillo"
-        }
-      ]
-    },
-    {
-      "pts": 30,
-      "reb": 1,
-      "ast": 4,
-      "team_abbr": "PHX",
-      "opp_abbr": "DAL",
-      "game_date": "2006-11-09",
-      "game_id": "0020600070",
-      "crew": []
-    },
-    {
-      "pts": 30,
       "reb": 1,
       "ast": 4,
       "team_abbr": "PHX",
@@ -2056,6 +2023,39 @@
         {
           "name": "Eric Lewis",
           "slug": "eric-lewis"
+        }
+      ]
+    },
+    {
+      "pts": 30,
+      "reb": 1,
+      "ast": 4,
+      "team_abbr": "PHX",
+      "opp_abbr": "DAL",
+      "game_date": "2006-11-09",
+      "game_id": "0020600070",
+      "crew": []
+    },
+    {
+      "pts": 30,
+      "reb": 2,
+      "ast": 2,
+      "team_abbr": "PHX",
+      "opp_abbr": "CHA",
+      "game_date": "2008-02-04",
+      "game_id": "0020700704",
+      "crew": [
+        {
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
+        },
+        {
+          "name": "Joe Forte",
+          "slug": "joe-forte"
+        },
+        {
+          "name": "Luis Grillo",
+          "slug": "luis-grillo"
         }
       ]
     }
