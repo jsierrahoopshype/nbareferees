@@ -2772,6 +2772,7 @@ CALL_TYPES_SHOWN = ["personal", "shooting", "loose_ball", "offensive", "technica
 # does not. Technicals and flagrants are ranked on raw counts, so this gates
 # only the per-game rate column.
 CALLS_MIN_GAMES_FOR_RATE = 100
+OFFICIAL_ID_MAP_CSV = os.path.join(SRC, "official_id_map.csv.gz")
 # Hard ceiling on calls per game, and the gate that enforces it is fatal. An
 # NBA game carries roughly 40 fouls between both teams, split across a
 # three-person crew, so 12-15 per official per game is ORDINARY. Anything above
@@ -2878,6 +2879,182 @@ def build_crew_coverage(off_raw, gm):
           % (games_total, no_crew, out["no_crew_pct"] or 0.0, partial, out["partial_crew_pct"] or 0.0))
     assert_no_nan(out, "crew_coverage")
     with open(os.path.join(DATA, "crew_coverage.json"), "w", encoding="utf-8") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=2)
+    return out
+
+
+L2M_GAMES_CSV = os.path.join(SRC, "l2m_games.csv.gz")
+L2M_CREW_CSV = os.path.join(SRC, "l2m_crew.csv.gz")
+# A crew-level figure needs enough reported games to be worth printing at all.
+# Below this the page shows the count and withholds the share.
+L2M_MIN_GAMES_FOR_SHARE = 50
+
+
+def build_l2m(referees_index, gm):
+    """The NBA's Last Two Minute reports, per game and per crew.
+
+    WHAT THIS IS. For games close in the final two minutes the league publishes
+    a review of every call and non-call in that window and grades each one. It
+    is the only source on this site that says whether a call was CORRECT, which
+    makes it the one most easily turned into something it cannot support.
+
+    THE CONSTRAINT THAT SHAPES EVERYTHING HERE. A graded play names the CREW
+    that worked the game and never which of the three officials made or missed
+    it. So this function produces no per-referee error count and no ranking,
+    and the figures it does attach to a referee are labelled as their crews'
+    throughout. Two further reasons, both measured rather than asserted:
+
+      * coverage is ~30% of games, and which games get reported is decided by
+        how close they were, so a referee's totals track the assignments they
+        drew;
+      * the league's own grading moved enormously -- 13.0% of assessed plays
+        graded incorrect in 2014-15 against 4.6% in 2024-25 -- so comparing
+        officials from different eras mostly compares eras.
+
+    Writes data/l2m.json. Absent the extracts it writes the unavailable stub,
+    exactly like the call attribution and the NBRA bios.
+    """
+    hr("SECTION 11  Last Two Minute reports (optional)")
+    empty = {"_meta": {"available": False}, "games": {}, "referees": {}}
+    if not (os.path.exists(L2M_GAMES_CSV) and os.path.exists(L2M_CREW_CSV)):
+        print("no %s -- pages render without the L2M module until "
+              "scripts/local/extract_l2m.py has been run locally"
+              % os.path.relpath(L2M_GAMES_CSV, REPO))
+        with open(os.path.join(DATA, "l2m.json"), "w", encoding="utf-8") as fh:
+            json.dump(empty, fh, ensure_ascii=False, indent=2)
+        return empty
+
+    lg = pd.read_csv(L2M_GAMES_CSV, dtype=str).fillna("")
+    for c in ("assessed", "CC", "CNC", "IC", "INC", "NA"):
+        lg[c] = pd.to_numeric(lg[c], errors="coerce").fillna(0).astype(int)
+    lg["incorrect"] = lg["IC"] + lg["INC"]
+
+    # Our games, in the same key space. L2M is NBA-keyed; games.csv.gz is
+    # ESPN-keyed from 2023-24, so both go through the bridge.
+    _n2e, _e2n = nba_data_source.load_game_id_bridge()
+
+    def canon(g):
+        g = str(g).strip()
+        return _e2n.get(g, g)
+
+    gm_season = {canon(g): s for g, s in zip(gm["game_id"], gm["season"])}
+    games_total = collections.Counter(gm_season.values())
+
+    games = {}
+    by_season = collections.defaultdict(lambda: collections.Counter())
+    placed = orphan = 0
+    for r in lg.itertuples(index=False):
+        gid = canon(r.game_id)
+        season = gm_season.get(gid)
+        if not season:
+            orphan += 1
+            continue
+        placed += 1
+        # Keyed by BOTH id forms. The renderer's game log carries whatever id
+        # that season was built from, and giving it the bridge too would be a
+        # second place for the two schemes to drift apart.
+        games[gid] = {"assessed": int(r.assessed), "correct_call": int(r.CC),
+                      "correct_non_call": int(r.CNC), "incorrect_call": int(r.IC),
+                      "incorrect_non_call": int(r.INC), "not_assessed": int(r.NA),
+                      "incorrect": int(r.incorrect), "season": season}
+        b = by_season[season]
+        b["games"] += 1
+        for k in ("assessed", "incorrect", "IC", "INC"):
+            b[k] += int(getattr(r, k if k != "incorrect" else "incorrect"))
+
+    for gid in list(games):
+        alias = _n2e.get(gid)
+        if alias and alias not in games:
+            games[alias] = games[gid]
+
+    # Crews. Joined through the NBA person-id map, so a crew slot reaches the
+    # same canonical referee the rest of the site uses.
+    id_map = {}
+    if os.path.exists(OFFICIAL_ID_MAP_CSV):
+        idm = pd.read_csv(OFFICIAL_ID_MAP_CSV, dtype=str).fillna("")
+        id_map = dict(zip(idm["nba_person_id"].str.strip(),
+                          idm["official_id"].str.strip()))
+    known = {r["official_id"] for r in referees_index}
+    crew = pd.read_csv(L2M_CREW_CSV, dtype=str).fillna("")
+    refs = collections.defaultdict(lambda: {"games": 0, "assessed": 0, "incorrect": 0,
+                                            "incorrect_call": 0, "incorrect_non_call": 0})
+    unmapped = collections.Counter()
+    for gid_raw, pid in zip(crew["game_id"], crew["nba_person_id"]):
+        gid = canon(gid_raw)
+        g = games.get(gid)
+        if not g:
+            continue
+        slug = id_map.get(str(pid).strip())
+        if not slug or slug not in known:
+            unmapped[str(pid).strip()] += 1
+            continue
+        rec = refs[slug]
+        rec["games"] += 1
+        rec["assessed"] += g["assessed"]
+        rec["incorrect"] += g["incorrect"]
+        rec["incorrect_call"] += g["incorrect_call"]
+        rec["incorrect_non_call"] += g["incorrect_non_call"]
+
+    out_refs = {}
+    for slug, rec in refs.items():
+        # The share is the CREWS' -- printed only with enough reported games
+        # behind it to be worth printing, and never as a per-referee rate.
+        share = (clean_num(100.0 * rec["incorrect"] / rec["assessed"])
+                 if rec["games"] >= L2M_MIN_GAMES_FOR_SHARE and rec["assessed"] else None)
+        out_refs[slug] = dict(rec, crew_incorrect_pct=share)
+
+    # Totals over DISTINCT games: games now carries alias keys pointing at the
+    # same dict, so summing values() would count the bridged seasons twice.
+    distinct = list({id(g): g for g in games.values()}.values())
+    t_assessed = sum(g["assessed"] for g in distinct)
+    t_ic = sum(g["incorrect_call"] for g in distinct)
+    t_inc = sum(g["incorrect_non_call"] for g in distinct)
+    t_wrong = t_ic + t_inc
+    seasons = sorted(by_season)
+    season_rows = {}
+    for s in seasons:
+        b = by_season[s]
+        season_rows[s] = {
+            "games": int(b["games"]), "games_total": int(games_total.get(s, 0)),
+            "coverage_pct": clean_num(100.0 * b["games"] / games_total[s]) if games_total.get(s) else None,
+            "assessed": int(b["assessed"]), "incorrect": int(b["incorrect"]),
+            "incorrect_pct": clean_num(100.0 * b["incorrect"] / b["assessed"]) if b["assessed"] else None,
+        }
+    out = {
+        "_meta": {
+            "available": True,
+            "first_season": seasons[0] if seasons else None,
+            "last_season": seasons[-1] if seasons else None,
+            "games_with_report": len(distinct),
+            "games_in_window": sum(games_total[s] for s in seasons),
+            "coverage_pct": clean_num(
+                100.0 * len(distinct) / sum(games_total[s] for s in seasons)) if seasons else None,
+            "assessed": t_assessed,
+            "incorrect": t_wrong,
+            "incorrect_pct": clean_num(100.0 * t_wrong / t_assessed) if t_assessed else None,
+            "incorrect_call": t_ic,
+            "incorrect_non_call": t_inc,
+            # The headline: nearly all of what the league flags is a foul that
+            # went unwhistled, not a whistle that should not have blown.
+            "non_call_share_of_incorrect": clean_num(100.0 * t_inc / t_wrong) if t_wrong else None,
+            "by_season": season_rows,
+            "min_games_for_share": L2M_MIN_GAMES_FOR_SHARE,
+            "referees_with_a_report": len(out_refs),
+        },
+        "games": games,
+        "referees": out_refs,
+    }
+    print("  %d reported game(s) placed, %d unplaceable" % (placed, orphan))
+    print("  %d assessed play(s); %d graded incorrect (%.1f%%), of which %.0f%% "
+          "were missed calls" % (t_assessed, t_wrong, out["_meta"]["incorrect_pct"],
+                                 out["_meta"]["non_call_share_of_incorrect"]))
+    print("  %d referee(s) appear on a reported crew" % len(out_refs))
+    if unmapped:
+        print("  WARNING: %d crew slot(s) across %d NBA person id(s) did not map "
+              "to a referee: %s" % (sum(unmapped.values()), len(unmapped),
+                                    list(unmapped)[:8]))
+    assert_no_nan(out, "l2m")
+    with open(os.path.join(DATA, "l2m.json"), "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=2)
     return out
 
@@ -4026,6 +4203,7 @@ def main():
     build_whistle_leaderboards(referees_index)
     build_recent_form(referees_index, off_ref, gm, tg, game_tot)
     crew_coverage = build_crew_coverage(off_raw, gm)
+    l2m = build_l2m(referees_index, gm)
     ref_calls = build_referee_calls(referees_index, off_ref, gm)
     # Check, then write. A failure raises before the file is touched, so a bad
     # build leaves the previous good data/referee_calls.json in place rather

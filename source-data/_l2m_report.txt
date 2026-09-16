@@ -1,0 +1,60 @@
+Last Two Minute reports (extract_l2m.py)
+==============================================================================
+rows read: 90302 | rows with no game id: 631
+games with a report: 4454
+
+==============================================================================
+COVERAGE AGAINST OUR GAMES
+==============================================================================
+our games: 41618
+L2M games matching one of ours: 3640
+L2M games we cannot place     : 814
+
+season    ourGames  withL2M    share
+------------------------------------------------------------------------------
+2014-15       1311      139    10.6%
+2015-16       1316      439    33.4%
+2016-17       1309      428    32.7%
+2017-18       1312      475    36.2%
+2018-19       1312      455    34.7%
+2019-20       1142      394    34.5%
+2020-21       1165      402    34.5%
+2021-22       1317      438    33.3%
+2022-23       1314      470    35.8%
+
+A report exists only for games that were CLOSE in the last two
+minutes, which is roughly a third of them. An official's report count
+therefore tracks how many close games they drew more than anything
+else, and no figure built from it can be read as a per-game rate.
+
+==============================================================================
+HOW THE LEAGUE GRADED THE PLAYS
+==============================================================================
+grade      plays    share  meaning
+------------------------------------------------------------------------------
+CC         20874    23.3%  correct call
+CNC        60136    67.1%  correct non-call
+IC           791     0.9%  INCORRECT call -- a whistle that should not have blown
+INC         5368     6.0%  INCORRECT non-call -- a foul that went unwhistled
+NA          2502     2.8%  not assessed
+
+plays judged incorrect: 6159 of 89671 (6.9%)
+of those, 87% are MISSED calls rather than wrong whistles (5368 INC vs 791 IC).
+That asymmetry is the finding here. It is a statement about what the
+league's own reviewers flag, not about any individual official.
+
+==============================================================================
+ATTRIBUTION -- WHAT THIS DATA DOES NOT SUPPORT
+==============================================================================
+officials named per reported game: 2 officials on 1 game(s), 3 officials on 4356 game(s), 4 officials on 97 game(s)
+
+Every assessed play carries the whole crew and no per-call official.
+There is no column, and no text, identifying which of the three made
+or missed the play being graded. Any per-referee error count built
+from this would be invented, so the extract offers no route to one.
+
+==============================================================================
+OUTPUT
+==============================================================================
+-> source-data/l2m_games.csv.gz (4454 row(s))
+-> source-data/l2m_crew.csv.gz (13458 row(s))
