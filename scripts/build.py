@@ -2946,6 +2946,10 @@ def build_referee_calls(referees_index, off_ref, gm):
     window_foul = 0
     window_att = 0
     outside_window = []
+    # Defined here rather than only inside the branch below, so the id
+    # canonicaliser further down cannot reference an undefined name when there
+    # is no coverage extract to read.
+    _nba_to_espn, _espn_to_nba = {}, {}
     if os.path.exists(REF_CALLS_COVERAGE_CSV):
         cov = pd.read_csv(REF_CALLS_COVERAGE_CSV, dtype=str).fillna("")
         for col in ("foul_events", "attributed", "unattributed"):
@@ -3014,14 +3018,56 @@ def build_referee_calls(referees_index, off_ref, gm):
     # Games worked inside the covered window, per referee per season. This is
     # the honest denominator: a game the official worked in which they happened
     # to call nothing still belongs in it.
-    games_worked = collections.defaultdict(dict)
+    #
+    # TWO SOURCES OF EVIDENCE THAT AN OFFICIAL WORKED A GAME, and the rate needs
+    # both. The crew sheet lists who was assigned. The play-by-play attributes
+    # calls to a named official, which is proof they were there -- and it is
+    # available for games the crew sheet has no row for at all (6.3% of games
+    # site-wide). Counting only the crew sheet divided calls from 39,782 games
+    # by the 37,232 of them it happens to list: a 6.41% shortfall that inflated
+    # every per-game rate, across 617 referee-seasons. Scott Foster's 2014-15
+    # read 23.64 because 260 playoff calls were divided by 11 of his 13 games.
+    #
+    # The two sources key games differently from 2023-24 (crew sheet by ESPN
+    # id, play-by-play by NBA id), so ids are canonicalised through the bridge
+    # before the union -- otherwise the same game counts twice and the fix
+    # becomes a worse bug than the one it replaces.
+    def _canon_gid(g):
+        """One key per real game, whichever scheme it arrived in."""
+        return _espn_to_nba.get(g, g)
+
+    worked = collections.defaultdict(lambda: collections.defaultdict(set))
     if covered_games:
         # off_ref is the reconciled officials frame (one row per game/official,
         # alternates already excluded upstream); gm carries the season label.
         sub = off_ref[off_ref["game_id"].isin(covered_games)][["game_id", "ref_key"]]
         sub = sub.merge(gm[["game_id", "season"]], on="game_id", how="left")
-        for (oid, season), grp in sub.groupby(["ref_key", "season"]):
-            games_worked[oid][season] = int(grp["game_id"].nunique())
+        sub = sub[sub["season"].notna()]
+        for gid, oid, season in zip(sub["game_id"], sub["ref_key"], sub["season"]):
+            worked[oid][season].add(_canon_gid(str(gid).strip()))
+        # Every game this official is actually credited with a call in. The
+        # season comes from the calls extract, which derives it from the game
+        # id itself, so it agrees with gm's label for the same game.
+        for (oid, season), grp in calls.groupby(["official_id", "season"]):
+            worked[oid][season].update(_canon_gid(str(g).strip()) for g in grp["game_id"])
+
+    games_worked = collections.defaultdict(dict)
+    _from_calls_only = 0
+    for oid, seasons_ in worked.items():
+        for season, gids in seasons_.items():
+            games_worked[oid][season] = len(gids)
+    if covered_games:
+        # What the union added, reported rather than silent: this moves every
+        # published rate, so the size of the move belongs in the build log.
+        _crew_only = sum(
+            len({_canon_gid(str(g).strip()) for g in grp["game_id"]})
+            for _, grp in sub.groupby(["ref_key", "season"]))
+        _union = sum(len(g) for ss in worked.values() for g in ss.values())
+        _from_calls_only = _union - _crew_only
+        print("  games worked: %d from the crew sheet, %d after adding games the "
+              "play-by-play credits (+%d, %.2f%%)"
+              % (_crew_only, _union, _from_calls_only,
+                 100.0 * _from_calls_only / _union if _union else 0.0))
 
     out_refs = {}
     grouped = calls.groupby(["official_id", "season", "call_type"]).size()

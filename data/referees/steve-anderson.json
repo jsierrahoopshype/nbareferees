@@ -4,29 +4,37 @@
     "name": "Steve Anderson",
     "slug": "steve-anderson",
     "raw_ids": [
-      "202000"
+      "202000",
+      "espn:steven-anderson"
     ],
     "eras": [
+      "espn",
       "nba"
     ],
     "first_season": "2011-12",
     "last_season": "2016-17",
-    "games_total": 186,
-    "games_rs": 186,
+    "games_total": 196,
+    "games_rs": 196,
     "games_po": 0,
     "games_pi": 0,
     "finals_games": 0,
     "game7s": 0,
     "active": false,
-    "quality_total": 186,
-    "seasons_active": 5,
-    "quality_per_season": 37.2,
+    "quality_total": 196,
+    "seasons_active": 6,
+    "quality_per_season": 32.67,
     "per_season": {
       "2011-12": {
         "rs": 7,
         "po": 0,
         "pi": 0,
         "total": 7
+      },
+      "2012-13": {
+        "rs": 10,
+        "po": 0,
+        "pi": 0,
+        "total": 10
       },
       "2013-14": {
         "rs": 41,
@@ -67,13 +75,23 @@
     },
     {
       "team_abbr": "PHI",
-      "games": 18,
+      "games": 19,
       "wins": 1,
-      "losses": 17,
-      "win_pct": 0.06,
-      "home_games": 6,
+      "losses": 18,
+      "win_pct": 0.05,
+      "home_games": 7,
       "home_wins": 0,
-      "avg_margin_for_team": -15.44
+      "avg_margin_for_team": -15.53
+    },
+    {
+      "team_abbr": "BKN",
+      "games": 19,
+      "wins": 6,
+      "losses": 13,
+      "win_pct": 0.32,
+      "home_games": 10,
+      "home_wins": 2,
+      "avg_margin_for_team": -3.05
     },
     {
       "team_abbr": "CHA",
@@ -86,14 +104,14 @@
       "avg_margin_for_team": 3.72
     },
     {
-      "team_abbr": "BKN",
-      "games": 17,
-      "wins": 5,
-      "losses": 12,
-      "win_pct": 0.29,
-      "home_games": 9,
-      "home_wins": 2,
-      "avg_margin_for_team": -3.53
+      "team_abbr": "MIN",
+      "games": 16,
+      "wins": 8,
+      "losses": 8,
+      "win_pct": 0.5,
+      "home_games": 11,
+      "home_wins": 4,
+      "avg_margin_for_team": 0.56
     },
     {
       "team_abbr": "MIL",
@@ -106,14 +124,54 @@
       "avg_margin_for_team": -2.5
     },
     {
-      "team_abbr": "MIN",
-      "games": 15,
-      "wins": 7,
+      "team_abbr": "ATL",
+      "games": 16,
+      "wins": 9,
+      "losses": 7,
+      "win_pct": 0.56,
+      "home_games": 7,
+      "home_wins": 6,
+      "avg_margin_for_team": 0.44
+    },
+    {
+      "team_abbr": "MIA",
+      "games": 16,
+      "wins": 8,
       "losses": 8,
-      "win_pct": 0.47,
+      "win_pct": 0.5,
+      "home_games": 10,
+      "home_wins": 5,
+      "avg_margin_for_team": 0.88
+    },
+    {
+      "team_abbr": "DEN",
+      "games": 16,
+      "wins": 4,
+      "losses": 12,
+      "win_pct": 0.25,
+      "home_games": 8,
+      "home_wins": 3,
+      "avg_margin_for_team": -7.44
+    },
+    {
+      "team_abbr": "SAC",
+      "games": 16,
+      "wins": 4,
+      "losses": 12,
+      "win_pct": 0.25,
+      "home_games": 9,
+      "home_wins": 2,
+      "avg_margin_for_team": -2.94
+    },
+    {
+      "team_abbr": "POR",
+      "games": 15,
+      "wins": 13,
+      "losses": 2,
+      "win_pct": 0.87,
       "home_games": 11,
-      "home_wins": 4,
-      "avg_margin_for_team": -0.53
+      "home_wins": 10,
+      "avg_margin_for_team": 10.2
     },
     {
       "team_abbr": "CLE",
@@ -126,84 +184,44 @@
       "avg_margin_for_team": 3.8
     },
     {
-      "team_abbr": "ATL",
-      "games": 15,
-      "wins": 9,
-      "losses": 6,
-      "win_pct": 0.6,
-      "home_games": 7,
-      "home_wins": 6,
-      "avg_margin_for_team": 3.07
-    },
-    {
-      "team_abbr": "MIA",
-      "games": 15,
-      "wins": 7,
-      "losses": 8,
-      "win_pct": 0.47,
-      "home_games": 9,
-      "home_wins": 4,
-      "avg_margin_for_team": 0.47
-    },
-    {
-      "team_abbr": "POR",
-      "games": 14,
-      "wins": 12,
-      "losses": 2,
-      "win_pct": 0.86,
-      "home_games": 10,
-      "home_wins": 9,
-      "avg_margin_for_team": 10.79
-    },
-    {
-      "team_abbr": "DEN",
-      "games": 14,
-      "wins": 4,
-      "losses": 10,
-      "win_pct": 0.29,
-      "home_games": 8,
-      "home_wins": 3,
-      "avg_margin_for_team": -7.43
-    },
-    {
-      "team_abbr": "SAC",
-      "games": 14,
-      "wins": 4,
-      "losses": 10,
-      "win_pct": 0.29,
-      "home_games": 8,
-      "home_wins": 2,
-      "avg_margin_for_team": -2.07
-    },
-    {
       "team_abbr": "MEM",
-      "games": 13,
-      "wins": 6,
+      "games": 14,
+      "wins": 7,
       "losses": 7,
-      "win_pct": 0.46,
-      "home_games": 8,
-      "home_wins": 5,
-      "avg_margin_for_team": 2.46
+      "win_pct": 0.5,
+      "home_games": 9,
+      "home_wins": 6,
+      "avg_margin_for_team": 2.93
     },
     {
       "team_abbr": "TOR",
-      "games": 13,
+      "games": 14,
       "wins": 9,
-      "losses": 4,
-      "win_pct": 0.69,
+      "losses": 5,
+      "win_pct": 0.64,
       "home_games": 4,
       "home_wins": 4,
-      "avg_margin_for_team": 4.77
+      "avg_margin_for_team": 3.93
     },
     {
       "team_abbr": "GSW",
-      "games": 12,
-      "wins": 9,
+      "games": 13,
+      "wins": 10,
       "losses": 3,
-      "win_pct": 0.75,
+      "win_pct": 0.77,
       "home_games": 4,
       "home_wins": 3,
-      "avg_margin_for_team": 9.42
+      "avg_margin_for_team": 9.23
+    },
+    {
+      "team_abbr": "HOU",
+      "games": 12,
+      "wins": 6,
+      "losses": 6,
+      "win_pct": 0.5,
+      "home_games": 3,
+      "home_wins": 3,
+      "avg_margin_for_team": 2.75
     },
     {
       "team_abbr": "ORL",
@@ -216,6 +234,16 @@
       "avg_margin_for_team": -1.5
     },
     {
+      "team_abbr": "SAS",
+      "games": 12,
+      "wins": 11,
+      "losses": 1,
+      "win_pct": 0.92,
+      "home_games": 5,
+      "home_wins": 4,
+      "avg_margin_for_team": 15.58
+    },
+    {
       "team_abbr": "UTA",
       "games": 11,
       "wins": 6,
@@ -224,6 +252,16 @@
       "home_games": 6,
       "home_wins": 6,
       "avg_margin_for_team": -3.27
+    },
+    {
+      "team_abbr": "NYK",
+      "games": 11,
+      "wins": 4,
+      "losses": 7,
+      "win_pct": 0.36,
+      "home_games": 5,
+      "home_wins": 4,
+      "avg_margin_for_team": -4.09
     },
     {
       "team_abbr": "DAL",
@@ -236,14 +274,24 @@
       "avg_margin_for_team": -0.73
     },
     {
-      "team_abbr": "SAS",
+      "team_abbr": "CHI",
       "games": 11,
-      "wins": 10,
-      "losses": 1,
-      "win_pct": 0.91,
-      "home_games": 4,
-      "home_wins": 3,
-      "avg_margin_for_team": 16.45
+      "wins": 8,
+      "losses": 3,
+      "win_pct": 0.73,
+      "home_games": 8,
+      "home_wins": 6,
+      "avg_margin_for_team": 6.27
+    },
+    {
+      "team_abbr": "NOP",
+      "games": 11,
+      "wins": 6,
+      "losses": 5,
+      "win_pct": 0.55,
+      "home_games": 5,
+      "home_wins": 5,
+      "avg_margin_for_team": -0.27
     },
     {
       "team_abbr": "IND",
@@ -256,26 +304,6 @@
       "avg_margin_for_team": -4.1
     },
     {
-      "team_abbr": "HOU",
-      "games": 10,
-      "wins": 6,
-      "losses": 4,
-      "win_pct": 0.6,
-      "home_games": 3,
-      "home_wins": 3,
-      "avg_margin_for_team": 4.1
-    },
-    {
-      "team_abbr": "NYK",
-      "games": 10,
-      "wins": 3,
-      "losses": 7,
-      "win_pct": 0.3,
-      "home_games": 4,
-      "home_wins": 3,
-      "avg_margin_for_team": -5.1
-    },
-    {
       "team_abbr": "LAL",
       "games": 10,
       "wins": 1,
@@ -284,26 +312,6 @@
       "home_games": 2,
       "home_wins": 0,
       "avg_margin_for_team": -12.4
-    },
-    {
-      "team_abbr": "CHI",
-      "games": 10,
-      "wins": 7,
-      "losses": 3,
-      "win_pct": 0.7,
-      "home_games": 7,
-      "home_wins": 5,
-      "avg_margin_for_team": 3.0
-    },
-    {
-      "team_abbr": "NOP",
-      "games": 10,
-      "wins": 5,
-      "losses": 5,
-      "win_pct": 0.5,
-      "home_games": 4,
-      "home_wins": 4,
-      "avg_margin_for_team": -1.2
     },
     {
       "team_abbr": "WAS",
@@ -358,37 +366,37 @@
   ],
   "whistle_profile": {
     "rs": {
-      "n": 186,
-      "n_boxscore": 186,
-      "avg_total_points": 206.39,
-      "avg_total_fta": 47.24,
-      "avg_total_pf": 41.02,
-      "home_win_pct": 0.59,
-      "avg_abs_margin": 11.68,
-      "ot_games": 12,
-      "ot_rate": 0.06,
+      "n": 196,
+      "n_boxscore": 196,
+      "avg_total_points": 206.33,
+      "avg_total_fta": 46.74,
+      "avg_total_pf": 40.63,
+      "home_win_pct": 0.6,
+      "avg_abs_margin": 11.65,
+      "ot_games": 14,
+      "ot_rate": 0.07,
       "expected": {
-        "avg_total_points": 203.99,
-        "avg_total_fta": 46.37,
-        "avg_total_pf": 40.48,
-        "avg_abs_margin": 11.11,
+        "avg_total_points": 203.57,
+        "avg_total_fta": 45.97,
+        "avg_total_pf": 40.17,
+        "avg_abs_margin": 11.1,
         "home_win_pct": 0.58,
         "ot_rate": 0.06
       },
       "differential": {
-        "avg_total_points": 2.4,
-        "avg_total_fta": 0.87,
-        "avg_total_pf": 0.54,
-        "avg_abs_margin": 0.57,
-        "home_win_pct": 0.01,
-        "ot_rate": 0.0
+        "avg_total_points": 2.76,
+        "avg_total_fta": 0.77,
+        "avg_total_pf": 0.46,
+        "avg_abs_margin": 0.55,
+        "home_win_pct": 0.02,
+        "ot_rate": 0.01
       },
-      "avg_total_points_qualifying": 128,
-      "avg_total_fta_qualifying": 128,
-      "avg_total_pf_qualifying": 128,
-      "avg_abs_margin_qualifying": 128,
-      "home_win_pct_qualifying": 128,
-      "ot_rate_qualifying": 128,
+      "avg_total_points_qualifying": 127,
+      "avg_total_fta_qualifying": 127,
+      "avg_total_pf_qualifying": 127,
+      "avg_abs_margin_qualifying": 127,
+      "home_win_pct_qualifying": 127,
+      "ot_rate_qualifying": 127,
       "avg_total_points_pctile": null,
       "avg_total_points_rank": null,
       "avg_total_fta_pctile": null,
@@ -605,6 +613,46 @@
             "value": 0.07,
             "league": 0.06,
             "diff": 0.01
+          }
+        }
+      }
+    },
+    {
+      "season": "2012-13",
+      "games_rs": 10,
+      "games_po": 0,
+      "games_pi": 0,
+      "stats": {
+        "rs": {
+          "avg_total_points": {
+            "value": 205.1,
+            "league": 195.8,
+            "diff": 9.3
+          },
+          "avg_total_fta": {
+            "value": 37.4,
+            "league": 38.63,
+            "diff": -1.23
+          },
+          "avg_total_pf": {
+            "value": 33.4,
+            "league": 34.38,
+            "diff": -0.98
+          },
+          "avg_abs_margin": {
+            "value": 11.1,
+            "league": 10.96,
+            "diff": 0.14
+          },
+          "home_win_pct": {
+            "value": 0.7,
+            "league": 0.61,
+            "diff": 0.09
+          },
+          "ot_rate": {
+            "value": 0.2,
+            "league": 0.05,
+            "diff": 0.15
           }
         }
       }
@@ -879,26 +927,48 @@
   ],
   "player_swings": [
     {
+      "player_id": "201587",
+      "name": "Nicolas Batum",
+      "n_games": 15,
+      "slug": "nicolas-batum",
+      "pts_with_ref": 16.6,
+      "pts_baseline": 13.31,
+      "pts_swing": 3.29,
+      "fta_swing": -0.33,
+      "pf_swing": -0.03
+    },
+    {
       "player_id": "202323",
       "name": "Evan Turner",
-      "n_games": 16,
+      "n_games": 17,
       "slug": "evan-turner",
-      "pts_with_ref": 13.69,
-      "pts_baseline": 10.87,
-      "pts_swing": 2.81,
-      "fta_swing": -0.04,
-      "pf_swing": 0.16
+      "pts_with_ref": 14.0,
+      "pts_baseline": 10.97,
+      "pts_swing": 3.03,
+      "fta_swing": -0.01,
+      "pf_swing": 0.19
     },
     {
       "player_id": "101161",
       "name": "Amir Johnson",
-      "n_games": 16,
+      "n_games": 17,
       "slug": "amir-johnson",
-      "pts_with_ref": 10.62,
-      "pts_baseline": 7.91,
-      "pts_swing": 2.72,
-      "fta_swing": 0.78,
-      "pf_swing": 0.27
+      "pts_with_ref": 10.88,
+      "pts_baseline": 7.98,
+      "pts_swing": 2.9,
+      "fta_swing": 0.79,
+      "pf_swing": 0.4
+    },
+    {
+      "player_id": "202326",
+      "name": "DeMarcus Cousins",
+      "n_games": 15,
+      "slug": "demarcus-cousins",
+      "pts_with_ref": 26.93,
+      "pts_baseline": 24.26,
+      "pts_swing": 2.68,
+      "fta_swing": 1.49,
+      "pf_swing": 0.15
     },
     {
       "player_id": "202689",
@@ -934,15 +1004,15 @@
       "pf_swing": 0.52
     },
     {
-      "player_id": "202738",
-      "name": "Isaiah Thomas",
-      "n_games": 16,
-      "slug": "isaiah-thomas",
-      "pts_with_ref": 23.5,
-      "pts_baseline": 22.22,
-      "pts_swing": 1.28,
-      "fta_swing": 0.43,
-      "pf_swing": -0.01
+      "player_id": "2585",
+      "name": "Zaza Pachulia",
+      "n_games": 15,
+      "slug": "zaza-pachulia",
+      "pts_with_ref": 8.47,
+      "pts_baseline": 7.57,
+      "pts_swing": 0.9,
+      "fta_swing": 0.05,
+      "pf_swing": -0.42
     },
     {
       "player_id": "203109",
@@ -965,6 +1035,17 @@
       "pts_swing": 0.85,
       "fta_swing": 0.16,
       "pf_swing": -0.03
+    },
+    {
+      "player_id": "2544",
+      "name": "LeBron James",
+      "n_games": 15,
+      "slug": "lebron-james",
+      "pts_with_ref": 26.53,
+      "pts_baseline": 25.79,
+      "pts_swing": 0.74,
+      "fta_swing": 0.78,
+      "pf_swing": -0.0
     },
     {
       "player_id": "202684",
@@ -1002,13 +1083,13 @@
     {
       "player_id": "201152",
       "name": "Thaddeus Young",
-      "n_games": 16,
+      "n_games": 17,
       "slug": "thaddeus-young",
-      "pts_with_ref": 15.62,
-      "pts_baseline": 15.21,
-      "pts_swing": 0.42,
-      "fta_swing": 0.6,
-      "pf_swing": 0.11
+      "pts_with_ref": 15.47,
+      "pts_baseline": 15.13,
+      "pts_swing": 0.34,
+      "fta_swing": 0.49,
+      "pf_swing": 0.2
     },
     {
       "player_id": "203469",
@@ -1020,6 +1101,28 @@
       "pts_swing": 0.25,
       "fta_swing": 0.83,
       "pf_swing": -0.05
+    },
+    {
+      "player_id": "200752",
+      "name": "Rudy Gay",
+      "n_games": 16,
+      "slug": "rudy-gay",
+      "pts_with_ref": 18.75,
+      "pts_baseline": 18.99,
+      "pts_swing": -0.24,
+      "fta_swing": 0.44,
+      "pf_swing": -0.04
+    },
+    {
+      "player_id": "202738",
+      "name": "Isaiah Thomas",
+      "n_games": 18,
+      "slug": "isaiah-thomas",
+      "pts_with_ref": 20.94,
+      "pts_baseline": 21.18,
+      "pts_swing": -0.24,
+      "fta_swing": 0.12,
+      "pf_swing": -0.06
     },
     {
       "player_id": "203507",
@@ -1044,26 +1147,15 @@
       "pf_swing": -0.38
     },
     {
-      "player_id": "200752",
-      "name": "Rudy Gay",
+      "player_id": "202702",
+      "name": "Kenneth Faried",
       "n_games": 15,
-      "slug": "rudy-gay",
-      "pts_with_ref": 18.73,
-      "pts_baseline": 19.15,
+      "slug": "kenneth-faried",
+      "pts_with_ref": 12.0,
+      "pts_baseline": 12.42,
       "pts_swing": -0.42,
-      "fta_swing": 0.49,
-      "pf_swing": 0.04
-    },
-    {
-      "player_id": "201567",
-      "name": "Kevin Love",
-      "n_games": 15,
-      "slug": "kevin-love",
-      "pts_with_ref": 18.27,
-      "pts_baseline": 18.78,
-      "pts_swing": -0.51,
-      "fta_swing": 0.57,
-      "pf_swing": 0.14
+      "fta_swing": 0.12,
+      "pf_swing": 0.01
     },
     {
       "player_id": "201973",
@@ -1088,6 +1180,39 @@
       "pf_swing": -0.26
     },
     {
+      "player_id": "201567",
+      "name": "Kevin Love",
+      "n_games": 16,
+      "slug": "kevin-love",
+      "pts_with_ref": 17.5,
+      "pts_baseline": 18.7,
+      "pts_swing": -1.2,
+      "fta_swing": 0.19,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "202389",
+      "name": "Timofey Mozgov",
+      "n_games": 15,
+      "slug": "timofey-mozgov",
+      "pts_with_ref": 6.6,
+      "pts_baseline": 8.13,
+      "pts_swing": -1.53,
+      "fta_swing": -0.15,
+      "pf_swing": 0.01
+    },
+    {
+      "player_id": "202391",
+      "name": "Jeremy Lin",
+      "n_games": 16,
+      "slug": "jeremy-lin",
+      "pts_with_ref": 11.0,
+      "pts_baseline": 12.68,
+      "pts_swing": -1.68,
+      "fta_swing": -0.29,
+      "pf_swing": 0.67
+    },
+    {
       "player_id": "203482",
       "name": "Kelly Olynyk",
       "n_games": 18,
@@ -1097,6 +1222,17 @@
       "pts_swing": -1.91,
       "fta_swing": -0.6,
       "pf_swing": 0.46
+    },
+    {
+      "player_id": "202083",
+      "name": "Wesley Matthews",
+      "n_games": 15,
+      "slug": "wesley-matthews",
+      "pts_with_ref": 12.4,
+      "pts_baseline": 14.33,
+      "pts_swing": -1.93,
+      "fta_swing": -0.69,
+      "pf_swing": -0.03
     }
   ],
   "notable_games": [],
@@ -1107,24 +1243,24 @@
       "games": 28
     },
     {
+      "name": "Marc Davis",
+      "slug": "marc-davis",
+      "games": 16
+    },
+    {
       "name": "Derrick Collins",
       "slug": "derrick-collins",
       "games": 15
     },
     {
-      "name": "Marc Davis",
-      "slug": "marc-davis",
-      "games": 15
-    },
-    {
       "name": "Ron Garretson",
       "slug": "ron-garretson",
-      "games": 14
+      "games": 15
     },
     {
       "name": "Scott Foster",
       "slug": "scott-foster",
-      "games": 14
+      "games": 15
     }
   ]
 }

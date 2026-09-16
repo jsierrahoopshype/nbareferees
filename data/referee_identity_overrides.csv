@@ -32,3 +32,30 @@ SirAllen Connor,sir-allen-conner,Sir Allen Conner
 Dannica Mosher,dannica-baroody,Dannica Baroody
 Cheryl Flores,che-flores,Che Flores
 Clare Aubry,clare-simmons,Clare Simmons
+#
+# --- Source-seam splits: ONE person rendered differently either side of the
+# --- boundary where this site's officials data changes source. Confirmed in
+# --- the round that built the call-attribution extract; see PR #55.
+# ---
+# --- The site's officials rows are ESPN-keyed through 2002-03 and NBA-keyed
+# --- from 2003-04, with one whole-season ESPN backfill pocket at 2012-13. A
+# --- name that changes spelling exactly at one of those seams is evidence
+# --- about the FEED, not about the person. 2012-13 also carries "Sir Allen
+# --- Connor" for Conner (already folded above), which is the same artifact.
+# ---
+# --- Jim/Jimmy Clark: Jim runs 1993-94 to 2002-03 (ESPN-keyed, no jersey),
+# --- Jimmy 2003-04 to 2008-09 (NBA id 1150, jersey 6). The changeover is
+# --- exactly the source seam, with no overlapping season, no game where both
+# --- appear on the same crew, and 49 shared crewmates out of 68 and 68.
+# --- Canonical form is the league's own record for him, Jimmy Clark.
+Jim Clark,jimmy-clark,Jimmy Clark
+espn:jim-clark,jimmy-clark,Jimmy Clark
+# ---
+# --- Steve/Steven Anderson: the jersey trail settles it. Steve wore 76 in
+# --- 2011-12, 2013-14 and 2014-15, then 35 in 2015-16 and 2016-17. "Steven"
+# --- appears for 2012-13 alone, 10 games, from the ESPN pocket, with no
+# --- jersey recorded because that source carries none. The season sits INSIDE
+# --- an unbroken 76 run; the two never share a crew, and their seasons are
+# --- exactly complementary. Canonical is the NBA-keyed record (id 202000).
+Steven Anderson,steve-anderson,Steve Anderson
+espn:steven-anderson,steve-anderson,Steve Anderson
