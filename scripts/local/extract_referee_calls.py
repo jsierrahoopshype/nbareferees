@@ -507,9 +507,14 @@ class ScanState(object):
     closing over locals is what lets the SQLite reader and the CSV reader run
     the exact same handler instead of two lookalike loops that drift apart."""
 
-    def __init__(self, writer, resolver):
+    def __init__(self, writer, resolver, id_map=None):
         self.writer = writer
         self.resolver = resolver
+        # NBA person id -> slug. Empty dict means every row resolves by name
+        # form, which is what happened before this map existed.
+        self.id_map = id_map or {}
+        self.by_route = collections.Counter()
+        self.unmapped_pids = collections.Counter()
         self.coverage = collections.defaultdict(lambda: [0, 0, 0, 0])
         self.game_meta = {}
         self.by_type = collections.Counter()
@@ -580,7 +585,22 @@ def handle_row(rec, st, source):
         return
 
     form = ref_forms[-1]
-    slug, how = st.resolver.resolve(form, gid, season)
+    # RESOLUTION BY ID, WHERE THE FEED GIVES ONE. A person id names exactly one
+    # official; "J.Goble" names two and needs a crew sheet to settle between
+    # them. Where cdn.nba.com supplies an id for this action and the map knows
+    # it, the id decides and the name form is not consulted at all -- the
+    # ambiguity does not have to be resolved because it never arises.
+    pid = rec.get("official_pid")
+    slug = st.id_map.get(pid) if pid else None
+    if slug:
+        how = "official_id"
+        st.by_route["official_id"] += 1
+    else:
+        if pid:
+            # An id the map does not know. Reported, then resolved the old way.
+            st.unmapped_pids[pid] += 1
+        slug, how = st.resolver.resolve(form, gid, season)
+        st.by_route["name_form" if slug else "unresolved"] += 1
     if is_foulish:
         if slug:
             cov[1] += 1
@@ -648,6 +668,8 @@ def iter_sqlite_rows(conn, sql, idx, c_gid, c_type, c_action, c_period, c_clock,
 DATASET_COLUMNS = {
     "game_id": ("gameid",), "msgtype": ("eventmsgtype",),
     "action": ("eventmsgactiontype",), "period": ("period",),
+    # The join key against cdn.nba.com, not a parsed field.
+    "action_no": ("eventnum",),
     "clock": ("pctimestring",), "home": ("homedescription",),
     "visitor": ("visitordescription",), "neutral": ("neutraldescription",),
     "player_name": ("player1name",), "player_id": ("player1id",),
@@ -655,6 +677,7 @@ DATASET_COLUMNS = {
 
 DATASET_COLUMNS_V3 = {
     "game_id": ("gameid",), "period": ("period",), "clock": ("clock",),
+    "action_no": ("actionnumber",),
     "description": ("description",), "location": ("location",),
     "player_name": ("playername",), "player_id": ("personid",),
 }
@@ -699,7 +722,72 @@ def v3_to_rec(row, colmap):
     return rec
 
 
-def iter_dataset_rows(path, key, limit=None):
+OFFICIAL_ID_MAP = os.path.join(SOURCE_DIR, "official_id_map.csv.gz")
+
+
+def load_official_id_map():
+    """NBA person id -> slug, from build_official_id_map.py.
+
+    Empty when the artifact has not been built, in which case every source
+    falls back to name-form resolution exactly as before it existed."""
+    out = {}
+    if not os.path.exists(OFFICIAL_ID_MAP):
+        return out
+    with gzip.open(OFFICIAL_ID_MAP, "rt", encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            pid = (r.get("nba_person_id") or "").strip()
+            slug = (r.get("official_id") or "").strip()
+            if pid and slug:
+                out[pid] = slug
+    return out
+
+
+def cdn_counterpart(key):
+    """The cdnnba archive covering the same games as another format's key.
+
+    cdn.nba.com is the only feed carrying officialId, so a season is resolved
+    by id only where its cdnnba twin exists. nbastats_2023 -> cdnnba_2023,
+    nbastatsv3_po_2025 -> cdnnba_po_2025."""
+    for prefix in ("nbastatsv3_po_", "nbastats_po_", "nbastatsv3_", "nbastats_"):
+        if key.startswith(prefix):
+            tail = key[len(prefix):]
+            return ("cdnnba_po_" if "_po_" in prefix else "cdnnba_") + tail
+    return None
+
+
+def load_cdn_official_ids(key, args):
+    """(game_id, action number) -> NBA person id, for one season.
+
+    THE JOIN. cdn.nba.com names the official on a foul as a person id but has
+    dropped the trailing "(E.Dalen)" from its descriptions entirely, while the
+    stats.nba.com feeds still carry the text this parser reads. Both number
+    their actions the same way within a game, so the id can be attached to the
+    row WITHOUT changing how anything is parsed: same descriptions, same call
+    typing, same pairing rule -- only who the call is credited to changes.
+    Measured at 46,780 of 46,782 foul rows joining for 2024-25 and 50,042 of
+    50,050 for 2025-26.
+    """
+    cdn_key = cdn_counterpart(key)
+    if not cdn_key:
+        return {}
+    path = nds.ensure_dataset(cdn_key, args.index, emit=emit,
+                              no_download=args.no_download)
+    if not path:
+        emit("    no %s; %s resolves by name-form only" % (cdn_key, key))
+        return {}
+    out = {}
+    for row in nds.iter_csv_rows(path):
+        if (row.get("actionType") or "").strip().lower() != "foul":
+            continue
+        pid = (row.get("officialId") or "").strip()
+        if not pid or pid in ("0", "None"):
+            continue
+        out[(pad_gid(row.get("gameId")), (row.get("actionNumber") or "").strip())] = pid
+    emit("    %s: %d foul action(s) carry an officialId" % (cdn_key, len(out)))
+    return out
+
+
+def iter_dataset_rows(path, key, limit=None, pid_index=None):
     """One shufinskiy tar.xz -> normalized recs, streamed (the CSVs run to
     ~95MB uncompressed, so nothing is held in memory).
 
@@ -733,9 +821,15 @@ def iter_dataset_rows(path, key, limit=None):
             if limit and n >= limit:
                 break
             if is_v3:
-                yield v3_to_rec(row, colmap)
+                rec = v3_to_rec(row, colmap)
+                action_no = (row.get(colmap.get("action_no", "")) or "").strip()
             else:
-                yield {want: (row.get(col) or None) for want, col in colmap.items()}
+                rec = {want: (row.get(col) or None) for want, col in colmap.items()}
+                action_no = (row.get(colmap.get("action_no", "")) or "").strip()
+            if pid_index:
+                rec["official_pid"] = pid_index.get(
+                    (pad_gid(rec.get("game_id")), action_no))
+            yield rec
 
 
 # --------------------------------------------------------------------------- #
@@ -891,7 +985,14 @@ def main():
 
     section("SCANNING")
 
-    st = ScanState(writer=None, resolver=resolver)
+    id_map = load_official_id_map()
+    if id_map:
+        emit("official id map: %d NBA person id(s) -> %d referee(s)"
+             % (len(id_map), len(set(id_map.values()))))
+    else:
+        emit("NOTE: no source-data/official_id_map.csv.gz; every row resolves by "
+             "name form. Run scripts/local/build_official_id_map.py to change that.")
+    st = ScanState(writer=None, resolver=resolver, id_map=id_map)
     os.makedirs(SOURCE_DIR, exist_ok=True)
     with gzip.open(args.out_calls, "wt", encoding="utf-8-sig", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=CSV_FIELDS)
@@ -919,7 +1020,8 @@ def main():
                 if path is None:
                     continue
                 n0, w0 = st.rows_scanned, st.rows_written
-                for rec in iter_dataset_rows(path, key, args.limit):
+                pid_index = load_cdn_official_ids(key, args)
+                for rec in iter_dataset_rows(path, key, args.limit, pid_index):
                     handle_row(rec, st, key)
                 emit("  %-20s %9d rows -> %6d attributed call(s)"
                      % (key, st.rows_scanned - n0, st.rows_written - w0))
@@ -947,7 +1049,8 @@ def main():
         conn.close()
     report(args, st.rows_scanned, st.rows_written, st.dropped_unresolved,
            st.coverage, st.game_meta, st.by_type, st.by_season, st.crosstab,
-           st.phrases, st.other_samples, st.pair_sample, resolver, st.by_source)
+           st.phrases, st.other_samples, st.pair_sample, resolver, st.by_source,
+           st.by_route, st.unmapped_pids)
 
 
 def crew_coverage_report(resolver):
@@ -1024,7 +1127,7 @@ def crew_coverage_report(resolver):
 
 def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_meta,
            by_type, by_season, crosstab, phrases, other_samples, pair_sample, resolver,
-           by_source=None):
+           by_source=None, st_routes=None, st_unmapped=None):
     section("OUTPUT")
     emit("rows scanned         : %d" % rows_scanned)
     emit("attributed calls kept: %d" % rows_written)
@@ -1105,6 +1208,30 @@ def report(args, rows_scanned, rows_written, dropped_unresolved, coverage, game_
     emit("-" * 78)
     for (ctype, emt, eat), n in sorted(crosstab.items(), key=lambda kv: (-kv[1]))[:40]:
         emit("%-22s %10s %10s %12d" % (ctype, emt, eat, n))
+
+    section("HOW EACH CALL WAS CREDITED TO AN OFFICIAL")
+    st_routes = st_routes or {}
+    st_unmapped = st_unmapped or collections.Counter()
+    total_routes = sum(st_routes.values())
+    if total_routes:
+        emit("route                     calls      share")
+        emit("-" * 78)
+        for route, label in (("official_id", "NBA person id (cdn.nba.com)"),
+                             ("name_form", "name form in the description"),
+                             ("unresolved", "neither -- dropped")):
+            n = st_routes.get(route, 0)
+            emit("%-26s %8d %9.1f%%" % (label, n, 100.0 * n / total_routes))
+        emit("")
+        emit("An id names exactly one official. A name form can name two -- and")
+        emit("where an id was available, the ambiguity never had to be settled.")
+        if st_unmapped:
+            emit("")
+            emit("ids the map did not know (these fell back to the name form):")
+            for pid, n in st_unmapped.most_common(15):
+                emit("  %-14s %6d call(s)" % (pid, n))
+            emit("Rebuild the map with scripts/local/build_official_id_map.py.")
+    else:
+        emit("No id-resolved calls in this run.")
 
     section("NAME-FORM RESOLUTION -- RESOLVED")
     emit("Each line below is CALLS KEPT. Nothing here was dropped.")

@@ -35,3 +35,8 @@ pbp_out.txt
 # probe_nba_data_2025.py from shufinskiy/nba_data. Tens of MB of tar.xz, and
 # reproducible from the published index -- cache, not a source extract.
 source-data/_nba_data_cache/
+
+# Raw Last Two Minute report CSV (53MB) pulled by extract_l2m.py from
+# atlhawksfanatic/L2M. Reproducible from that repo; the slim per-game and
+# per-crew extracts are what this repo commits.
+source-data/_l2m_cache/

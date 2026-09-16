@@ -275,9 +275,34 @@ def ld_json_scripts(ld_json):
         for b in blocks)
 
 
-def head(title, description, depth, ld_json=None):
+def canonical_path_from_ld(ld_json):
+    """This page's own root-relative path, read out of its breadcrumb.
+
+    Every page that carries a BreadcrumbList ends it with itself, so the last
+    crumb IS the canonical path and no call site has to repeat it. Pages
+    without a breadcrumb pass `canonical` explicitly or get no tag, which is
+    safer than guessing a URL and pointing search engines at the wrong one."""
+    items = []
+    for block in (ld_json if isinstance(ld_json, list) else [ld_json]):
+        if isinstance(block, dict) and block.get("@type") == "BreadcrumbList":
+            items = block.get("itemListElement") or []
+    if not items:
+        return None
+    last = items[-1].get("item") or ""
+    return last[len(SITE_URL):] if last.startswith(SITE_URL) else None
+
+
+def head(title, description, depth, ld_json=None, canonical=None):
     """depth = number of '../' needed to reach repo root (0 index, 2 ref page)."""
     root = "../" * depth
+    # CANONICAL. The site had none, which was survivable while it lived at one
+    # origin and becomes a duplicate-content problem the moment the same HTML
+    # is reachable at two. Built from SITE_URL, so moving the site is still the
+    # one-line change that constant promises.
+    if canonical is None:
+        canonical = canonical_path_from_ld(ld_json)
+    canonical_tag = ('<link rel="canonical" href="%s">\n' % esc(SITE_URL + canonical)
+                     if canonical is not None else "")
     return """<!doctype html>
 <html lang="en">
 <head>
@@ -285,7 +310,7 @@ def head(title, description, depth, ld_json=None):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+{canonical_tag}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{root}assets/style.css">
@@ -302,7 +327,8 @@ def head(title, description, depth, ld_json=None):
   <span class="brand-sub">NBA officiating record &middot; 1993-94 to {cur}</span>
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
-                           cur=CURRENT_SEASON, ld=ld_json_scripts(ld_json))
+                           cur=CURRENT_SEASON, ld=ld_json_scripts(ld_json),
+                           canonical_tag=canonical_tag)
 
 
 def footer(depth):
@@ -321,8 +347,8 @@ def footer(depth):
 </html>""".format(root=root)
 
 
-def page(title, description, depth, body, ld_json=None):
-    return head(title, description, depth, ld_json) + body + footer(depth)
+def page(title, description, depth, body, ld_json=None, canonical=None):
+    return head(title, description, depth, ld_json, canonical) + body + footer(depth)
 
 
 # ---------------------------------------------------------------------------
@@ -1071,7 +1097,8 @@ def section(num, title, inner, extra_head=""):
         eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
 
 
-def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None):
+def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None,
+               l2m=None):
     s = doc["summary"]
     name = s["name"]
     seasons = career_span(s["first_season"], s["last_season"])
@@ -1140,6 +1167,7 @@ def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None)
     if calls_rec:
         blocks.append(call_profile_section(calls_rec, calls_meta or {}))
         blocks.append(technicals_against_section(calls_rec, calls_meta or {}))
+    blocks.append(l2m_section(s["slug"], l2m))
 
     # season splits (League Context section 5) -- the season selector: a
     # sortable table, not a dropdown that hides data.
@@ -1231,9 +1259,71 @@ def ref_link_d3(name, slug):
     return '<a href="%sreferee/%s/index.html">%s</a>' % (ROOT3, esc(slug), esc(name))
 
 
-def referee_game_log_table(games):
+# The sentence that must accompany every L2M figure on the site. "The league's
+# published review of specific plays", never "accuracy": L2M grades individual
+# plays in one game situation, and the word accuracy invites reading it as a
+# property of an official.
+L2M_WHAT = ("the NBA&#39;s published review of the final two minutes of games that "
+            "were close, play by play")
+
+
+def l2m_scope_note(meta, extra=""):
+    """Why an L2M count is not a measure of an official."""
+    cov = meta.get("coverage_pct")
+    return ('<p class="caption"><b>Crew figures, not individual ones.</b> These are '
+            '%s. A report exists only where the game was close late, about %s of games, '
+            'so a total here mostly reflects how many tight games an official drew. '
+            'Every graded play names the three-person crew and never which official '
+            'made or missed it, so nothing here can be read as one official&#39;s '
+            'record.%s</p>'
+            % (L2M_WHAT, ("%.0f%%" % cov) if cov else "a third",
+               (" " + extra) if extra else ""))
+
+
+def l2m_section(slug, l2m):
+    """The L2M block on a referee page. "" when this official has no report."""
+    if not l2m or not l2m.get("_meta", {}).get("available"):
+        return ""
+    rec = (l2m.get("referees") or {}).get(slug)
+    if not rec or not rec.get("games"):
+        return ""
+    meta = l2m["_meta"]
+    chips = [stat_chip("Games with a report", i(rec["games"]), accent=True),
+             stat_chip("Plays assessed (crew)", i(rec["assessed"])),
+             stat_chip("Graded incorrect (crew)", i(rec["incorrect"]))]
+    if rec.get("crew_incorrect_pct"):
+        chips.append(stat_chip("Share of plays (crew)", dec(rec["crew_incorrect_pct"]) + "%"))
+    split = ('<p class="caption">Of the %s graded incorrect on this official&#39;s crews, '
+             '%s were fouls that went unwhistled and %s were whistles the league judged '
+             'should not have blown.</p>'
+             % (i(rec["incorrect"]), i(rec["incorrect_non_call"]), i(rec["incorrect_call"])))
+    extra = ""
+    if not rec.get("crew_incorrect_pct"):
+        extra = ("A share is withheld below %s reported games, which is too few to mean "
+                 "anything." % i(meta.get("min_games_for_share") or 50))
+    else:
+        # The era point, on the page rather than only in the commit message.
+        extra = ("Comparing this share against another official&#39;s mostly compares "
+                 "the seasons they worked: the league graded %s%% of assessed plays "
+                 "incorrect in %s and %s%% in %s."
+                 % (dec((meta["by_season"].get(meta["first_season"]) or {}).get("incorrect_pct") or 0),
+                    esc(meta["first_season"] or ""),
+                    dec((meta["by_season"].get(meta["last_season"]) or {}).get("incorrect_pct") or 0),
+                    esc(meta["last_season"] or "")))
+    return section(None, "Last Two Minute reports",
+                   '<div class="chip-row">%s</div>%s' % ("".join(chips), split),
+                   l2m_scope_note(meta, extra))
+
+
+def referee_game_log_table(games, l2m_games=None):
+    l2m_games = l2m_games or {}
+    has_l2m = any(str(g.get("game_id")) in l2m_games for g in games)
     cols = [("Date", "text"), ("Matchup", "text"), ("Score", "text"),
             ("Round", "text"), ("Co-officials", "text")]
+    if has_l2m:
+        # Per game, where attribution is not in question: this game had a
+        # report, it assessed N plays, N of them were graded incorrect.
+        cols += [("L2M plays", "num"), ("Graded incorrect", "num")]
     ths = "".join('<th class="sortable {c}" data-type="{t}" scope="col">{l}</th>'.format(
         c="col-text" if t == "text" else "col-num", t=t, l=esc(l)) for l, t in cols)
     body = []
@@ -1248,15 +1338,29 @@ def referee_game_log_table(games):
             '<td data-label="Matchup" class="matchup">{away} <span class="vs">@</span> {home}</td>'
             '<td data-label="Score">{sc}</td>'
             '<td data-label="Round"><span class="round-tag">{rd}</span></td>'
-            '<td data-label="Co-officials" class="crew">{co}</td>'
+            '<td data-label="Co-officials" class="crew">{co}</td>{l2m}'
             "</tr>".format(dt=esc(g["date"]), away=team_cell_d3(g["away_team_abbr"]),
                            home=team_cell_d3(g["home_team_abbr"]), sc=esc(score),
-                           rd=esc(g["round_label"] or "—"), co=co))
+                           rd=esc(g["round_label"] or "—"), co=co,
+                           l2m=_l2m_cells(g, l2m_games) if has_l2m else ""))
     return ('<table class="data-table sortable-table"><thead><tr>{ths}</tr></thead>'
             '<tbody>{body}</tbody></table>').format(ths=ths, body="".join(body))
 
 
-def render_ref_games(doc, crew_cov=None):
+def _l2m_cells(g, l2m_games):
+    """The two L2M cells for one game row. A game with no report shows a dash
+    rather than a zero -- no report is not the same as nothing to report."""
+    rec = l2m_games.get(str(g.get("game_id")))
+    if not rec:
+        return ('<td data-label="L2M plays">—</td>'
+                '<td data-label="Graded incorrect">—</td>')
+    return ('<td data-label="L2M plays" data-sort="{a}">{av}</td>'
+            '<td data-label="Graded incorrect" data-sort="{n}">{nv}</td>').format(
+        a=rec["assessed"], av=i(rec["assessed"]),
+        n=rec["incorrect"], nv=i(rec["incorrect"]))
+
+
+def render_ref_games(doc, crew_cov=None, l2m=None):
     name = doc["name"]
     n_seasons = len(doc["by_season"])
     # "on record", not "every game officiated" -- the sources do not carry a
@@ -1274,8 +1378,19 @@ def render_ref_games(doc, crew_cov=None):
     note = crew_coverage_note(crew_cov)
     if note:
         blocks.append('<section class="block"><div class="block-head">%s</div></section>' % note)
+    l2m_games = (l2m or {}).get("games") or {}
+    l2m_meta = (l2m or {}).get("_meta") or {}
+    if l2m_meta.get("available") and any(
+            str(g.get("game_id")) in l2m_games
+            for b in doc["by_season"] for g in b["games"]):
+        blocks.append('<section class="block"><div class="block-head">%s</div></section>'
+                      % l2m_scope_note(l2m_meta,
+                                       "A dash means the league published no report for "
+                                       "that game, which is not the same as a game with "
+                                       "nothing to report."))
     for block in doc["by_season"]:
-        inner = '<div class="table-wrap">%s</div>' % referee_game_log_table(block["games"])
+        inner = ('<div class="table-wrap">%s</div>'
+                 % referee_game_log_table(block["games"], l2m_games))
         blocks.append(section(None, "%s (%d games)" % (block["season"], len(block["games"])), inner))
     blocks.append(back)
     ld = breadcrumb_ld(("Home", ""), (name, "referee/%s/index.html" % doc["slug"]),
@@ -2181,14 +2296,82 @@ def render_index(refs, lb, dashboard, nbra_bios):
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
-    return page(title, desc, 0, body, ld_json=dataset_ld(total, span))
+    # The home page carries a Dataset, not a breadcrumb, so its canonical is
+    # given outright: it is the site root.
+    return page(title, desc, 0, body, ld_json=dataset_ld(total, span), canonical="")
 
 
 # ---------------------------------------------------------------------------
 # data-sources page (carries the attribution moved out of the footer, and --
 # moved from the index's Fresh tier -- the dataset's own methodology notes)
 # ---------------------------------------------------------------------------
-def render_sources(curiosities=None):
+def l2m_context_section(l2m):
+    """The site-wide L2M block. Leads with the asymmetry, because that is what
+    the data actually shows and it is the part nobody reports."""
+    meta = (l2m or {}).get("_meta") or {}
+    if not meta.get("available"):
+        return ""
+    nc = meta.get("non_call_share_of_incorrect")
+    rows = []
+    for season, b in sorted((meta.get("by_season") or {}).items()):
+        rows.append(
+            '<tr><td data-label="Season" data-sort="{s}">{s}</td>'
+            '<td data-label="Games reviewed" data-sort="{g}">{gv}</td>'
+            '<td data-label="Share of games" data-sort="{c}">{cv}</td>'
+            '<td data-label="Plays assessed" data-sort="{a}">{av}</td>'
+            '<td data-label="Graded incorrect" data-sort="{i}">{iv}</td>'
+            '<td data-label="Share of plays" data-sort="{p}">{pv}</td></tr>'.format(
+                s=esc(season), g=b["games"], gv=i(b["games"]),
+                c=b.get("coverage_pct") or 0,
+                cv=(dec(b["coverage_pct"]) + "%") if b.get("coverage_pct") else "—",
+                a=b["assessed"], av=i(b["assessed"]), i=b["incorrect"], iv=i(b["incorrect"]),
+                p=b.get("incorrect_pct") or 0,
+                pv=(dec(b["incorrect_pct"]) + "%") if b.get("incorrect_pct") else "—"))
+    ths = ('<th class="sortable col-text" data-type="text" scope="col">Season</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Games reviewed</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Share of games</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Plays assessed</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Graded incorrect</th>'
+           '<th class="sortable col-num" data-type="num" scope="col">Share of plays</th>')
+    table = ('<table class="data-table sortable-table calls-lb"><thead><tr>%s</tr></thead>'
+             '<tbody>%s</tbody></table>' % (ths, "".join(rows)))
+
+    lead = ('<p class="caption"><b>Almost everything the league flags is a foul nobody '
+            'called.</b> Across %s plays it assessed from %s to %s, %s were graded '
+            'incorrect, and %s%% of those were missed calls rather than whistles that '
+            'should not have blown (%s against %s). The reviewers are far likelier to '
+            'find a foul that went unpunished than a phantom one.</p>'
+            % (i(meta["assessed"]), esc(meta["first_season"] or ""),
+               esc(meta["last_season"] or ""), i(meta["incorrect"]),
+               dec(nc) if nc else "—", i(meta["incorrect_non_call"]),
+               i(meta["incorrect_call"])))
+    first = (meta.get("by_season") or {}).get(meta.get("first_season")) or {}
+    last = (meta.get("by_season") or {}).get(meta.get("last_season")) or {}
+    drift = ""
+    if first.get("incorrect_pct") and last.get("incorrect_pct"):
+        drift = ('<p class="caption"><b>The grading itself moved, a lot.</b> %s%% of '
+                 'assessed plays were graded incorrect in %s against %s%% in %s. That is '
+                 'a change in how the league reviews, not a measurable change in '
+                 'officiating, and it is why this site publishes no cross-era comparison '
+                 'of officials from these reports: two officials separated by a decade '
+                 'would differ mostly by when they worked.</p>'
+                 % (dec(first["incorrect_pct"]), esc(meta["first_season"]),
+                    dec(last["incorrect_pct"]), esc(meta["last_season"])))
+    chips = [stat_chip("Games reviewed", i(meta["games_with_report"]), accent=True),
+             stat_chip("Share of games", (dec(meta["coverage_pct"]) + "%")
+                       if meta.get("coverage_pct") else "—"),
+             stat_chip("Plays assessed", i(meta["assessed"])),
+             stat_chip("Graded incorrect", i(meta["incorrect"]))]
+    inner = ('<div class="chip-row">%s</div>%s%s<div class="table-wrap">%s</div>'
+             % ("".join(chips), lead, drift, table))
+    return section("Last Two Minute reports",
+                   "What the league says about the last two minutes", inner,
+                   l2m_scope_note(meta,
+                                  "This site publishes no per-official figure from these "
+                                  "reports and no ranking built on them."))
+
+
+def render_sources(curiosities=None, curiosities_l2m=None):
     items = "".join(
         '<li class="src-item"><a href="{u}" rel="noopener">{name}</a>'
         '<span class="src-note">{note}</span></li>'.format(
@@ -2211,7 +2394,8 @@ def render_sources(curiosities=None):
   <p class="caption">The historical NBA database is published under the Creative
   Commons Attribution-ShareAlike 4.0 licence (CC BY-SA 4.0); the derived
   statistics on this site are shared under the same terms.</p>
-</section>{notes}""".format(items=items, notes=notes_section)
+</section>{notes}{l2m}""".format(items=items, notes=notes_section,
+                                  l2m=l2m_context_section(curiosities_l2m))
     title = "Data sources — NBA Referee Database"
     desc = ("Attribution and licensing for the NBA Referee Database: Wyatt Walsh's "
             "NBA Database (CC BY-SA 4.0), ESPN's public API, and szymonjwiak's box scores.")
@@ -3846,6 +4030,9 @@ def main():
     cov_path = os.path.join(DATA, "crew_coverage.json")
     crew_cov = json.load(open(cov_path, encoding="utf-8")) if os.path.exists(cov_path) else None
     SLUG_NAMES.update({r["slug"]: r["name"] for r in refs})
+    l2m_path = os.path.join(DATA, "l2m.json")
+    l2m = (json.load(open(l2m_path, encoding="utf-8")) if os.path.exists(l2m_path)
+           else {"_meta": {"available": False}, "games": {}, "referees": {}})
     calls_path = os.path.join(DATA, "referee_calls.json")
     ref_calls = (json.load(open(calls_path, encoding="utf-8")) if os.path.exists(calls_path)
                  else {"_meta": {"available": False}, "referees": {}, "leaderboards": {}})
@@ -3873,7 +4060,7 @@ def main():
     # dataset's methodology notes moved off the index's Fresh tier)
     os.makedirs(os.path.join(REPO, "sources"), exist_ok=True)
     with open(os.path.join(REPO, "sources", "index.html"), "w", encoding="utf-8") as f:
-        f.write(render_sources(dashboard["history"]["curiosities"]))
+        f.write(render_sources(dashboard["history"]["curiosities"], l2m))
 
     # comparator page (static shell; content loads client-side)
     os.makedirs(os.path.join(REPO, "compare"), exist_ok=True)
@@ -3926,7 +4113,7 @@ def main():
         with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write(render_ref(doc, rf_doc, nbra_bios.get(official_id),
                                ref_calls["referees"].get(official_id),
-                               ref_calls["_meta"]))
+                               ref_calls["_meta"], l2m))
         n += 1
 
         # Tier C per-referee game log (docs/TIER_C_SPEC.md section 3) --
@@ -3938,7 +4125,7 @@ def main():
             games_dir = os.path.join(out_dir, "games")
             os.makedirs(games_dir, exist_ok=True)
             with open(os.path.join(games_dir, "index.html"), "w", encoding="utf-8") as f:
-                f.write(render_ref_games(log_doc, crew_cov))
+                f.write(render_ref_games(log_doc, crew_cov, l2m))
             n_game_logs += 1
 
     # team pages
