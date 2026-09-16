@@ -1,0 +1,47 @@
+NBA person id -> referee slug (build_official_id_map.py)
+==============================================================================
+ids carried by source-data/officials.csv.gz, via the built referee docs: 142
+
+==============================================================================
+SCANNING cdn.nba.com PLAY-BY-PLAY
+==============================================================================
+  cdnnba_2023           64213 action(s) carrying an officialId
+  cdnnba_po_2023         4209 action(s) carrying an officialId
+  cdnnba_2024           63331 action(s) carrying an officialId
+  cdnnba_po_2024         4653 action(s) carrying an officialId
+  cdnnba_2025           66403 action(s) carrying an officialId
+  cdnnba_po_2025         3560 action(s) carrying an officialId
+
+distinct officialId values in the play-by-play: 93
+of those, not already mapped: 12
+
+==============================================================================
+RECOVERING UNMAPPED IDS FROM THE CREW
+==============================================================================
+Method: for each game an unknown id appears in, take the crew on file
+and remove every official already identified by a mapped id on that
+same game. One official left over, in every game, is the answer.
+
+officialId    games  resolves to              evidence
+------------------------------------------------------------------------------
+1629177          39  biniam-maru              unanimous
+1630879           8  nate-cearley             unanimous
+1629171           3  agon-abazi               unanimous
+1641518           3  gina-catanzariti         unanimous
+1630887           3  klajdi-mulla             unanimous
+1630888           3  chelisa-painter          unanimous
+11629177          2  biniam-maru              unanimous [malformed id, kept verbatim as the feed emits it]
+1629771           2  marcy-williams           unanimous
+1630929           1  intae-hwang              unanimous
+196295108         1  agon-abazi               unanimous [malformed id, kept verbatim as the feed emits it]
+1629176           1  biniam-maru              unanimous
+623127            1  biniam-maru              unanimous
+
+recovered: 12 | left unmapped: 0
+
+==============================================================================
+OUTPUT
+==============================================================================
+-> source-data/official_id_map.csv.gz
+   154 row(s): {'extract': 142, 'crew_inferred': 12}
+   146 distinct referee(s) covered
