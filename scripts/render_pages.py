@@ -44,14 +44,21 @@ REFEREE_DIR = os.path.join(REPO, "referee")
 
 CURRENT_SEASON = "2025-26"
 
-# Canonical absolute origin for schema.org URLs (Person/@id, BreadcrumbList
-# item ids, Dataset url) -- this repo has no CNAME/custom-domain config, so
-# this is inferred from docs/PHASE1_SPEC.md and docs/RENDER_SPEC.md's own
-# references to "the other jsierrahoopshype.github.io tools" (the sibling
-# HoopsHype/HoopsMatic tools this site is styled to match) plus GitHub
-# Pages' default project-site URL pattern. Update this in one place if the
-# site ends up on a different domain.
-SITE_URL = "https://jsierrahoopshype.github.io/nbareferees/"
+# Canonical absolute origin for canonical tags, schema.org URLs (Person/@id,
+# BreadcrumbList item ids, Dataset url) and sitemap.xml.
+#
+# THE SITE IS PUBLISHED AT HOOPSMATIC, NOT AT ITS BUILD ORIGIN. GitHub Pages
+# still serves this repo at jsierrahoopshype.github.io/nbareferees/, and a
+# Cloudflare Worker proxies that same HTML to hoopsmatic.com/referees/. Two
+# origins serving identical pages is a duplicate-content split, and pointing
+# the canonical at the Pages copy resolved it the wrong way: it named the
+# build origin the original and the published site the duplicate.
+#
+# Pointing it here instead consolidates both copies on hoopsmatic. The
+# still-public github.io copy now canonicalises TO hoopsmatic rather than to
+# itself, so it stops competing with the site it feeds and hands its signals
+# over instead.
+SITE_URL = "https://hoopsmatic.com/referees/"
 
 # Mirrors build.py's WHISTLE_STATS exactly (key, n_column, label, slug) -- the
 # six whistle-profile stats eligible for percentile coloring and a dedicated
@@ -275,6 +282,33 @@ def ld_json_scripts(ld_json):
         for b in blocks)
 
 
+# Every canonical path emitted by head(), root-relative, in the form the tag
+# itself uses ("" for the home page, "referee/{slug}/index.html" for a profile).
+# Filled during rendering and drained by write_sitemap() at the end of main().
+SITEMAP_PATHS = set()
+
+
+def write_sitemap(path):
+    """sitemap.xml at the site root, covering exactly the canonical URLs.
+
+    Sorted, so the file is stable across rebuilds and a diff shows real page
+    additions rather than dictionary ordering. The bare origin sorts first
+    because it is a prefix of every other URL.
+
+    No lastmod, changefreq or priority. changefreq and priority are ignored by
+    Google outright, and a lastmod would have to be the build timestamp, which
+    would mark all 1,751 URLs as modified on every rebuild even though almost
+    none of them changed -- a lastmod that always lies is worse than none.
+    """
+    urls = sorted(SITE_URL + p for p in SITEMAP_PATHS)
+    body = "\n".join("  <url><loc>%s</loc></url>" % esc(u) for u in urls)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                + body + "\n</urlset>\n")
+    return len(urls)
+
+
 def canonical_path_from_ld(ld_json):
     """This page's own root-relative path, read out of its breadcrumb.
 
@@ -303,6 +337,18 @@ def head(title, description, depth, ld_json=None, canonical=None):
         canonical = canonical_path_from_ld(ld_json)
     canonical_tag = ('<link rel="canonical" href="%s">\n' % esc(SITE_URL + canonical)
                      if canonical is not None else "")
+    # SITEMAP IS COLLECTED HERE, at the one place a canonical is decided, so the
+    # two cannot disagree. The alternative -- walking the output tree afterwards
+    # -- rebuilds each URL from its file path and has to re-derive the same
+    # rules by hand, which is exactly where the home page goes wrong: its
+    # canonical is the bare origin, while a walk finds index.html and would emit
+    # SITE_URL + "index.html". That is a second URL for a page that already
+    # declares a different one as canonical, so the sitemap would be asking
+    # Google to crawl a URL the page itself disowns. Recording the value that
+    # was actually written makes the two sets identical by construction rather
+    # than by two implementations happening to agree.
+    if canonical is not None:
+        SITEMAP_PATHS.add(canonical)
     return """<!doctype html>
 <html lang="en">
 <head>
@@ -495,6 +541,56 @@ def ref_photo_img(slug, root):
         return ""
     return ('<img class="ref-photo" src="{root}{rel}" alt="" width="84" height="84" '
             'decoding="async">').format(root=root, rel=rel)
+
+
+# Index-page avatars. Same source and the same rule as the profile portrait
+# above -- present when we have one, ABSENT ENTIRELY when we do not. No
+# silhouette, no initials tile, no empty frame holding a slot open.
+#
+# The index is where that rule costs something, and it is worth being explicit
+# about why it still stands. A profile page shows one referee, so a missing
+# photo has no neighbour to look ragged against. A crew row shows three side by
+# side, and 90 of 164 officials have no photo, so mixed rows are the norm rather
+# than the exception. The layouts below therefore put the avatar in an
+# inline-flex row with a `gap`, which collapses when there is no image: a name
+# without a photo starts at the row's left margin exactly as the text does on
+# its own profile page, instead of being indented past a hole where a picture
+# would have gone. Uneven, but never a gap and never invented art.
+#
+# Sizes are the profile portrait's 84px scaled to each context, and keep its
+# object-position so heads stay framed the same way. alt is empty for the same
+# reason it is there: the referee's name is the adjacent link text, so the
+# image is decorative to a screen reader and repeating the name would just
+# make it announce twice.
+AVATAR_SIZES = {"lg": 56, "sm": 34, "xs": 26}
+
+
+def ref_avatar_img(slug, root, size="sm"):
+    """An index avatar for this referee, or "" when there is no photo on disk."""
+    rel = headshot_rel(slug)
+    if not rel:
+        return ""
+    px = AVATAR_SIZES[size]
+    return ('<img class="ref-avatar ref-avatar-{size}" src="{root}{rel}" alt="" '
+            'width="{px}" height="{px}" loading="lazy" decoding="async">').format(
+                size=size, root=root, rel=rel, px=px)
+
+
+def headshot_map(refs):
+    """{slug: "assets/refs/<slug>.<ext>"} for the referees that have a photo.
+
+    The index's spotlight, birthdays and live Tonight's Officials are all built
+    in the browser, so the JS needs to know which slugs have a file and which
+    extension it is -- it cannot stat the directory. Only the ~74 present ones
+    are listed; a slug missing from this map is the "no photo" case, which is
+    the same test the server-side helpers make against disk.
+    """
+    out = {}
+    for r in refs:
+        rel = headshot_rel(r["slug"])
+        if rel:
+            out[r["slug"]] = rel
+    return out
 
 
 SLUG_NAMES = {}
@@ -1973,7 +2069,15 @@ def latest_game_day_body(games):
     for g in games:
         hp, ap = g.get("home_pts"), g.get("away_pts")
         final = ("Final %s–%s" % (i(ap), i(hp))) if hp is not None and ap is not None else ""
-        crew = " &middot; ".join(ref_link(c["name"], c["slug"], root="") for c in g.get("crew") or []) or "—"
+        # Each official is now an avatar + name unit rather than a bare link, so
+        # the separator sits between people instead of between an image and the
+        # name it belongs to. .crew-ref is the inline-flex wrapper whose gap
+        # collapses for the officials with no photo (see ref_avatar_img).
+        crew = " &middot; ".join(
+            '<span class="crew-ref">%s%s</span>' % (
+                ref_avatar_img(c["slug"], "", "xs"),
+                ref_link(c["name"], c["slug"], root=""))
+            for c in g.get("crew") or []) or "—"
         rows.append(
             '<div class="crew-game"><span class="crew-matchup">{away} @ {home}</span>'
             '<span class="crew-tip">{final}</span>'
@@ -2291,8 +2395,16 @@ def render_index(refs, lb, dashboard, nbra_bios):
   </div>
 </section>""".format(total=total, more_data="".join(more_data_links), rows="".join(rows))
 
+    # Photo lookup for the three index modules that build their markup in the
+    # browser (spotlight, birthdays, live Tonight's Officials). Inline rather
+    # than a fetch, for the same reason the rotation data is: the cards paint on
+    # first load and a second round trip would show them photoless first.
+    photos_data = ('<script type="application/json" id="ref-photos-data">%s</script>'
+                   % json.dumps(headshot_map(refs), ensure_ascii=False,
+                                separators=(",", ":")).replace("</", "<\\/"))
+
     body = (masthead + tonight_section + subnav + tier_fresh + tier_stats
-           + tier_reference + tier_records + ref_search(0, "bottom"))
+           + tier_reference + tier_records + ref_search(0, "bottom") + photos_data)
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
@@ -2851,7 +2963,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.8rem}
 .today-col #spotlight-card,.today-col #ondate-card,.today-col #birthday-card{margin-top:.5rem}
-.birthday-row{font-size:.9rem;font-weight:600;margin-top:.15rem}
+.birthday-row{display:flex;align-items:center;gap:.5rem;
+  font-size:.9rem;font-weight:600;margin-top:.4rem}
 .birthday-row:first-child{margin-top:0}
 .birthday-fallback-note{display:block;font-size:.68rem;color:var(--text-secondary);margin-top:.3rem}
 @media(max-width:1100px){
@@ -2897,6 +3010,30 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 @media(max-width:520px){
   .ref-photo{width:64px;height:64px}
   .ref-hero-body.has-photo{gap:.75rem}
+}
+/* Index avatars -- the same portrait, the same framing (object-position keeps
+   heads in the top third), scaled per module. The rule the profile portrait
+   set holds here too: no photo means no element at all. Every layout that uses
+   these is an inline-flex row with a gap, so the gap collapses to nothing for
+   the 90 officials without one and their name sits at the row's left margin,
+   rather than being pushed across by an empty slot. */
+.ref-avatar{flex:0 0 auto;object-fit:cover;object-position:50% 22%;
+  border-radius:50%;border:1px solid var(--border);background:var(--surface)}
+.ref-avatar-lg{width:56px;height:56px;border-radius:10px}
+.ref-avatar-sm{width:34px;height:34px}
+.ref-avatar-xs{width:26px;height:26px}
+/* Spotlight: portrait beside name + career line, switched on exactly like the
+   profile hero so the photoless pick keeps the plain stacked block. */
+.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.75rem}
+.spotlight-id.has-photo .spotlight-id-main{min-width:0;flex:1 1 auto}
+/* Birthdays: avatar then the name/jersey/age run. */
+.birthday-id{min-width:0}
+/* Crews: one avatar+name unit per official, so the " &middot; " separator
+   falls between people rather than between a face and its name. */
+.crew-ref{display:inline-flex;align-items:center;gap:.3rem;vertical-align:middle}
+@media(max-width:520px){
+  .ref-avatar-lg{width:48px;height:48px}
+  .ref-avatar-sm{width:30px;height:30px}
 }
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
@@ -3200,6 +3337,14 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
+/* Scoped to the Tonight's Officials module, the only .crew-names that carries
+   avatars -- the frontpage "most frequent crews" strip reuses the same class
+   with plain text and keeps its existing tighter spacing. Stays ordinary
+   inline flow so the " &middot; " text nodes between .crew-ref units space
+   themselves; the looser line-height gives the 26px avatars room when a long
+   crew wraps, and vertical-align:middle on .crew-ref keeps a name with a photo
+   on the same line as one without, which baseline alignment would not. */
+#tonight-officials-body .crew-names{line-height:1.9}
 
 /* ---- comparator ---- */
 .compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
@@ -3357,6 +3502,24 @@ JS = r"""(function(){
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // --- referee avatars (index only) ------------------------------------
+  // Mirrors ref_avatar_img() in render_pages.py, for the cards this file
+  // builds rather than the server. Reads the inline #ref-photos-data map once;
+  // a slug that is not in it has no photo and gets "" -- never a placeholder,
+  // never a reserved slot. Sizes match AVATAR_SIZES there.
+  var REF_PHOTOS=(function(){
+    var el=document.getElementById("ref-photos-data");
+    if(!el)return {};
+    try{return JSON.parse(el.textContent)||{};}catch(e){return {};}
+  })();
+  var AVATAR_PX={lg:56,sm:34,xs:26};
+  function refAvatar(slug,size){
+    var rel=slug&&REF_PHOTOS[slug];
+    if(!rel)return "";
+    var px=AVATAR_PX[size||"sm"];
+    return '<img class="ref-avatar ref-avatar-'+(size||"sm")+'" src="'+escHtml(rel)+
+      '" alt="" width="'+px+'" height="'+px+'" loading="lazy" decoding="async">';
+  }
   // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
   // (site-wide convention: calendar-year span, not the raw season labels).
   function careerSpan(first,last){
@@ -3522,9 +3685,16 @@ JS = r"""(function(){
             pick.games_total+" career games.</p>";
         }
         var badge=pick.active?' <span class="badge badge-active">Active</span>':"";
-        spotCard.innerHTML='<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
+        // Portrait beside the name and career line, dropping back to the
+        // plain stacked block when this official has no photo -- the same
+        // .has-photo switch the profile hero uses.
+        var spotPhoto=refAvatar(pick.slug,"lg");
+        spotCard.innerHTML='<div class="spotlight-id'+(spotPhoto?' has-photo':'')+'">'+spotPhoto+
+          '<div class="spotlight-id-main">'+
+          '<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
           escHtml(pick.name)+'</a>'+badge+
-          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+sigHtml;
+          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+
+          '</div></div>'+sigHtml;
       }
 
       var mm=("0"+(now.getMonth()+1)).slice(-2), dd=("0"+now.getDate()).slice(-2);
@@ -3559,8 +3729,12 @@ JS = r"""(function(){
           var rows=bEntry.people.map(function(p){
             var jersey=p.jersey_num?' <span class="jersey-num">#'+escHtml(p.jersey_num)+'</span>':"";
             var age=(p.age!=null)?' <span class="caption">(age '+p.age+')</span>':"";
-            return '<div class="birthday-row"><a href="referee/'+p.slug+'/index.html">'+
-              escHtml(p.name)+'</a>'+jersey+age+'</div>';
+            // .birthday-row is the inline-flex row whose gap collapses when
+            // refAvatar returns "", so a photoless official's name starts at
+            // the left margin rather than indented past an empty slot.
+            return '<div class="birthday-row">'+refAvatar(p.slug,"sm")+
+              '<span class="birthday-id"><a href="referee/'+p.slug+'/index.html">'+
+              escHtml(p.name)+'</a>'+jersey+age+'</span></div>';
           }).join("");
           var note=isToday?"":('<span class="birthday-fallback-note">No official birthdays today '+
             '&mdash; next up: '+escHtml(bEntry.people[0].display_date||"")+'.</span>');
@@ -3608,10 +3782,13 @@ JS = r"""(function(){
           // slug is null when the feed could not match an official to a
           // canonical referee page (a new hire, a name spelling we have not
           // mapped yet). Render the name as plain text rather than linking to
-          // referee/null/index.html.
+          // referee/null/index.html -- and with no avatar either, since
+          // refAvatar returns "" for a null slug, the same "no photo" path a
+          // matched-but-unphotographed official takes.
           var nm=escHtml(c.name);
-          return c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-        }).join(", ");
+          var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
+          return '<span class="crew-ref">'+refAvatar(c.slug,"xs")+named+'</span>';
+        }).join(" &middot; ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
@@ -4199,6 +4376,10 @@ def main():
         with open(os.path.join(d, "index.html"), "w", encoding="utf-8") as f:
             f.write(html)
 
+    # sitemap.xml -- LAST, after every page has been rendered, because it is
+    # built from what those renders actually emitted (see write_sitemap).
+    n_sitemap = write_sitemap(os.path.join(REPO, "sitemap.xml"))
+
     print("wrote index.html")
     print("wrote sources/index.html")
     print("wrote compare/index.html")
@@ -4211,6 +4392,7 @@ def main():
     print("wrote %d team pages, %d player pages" % (n_teams, n_players))
     print("wrote %d whistle-leaderboard pages" % n_leaderboards)
     print("wrote %d Tier C pages: %s" % (len(tier_c_pages), ", ".join(s for s, _ in tier_c_pages)))
+    print("wrote sitemap.xml (%d URLs, base %s)" % (n_sitemap, SITE_URL))
     print("sample URLs:")
     for u in ["referee/scott-foster/", "referee/scott-foster/games/", "team/bos/",
               "player/lebron-james/", "leaderboard/ot-rate/", "compare/", "matchup/",

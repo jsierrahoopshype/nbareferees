@@ -28,6 +28,24 @@
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // --- referee avatars (index only) ------------------------------------
+  // Mirrors ref_avatar_img() in render_pages.py, for the cards this file
+  // builds rather than the server. Reads the inline #ref-photos-data map once;
+  // a slug that is not in it has no photo and gets "" -- never a placeholder,
+  // never a reserved slot. Sizes match AVATAR_SIZES there.
+  var REF_PHOTOS=(function(){
+    var el=document.getElementById("ref-photos-data");
+    if(!el)return {};
+    try{return JSON.parse(el.textContent)||{};}catch(e){return {};}
+  })();
+  var AVATAR_PX={lg:56,sm:34,xs:26};
+  function refAvatar(slug,size){
+    var rel=slug&&REF_PHOTOS[slug];
+    if(!rel)return "";
+    var px=AVATAR_PX[size||"sm"];
+    return '<img class="ref-avatar ref-avatar-'+(size||"sm")+'" src="'+escHtml(rel)+
+      '" alt="" width="'+px+'" height="'+px+'" loading="lazy" decoding="async">';
+  }
   // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
   // (site-wide convention: calendar-year span, not the raw season labels).
   function careerSpan(first,last){
@@ -193,9 +211,16 @@
             pick.games_total+" career games.</p>";
         }
         var badge=pick.active?' <span class="badge badge-active">Active</span>':"";
-        spotCard.innerHTML='<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
+        // Portrait beside the name and career line, dropping back to the
+        // plain stacked block when this official has no photo -- the same
+        // .has-photo switch the profile hero uses.
+        var spotPhoto=refAvatar(pick.slug,"lg");
+        spotCard.innerHTML='<div class="spotlight-id'+(spotPhoto?' has-photo':'')+'">'+spotPhoto+
+          '<div class="spotlight-id-main">'+
+          '<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
           escHtml(pick.name)+'</a>'+badge+
-          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+sigHtml;
+          '<p class="spotlight-meta">'+pick.games_total+' games &middot; '+careerSpan(pick.first_season,pick.last_season)+'</p>'+
+          '</div></div>'+sigHtml;
       }
 
       var mm=("0"+(now.getMonth()+1)).slice(-2), dd=("0"+now.getDate()).slice(-2);
@@ -230,8 +255,12 @@
           var rows=bEntry.people.map(function(p){
             var jersey=p.jersey_num?' <span class="jersey-num">#'+escHtml(p.jersey_num)+'</span>':"";
             var age=(p.age!=null)?' <span class="caption">(age '+p.age+')</span>':"";
-            return '<div class="birthday-row"><a href="referee/'+p.slug+'/index.html">'+
-              escHtml(p.name)+'</a>'+jersey+age+'</div>';
+            // .birthday-row is the inline-flex row whose gap collapses when
+            // refAvatar returns "", so a photoless official's name starts at
+            // the left margin rather than indented past an empty slot.
+            return '<div class="birthday-row">'+refAvatar(p.slug,"sm")+
+              '<span class="birthday-id"><a href="referee/'+p.slug+'/index.html">'+
+              escHtml(p.name)+'</a>'+jersey+age+'</span></div>';
           }).join("");
           var note=isToday?"":('<span class="birthday-fallback-note">No official birthdays today '+
             '&mdash; next up: '+escHtml(bEntry.people[0].display_date||"")+'.</span>');
@@ -279,10 +308,13 @@
           // slug is null when the feed could not match an official to a
           // canonical referee page (a new hire, a name spelling we have not
           // mapped yet). Render the name as plain text rather than linking to
-          // referee/null/index.html.
+          // referee/null/index.html -- and with no avatar either, since
+          // refAvatar returns "" for a null slug, the same "no photo" path a
+          // matched-but-unphotographed official takes.
           var nm=escHtml(c.name);
-          return c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-        }).join(", ");
+          var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
+          return '<span class="crew-ref">'+refAvatar(c.slug,"xs")+named+'</span>';
+        }).join(" &middot; ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+

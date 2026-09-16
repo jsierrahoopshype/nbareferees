@@ -121,7 +121,8 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .stat-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.8rem}
 .today-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.8rem}
 .today-col #spotlight-card,.today-col #ondate-card,.today-col #birthday-card{margin-top:.5rem}
-.birthday-row{font-size:.9rem;font-weight:600;margin-top:.15rem}
+.birthday-row{display:flex;align-items:center;gap:.5rem;
+  font-size:.9rem;font-weight:600;margin-top:.4rem}
 .birthday-row:first-child{margin-top:0}
 .birthday-fallback-note{display:block;font-size:.68rem;color:var(--text-secondary);margin-top:.3rem}
 @media(max-width:1100px){
@@ -167,6 +168,30 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 @media(max-width:520px){
   .ref-photo{width:64px;height:64px}
   .ref-hero-body.has-photo{gap:.75rem}
+}
+/* Index avatars -- the same portrait, the same framing (object-position keeps
+   heads in the top third), scaled per module. The rule the profile portrait
+   set holds here too: no photo means no element at all. Every layout that uses
+   these is an inline-flex row with a gap, so the gap collapses to nothing for
+   the 90 officials without one and their name sits at the row's left margin,
+   rather than being pushed across by an empty slot. */
+.ref-avatar{flex:0 0 auto;object-fit:cover;object-position:50% 22%;
+  border-radius:50%;border:1px solid var(--border);background:var(--surface)}
+.ref-avatar-lg{width:56px;height:56px;border-radius:10px}
+.ref-avatar-sm{width:34px;height:34px}
+.ref-avatar-xs{width:26px;height:26px}
+/* Spotlight: portrait beside name + career line, switched on exactly like the
+   profile hero so the photoless pick keeps the plain stacked block. */
+.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.75rem}
+.spotlight-id.has-photo .spotlight-id-main{min-width:0;flex:1 1 auto}
+/* Birthdays: avatar then the name/jersey/age run. */
+.birthday-id{min-width:0}
+/* Crews: one avatar+name unit per official, so the " &middot; " separator
+   falls between people rather than between a face and its name. */
+.crew-ref{display:inline-flex;align-items:center;gap:.3rem;vertical-align:middle}
+@media(max-width:520px){
+  .ref-avatar-lg{width:48px;height:48px}
+  .ref-avatar-sm{width:30px;height:30px}
 }
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
@@ -470,6 +495,14 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
+/* Scoped to the Tonight's Officials module, the only .crew-names that carries
+   avatars -- the frontpage "most frequent crews" strip reuses the same class
+   with plain text and keeps its existing tighter spacing. Stays ordinary
+   inline flow so the " &middot; " text nodes between .crew-ref units space
+   themselves; the looser line-height gives the 26px avatars room when a long
+   crew wraps, and vertical-align:middle on .crew-ref keeps a name with a photo
+   on the same line as one without, which baseline alignment would not. */
+#tonight-officials-body .crew-names{line-height:1.9}
 
 /* ---- comparator ---- */
 .compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
