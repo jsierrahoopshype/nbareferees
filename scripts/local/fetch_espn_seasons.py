@@ -159,6 +159,11 @@ GAMES_COLUMNS = [
     "game_id", "game_date", "season", "season_type",
     "home_team_id", "home_team_abbr", "away_team_id", "away_team_abbr",
     "home_pts", "away_pts", "home_win",
+    # 1 means game_date is the local calendar date the game was played on,
+    # which rows written by this fetcher now are. Rows still carrying the old
+    # UTC date are 0, and build.py's Christmas Eve gate is hard only on the
+    # ones claiming 1. See scripts/local/fix_game_dates_espn.py.
+    "date_is_local",
 ]
 OFFICIALS_COLUMNS = ["game_id", "official_id", "official_name", "jersey_num"]
 PLAYER_COLUMNS = [
@@ -405,12 +410,30 @@ def parse_game_row(event, season_label):
     if not event_id:
         return (None, None)
 
-    # Date -> YYYY-MM-DD (ESPN dates are ISO, often with Z / offset).
+    # Date -> YYYY-MM-DD, IN EASTERN TIME, NOT UTC.
+    #
+    # ESPN's event.date is a UTC INSTANT. Formatting it in UTC -- which this
+    # did until the game_date timezone fix -- files an 8:00pm ET game under the
+    # following day, because 8:00pm EST is already midnight UTC. That put 8 to
+    # 14 games a season on Christmas Eve, a day the league never plays, and
+    # dated the large majority of every ESPN-sourced season one day late. See
+    # scripts/local/probe_game_date_timezone.py for the finding.
+    #
+    # Eastern is the right target and needs no per-arena timezone table: no NBA
+    # game tips after midnight ET (the latest start is about 10:30pm ET, which
+    # is 7:30pm on the west coast), so the Eastern calendar date and the home
+    # arena's calendar date are the same day for every game in the league. It
+    # is also what stats.nba.com's GAME_DATE holds, so the two eras in
+    # games.csv.gz end up on one convention.
+    #
+    # tz_convert("US/Eastern") goes through pandas' own bundled tz data rather
+    # than the OS, so this works on Windows without the tzdata package.
     raw_date = event.get("date") or comp.get("date") or ""
     game_date = ""
     if raw_date:
         try:
-            game_date = pd.to_datetime(raw_date, utc=True, errors="coerce").strftime("%Y-%m-%d")
+            game_date = (pd.to_datetime(raw_date, utc=True, errors="coerce")
+                         .tz_convert("US/Eastern").strftime("%Y-%m-%d"))
         except Exception:  # noqa: BLE001
             game_date = str(raw_date)[:10]
 
@@ -448,6 +471,7 @@ def parse_game_row(event, season_label):
         "home_team_abbr": team_abbr(home),
         "away_team_id": team_id(away),
         "away_team_abbr": team_abbr(away),
+        "date_is_local": "1",
         "home_pts": hp,
         "away_pts": ap,
         "home_win": home_win,
