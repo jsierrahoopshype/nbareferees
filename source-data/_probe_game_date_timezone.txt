@@ -1,0 +1,328 @@
+game_date timezone probe (probe_game_date_timezone.py)
+Run at (local clock): 2026-09-17T13:16:41
+games.csv.gz: /home/user/nbareferees/source-data/games.csv.gz
+rows: 41618
+
+==============================================================================
+1. WHICH SEASONS AND WHICH FEED
+==============================================================================
+game_id shape tells us the feed: 00xxxxxxxx is an NBA id
+(stats.nba.com, which publishes a plain local GAME_DATE); anything
+else is an ESPN id. If the defect is per-feed it lands on this line.
+
+season    scheme    games   mixed?
+1993-94   espn       1181   
+1994-95   espn       1175   
+1995-96   espn       1253   
+1996-97   espn       1256   
+1997-98   espn       1257   
+1998-99   espn        830   
+1999-00   espn       1317   
+2000-01   espn       1251   
+2001-02   espn       1261   
+2002-03   espn       1278   
+2003-04   nba        1271   
+2004-05   nba        1314   
+2005-06   nba        1230   
+2006-07   nba        1309   
+2007-08   nba        1316   
+2008-09   nba        1315   
+2009-10   nba        1312   
+2010-11   nba        1311   
+2011-12   nba        1074   
+2012-13   espn       1317   
+2013-14   nba        1319   
+2014-15   nba        1311   
+2015-16   nba        1316   
+2016-17   nba        1309   
+2017-18   nba        1312   
+2018-19   nba        1312   
+2019-20   nba        1142   
+2020-21   nba        1165   
+2021-22   nba        1317   
+2022-23   nba        1314   
+2023-24   espn       1321   
+2024-25   espn       1326   
+2025-26   espn       1326   
+
+totals by scheme: {'espn': 17349, 'nba': 24269}
+
+ESPN-scheme seasons (14): 1993-94, 1994-95, 1995-96, 1996-97, 1997-98, 1998-99, 1999-00, 2000-01, 2001-02, 2002-03, 2012-13, 2023-24, 2024-25, 2025-26
+NBA-scheme seasons  (19): 2003-04, 2004-05, 2005-06, 2006-07, 2007-08, 2008-09, 2009-10, 2010-11, 2011-12, 2013-14, 2014-15, 2015-16, 2016-17, 2017-18, 2018-19, 2019-20, 2020-21, 2021-22, 2022-23
+
+==============================================================================
+2. THE CHRISTMAS TEST
+==============================================================================
+The NBA plays every Christmas Day and plays NOTHING on Christmas Eve.
+A game filed on December 24 was therefore not played that day.
+
+season    scheme  Dec24  Dec25  Dec26
+1993-94   espn       13      1      4
+1994-95   espn       11      2      1
+1995-96   espn       12      2      1
+1996-97   espn        9      1      2
+1997-98   espn        7      2      0
+1998-99   espn        0      0      0
+1999-00   espn       10      1      8
+2000-01   espn       12      2      0
+2001-02   espn        0      2      0
+2002-03   espn        8      3      0
+2003-04   nba         0      3     13
+2004-05   nba         0      2      9
+2005-06   nba         0      2     10
+2006-07   nba         0      1     11
+2007-08   nba         0      3     11
+2008-09   nba         0      5     10
+2009-10   nba         0      5     10
+2010-11   nba         0      5      7
+2011-12   nba         0      5     12
+2012-13   espn        3      3      2
+2013-14   nba         0      5      4
+2014-15   nba         0      5     11
+2015-16   nba         0      5     13
+2016-17   nba         0      5     11
+2017-18   nba         0      5      8
+2018-19   nba         0      5     10
+2019-20   nba         0      5      6
+2020-21   nba         0      5     10
+2021-22   nba         0      5      8
+2022-23   nba         0      5      7
+2023-24   espn       11      3      2
+2024-25   espn       14      3      2
+2025-26   espn       14      3      2
+
+Read the Dec24 column against the scheme column.
+
+------------------------------------------------------------------------------
+The 2023 slate, predicted BEFORE looking at where the rows landed.
+In late December the Eastern zone is on EST, so a game crosses
+midnight UTC when it tips at or after 19:00 ET.
+
+game        tip          predicted    stored       verdict
+MIL@NYK     12:00pm ET   2023-12-25   2023-12-25   match
+GSW@DEN     2:30pm ET    2023-12-25   2023-12-25   match
+BOS@LAL     5:00pm ET    2023-12-25   2023-12-25   match
+PHI@MIA     8:00pm ET    2023-12-26   2023-12-26   match
+DAL@PHX     10:30pm ET   2023-12-26   2023-12-26   match
+
+5 of 5 predicted correctly.
+Every game lands where the UTC-instant theory says it should,
+including the split inside a single day's slate: the three
+afternoon games stay on the 25th and the two night games do not.
+A timezone-free off-by-one would have moved all five together.
+
+==============================================================================
+3. THE WEEKDAY SIGNATURE ACROSS SCHEME BOUNDARIES
+==============================================================================
+The NBA's weekly shape is strong and stable. Moving late games into
+the next day drags that shape one day forward. Only ADJACENT seasons
+are compared, so scheduling habits are held near-constant and the
+scheme is the thing that changed.
+
+season    scheme   Mon   Tue   Wed   Thu   Fri   Sat   Sun
+1993-94   espn     6.0   8.5  18.2  15.2  12.9  17.9  21.3
+1994-95   espn     3.5   9.2  17.5  15.8  12.2  19.7  22.1
+1995-96   espn     4.6   6.9  17.0  15.7  11.6  19.7  24.5
+1996-97   espn     4.8   8.0  16.8  14.3  13.2  19.5  23.4
+1997-98   espn     3.0   8.9  17.2  14.9  10.5  20.5  25.0
+1998-99   espn     7.2  12.7  18.1  12.6  13.4  15.3  20.7
+1999-00   espn     4.0  11.0  17.6  14.7  13.5  17.7  21.4
+2000-01   espn     4.1   9.7  17.5  16.7  11.5  17.9  22.5
+2001-02   espn     3.4   8.3  17.9  15.5  11.6  18.9  24.4
+2002-03   espn     2.6  11.2  15.5  18.5   5.7  21.3  25.2
+2003-04   nba     10.9  15.5  19.3   5.6  21.3  15.6  11.8
+2004-05   nba     11.1  15.3  21.1   5.9  18.9  14.9  12.8
+2005-06   nba     11.3  14.5  22.4   5.1  20.6  13.7  12.4
+2006-07   nba     11.1  13.3  22.3   4.8  21.4  15.9  11.2
+2007-08   nba     10.6  13.4  22.4   5.4  21.4  14.8  12.0
+2008-09   nba     11.2  14.4  21.3   4.8  20.8  15.2  12.3
+2009-10   nba     11.3  13.7  22.8   4.7  20.2  15.3  11.9
+2010-11   nba     12.8  12.2  23.2   5.0  20.1  14.4  12.4
+2011-12   nba     15.1  12.3  20.8   8.6  17.7  13.5  12.0
+2012-13   espn     6.5  11.9  11.4  22.0   6.7  20.4  21.0
+2013-14   nba     13.4  11.5  21.8   5.5  20.3  15.9  11.5
+2014-15   nba     13.4  11.3  21.2   5.6  21.0  14.3  13.2
+2015-16   nba     14.9  11.2  20.8   8.2  18.0  15.0  12.0
+2016-17   nba     14.2  11.9  19.8   9.4  18.0  14.3  12.3
+2017-18   nba     14.1  12.4  19.1   8.9  18.1  15.7  11.7
+2018-19   nba     14.3  11.1  19.8   8.6  17.2  16.2  12.9
+2019-20   nba     15.7  11.0  18.0   9.3  17.8  15.6  12.7
+2020-21   nba     14.1  11.4  18.1  11.1  16.9  13.6  14.8
+2021-22   nba     15.0  10.5  19.8   9.3  17.6  13.3  14.4
+2022-23   nba     14.4  10.8  19.3   8.2  19.5  13.2  14.6
+2023-24   espn     7.1  13.1  13.3  17.0  11.9  19.6  17.9
+2024-25   espn     7.4  14.9  11.1  16.3  12.4  17.8  20.1
+2025-26   espn     8.8  13.2  13.4  15.4  12.1  18.8  18.3
+
+------------------------------------------------------------------------------
+Boundary pairs: each ESPN-scheme season against every NBA-scheme
+season immediately beside it.
+
+espn      nba ref        as-is  ref +1day   verdict
+2002-03   2003-04         9.16       2.87   shifted fits better
+2012-13   2011-12         8.36       3.25   shifted fits better
+2012-13   2013-14         8.82       1.87   shifted fits better
+2023-24   2022-23         5.99       3.16   shifted fits better
+
+4 boundary pair(s) fit better shifted, 0 as-is.
+
+==============================================================================
+4. HOW MANY GAMES -- ESTIMATED, NOT COUNTED
+==============================================================================
+games.csv.gz has no tip-off time, so the misdated games cannot be
+counted directly. If a fraction L of a season's games roll over,
+the weekday histogram is the mixture
+    observed = (1-L)*true + L*(true shifted one day forward)
+and L is the only free parameter. Fitted below against the nearest
+NBA-scheme season. The residual is reported beside every estimate:
+it is what says whether the model fits at all.
+
+season    ref       fitted L   residual     games est. wrong
+2002-03   2003-04      0.995       2.85      1278       1272
+2012-13   2013-14      1.000       1.87      1317       1317
+2023-24   2022-23      0.709       2.19      1321        937
+
+Seasons with a usable adjacent reference: 3
+  games in them      : 3916
+  estimated misdated : 3526  (90.0%)
+  fitted L range     : 0.71 to 1.00 (median 0.99)
+
+Seasons with no adjacent NBA-scheme season (the 1993-2003 block)
+cannot be fitted this way at all, and are deliberately left out of
+the total rather than assigned a borrowed rate.
+
+==============================================================================
+5. TIME ZONES AND TIP-OFF TIMES
+==============================================================================
+Whether a game rolls over is arithmetic. It rolls when local tip-off
+plus the zone's UTC offset crosses midnight, so every zone has a
+threshold, and the threshold moves an hour with daylight saving.
+
+zone   standard time (Nov-Mar) daylight time (Mar-Nov)
+ET     rolls at 19:00 local    rolls at 20:00 local
+CT     rolls at 18:00 local    rolls at 19:00 local
+MT     rolls at 17:00 local    rolls at 18:00 local
+PT     rolls at 16:00 local    rolls at 17:00 local
+
+This is the part most likely to be misread. The intuition that this
+is a west-coast problem holds only under daylight time. Under
+standard time -- which is most of the regular season -- an EASTERN
+7:00pm tip is already midnight UTC, so a routine 7:00 or 7:30pm start
+rolls over in every zone in the league. What survives correct are
+afternoon and early-evening games: weekend matinees, holiday noon
+games, and 7:00-7:30pm Eastern starts during the daylight-time months
+at the very start and end of the season.
+
+------------------------------------------------------------------------------
+Home games by zone, so the exposure per zone is visible even though
+the per-game tip-off time is not in the file.
+
+  ET     7618 home games in ESPN-scheme rows (43.9%)
+  CT     4337 home games in ESPN-scheme rows (25.0%)
+  MT     1794 home games in ESPN-scheme rows (10.3%)
+  PT     3600 home games in ESPN-scheme rows (20.8%)
+
+A per-zone count of MISDATED games needs the tip-off time, which is
+not in this file. The zone table above says which games are at risk
+and from what hour; it deliberately does not pretend to a count.
+
+==============================================================================
+6. THE GAME-ID BRIDGE AS AN INDEPENDENT CHECK
+==============================================================================
+source-data/game_id_bridge.csv.gz already recorded, per game, the
+offset between games.csv.gz and an independently-sourced date.
+
+The two sources behind it date a game differently, and that is the
+whole value of it:
+  cdnnba_*     timeActual, an ISO UTC timestamp, read as a UTC date
+  shotdetail_* GAME_DATE, a plain local calendar date
+
+source family    offset    games
+cdnnba                0     3916
+shotdetail            0        3
+shotdetail            1       22
+
+Against the UTC-dated source   : {'0': 3916}
+Against the local-dated source : {'1': 22, '0': 3}
+
+games.csv.gz agrees with the UTC-dated source on every one of its
+3916 games, and disagrees with the local-dated source on 22 of 25.
+That is the finding stated twice from opposite directions: the file
+holds the UTC date, not the local one.
+
+The offset rows are all 2025-26 playoffs only because that is the
+only window the local-dated source was needed to cover -- it is where
+the bridge looked, not where the problem is.
+
+The 22 offset games, with the date games.csv.gz holds:
+  0042500204  2025-26  DET @ CLE  (stored 2026-05-12, played the day before)
+  0042500205  2025-26  CLE @ DET  (stored 2026-05-14, played the day before)
+  0042500207  2025-26  CLE @ DET  (stored 2026-05-18, played the day before)
+  0042500224  2025-26  OKC @ LAL  (stored 2026-05-12, played the day before)
+  0042500235  2025-26  MIN @ SAS  (stored 2026-05-13, played the day before)
+  0042500236  2025-26  SAS @ MIN  (stored 2026-05-16, played the day before)
+  0042500301  2025-26  CLE @ NYK  (stored 2026-05-20, played the day before)
+  0042500302  2025-26  CLE @ NYK  (stored 2026-05-22, played the day before)
+  ... and 14 more
+
+The 3 shotdetail game(s) that AGREE are the control: a local and
+a UTC date coincide when the game did not tip late enough to
+cross midnight.
+  0042500206  2025-26  DET @ CLE  stored 2026-05-15
+  0042500214  2025-26  NYK @ PHI  stored 2026-05-10
+  0042500234  2025-26  SAS @ MIN  stored 2026-05-10
+
+==============================================================================
+7. WHAT ACTUALLY DISPLAYS A WRONG DATE
+==============================================================================
+Read off scripts/build.py, not guessed. A feature only matters here
+if a one-day shift changes what a reader sees.
+
+  latest_game_day (build.py ~3862)
+    surfaces at : index.html, 'Most recent officiating crews' heading date
+    affected    : YES -- displays the stored date outright, and can also SPLIT one real night across two stored dates, so the module may show only the late half
+
+  date_index / month_day (build.py ~3881)
+    surfaces at : index.html, 'On this date' card
+    affected    : YES -- a game is indexed under the wrong calendar day, so the card attributes a performance to the day after it happened
+
+  referee_games per-game date (build.py ~3814)
+    surfaces at : referee/<slug>/games/, the full game log
+    affected    : YES -- every row's date column
+
+  notable games (build.py ~1399, ~1429)
+    surfaces at : referee/<slug>/, notable-game tables
+    affected    : YES -- the date beside each game
+
+  swings (build.py ~2028, ~2063)
+    surfaces at : swings/ and the index swings strip
+    affected    : YES -- the date beside each swing
+
+  recent form windows (build.py ~1695-1915)
+    surfaces at : index recent-form spotlight, referee recent-form blocks
+    affected    : PARTLY -- cal30 is a date window, so a shifted game can cross the boundary, and days_since_last_game is off by one
+
+  era (build.py ~314)
+    surfaces at : internal split between the two feeds
+    affected    : NO -- derived from the game_id scheme, never from the date
+
+  debuts / farewells (build.py ~2361)
+    surfaces at : debuts/ and the index debuts widget
+    affected    : NO -- keyed on first_season / last_season, which are season labels. A one-day shift cannot move a game out of its season, so this is NOT affected despite being a date-shaped feature
+
+Note the two NOs. era is keyed on the id scheme and debuts/farewells
+on season labels, so neither moves with the date even though both
+look like date features from the outside.
+
+==============================================================================
+WHAT THIS PROBE DOES NOT ESTABLISH
+==============================================================================
+- No per-game count of misdated games. games.csv.gz has no tip-off
+  time, so the totals in section 4 are a fitted estimate with a
+  stated residual, not a census.
+- The 1993-94..2002-03 ESPN block has no adjacent NBA-scheme season,
+  so no rate could be fitted for it. Its Dec-24 counts in section 2
+  say it is affected; they do not say by how much.
+- Nothing here was re-fetched. Confirming a specific game's real
+  local date needs the cdnnba timeActual timestamps, which are in a
+  gitignored cache and were not available to this run.
