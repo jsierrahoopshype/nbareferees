@@ -169,29 +169,27 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .ref-photo{width:64px;height:64px}
   .ref-hero-body.has-photo{gap:.75rem}
 }
-/* Index avatars -- the same portrait, the same framing (object-position keeps
-   heads in the top third), scaled per module. The rule the profile portrait
-   set holds here too: no photo means no element at all. Every layout that uses
-   these is an inline-flex row with a gap, so the gap collapses to nothing for
-   the 90 officials without one and their name sits at the row's left margin,
-   rather than being pushed across by an empty slot. */
+/* Index avatars -- the same portrait and the same framing (object-position
+   keeps heads in the top third), sized per module so a face is actually
+   legible. 26px inline, which is what this started as, is a smudge; 44px is
+   the floor and the crew and spotlight sit above it. The rule the profile
+   portrait set holds here too: no photo means no element at all. */
 .ref-avatar{flex:0 0 auto;object-fit:cover;object-position:50% 22%;
   border-radius:50%;border:1px solid var(--border);background:var(--surface)}
-.ref-avatar-lg{width:56px;height:56px;border-radius:10px}
-.ref-avatar-sm{width:34px;height:34px}
-.ref-avatar-xs{width:26px;height:26px}
+.ref-avatar-spotlight{width:72px;height:72px;border-radius:12px}
+.ref-avatar-crew{width:48px;height:48px}
+.ref-avatar-birthday{width:44px;height:44px}
 /* Spotlight: portrait beside name + career line, switched on exactly like the
    profile hero so the photoless pick keeps the plain stacked block. */
-.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.75rem}
+.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.9rem}
 .spotlight-id.has-photo .spotlight-id-main{min-width:0;flex:1 1 auto}
-/* Birthdays: avatar then the name/jersey/age run. */
+/* Birthdays: avatar, then the name/jersey/age run, with real space between
+   them rather than the face sitting flush against the text. */
 .birthday-id{min-width:0}
-/* Crews: one avatar+name unit per official, so the " &middot; " separator
-   falls between people rather than between a face and its name. */
-.crew-ref{display:inline-flex;align-items:center;gap:.3rem;vertical-align:middle}
 @media(max-width:520px){
-  .ref-avatar-lg{width:48px;height:48px}
-  .ref-avatar-sm{width:30px;height:30px}
+  .ref-avatar-spotlight{width:60px;height:60px}
+  .ref-avatar-crew{width:40px;height:40px}
+  .ref-avatar-birthday{width:40px;height:40px}
 }
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
@@ -495,14 +493,27 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
-/* Scoped to the Tonight's Officials module, the only .crew-names that carries
-   avatars -- the frontpage "most frequent crews" strip reuses the same class
-   with plain text and keeps its existing tighter spacing. Stays ordinary
-   inline flow so the " &middot; " text nodes between .crew-ref units space
-   themselves; the looser line-height gives the 26px avatars room when a long
-   crew wraps, and vertical-align:middle on .crew-ref keeps a name with a photo
-   on the same line as one without, which baseline alignment would not. */
-#tonight-officials-body .crew-names{line-height:1.9}
+/* Tonight's Officials crews, the only .crew-names that carries avatars -- the
+   frontpage "most frequent crews" strip reuses the class with plain text and
+   is deliberately left alone, which is why every rule here is scoped.
+
+   Each official is a COLUMN: photo above name, not a face wedged into a line
+   of text. The row aligns on flex-end so all three names land on the same
+   line, and the matchup and final score align with them; a photo simply rises
+   above its name. That is what makes a crew with only one photographed
+   official read as deliberate instead of broken -- the names still form a
+   clean row, and the space above the other two is empty rather than holding a
+   placeholder. */
+#tonight-officials-body .crew-game{align-items:flex-end;gap:.75rem 1.1rem;padding:.75rem .2rem}
+#tonight-officials-body .crew-names{display:flex;flex-wrap:wrap;align-items:flex-end;
+  gap:.7rem 1.2rem;line-height:1.35}
+#tonight-officials-body .crew-ref{display:flex;flex-direction:column;align-items:center;
+  gap:.45rem;text-align:center}
+@media(max-width:520px){
+  /* Phone: the crew takes its own full-width line under the matchup, so three
+     48px columns are not competing with the team names for horizontal room. */
+  #tonight-officials-body .crew-names{flex:1 1 100%;gap:.6rem .9rem}
+}
 
 /* ---- comparator ---- */
 .compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
