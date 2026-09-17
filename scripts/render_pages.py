@@ -32,6 +32,7 @@ import sys
 import json
 import glob
 import html
+import hashlib
 
 # Shared tricode → full-team-name map lives with the local scripts.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "local"))
@@ -282,6 +283,43 @@ def ld_json_scripts(ld_json):
         for b in blocks)
 
 
+# ---------------------------------------------------------------------------
+# Asset filenames carry a hash of their own contents.
+#
+# THE STYLESHEET AND THE SCRIPT WERE UNVERSIONED, and the proxy in front of this
+# site serves everything under /referees/ with max-age=86400. So a returning
+# visitor -- and the edge cache itself -- could hold yesterday's assets/app.js
+# for a full day while today's index.html was already being served.
+#
+# That is not hypothetical. The first version of the index headshots shipped and
+# then appeared broken in exactly that way: the markup was current, so the
+# server-rendered crew photos showed up, while the spotlight and birthday cards
+# -- which app.js builds in the browser -- silently ran the PREVIOUS script,
+# which had no avatar code in it and just rendered the names. The stale
+# stylesheet compounded it: with no .ref-avatar rules the crew images fell back
+# to their bare width/height attributes, with no crop, no rounding and no
+# object-position, which is what turned them into smudges.
+#
+# Hashing the NAME rather than appending ?v= is deliberate. The proxy keys its
+# cache on the path alone and drops the query before going upstream, so a query
+# would bust the browser's copy and leave the edge serving the old bytes. A new
+# filename is a new path, and a new path is a new cache entry at every layer,
+# with no cooperation needed from the proxy.
+# ---------------------------------------------------------------------------
+def asset_name(stem, ext, content):
+    """'app', 'js' -> 'app.<10 hex>.js', keyed to exactly these bytes."""
+    digest = hashlib.sha1(content.encode("utf-8")).hexdigest()[:10]
+    return "%s.%s.%s" % (stem, digest, ext)
+
+
+def css_asset():
+    return asset_name("style", "css", CSS)
+
+
+def js_asset():
+    return asset_name("app", "js", JS)
+
+
 # Every canonical path emitted by head(), root-relative, in the form the tag
 # itself uses ("" for the home page, "referee/{slug}/index.html" for a profile).
 # Filled during rendering and drained by write_sitemap() at the end of main().
@@ -359,7 +397,7 @@ def head(title, description, depth, ld_json=None, canonical=None):
 {canonical_tag}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{root}assets/style.css">
+<link rel="stylesheet" href="{root}assets/{css_asset}">
 {ld}</head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -374,7 +412,7 @@ def head(title, description, depth, ld_json=None, canonical=None):
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
                            cur=CURRENT_SEASON, ld=ld_json_scripts(ld_json),
-                           canonical_tag=canonical_tag)
+                           canonical_tag=canonical_tag, css_asset=css_asset())
 
 
 def footer(depth):
@@ -388,9 +426,9 @@ def footer(depth):
   <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopshype@hoopshype.com">hoopshype@hoopshype.com</a>.
   For business inquiries, contact us at <a href="mailto:ads@hoopshype.com">ads@hoopshype.com</a>.</p>
 </footer>
-<script src="{root}assets/app.js"></script>
+<script src="{root}assets/{js_asset}"></script>
 </body>
-</html>""".format(root=root)
+</html>""".format(root=root, js_asset=js_asset())
 
 
 def page(title, description, depth, body, ld_json=None, canonical=None):
@@ -547,25 +585,37 @@ def ref_photo_img(slug, root):
 # above -- present when we have one, ABSENT ENTIRELY when we do not. No
 # silhouette, no initials tile, no empty frame holding a slot open.
 #
-# The index is where that rule costs something, and it is worth being explicit
-# about why it still stands. A profile page shows one referee, so a missing
-# photo has no neighbour to look ragged against. A crew row shows three side by
-# side, and 90 of 164 officials have no photo, so mixed rows are the norm rather
-# than the exception. The layouts below therefore put the avatar in an
-# inline-flex row with a `gap`, which collapses when there is no image: a name
-# without a photo starts at the row's left margin exactly as the text does on
-# its own profile page, instead of being indented past a hole where a picture
-# would have gone. Uneven, but never a gap and never invented art.
+# SIZED TO BE READ, NOT TO BE DECORATIVE. The first version of this ran the
+# crew avatars at 26px inline with the names, which was too small to tell one
+# official from another: at that scale a headshot is a dark smudge that carries
+# no information and reads worse than no picture at all. A face needs enough
+# pixels to be recognised, so the floor here is 44px and the crew and spotlight
+# go well above it. If a layout cannot afford the space, the honest answer is
+# to show no photo there rather than a thumbnail nobody can parse.
 #
-# Sizes are the profile portrait's 84px scaled to each context, and keep its
-# object-position so heads stay framed the same way. alt is empty for the same
-# reason it is there: the referee's name is the adjacent link text, so the
-# image is decorative to a screen reader and repeating the name would just
-# make it announce twice.
-AVATAR_SIZES = {"lg": 56, "sm": 34, "xs": 26}
+# Keys are named for where they appear rather than t-shirt sizes, because the
+# whole point is that each context gets the size it can carry: a spotlight card
+# has room for a real portrait, a birthday row does not.
+#
+# The index is also where the absence rule costs something, and it is worth
+# being explicit about why it still stands. A profile page shows one referee,
+# so a missing photo has no neighbour to look ragged against. A crew shows
+# three side by side, and 90 of 164 officials have no photo, so mixed crews are
+# the norm rather than the exception. The crew layout answers that by stacking
+# photo above name and aligning the whole row on the NAMES (align-items:end):
+# every name lands on the same line whether or not there is a picture above it,
+# so an official without one leaves no hole and no ragged edge -- the space
+# above their name is simply empty, the way the text starts at the left margin
+# on their own profile page.
+#
+# Framing follows the profile portrait's object-position so heads sit in the
+# same part of the crop. alt is empty for the same reason it is there: the
+# referee's name is the adjacent link text, so the image is decorative to a
+# screen reader and repeating the name would just make it announce twice.
+AVATAR_SIZES = {"spotlight": 72, "crew": 48, "birthday": 44}
 
 
-def ref_avatar_img(slug, root, size="sm"):
+def ref_avatar_img(slug, root, size):
     """An index avatar for this referee, or "" when there is no photo on disk."""
     rel = headshot_rel(slug)
     if not rel:
@@ -2069,13 +2119,15 @@ def latest_game_day_body(games):
     for g in games:
         hp, ap = g.get("home_pts"), g.get("away_pts")
         final = ("Final %s–%s" % (i(ap), i(hp))) if hp is not None and ap is not None else ""
-        # Each official is now an avatar + name unit rather than a bare link, so
-        # the separator sits between people instead of between an image and the
-        # name it belongs to. .crew-ref is the inline-flex wrapper whose gap
-        # collapses for the officials with no photo (see ref_avatar_img).
-        crew = " &middot; ".join(
+        # Each official is a stacked photo-above-name cell, not a run of inline
+        # text. Joined on a SPACE rather than a "&middot;" separator: the cells
+        # are laid out with a flex gap that already separates them, and flex
+        # discards whitespace-only text between items, so the space costs
+        # nothing here while still keeping the names apart if the stylesheet
+        # never arrives.
+        crew = " ".join(
             '<span class="crew-ref">%s%s</span>' % (
-                ref_avatar_img(c["slug"], "", "xs"),
+                ref_avatar_img(c["slug"], "", "crew"),
                 ref_link(c["name"], c["slug"], root=""))
             for c in g.get("crew") or []) or "—"
         rows.append(
@@ -3011,29 +3063,27 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   .ref-photo{width:64px;height:64px}
   .ref-hero-body.has-photo{gap:.75rem}
 }
-/* Index avatars -- the same portrait, the same framing (object-position keeps
-   heads in the top third), scaled per module. The rule the profile portrait
-   set holds here too: no photo means no element at all. Every layout that uses
-   these is an inline-flex row with a gap, so the gap collapses to nothing for
-   the 90 officials without one and their name sits at the row's left margin,
-   rather than being pushed across by an empty slot. */
+/* Index avatars -- the same portrait and the same framing (object-position
+   keeps heads in the top third), sized per module so a face is actually
+   legible. 26px inline, which is what this started as, is a smudge; 44px is
+   the floor and the crew and spotlight sit above it. The rule the profile
+   portrait set holds here too: no photo means no element at all. */
 .ref-avatar{flex:0 0 auto;object-fit:cover;object-position:50% 22%;
   border-radius:50%;border:1px solid var(--border);background:var(--surface)}
-.ref-avatar-lg{width:56px;height:56px;border-radius:10px}
-.ref-avatar-sm{width:34px;height:34px}
-.ref-avatar-xs{width:26px;height:26px}
+.ref-avatar-spotlight{width:72px;height:72px;border-radius:12px}
+.ref-avatar-crew{width:48px;height:48px}
+.ref-avatar-birthday{width:44px;height:44px}
 /* Spotlight: portrait beside name + career line, switched on exactly like the
    profile hero so the photoless pick keeps the plain stacked block. */
-.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.75rem}
+.spotlight-id.has-photo{display:flex;align-items:flex-start;gap:.9rem}
 .spotlight-id.has-photo .spotlight-id-main{min-width:0;flex:1 1 auto}
-/* Birthdays: avatar then the name/jersey/age run. */
+/* Birthdays: avatar, then the name/jersey/age run, with real space between
+   them rather than the face sitting flush against the text. */
 .birthday-id{min-width:0}
-/* Crews: one avatar+name unit per official, so the " &middot; " separator
-   falls between people rather than between a face and its name. */
-.crew-ref{display:inline-flex;align-items:center;gap:.3rem;vertical-align:middle}
 @media(max-width:520px){
-  .ref-avatar-lg{width:48px;height:48px}
-  .ref-avatar-sm{width:30px;height:30px}
+  .ref-avatar-spotlight{width:60px;height:60px}
+  .ref-avatar-crew{width:40px;height:40px}
+  .ref-avatar-birthday{width:40px;height:40px}
 }
 .ref-name{font-size:1.7rem;letter-spacing:-.02em;margin:.15rem 0 0}
 .jersey-num{display:inline-block;margin-left:.55rem;font-family:var(--mono);
@@ -3337,14 +3387,27 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .crew-matchup{font-weight:700}
 .crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
-/* Scoped to the Tonight's Officials module, the only .crew-names that carries
-   avatars -- the frontpage "most frequent crews" strip reuses the same class
-   with plain text and keeps its existing tighter spacing. Stays ordinary
-   inline flow so the " &middot; " text nodes between .crew-ref units space
-   themselves; the looser line-height gives the 26px avatars room when a long
-   crew wraps, and vertical-align:middle on .crew-ref keeps a name with a photo
-   on the same line as one without, which baseline alignment would not. */
-#tonight-officials-body .crew-names{line-height:1.9}
+/* Tonight's Officials crews, the only .crew-names that carries avatars -- the
+   frontpage "most frequent crews" strip reuses the class with plain text and
+   is deliberately left alone, which is why every rule here is scoped.
+
+   Each official is a COLUMN: photo above name, not a face wedged into a line
+   of text. The row aligns on flex-end so all three names land on the same
+   line, and the matchup and final score align with them; a photo simply rises
+   above its name. That is what makes a crew with only one photographed
+   official read as deliberate instead of broken -- the names still form a
+   clean row, and the space above the other two is empty rather than holding a
+   placeholder. */
+#tonight-officials-body .crew-game{align-items:flex-end;gap:.75rem 1.1rem;padding:.75rem .2rem}
+#tonight-officials-body .crew-names{display:flex;flex-wrap:wrap;align-items:flex-end;
+  gap:.7rem 1.2rem;line-height:1.35}
+#tonight-officials-body .crew-ref{display:flex;flex-direction:column;align-items:center;
+  gap:.45rem;text-align:center}
+@media(max-width:520px){
+  /* Phone: the crew takes its own full-width line under the matchup, so three
+     48px columns are not competing with the team names for horizontal room. */
+  #tonight-officials-body .crew-names{flex:1 1 100%;gap:.6rem .9rem}
+}
 
 /* ---- comparator ---- */
 .compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
@@ -3512,12 +3575,12 @@ JS = r"""(function(){
     if(!el)return {};
     try{return JSON.parse(el.textContent)||{};}catch(e){return {};}
   })();
-  var AVATAR_PX={lg:56,sm:34,xs:26};
+  var AVATAR_PX={spotlight:72,crew:48,birthday:44};
   function refAvatar(slug,size){
     var rel=slug&&REF_PHOTOS[slug];
     if(!rel)return "";
-    var px=AVATAR_PX[size||"sm"];
-    return '<img class="ref-avatar ref-avatar-'+(size||"sm")+'" src="'+escHtml(rel)+
+    var px=AVATAR_PX[size];
+    return '<img class="ref-avatar ref-avatar-'+size+'" src="'+escHtml(rel)+
       '" alt="" width="'+px+'" height="'+px+'" loading="lazy" decoding="async">';
   }
   // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
@@ -3688,7 +3751,7 @@ JS = r"""(function(){
         // Portrait beside the name and career line, dropping back to the
         // plain stacked block when this official has no photo -- the same
         // .has-photo switch the profile hero uses.
-        var spotPhoto=refAvatar(pick.slug,"lg");
+        var spotPhoto=refAvatar(pick.slug,"spotlight");
         spotCard.innerHTML='<div class="spotlight-id'+(spotPhoto?' has-photo':'')+'">'+spotPhoto+
           '<div class="spotlight-id-main">'+
           '<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
@@ -3732,7 +3795,7 @@ JS = r"""(function(){
             // .birthday-row is the inline-flex row whose gap collapses when
             // refAvatar returns "", so a photoless official's name starts at
             // the left margin rather than indented past an empty slot.
-            return '<div class="birthday-row">'+refAvatar(p.slug,"sm")+
+            return '<div class="birthday-row">'+refAvatar(p.slug,"birthday")+
               '<span class="birthday-id"><a href="referee/'+p.slug+'/index.html">'+
               escHtml(p.name)+'</a>'+jersey+age+'</span></div>';
           }).join("");
@@ -3787,8 +3850,10 @@ JS = r"""(function(){
           // matched-but-unphotographed official takes.
           var nm=escHtml(c.name);
           var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-          return '<span class="crew-ref">'+refAvatar(c.slug,"xs")+named+'</span>';
-        }).join(" &middot; ");
+          return '<span class="crew-ref">'+refAvatar(c.slug,"crew")+named+'</span>';
+          // Space, not "&middot;": the cells are columns separated by a flex
+          // gap, and flex discards whitespace-only text between items.
+        }).join(" ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
@@ -4224,10 +4289,22 @@ def main():
     PLAYER_EXISTS.update(p["slug"] for p in player_index)
 
     os.makedirs(ASSETS, exist_ok=True)
-    with open(os.path.join(ASSETS, "style.css"), "w", encoding="utf-8") as f:
+    css_file, js_file = css_asset(), js_asset()
+    with open(os.path.join(ASSETS, css_file), "w", encoding="utf-8") as f:
         f.write(CSS)
-    with open(os.path.join(ASSETS, "app.js"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ASSETS, js_file), "w", encoding="utf-8") as f:
         f.write(JS)
+    # Sweep every other build's assets, including the unhashed style.css and
+    # app.js these replace. Nothing links them once the pages below are written,
+    # so leaving them would accumulate dead files -- and an unhashed one still
+    # sitting at its old path is exactly the copy a stale cache keeps serving.
+    keep = {css_file, js_file}
+    stale_assets = 0
+    for pat in ("style*.css", "app*.js"):
+        for old_asset in glob.glob(os.path.join(ASSETS, pat)):
+            if os.path.basename(old_asset) not in keep:
+                os.remove(old_asset)
+                stale_assets += 1
 
     # index
     with open(os.path.join(REPO, "index.html"), "w", encoding="utf-8") as f:
@@ -4384,7 +4461,9 @@ def main():
     print("wrote sources/index.html")
     print("wrote compare/index.html")
     print("wrote matchup/index.html")
-    print("wrote assets/style.css, assets/app.js")
+    print("wrote assets/%s, assets/%s" % (css_file, js_file))
+    if stale_assets:
+        print("removed %d superseded asset file(s)" % stale_assets)
     if removed:
         print("removed %d stale referee page(s)" % removed)
     print("wrote %d referee pages" % n)

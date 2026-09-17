@@ -38,12 +38,12 @@
     if(!el)return {};
     try{return JSON.parse(el.textContent)||{};}catch(e){return {};}
   })();
-  var AVATAR_PX={lg:56,sm:34,xs:26};
+  var AVATAR_PX={spotlight:72,crew:48,birthday:44};
   function refAvatar(slug,size){
     var rel=slug&&REF_PHOTOS[slug];
     if(!rel)return "";
-    var px=AVATAR_PX[size||"sm"];
-    return '<img class="ref-avatar ref-avatar-'+(size||"sm")+'" src="'+escHtml(rel)+
+    var px=AVATAR_PX[size];
+    return '<img class="ref-avatar ref-avatar-'+size+'" src="'+escHtml(rel)+
       '" alt="" width="'+px+'" height="'+px+'" loading="lazy" decoding="async">';
   }
   // Mirrors career_span() in render_pages.py: '2015-16'..'2025-26' -> '2015-2026'
@@ -214,7 +214,7 @@
         // Portrait beside the name and career line, dropping back to the
         // plain stacked block when this official has no photo -- the same
         // .has-photo switch the profile hero uses.
-        var spotPhoto=refAvatar(pick.slug,"lg");
+        var spotPhoto=refAvatar(pick.slug,"spotlight");
         spotCard.innerHTML='<div class="spotlight-id'+(spotPhoto?' has-photo':'')+'">'+spotPhoto+
           '<div class="spotlight-id-main">'+
           '<a class="spotlight-name" href="referee/'+pick.slug+'/index.html">'+
@@ -258,7 +258,7 @@
             // .birthday-row is the inline-flex row whose gap collapses when
             // refAvatar returns "", so a photoless official's name starts at
             // the left margin rather than indented past an empty slot.
-            return '<div class="birthday-row">'+refAvatar(p.slug,"sm")+
+            return '<div class="birthday-row">'+refAvatar(p.slug,"birthday")+
               '<span class="birthday-id"><a href="referee/'+p.slug+'/index.html">'+
               escHtml(p.name)+'</a>'+jersey+age+'</span></div>';
           }).join("");
@@ -313,8 +313,10 @@
           // matched-but-unphotographed official takes.
           var nm=escHtml(c.name);
           var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-          return '<span class="crew-ref">'+refAvatar(c.slug,"xs")+named+'</span>';
-        }).join(" &middot; ");
+          return '<span class="crew-ref">'+refAvatar(c.slug,"crew")+named+'</span>';
+          // Space, not "&middot;": the cells are columns separated by a flex
+          // gap, and flex discards whitespace-only text between items.
+        }).join(" ");
         var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
         return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
           '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
