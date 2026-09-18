@@ -4063,6 +4063,52 @@ def qa_gate(off_raw, gm, off_trimmed, referees_index, details):
     if (counts > 1).any():
         failures.append("duplicate game_id rows in games table")
 
+    # (hard) NO LOCAL-DATED GAME FALLS ON CHRISTMAS EVE.
+    #
+    # The NBA plays every Christmas Day and plays nothing at all on December
+    # 24 -- a league-wide off day, in every season in scope. So a game dated
+    # December 24 was not played that day, and no amount of schedule change
+    # produces that signature.
+    #
+    # This is the check that would have caught the UTC-vs-local game_date
+    # defect years ago, and it did not exist. games.csv.gz dated every
+    # ESPN-sourced game by the UTC instant of tip-off, so a 7:00pm game filed
+    # under the following day and December 23's evening slate landed on
+    # Christmas Eve -- 8 to 14 games a season, sitting in plain sight. See
+    # scripts/local/probe_game_date_timezone.py for the finding and
+    # scripts/local/fix_game_dates_espn.py for the correction.
+    #
+    # SCOPED TO ROWS THAT CLAIM TO BE LOCAL-DATED. date_is_local marks which
+    # rows have been through that correction. Rows still carrying a UTC date
+    # are counted and printed but do NOT fail the build, because the
+    # 1993-94..2002-03 and 2012-13 blocks cannot be corrected until
+    # fetch_espn_seasons.py is re-run: failing on them would mean nobody could
+    # build at all, and a gate that has to be switched off is a gate that gets
+    # deleted. The moment a row is marked local, this is hard.
+    if "date_is_local" in gm.columns:
+        local_flag = pd.to_numeric(gm["date_is_local"], errors="coerce").fillna(0) == 1
+    else:
+        # Column absent: the extract predates the fix, so nothing claims to be
+        # a local date and this check has nothing to police yet.
+        local_flag = pd.Series(False, index=gm.index)
+    is_dec24 = gm["game_date"].astype(str).str.slice(5, 10) == "12-24"
+    bad_dec24 = gm[local_flag & is_dec24]
+    print("[hard] local-dated games on December 24 (must be 0): %d" % len(bad_dec24))
+    if len(bad_dec24):
+        for _, row in bad_dec24.head(10).iterrows():
+            print("        %s %s %s @ %s" % (row["season"], row["game_date"],
+                                             row["away_team_abbr"], row["home_team_abbr"]))
+        failures.append("%d local-dated game(s) on December 24 -- game_date is not "
+                        "a local date for %s"
+                        % (len(bad_dec24), sorted(set(bad_dec24["season"]))[:5]))
+    still_utc = gm[(~local_flag) & is_dec24]
+    if len(still_utc):
+        print("[soft] December 24 games in rows NOT yet marked local: %d across %s"
+              % (len(still_utc), sorted(set(still_utc["season"]))))
+        print("[soft] those seasons still carry UTC dates -- run "
+              "scripts/local/fix_game_dates_espn.py for 2023-26, or re-fetch "
+              "1993-2003 and 2012-13 with the fetcher's date bug fixed")
+
     # (hard) each season is a single id scheme -- regression guard against
     # re-introducing a cross-scheme duplicate (e.g. the 2012-13 fragment)
     mixed = gm.groupby("season")["era"].nunique()
