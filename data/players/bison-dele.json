@@ -1005,6 +1005,29 @@
     },
     {
       "pts": 29,
+      "reb": 8,
+      "ast": 0,
+      "team_abbr": "DET",
+      "opp_abbr": "BOS",
+      "game_date": "1998-04-04",
+      "game_id": "180403008",
+      "crew": [
+        {
+          "name": "Terry Durham",
+          "slug": "terry-durham"
+        },
+        {
+          "name": "Bennie Adams",
+          "slug": "bennie-adams"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
+        }
+      ]
+    },
+    {
+      "pts": 29,
       "reb": 14,
       "ast": 2,
       "team_abbr": "DEN",
@@ -1027,25 +1050,17 @@
       ]
     },
     {
-      "pts": 29,
+      "pts": 28,
       "reb": 8,
-      "ast": 0,
-      "team_abbr": "DET",
-      "opp_abbr": "BOS",
-      "game_date": "1998-04-04",
-      "game_id": "180403008",
+      "ast": 2,
+      "team_abbr": "LAC",
+      "opp_abbr": "DAL",
+      "game_date": "1995-11-18",
+      "game_id": "151117012",
       "crew": [
         {
-          "name": "Terry Durham",
-          "slug": "terry-durham"
-        },
-        {
-          "name": "Bennie Adams",
-          "slug": "bennie-adams"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Leon Wood",
+          "slug": "leon-wood"
         }
       ]
     },
@@ -1069,17 +1084,25 @@
       ]
     },
     {
-      "pts": 28,
-      "reb": 8,
+      "pts": 27,
+      "reb": 10,
       "ast": 2,
-      "team_abbr": "LAC",
-      "opp_abbr": "DAL",
-      "game_date": "1995-11-18",
-      "game_id": "151117012",
+      "team_abbr": "DET",
+      "opp_abbr": "CHA",
+      "game_date": "1997-11-26",
+      "game_id": "171125003",
       "crew": [
         {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
+          "name": "Steve Javie",
+          "slug": "steve-javie"
+        },
+        {
+          "name": "David Jones",
+          "slug": "david-jones"
+        },
+        {
+          "name": "Bill Spooner",
+          "slug": "bill-spooner"
         }
       ]
     },
@@ -1103,29 +1126,6 @@
         {
           "name": "Tim Donaghy",
           "slug": "tim-donaghy"
-        }
-      ]
-    },
-    {
-      "pts": 27,
-      "reb": 10,
-      "ast": 2,
-      "team_abbr": "DET",
-      "opp_abbr": "CHA",
-      "game_date": "1997-11-26",
-      "game_id": "171125003",
-      "crew": [
-        {
-          "name": "Steve Javie",
-          "slug": "steve-javie"
-        },
-        {
-          "name": "David Jones",
-          "slug": "david-jones"
-        },
-        {
-          "name": "Bill Spooner",
-          "slug": "bill-spooner"
         }
       ]
     }

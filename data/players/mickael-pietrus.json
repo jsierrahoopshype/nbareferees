@@ -1493,6 +1493,29 @@
     },
     {
       "pts": 25,
+      "reb": 3,
+      "ast": 0,
+      "team_abbr": "PHX",
+      "opp_abbr": "LAC",
+      "game_date": "2010-12-26",
+      "game_id": "0021000438",
+      "crew": [
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
+        {
+          "name": "Tommy Nunez Jr.",
+          "slug": "tommy-nunez"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        }
+      ]
+    },
+    {
+      "pts": 25,
       "reb": 4,
       "ast": 1,
       "team_abbr": "GSW",
@@ -1515,25 +1538,48 @@
       ]
     },
     {
-      "pts": 25,
-      "reb": 3,
-      "ast": 0,
-      "team_abbr": "PHX",
-      "opp_abbr": "LAC",
-      "game_date": "2010-12-26",
-      "game_id": "0021000438",
+      "pts": 24,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "GSW",
+      "opp_abbr": "DEN",
+      "game_date": "2004-12-27",
+      "game_id": "0020400400",
       "crew": [
         {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
+          "name": "Ron Olesiak",
+          "slug": "ron-olesiak"
         },
         {
-          "name": "Tommy Nunez Jr.",
-          "slug": "tommy-nunez"
+          "name": "Pat Fraher",
+          "slug": "pat-fraher"
         },
         {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
+          "name": "Joe Forte",
+          "slug": "joe-forte"
+        }
+      ]
+    },
+    {
+      "pts": 24,
+      "reb": 2,
+      "ast": 1,
+      "team_abbr": "ORL",
+      "opp_abbr": "TOR",
+      "game_date": "2010-11-12",
+      "game_id": "0021000123",
+      "crew": [
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "Derrick Stafford",
+          "slug": "derrick-stafford"
+        },
+        {
+          "name": "Brent Barnaky",
+          "slug": "brent-barnaky"
         }
       ]
     },
@@ -1580,52 +1626,6 @@
         {
           "name": "Scott Foster",
           "slug": "scott-foster"
-        }
-      ]
-    },
-    {
-      "pts": 24,
-      "reb": 2,
-      "ast": 1,
-      "team_abbr": "ORL",
-      "opp_abbr": "TOR",
-      "game_date": "2010-11-12",
-      "game_id": "0021000123",
-      "crew": [
-        {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
-        },
-        {
-          "name": "Derrick Stafford",
-          "slug": "derrick-stafford"
-        },
-        {
-          "name": "Brent Barnaky",
-          "slug": "brent-barnaky"
-        }
-      ]
-    },
-    {
-      "pts": 24,
-      "reb": 5,
-      "ast": 1,
-      "team_abbr": "GSW",
-      "opp_abbr": "DEN",
-      "game_date": "2004-12-27",
-      "game_id": "0020400400",
-      "crew": [
-        {
-          "name": "Ron Olesiak",
-          "slug": "ron-olesiak"
-        },
-        {
-          "name": "Pat Fraher",
-          "slug": "pat-fraher"
-        },
-        {
-          "name": "Joe Forte",
-          "slug": "joe-forte"
         }
       ]
     }

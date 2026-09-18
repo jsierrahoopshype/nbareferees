@@ -530,6 +530,25 @@
   "top_games": [
     {
       "pts": 22,
+      "reb": 8,
+      "ast": 1,
+      "team_abbr": "BOS",
+      "opp_abbr": "PHI",
+      "game_date": "1997-04-18",
+      "game_id": "170418020",
+      "crew": [
+        {
+          "name": "Dan Crawford",
+          "slug": "dan-crawford"
+        },
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        }
+      ]
+    },
+    {
+      "pts": 22,
       "reb": 4,
       "ast": 2,
       "team_abbr": "MIL",
@@ -548,25 +567,6 @@
         {
           "name": "Jim Kinsey",
           "slug": "jim-kinsey"
-        }
-      ]
-    },
-    {
-      "pts": 22,
-      "reb": 8,
-      "ast": 1,
-      "team_abbr": "BOS",
-      "opp_abbr": "PHI",
-      "game_date": "1997-04-18",
-      "game_id": "170418020",
-      "crew": [
-        {
-          "name": "Dan Crawford",
-          "slug": "dan-crawford"
-        },
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
         }
       ]
     },
@@ -618,29 +618,6 @@
     },
     {
       "pts": 20,
-      "reb": 8,
-      "ast": 0,
-      "team_abbr": "MIL",
-      "opp_abbr": "PHI",
-      "game_date": "1994-11-05",
-      "game_id": "141104020",
-      "crew": [
-        {
-          "name": "Jess Kersey",
-          "slug": "jess-kersey"
-        },
-        {
-          "name": "Ed Middleton",
-          "slug": "ed-middleton"
-        },
-        {
-          "name": "Ted Bernhardt",
-          "slug": "ted-bernhardt"
-        }
-      ]
-    },
-    {
-      "pts": 20,
       "reb": 7,
       "ast": 1,
       "team_abbr": "MIL",
@@ -659,6 +636,29 @@
         {
           "name": "Don Vaden",
           "slug": "don-vaden"
+        }
+      ]
+    },
+    {
+      "pts": 20,
+      "reb": 8,
+      "ast": 0,
+      "team_abbr": "MIL",
+      "opp_abbr": "PHI",
+      "game_date": "1994-11-05",
+      "game_id": "141104020",
+      "crew": [
+        {
+          "name": "Jess Kersey",
+          "slug": "jess-kersey"
+        },
+        {
+          "name": "Ed Middleton",
+          "slug": "ed-middleton"
+        },
+        {
+          "name": "Ted Bernhardt",
+          "slug": "ted-bernhardt"
         }
       ]
     },
@@ -733,24 +733,24 @@
     },
     {
       "pts": 18,
-      "reb": 1,
-      "ast": 2,
+      "reb": 6,
+      "ast": 1,
       "team_abbr": "BOS",
-      "opp_abbr": "CLE",
-      "game_date": "1997-04-03",
-      "game_id": "170402002",
+      "opp_abbr": "WAS",
+      "game_date": "1997-04-06",
+      "game_id": "170406002",
       "crew": [
         {
-          "name": "Bennett Salvatore",
-          "slug": "bennett-salvatore"
+          "name": "Jess Kersey",
+          "slug": "jess-kersey"
         },
         {
-          "name": "Terry Durham",
-          "slug": "terry-durham"
+          "name": "Bernie Fryer",
+          "slug": "bernie-fryer"
         },
         {
-          "name": "Bennie Adams",
-          "slug": "bennie-adams"
+          "name": "Leon Wood",
+          "slug": "leon-wood"
         }
       ]
     }

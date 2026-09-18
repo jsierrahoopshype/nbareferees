@@ -581,6 +581,25 @@
   "top_games": [
     {
       "pts": 23,
+      "reb": 4,
+      "ast": 1,
+      "team_abbr": "MIA",
+      "opp_abbr": "POR",
+      "game_date": "1998-03-22",
+      "game_id": "180322014",
+      "crew": [
+        {
+          "name": "Bill Oakes",
+          "slug": "bill-oakes"
+        },
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        }
+      ]
+    },
+    {
+      "pts": 23,
       "reb": 13,
       "ast": 4,
       "team_abbr": "MIA",
@@ -599,25 +618,6 @@
         {
           "name": "Violet Palmer",
           "slug": "violet-palmer"
-        }
-      ]
-    },
-    {
-      "pts": 23,
-      "reb": 4,
-      "ast": 1,
-      "team_abbr": "MIA",
-      "opp_abbr": "POR",
-      "game_date": "1998-03-22",
-      "game_id": "180322014",
-      "crew": [
-        {
-          "name": "Bill Oakes",
-          "slug": "bill-oakes"
-        },
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
         }
       ]
     },
@@ -669,24 +669,24 @@
     },
     {
       "pts": 16,
-      "reb": 7,
-      "ast": 3,
-      "team_abbr": "DEN",
-      "opp_abbr": "LAC",
-      "game_date": "2001-03-06",
-      "game_id": "210305012",
+      "reb": 9,
+      "ast": 0,
+      "team_abbr": "MIA",
+      "opp_abbr": "SAS",
+      "game_date": "1998-04-03",
+      "game_id": "180402024",
       "crew": [
+        {
+          "name": "Ted Bernhardt",
+          "slug": "ted-bernhardt"
+        },
         {
           "name": "Steve Javie",
           "slug": "steve-javie"
         },
         {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
+          "name": "Derek Richardson",
+          "slug": "derek-richardson"
         }
       ]
     },
@@ -715,24 +715,24 @@
     },
     {
       "pts": 16,
-      "reb": 9,
-      "ast": 0,
-      "team_abbr": "MIA",
-      "opp_abbr": "SAS",
-      "game_date": "1998-04-03",
-      "game_id": "180402024",
+      "reb": 7,
+      "ast": 3,
+      "team_abbr": "DEN",
+      "opp_abbr": "LAC",
+      "game_date": "2001-03-06",
+      "game_id": "210305012",
       "crew": [
-        {
-          "name": "Ted Bernhardt",
-          "slug": "ted-bernhardt"
-        },
         {
           "name": "Steve Javie",
           "slug": "steve-javie"
         },
         {
-          "name": "Derek Richardson",
-          "slug": "derek-richardson"
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        },
+        {
+          "name": "Leroy Richardson",
+          "slug": "leroy-richardson"
         }
       ]
     },

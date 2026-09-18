@@ -337,29 +337,6 @@
     },
     {
       "pts": 22,
-      "reb": 0,
-      "ast": 1,
-      "team_abbr": "SAC",
-      "opp_abbr": "MIL",
-      "game_date": "2018-11-04",
-      "game_id": "0021800133",
-      "crew": [
-        {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
-        },
-        {
-          "name": "Tre Maddox",
-          "slug": "tre-maddox"
-        },
-        {
-          "name": "Scott Twardoski",
-          "slug": "scott-twardoski"
-        }
-      ]
-    },
-    {
-      "pts": 22,
       "reb": 3,
       "ast": 5,
       "team_abbr": "OKC",
@@ -378,6 +355,29 @@
         {
           "name": "JB DeRosa",
           "slug": "jb-derosa"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 0,
+      "ast": 1,
+      "team_abbr": "SAC",
+      "opp_abbr": "MIL",
+      "game_date": "2018-11-04",
+      "game_id": "0021800133",
+      "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Tre Maddox",
+          "slug": "tre-maddox"
+        },
+        {
+          "name": "Scott Twardoski",
+          "slug": "scott-twardoski"
         }
       ]
     },
@@ -452,16 +452,6 @@
     },
     {
       "pts": 19,
-      "reb": 6,
-      "ast": 0,
-      "team_abbr": "DAL",
-      "opp_abbr": "CLE",
-      "game_date": "2019-11-22",
-      "game_id": "0021900221",
-      "crew": []
-    },
-    {
-      "pts": 19,
       "reb": 5,
       "ast": 1,
       "team_abbr": "DAL",
@@ -485,26 +475,36 @@
     },
     {
       "pts": 19,
-      "reb": 8,
-      "ast": 4,
-      "team_abbr": "SAC",
-      "opp_abbr": "PHX",
-      "game_date": "2018-04-03",
-      "game_id": "0021701167",
+      "reb": 6,
+      "ast": 3,
+      "team_abbr": "DAL",
+      "opp_abbr": "MEM",
+      "game_date": "2019-04-05",
+      "game_id": "0021801187",
       "crew": [
         {
-          "name": "Brett Nansel",
-          "slug": "brett-nansel"
+          "name": "Mark Ayotte",
+          "slug": "mark-ayotte"
         },
         {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
+          "name": "Jacyn Goble",
+          "slug": "jacyn-goble"
         },
         {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
         }
       ]
+    },
+    {
+      "pts": 19,
+      "reb": 6,
+      "ast": 0,
+      "team_abbr": "DAL",
+      "opp_abbr": "CLE",
+      "game_date": "2019-11-22",
+      "game_id": "0021900221",
+      "crew": []
     }
   ]
 }

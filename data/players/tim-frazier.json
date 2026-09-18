@@ -509,29 +509,6 @@
     },
     {
       "pts": 20,
-      "reb": 7,
-      "ast": 15,
-      "team_abbr": "MIL",
-      "opp_abbr": "ATL",
-      "game_date": "2019-03-31",
-      "game_id": "0021801145",
-      "crew": [
-        {
-          "name": "Tony Brown",
-          "slug": "tony-brown"
-        },
-        {
-          "name": "David Guthrie",
-          "slug": "david-guthrie"
-        },
-        {
-          "name": "Ashley Moyer-Gleich",
-          "slug": "ashley-moyer-gleich"
-        }
-      ]
-    },
-    {
-      "pts": 20,
       "reb": 6,
       "ast": 11,
       "team_abbr": "NOP",
@@ -555,29 +532,6 @@
     },
     {
       "pts": 20,
-      "reb": 1,
-      "ast": 11,
-      "team_abbr": "NOP",
-      "opp_abbr": "LAC",
-      "game_date": "2016-12-10",
-      "game_id": "0021600355",
-      "crew": [
-        {
-          "name": "Aaron Smith",
-          "slug": "aaron-smith"
-        },
-        {
-          "name": "Matt Boland",
-          "slug": "matt-boland"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        }
-      ]
-    },
-    {
-      "pts": 20,
       "reb": 3,
       "ast": 9,
       "team_abbr": "NOP",
@@ -596,6 +550,52 @@
         {
           "name": "Brian Forte",
           "slug": "brian-forte"
+        }
+      ]
+    },
+    {
+      "pts": 20,
+      "reb": 7,
+      "ast": 15,
+      "team_abbr": "MIL",
+      "opp_abbr": "ATL",
+      "game_date": "2019-03-31",
+      "game_id": "0021801145",
+      "crew": [
+        {
+          "name": "Tony Brown",
+          "slug": "tony-brown"
+        },
+        {
+          "name": "David Guthrie",
+          "slug": "david-guthrie"
+        },
+        {
+          "name": "Ashley Moyer-Gleich",
+          "slug": "ashley-moyer-gleich"
+        }
+      ]
+    },
+    {
+      "pts": 20,
+      "reb": 1,
+      "ast": 11,
+      "team_abbr": "NOP",
+      "opp_abbr": "LAC",
+      "game_date": "2016-12-10",
+      "game_id": "0021600355",
+      "crew": [
+        {
+          "name": "Aaron Smith",
+          "slug": "aaron-smith"
+        },
+        {
+          "name": "Matt Boland",
+          "slug": "matt-boland"
+        },
+        {
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     },
@@ -625,6 +625,16 @@
     {
       "pts": 18,
       "reb": 5,
+      "ast": 5,
+      "team_abbr": "NOP",
+      "opp_abbr": "IND",
+      "game_date": "2016-03-24",
+      "game_id": "0021501068",
+      "crew": []
+    },
+    {
+      "pts": 18,
+      "reb": 5,
       "ast": 6,
       "team_abbr": "NOP",
       "opp_abbr": "BOS",
@@ -644,16 +654,6 @@
           "slug": "james-williams"
         }
       ]
-    },
-    {
-      "pts": 18,
-      "reb": 5,
-      "ast": 5,
-      "team_abbr": "NOP",
-      "opp_abbr": "IND",
-      "game_date": "2016-03-24",
-      "game_id": "0021501068",
-      "crew": []
     }
   ]
 }

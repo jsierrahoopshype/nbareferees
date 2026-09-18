@@ -1305,7 +1305,7 @@
       "ast": 2,
       "team_abbr": "OKC",
       "opp_abbr": "SAS",
-      "game_date": "2026-02-05",
+      "game_date": "2026-02-04",
       "game_id": "401810585",
       "crew": [
         {
@@ -1348,6 +1348,29 @@
     {
       "pts": 21,
       "reb": 8,
+      "ast": 0,
+      "team_abbr": "OKC",
+      "opp_abbr": "MEM",
+      "game_date": "2026-01-09",
+      "game_id": "401810391",
+      "crew": [
+        {
+          "name": "Dedric Taylor",
+          "slug": "dedric-taylor"
+        },
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
+        {
+          "name": "JD Ralls",
+          "slug": "jd-ralls"
+        }
+      ]
+    },
+    {
+      "pts": 21,
+      "reb": 8,
       "ast": 3,
       "team_abbr": "NOP",
       "opp_abbr": "DEN",
@@ -1365,29 +1388,6 @@
         {
           "name": "Tre Maddox",
           "slug": "tre-maddox"
-        }
-      ]
-    },
-    {
-      "pts": 21,
-      "reb": 8,
-      "ast": 0,
-      "team_abbr": "OKC",
-      "opp_abbr": "MEM",
-      "game_date": "2026-01-10",
-      "game_id": "401810391",
-      "crew": [
-        {
-          "name": "Dedric Taylor",
-          "slug": "dedric-taylor"
-        },
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "JD Ralls",
-          "slug": "jd-ralls"
         }
       ]
     },
@@ -1462,34 +1462,11 @@
     },
     {
       "pts": 18,
-      "reb": 8,
-      "ast": 3,
-      "team_abbr": "OKC",
-      "opp_abbr": "IND",
-      "game_date": "2024-04-05",
-      "game_id": "401585744",
-      "crew": [
-        {
-          "name": "David Guthrie",
-          "slug": "david-guthrie"
-        },
-        {
-          "name": "Matt Myers",
-          "slug": "matt-myers"
-        },
-        {
-          "name": "Justin Van Duyne",
-          "slug": "justin-van-duyne"
-        }
-      ]
-    },
-    {
-      "pts": 18,
       "reb": 7,
       "ast": 5,
       "team_abbr": "OKC",
       "opp_abbr": "UTA",
-      "game_date": "2025-04-12",
+      "game_date": "2025-04-11",
       "game_id": "401705747",
       "crew": [
         {
@@ -1508,24 +1485,47 @@
     },
     {
       "pts": 18,
-      "reb": 5,
-      "ast": 2,
+      "reb": 11,
+      "ast": 3,
       "team_abbr": "OKC",
-      "opp_abbr": "POR",
-      "game_date": "2021-04-03",
-      "game_id": "0022000753",
+      "opp_abbr": "SAC",
+      "game_date": "2025-02-01",
+      "game_id": "401705257",
       "crew": [
         {
-          "name": "JB DeRosa",
-          "slug": "jb-derosa"
+          "name": "Kevin Cutler",
+          "slug": "kevin-cutler"
         },
         {
-          "name": "Sean Wright",
-          "slug": "sean-wright"
+          "name": "Ben Taylor",
+          "slug": "ben-taylor"
         },
         {
           "name": "Brett Nansel",
           "slug": "brett-nansel"
+        }
+      ]
+    },
+    {
+      "pts": 18,
+      "reb": 8,
+      "ast": 2,
+      "team_abbr": "OKC",
+      "opp_abbr": "MIL",
+      "game_date": "2026-01-21",
+      "game_id": "401810480",
+      "crew": [
+        {
+          "name": "Mark Lindsay",
+          "slug": "mark-lindsay"
+        },
+        {
+          "name": "Justin Van Duyne",
+          "slug": "justin-van-duyne"
+        },
+        {
+          "name": "Pat O'Connell",
+          "slug": "pat-oconnell"
         }
       ]
     }

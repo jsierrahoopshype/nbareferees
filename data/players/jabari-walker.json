@@ -233,7 +233,7 @@
       "ast": 1,
       "team_abbr": "POR",
       "opp_abbr": "SAS",
-      "game_date": "2023-12-30",
+      "game_date": "2023-12-29",
       "game_id": "401585065",
       "crew": [
         {
@@ -256,7 +256,7 @@
       "ast": 0,
       "team_abbr": "POR",
       "opp_abbr": "BOS",
-      "game_date": "2025-03-06",
+      "game_date": "2025-03-05",
       "game_id": "401705457",
       "crew": [
         {
@@ -279,7 +279,7 @@
       "ast": 2,
       "team_abbr": "PHI",
       "opp_abbr": "UTA",
-      "game_date": "2026-03-05",
+      "game_date": "2026-03-04",
       "game_id": "401810750",
       "crew": [
         {
@@ -302,7 +302,7 @@
       "ast": 0,
       "team_abbr": "PHI",
       "opp_abbr": "SAS",
-      "game_date": "2026-03-04",
+      "game_date": "2026-03-03",
       "game_id": "401810743",
       "crew": [
         {
@@ -325,7 +325,7 @@
       "ast": 2,
       "team_abbr": "POR",
       "opp_abbr": "CHA",
-      "game_date": "2025-02-23",
+      "game_date": "2025-02-22",
       "game_id": "401705376",
       "crew": [
         {
@@ -344,11 +344,34 @@
     },
     {
       "pts": 19,
+      "reb": 10,
+      "ast": 2,
+      "team_abbr": "POR",
+      "opp_abbr": "UTA",
+      "game_date": "2023-11-22",
+      "game_id": "401584865",
+      "crew": [
+        {
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
+        },
+        {
+          "name": "John Butler",
+          "slug": "john-butler"
+        },
+        {
+          "name": "Matt Kallio",
+          "slug": "matt-kallio"
+        }
+      ]
+    },
+    {
+      "pts": 19,
       "reb": 6,
       "ast": 1,
       "team_abbr": "POR",
       "opp_abbr": "GSW",
-      "game_date": "2025-04-12",
+      "game_date": "2025-04-11",
       "game_id": "401705749",
       "crew": [
         {
@@ -370,31 +393,8 @@
       "reb": 10,
       "ast": 2,
       "team_abbr": "POR",
-      "opp_abbr": "UTA",
-      "game_date": "2023-11-23",
-      "game_id": "401584865",
-      "crew": [
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
-        },
-        {
-          "name": "John Butler",
-          "slug": "john-butler"
-        },
-        {
-          "name": "Matt Kallio",
-          "slug": "matt-kallio"
-        }
-      ]
-    },
-    {
-      "pts": 19,
-      "reb": 10,
-      "ast": 2,
-      "team_abbr": "POR",
       "opp_abbr": "MEM",
-      "game_date": "2024-03-02",
+      "game_date": "2024-03-01",
       "game_id": "401585489",
       "crew": [
         {
@@ -417,7 +417,7 @@
       "ast": 2,
       "team_abbr": "POR",
       "opp_abbr": "MEM",
-      "game_date": "2024-03-03",
+      "game_date": "2024-03-02",
       "game_id": "401585496",
       "crew": [
         {
@@ -436,24 +436,24 @@
     },
     {
       "pts": 18,
-      "reb": 2,
-      "ast": 1,
-      "team_abbr": "PHI",
-      "opp_abbr": "MIL",
-      "game_date": "2025-12-06",
-      "game_id": "401810203",
+      "reb": 9,
+      "ast": 5,
+      "team_abbr": "POR",
+      "opp_abbr": "ORL",
+      "game_date": "2024-04-01",
+      "game_id": "401585718",
       "crew": [
+        {
+          "name": "Sean Wright",
+          "slug": "sean-wright"
+        },
         {
           "name": "Brian Forte",
           "slug": "brian-forte"
         },
         {
-          "name": "Kevin Scott",
-          "slug": "kevin-scott"
-        },
-        {
-          "name": "Jenna Schroeder",
-          "slug": "jenna-schroeder"
+          "name": "Matt Kallio",
+          "slug": "matt-kallio"
         }
       ]
     }

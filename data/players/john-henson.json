@@ -1292,23 +1292,33 @@
     {
       "pts": 20,
       "reb": 7,
-      "ast": 1,
+      "ast": 2,
       "team_abbr": "MIL",
-      "opp_abbr": "ORL",
-      "game_date": "2016-11-27",
-      "game_id": "0021600248",
+      "opp_abbr": "BKN",
+      "game_date": "2016-12-03",
+      "game_id": "0021600291",
+      "crew": []
+    },
+    {
+      "pts": 20,
+      "reb": 14,
+      "ast": 2,
+      "team_abbr": "MIL",
+      "opp_abbr": "NYK",
+      "game_date": "2013-12-18",
+      "game_id": "0021300375",
       "crew": [
         {
-          "name": "Mike Callahan",
-          "slug": "mike-callahan"
+          "name": "Mark Ayotte",
+          "slug": "mark-ayotte"
         },
         {
-          "name": "Derrick Collins",
-          "slug": "derrick-collins"
+          "name": "J.T. Orr",
+          "slug": "j-t-orr"
         },
         {
-          "name": "Brett Nansel",
-          "slug": "brett-nansel"
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     },
@@ -1337,39 +1347,6 @@
     },
     {
       "pts": 20,
-      "reb": 14,
-      "ast": 2,
-      "team_abbr": "MIL",
-      "opp_abbr": "NYK",
-      "game_date": "2013-12-18",
-      "game_id": "0021300375",
-      "crew": [
-        {
-          "name": "Mark Ayotte",
-          "slug": "mark-ayotte"
-        },
-        {
-          "name": "J.T. Orr",
-          "slug": "j-t-orr"
-        },
-        {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
-        }
-      ]
-    },
-    {
-      "pts": 20,
-      "reb": 7,
-      "ast": 2,
-      "team_abbr": "MIL",
-      "opp_abbr": "BKN",
-      "game_date": "2016-12-03",
-      "game_id": "0021600291",
-      "crew": []
-    },
-    {
-      "pts": 20,
       "reb": 9,
       "ast": 3,
       "team_abbr": "MIL",
@@ -1388,6 +1365,29 @@
         {
           "name": "Brent Barnaky",
           "slug": "brent-barnaky"
+        }
+      ]
+    },
+    {
+      "pts": 20,
+      "reb": 7,
+      "ast": 1,
+      "team_abbr": "MIL",
+      "opp_abbr": "ORL",
+      "game_date": "2016-11-27",
+      "game_id": "0021600248",
+      "crew": [
+        {
+          "name": "Mike Callahan",
+          "slug": "mike-callahan"
+        },
+        {
+          "name": "Derrick Collins",
+          "slug": "derrick-collins"
+        },
+        {
+          "name": "Brett Nansel",
+          "slug": "brett-nansel"
         }
       ]
     }

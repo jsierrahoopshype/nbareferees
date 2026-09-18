@@ -384,7 +384,7 @@
       "ast": 10,
       "team_abbr": "CHA",
       "opp_abbr": "MIL",
-      "game_date": "2024-11-24",
+      "game_date": "2024-11-23",
       "game_id": "401704834",
       "crew": [
         {
@@ -407,7 +407,7 @@
       "ast": 7,
       "team_abbr": "CHA",
       "opp_abbr": "ORL",
-      "game_date": "2024-11-26",
+      "game_date": "2024-11-25",
       "game_id": "401704843",
       "crew": [
         {
@@ -449,6 +449,29 @@
     },
     {
       "pts": 38,
+      "reb": 4,
+      "ast": 8,
+      "team_abbr": "CHA",
+      "opp_abbr": "PHI",
+      "game_date": "2024-11-10",
+      "game_id": "401704771",
+      "crew": [
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
+        },
+        {
+          "name": "J.T. Orr",
+          "slug": "j-t-orr"
+        },
+        {
+          "name": "Evan Scott",
+          "slug": "evan-scott"
+        }
+      ]
+    },
+    {
+      "pts": 38,
       "reb": 6,
       "ast": 9,
       "team_abbr": "CHA",
@@ -471,35 +494,12 @@
       ]
     },
     {
-      "pts": 38,
-      "reb": 4,
-      "ast": 8,
-      "team_abbr": "CHA",
-      "opp_abbr": "PHI",
-      "game_date": "2024-11-11",
-      "game_id": "401704771",
-      "crew": [
-        {
-          "name": "Courtney Kirkland",
-          "slug": "courtney-kirkland"
-        },
-        {
-          "name": "J.T. Orr",
-          "slug": "j-t-orr"
-        },
-        {
-          "name": "Evan Scott",
-          "slug": "evan-scott"
-        }
-      ]
-    },
-    {
       "pts": 37,
       "reb": 5,
       "ast": 5,
       "team_abbr": "CHA",
       "opp_abbr": "MIL",
-      "game_date": "2023-11-18",
+      "game_date": "2023-11-17",
       "game_id": "401584115",
       "crew": [
         {
@@ -541,29 +541,6 @@
     },
     {
       "pts": 36,
-      "reb": 5,
-      "ast": 9,
-      "team_abbr": "CHA",
-      "opp_abbr": "MIL",
-      "game_date": "2021-12-01",
-      "game_id": "0022100324",
-      "crew": [
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
-        },
-        {
-          "name": "Brett Nansel",
-          "slug": "brett-nansel"
-        },
-        {
-          "name": "Natalie Sago",
-          "slug": "natalie-sago"
-        }
-      ]
-    },
-    {
-      "pts": 36,
       "reb": 4,
       "ast": 6,
       "team_abbr": "CHA",
@@ -591,7 +568,7 @@
       "ast": 8,
       "team_abbr": "CHA",
       "opp_abbr": "BOS",
-      "game_date": "2023-11-21",
+      "game_date": "2023-11-20",
       "game_id": "401584845",
       "crew": [
         {
@@ -605,6 +582,29 @@
         {
           "name": "Robert Hussey",
           "slug": "robert-hussey"
+        }
+      ]
+    },
+    {
+      "pts": 36,
+      "reb": 5,
+      "ast": 9,
+      "team_abbr": "CHA",
+      "opp_abbr": "MIL",
+      "game_date": "2021-12-01",
+      "game_id": "0022100324",
+      "crew": [
+        {
+          "name": "James Capers",
+          "slug": "james-capers"
+        },
+        {
+          "name": "Brett Nansel",
+          "slug": "brett-nansel"
+        },
+        {
+          "name": "Natalie Sago",
+          "slug": "natalie-sago"
         }
       ]
     }

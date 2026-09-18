@@ -1332,6 +1332,16 @@
   "top_games": [
     {
       "pts": 35,
+      "reb": 15,
+      "ast": 0,
+      "team_abbr": "PHX",
+      "opp_abbr": "BKN",
+      "game_date": "2023-02-07",
+      "game_id": "0022200817",
+      "crew": []
+    },
+    {
+      "pts": 35,
       "reb": 14,
       "ast": 3,
       "team_abbr": "PHX",
@@ -1354,16 +1364,6 @@
       ]
     },
     {
-      "pts": 35,
-      "reb": 15,
-      "ast": 0,
-      "team_abbr": "PHX",
-      "opp_abbr": "BKN",
-      "game_date": "2023-02-07",
-      "game_id": "0022200817",
-      "crew": []
-    },
-    {
       "pts": 34,
       "reb": 13,
       "ast": 3,
@@ -1383,6 +1383,29 @@
         {
           "name": "Jonathan Sterling",
           "slug": "jonathan-sterling"
+        }
+      ]
+    },
+    {
+      "pts": 33,
+      "reb": 19,
+      "ast": 1,
+      "team_abbr": "POR",
+      "opp_abbr": "ATL",
+      "game_date": "2024-03-13",
+      "game_id": "401585581",
+      "crew": [
+        {
+          "name": "Curtis Blair",
+          "slug": "curtis-blair"
+        },
+        {
+          "name": "JB DeRosa",
+          "slug": "jb-derosa"
+        },
+        {
+          "name": "Suyash Mehta",
+          "slug": "suyash-mehta"
         }
       ]
     },
@@ -1410,68 +1433,12 @@
       ]
     },
     {
-      "pts": 33,
-      "reb": 19,
-      "ast": 1,
-      "team_abbr": "POR",
-      "opp_abbr": "ATL",
-      "game_date": "2024-03-14",
-      "game_id": "401585581",
-      "crew": [
-        {
-          "name": "Curtis Blair",
-          "slug": "curtis-blair"
-        },
-        {
-          "name": "JB DeRosa",
-          "slug": "jb-derosa"
-        },
-        {
-          "name": "Suyash Mehta",
-          "slug": "suyash-mehta"
-        }
-      ]
-    },
-    {
-      "pts": 31,
-      "reb": 7,
-      "ast": 3,
-      "team_abbr": "PHX",
-      "opp_abbr": "WAS",
-      "game_date": "2022-12-28",
-      "game_id": "0022200516",
-      "crew": [
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "CJ Washington",
-          "slug": "cj-washington"
-        },
-        {
-          "name": "Jacyn Goble",
-          "slug": "jacyn-goble"
-        }
-      ]
-    },
-    {
-      "pts": 31,
-      "reb": 9,
-      "ast": 1,
-      "team_abbr": "PHX",
-      "opp_abbr": "DAL",
-      "game_date": "2020-01-28",
-      "game_id": "0021900706",
-      "crew": []
-    },
-    {
       "pts": 31,
       "reb": 14,
       "ast": 0,
       "team_abbr": "POR",
       "opp_abbr": "NYK",
-      "game_date": "2024-03-15",
+      "game_date": "2024-03-14",
       "game_id": "401585588",
       "crew": [
         {
@@ -1512,25 +1479,58 @@
       ]
     },
     {
-      "pts": 30,
-      "reb": 19,
-      "ast": 1,
-      "team_abbr": "POR",
-      "opp_abbr": "TOR",
-      "game_date": "2024-03-10",
-      "game_id": "401585551",
+      "pts": 31,
+      "reb": 7,
+      "ast": 3,
+      "team_abbr": "PHX",
+      "opp_abbr": "WAS",
+      "game_date": "2022-12-28",
+      "game_id": "0022200516",
       "crew": [
         {
-          "name": "Derek Richardson",
-          "slug": "derek-richardson"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
         },
         {
-          "name": "Kevin Cutler",
-          "slug": "kevin-cutler"
+          "name": "CJ Washington",
+          "slug": "cj-washington"
         },
         {
-          "name": "Scott Twardoski",
-          "slug": "scott-twardoski"
+          "name": "Jacyn Goble",
+          "slug": "jacyn-goble"
+        }
+      ]
+    },
+    {
+      "pts": 31,
+      "reb": 9,
+      "ast": 1,
+      "team_abbr": "PHX",
+      "opp_abbr": "DAL",
+      "game_date": "2020-01-28",
+      "game_id": "0021900706",
+      "crew": []
+    },
+    {
+      "pts": 30,
+      "reb": 13,
+      "ast": 1,
+      "team_abbr": "POR",
+      "opp_abbr": "NOP",
+      "game_date": "2024-04-09",
+      "game_id": "401585785",
+      "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Ray Acosta",
+          "slug": "ray-acosta"
+        },
+        {
+          "name": "Che Flores",
+          "slug": "che-flores"
         }
       ]
     }

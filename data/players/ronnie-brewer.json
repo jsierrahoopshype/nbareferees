@@ -1448,6 +1448,29 @@
     {
       "pts": 23,
       "reb": 5,
+      "ast": 3,
+      "team_abbr": "UTA",
+      "opp_abbr": "HOU",
+      "game_date": "2009-01-21",
+      "game_id": "0020800623",
+      "crew": [
+        {
+          "name": "Brian Forte",
+          "slug": "brian-forte"
+        },
+        {
+          "name": "Greg Willard",
+          "slug": "greg-willard"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        }
+      ]
+    },
+    {
+      "pts": 23,
+      "reb": 5,
       "ast": 2,
       "team_abbr": "UTA",
       "opp_abbr": "NOH",
@@ -1493,29 +1516,6 @@
     },
     {
       "pts": 23,
-      "reb": 5,
-      "ast": 3,
-      "team_abbr": "UTA",
-      "opp_abbr": "HOU",
-      "game_date": "2009-01-21",
-      "game_id": "0020800623",
-      "crew": [
-        {
-          "name": "Brian Forte",
-          "slug": "brian-forte"
-        },
-        {
-          "name": "Greg Willard",
-          "slug": "greg-willard"
-        },
-        {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
-        }
-      ]
-    },
-    {
-      "pts": 23,
       "reb": 7,
       "ast": 4,
       "team_abbr": "UTA",
@@ -1526,47 +1526,24 @@
     },
     {
       "pts": 21,
-      "reb": 1,
-      "ast": 4,
+      "reb": 4,
+      "ast": 0,
       "team_abbr": "UTA",
-      "opp_abbr": "MEM",
-      "game_date": "2008-11-22",
-      "game_id": "0020800190",
+      "opp_abbr": "GSW",
+      "game_date": "2007-04-09",
+      "game_id": "0020601156",
       "crew": [
         {
-          "name": "Sean Wright",
-          "slug": "sean-wright"
+          "name": "Greg Willard",
+          "slug": "greg-willard"
         },
         {
-          "name": "Ed Malloy",
-          "slug": "ed-malloy"
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         },
         {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
-        }
-      ]
-    },
-    {
-      "pts": 21,
-      "reb": 5,
-      "ast": 3,
-      "team_abbr": "UTA",
-      "opp_abbr": "CHA",
-      "game_date": "2009-02-02",
-      "game_id": "0020800712",
-      "crew": [
-        {
-          "name": "Ken Mauer",
-          "slug": "ken-mauer"
-        },
-        {
-          "name": "Jimmy Clark",
-          "slug": "jimmy-clark"
-        },
-        {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
+          "name": "Mark Ayotte",
+          "slug": "mark-ayotte"
         }
       ]
     },
@@ -1590,6 +1567,29 @@
         {
           "name": "Mark Wunderlich",
           "slug": "mark-wunderlich"
+        }
+      ]
+    },
+    {
+      "pts": 21,
+      "reb": 1,
+      "ast": 4,
+      "team_abbr": "UTA",
+      "opp_abbr": "MEM",
+      "game_date": "2008-11-22",
+      "game_id": "0020800190",
+      "crew": [
+        {
+          "name": "Sean Wright",
+          "slug": "sean-wright"
+        },
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy"
+        },
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
         }
       ]
     }

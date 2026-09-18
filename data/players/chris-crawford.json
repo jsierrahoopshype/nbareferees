@@ -270,29 +270,6 @@
   "top_games": [
     {
       "pts": 27,
-      "reb": 6,
-      "ast": 0,
-      "team_abbr": "ATL",
-      "opp_abbr": "LAL",
-      "game_date": "2001-02-24",
-      "game_id": "210223013",
-      "crew": [
-        {
-          "name": "Joe Crawford",
-          "slug": "joe-crawford"
-        },
-        {
-          "name": "Eddie Rush",
-          "slug": "eddie-rush"
-        },
-        {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin"
-        }
-      ]
-    },
-    {
-      "pts": 27,
       "reb": 9,
       "ast": 0,
       "team_abbr": "ATL",
@@ -311,6 +288,29 @@
         {
           "name": "Dan Crawford",
           "slug": "dan-crawford"
+        }
+      ]
+    },
+    {
+      "pts": 27,
+      "reb": 6,
+      "ast": 0,
+      "team_abbr": "ATL",
+      "opp_abbr": "LAL",
+      "game_date": "2001-02-24",
+      "game_id": "210223013",
+      "crew": [
+        {
+          "name": "Joe Crawford",
+          "slug": "joe-crawford"
+        },
+        {
+          "name": "Eddie Rush",
+          "slug": "eddie-rush"
+        },
+        {
+          "name": "Sean Corbin",
+          "slug": "sean-corbin"
         }
       ]
     },
@@ -418,29 +418,6 @@
     },
     {
       "pts": 22,
-      "reb": 9,
-      "ast": 2,
-      "team_abbr": "ATL",
-      "opp_abbr": "ORL",
-      "game_date": "2000-11-05",
-      "game_id": "201104001",
-      "crew": [
-        {
-          "name": "Mike Mathis",
-          "slug": "mike-mathis"
-        },
-        {
-          "name": "George Toliver",
-          "slug": "george-toliver"
-        },
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
-        }
-      ]
-    },
-    {
-      "pts": 22,
       "reb": 4,
       "ast": 1,
       "team_abbr": "ATL",
@@ -464,24 +441,47 @@
     },
     {
       "pts": 22,
-      "reb": 4,
+      "reb": 5,
       "ast": 0,
       "team_abbr": "ATL",
-      "opp_abbr": "NJN",
-      "game_date": "2004-04-04",
-      "game_id": "0020301112",
+      "opp_abbr": "MEM",
+      "game_date": "2004-03-29",
+      "game_id": "0020301067",
       "crew": [
         {
-          "name": "Jack Nies",
-          "slug": "jack-nies"
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
         },
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Dick Bavetta",
+          "slug": "dick-bavetta"
         },
         {
-          "name": "Michael Henderson",
-          "slug": "michael-henderson"
+          "name": "Blane Reichelt",
+          "slug": "blane-reichelt"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 9,
+      "ast": 2,
+      "team_abbr": "ATL",
+      "opp_abbr": "ORL",
+      "game_date": "2000-11-05",
+      "game_id": "201104001",
+      "crew": [
+        {
+          "name": "Mike Mathis",
+          "slug": "mike-mathis"
+        },
+        {
+          "name": "George Toliver",
+          "slug": "george-toliver"
+        },
+        {
+          "name": "James Capers",
+          "slug": "james-capers"
         }
       ]
     }

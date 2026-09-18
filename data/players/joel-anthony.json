@@ -1350,6 +1350,16 @@
     },
     {
       "pts": 12,
+      "reb": 11,
+      "ast": 0,
+      "team_abbr": "MIA",
+      "opp_abbr": "BOS",
+      "game_date": "2011-05-07",
+      "game_id": "0041000213",
+      "crew": []
+    },
+    {
+      "pts": 12,
       "reb": 13,
       "ast": 1,
       "team_abbr": "MIA",
@@ -1372,35 +1382,25 @@
       ]
     },
     {
-      "pts": 12,
-      "reb": 11,
-      "ast": 0,
-      "team_abbr": "MIA",
-      "opp_abbr": "BOS",
-      "game_date": "2011-05-07",
-      "game_id": "0041000213",
-      "crew": []
-    },
-    {
       "pts": 11,
-      "reb": 9,
-      "ast": 0,
+      "reb": 7,
+      "ast": 1,
       "team_abbr": "MIA",
-      "opp_abbr": "CLE",
-      "game_date": "2013-04-15",
-      "game_id": "400278924",
+      "opp_abbr": "MIL",
+      "game_date": "2008-03-24",
+      "game_id": "0020701046",
       "crew": [
         {
-          "name": "Tom Washington",
-          "slug": "tom-washington"
+          "name": "Eli Roe",
+          "slug": "eli-roe"
         },
         {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
+          "name": "Phil Robinson",
+          "slug": "phil-robinson"
         },
         {
-          "name": "J.T. Orr",
-          "slug": "j-t-orr"
+          "name": "Monty McCutchen",
+          "slug": "monty-mccutchen"
         }
       ]
     },
@@ -1429,24 +1429,70 @@
     },
     {
       "pts": 11,
-      "reb": 7,
-      "ast": 1,
+      "reb": 9,
+      "ast": 0,
       "team_abbr": "MIA",
-      "opp_abbr": "MIL",
-      "game_date": "2008-03-24",
-      "game_id": "0020701046",
+      "opp_abbr": "CLE",
+      "game_date": "2013-04-15",
+      "game_id": "400278924",
       "crew": [
+        {
+          "name": "Tom Washington",
+          "slug": "tom-washington"
+        },
+        {
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
+        },
+        {
+          "name": "J.T. Orr",
+          "slug": "j-t-orr"
+        }
+      ]
+    },
+    {
+      "pts": 10,
+      "reb": 5,
+      "ast": 0,
+      "team_abbr": "DET",
+      "opp_abbr": "UTA",
+      "game_date": "2015-03-14",
+      "game_id": "0021400980",
+      "crew": [
+        {
+          "name": "Scott Wall",
+          "slug": "scott-wall"
+        },
+        {
+          "name": "Marc Davis",
+          "slug": "marc-davis"
+        },
         {
           "name": "Eli Roe",
           "slug": "eli-roe"
+        }
+      ]
+    },
+    {
+      "pts": 10,
+      "reb": 7,
+      "ast": 1,
+      "team_abbr": "MIA",
+      "opp_abbr": "ORL",
+      "game_date": "2008-03-14",
+      "game_id": "0020700968",
+      "crew": [
+        {
+          "name": "Steve Javie",
+          "slug": "steve-javie"
         },
         {
-          "name": "Phil Robinson",
-          "slug": "phil-robinson"
+          "name": "Tony Brown",
+          "slug": "tony-brown"
         },
         {
-          "name": "Monty McCutchen",
-          "slug": "monty-mccutchen"
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         }
       ]
     },
@@ -1482,52 +1528,6 @@
       "game_date": "2012-05-17",
       "game_id": "0041100203",
       "crew": []
-    },
-    {
-      "pts": 10,
-      "reb": 7,
-      "ast": 1,
-      "team_abbr": "MIA",
-      "opp_abbr": "ORL",
-      "game_date": "2008-03-14",
-      "game_id": "0020700968",
-      "crew": [
-        {
-          "name": "Steve Javie",
-          "slug": "steve-javie"
-        },
-        {
-          "name": "Tony Brown",
-          "slug": "tony-brown"
-        },
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
-        }
-      ]
-    },
-    {
-      "pts": 10,
-      "reb": 5,
-      "ast": 0,
-      "team_abbr": "DET",
-      "opp_abbr": "UTA",
-      "game_date": "2015-03-14",
-      "game_id": "0021400980",
-      "crew": [
-        {
-          "name": "Scott Wall",
-          "slug": "scott-wall"
-        },
-        {
-          "name": "Marc Davis",
-          "slug": "marc-davis"
-        },
-        {
-          "name": "Eli Roe",
-          "slug": "eli-roe"
-        }
-      ]
     }
   ]
 }

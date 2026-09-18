@@ -370,29 +370,6 @@
   "top_games": [
     {
       "pts": 25,
-      "reb": 2,
-      "ast": 5,
-      "team_abbr": "GSW",
-      "opp_abbr": "OKC",
-      "game_date": "2019-11-25",
-      "game_id": "0021900250",
-      "crew": [
-        {
-          "name": "Jason Goldenberg",
-          "slug": "jason-goldenberg"
-        },
-        {
-          "name": "Brent Barnaky",
-          "slug": "brent-barnaky"
-        },
-        {
-          "name": "Tony Brothers",
-          "slug": "tony-brothers"
-        }
-      ]
-    },
-    {
-      "pts": 25,
       "reb": 4,
       "ast": 1,
       "team_abbr": "PHI",
@@ -434,6 +411,29 @@
         {
           "name": "Sean Wright",
           "slug": "sean-wright"
+        }
+      ]
+    },
+    {
+      "pts": 25,
+      "reb": 2,
+      "ast": 5,
+      "team_abbr": "GSW",
+      "opp_abbr": "OKC",
+      "game_date": "2019-11-25",
+      "game_id": "0021900250",
+      "crew": [
+        {
+          "name": "Jason Goldenberg",
+          "slug": "jason-goldenberg"
+        },
+        {
+          "name": "Brent Barnaky",
+          "slug": "brent-barnaky"
+        },
+        {
+          "name": "Tony Brothers",
+          "slug": "tony-brothers"
         }
       ]
     },
@@ -508,29 +508,6 @@
     },
     {
       "pts": 20,
-      "reb": 6,
-      "ast": 0,
-      "team_abbr": "IND",
-      "opp_abbr": "BKN",
-      "game_date": "2016-11-25",
-      "game_id": "0021600234",
-      "crew": [
-        {
-          "name": "Tyler Ford",
-          "slug": "tyler-ford"
-        },
-        {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
-        },
-        {
-          "name": "Leroy Richardson",
-          "slug": "leroy-richardson"
-        }
-      ]
-    },
-    {
-      "pts": 20,
       "reb": 7,
       "ast": 0,
       "team_abbr": "GSW",
@@ -576,25 +553,48 @@
       ]
     },
     {
-      "pts": 19,
-      "reb": 3,
-      "ast": 1,
-      "team_abbr": "GSW",
-      "opp_abbr": "ORL",
-      "game_date": "2019-12-01",
-      "game_id": "0021900290",
+      "pts": 20,
+      "reb": 6,
+      "ast": 0,
+      "team_abbr": "IND",
+      "opp_abbr": "BKN",
+      "game_date": "2016-11-25",
+      "game_id": "0021600234",
       "crew": [
+        {
+          "name": "Tyler Ford",
+          "slug": "tyler-ford"
+        },
+        {
+          "name": "Zach Zarba",
+          "slug": "zach-zarba"
+        },
+        {
+          "name": "Leroy Richardson",
+          "slug": "leroy-richardson"
+        }
+      ]
+    },
+    {
+      "pts": 19,
+      "reb": 6,
+      "ast": 2,
+      "team_abbr": "IND",
+      "opp_abbr": "CLE",
+      "game_date": "2017-02-15",
+      "game_id": "0021600835",
+      "crew": [
+        {
+          "name": "Ken Mauer",
+          "slug": "ken-mauer"
+        },
         {
           "name": "Scott Wall",
           "slug": "scott-wall"
         },
         {
-          "name": "Brandon Adair",
-          "slug": "brandon-adair"
-        },
-        {
-          "name": "James Capers",
-          "slug": "james-capers"
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland"
         }
       ]
     }

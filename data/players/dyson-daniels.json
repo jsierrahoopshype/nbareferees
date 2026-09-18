@@ -275,7 +275,7 @@
       "ast": 6,
       "team_abbr": "ATL",
       "opp_abbr": "GSW",
-      "game_date": "2026-03-22",
+      "game_date": "2026-03-21",
       "game_id": "401810881",
       "crew": [
         {
@@ -298,7 +298,7 @@
       "ast": 7,
       "team_abbr": "ATL",
       "opp_abbr": "BOS",
-      "game_date": "2024-11-13",
+      "game_date": "2024-11-12",
       "game_id": "401703370",
       "crew": [
         {
@@ -340,6 +340,29 @@
     },
     {
       "pts": 25,
+      "reb": 4,
+      "ast": 3,
+      "team_abbr": "ATL",
+      "opp_abbr": "WAS",
+      "game_date": "2024-11-15",
+      "game_id": "401703381",
+      "crew": [
+        {
+          "name": "John Goble",
+          "slug": "john-goble"
+        },
+        {
+          "name": "CJ Washington",
+          "slug": "cj-washington"
+        },
+        {
+          "name": "JD Ralls",
+          "slug": "jd-ralls"
+        }
+      ]
+    },
+    {
+      "pts": 25,
       "reb": 6,
       "ast": 9,
       "team_abbr": "ATL",
@@ -358,29 +381,6 @@
         {
           "name": "Nick Buchert",
           "slug": "nick-buchert"
-        }
-      ]
-    },
-    {
-      "pts": 25,
-      "reb": 4,
-      "ast": 3,
-      "team_abbr": "ATL",
-      "opp_abbr": "WAS",
-      "game_date": "2024-11-16",
-      "game_id": "401703381",
-      "crew": [
-        {
-          "name": "John Goble",
-          "slug": "john-goble"
-        },
-        {
-          "name": "CJ Washington",
-          "slug": "cj-washington"
-        },
-        {
-          "name": "JD Ralls",
-          "slug": "jd-ralls"
         }
       ]
     },
@@ -413,7 +413,7 @@
       "ast": 4,
       "team_abbr": "ATL",
       "opp_abbr": "BOS",
-      "game_date": "2025-01-19",
+      "game_date": "2025-01-18",
       "game_id": "401705153",
       "crew": [
         {
@@ -427,29 +427,6 @@
         {
           "name": "Brandon Schwab",
           "slug": "brandon-schwab"
-        }
-      ]
-    },
-    {
-      "pts": 23,
-      "reb": 4,
-      "ast": 4,
-      "team_abbr": "ATL",
-      "opp_abbr": "NYK",
-      "game_date": "2025-02-13",
-      "game_id": "401705339",
-      "crew": [
-        {
-          "name": "Mark Lindsay",
-          "slug": "mark-lindsay"
-        },
-        {
-          "name": "Michael Smith",
-          "slug": "michael-smith"
-        },
-        {
-          "name": "Nate Green",
-          "slug": "nate-green"
         }
       ]
     },
@@ -477,25 +454,48 @@
       ]
     },
     {
-      "pts": 22,
-      "reb": 10,
-      "ast": 1,
+      "pts": 23,
+      "reb": 4,
+      "ast": 4,
       "team_abbr": "ATL",
-      "opp_abbr": "POR",
-      "game_date": "2025-04-01",
-      "game_id": "401705663",
+      "opp_abbr": "NYK",
+      "game_date": "2025-02-12",
+      "game_id": "401705339",
       "crew": [
         {
-          "name": "Pat Fraher",
-          "slug": "pat-fraher"
+          "name": "Mark Lindsay",
+          "slug": "mark-lindsay"
         },
         {
-          "name": "Zach Zarba",
-          "slug": "zach-zarba"
+          "name": "Michael Smith",
+          "slug": "michael-smith"
         },
         {
-          "name": "Jonathan Sterling",
-          "slug": "jonathan-sterling"
+          "name": "Nate Green",
+          "slug": "nate-green"
+        }
+      ]
+    },
+    {
+      "pts": 22,
+      "reb": 9,
+      "ast": 6,
+      "team_abbr": "ATL",
+      "opp_abbr": "CHA",
+      "game_date": "2025-11-23",
+      "game_id": "401810131",
+      "crew": [
+        {
+          "name": "Marat Kogut",
+          "slug": "marat-kogut"
+        },
+        {
+          "name": "Josh Tiven",
+          "slug": "josh-tiven"
+        },
+        {
+          "name": "Simone Jelks",
+          "slug": "simone-jelks"
         }
       ]
     }

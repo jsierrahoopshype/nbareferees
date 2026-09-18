@@ -1247,7 +1247,7 @@
       "ast": 3,
       "team_abbr": "UTA",
       "opp_abbr": "PHX",
-      "game_date": "2025-10-28",
+      "game_date": "2025-10-27",
       "game_id": "401809975",
       "crew": [
         {
@@ -1293,7 +1293,7 @@
       "ast": 2,
       "team_abbr": "UTA",
       "opp_abbr": "CHI",
-      "game_date": "2025-11-17",
+      "game_date": "2025-11-16",
       "game_id": "401810095",
       "crew": [
         {
@@ -1335,6 +1335,29 @@
     },
     {
       "pts": 40,
+      "reb": 7,
+      "ast": 2,
+      "team_abbr": "UTA",
+      "opp_abbr": "ATL",
+      "game_date": "2025-11-13",
+      "game_id": "401810082",
+      "crew": [
+        {
+          "name": "Dedric Taylor",
+          "slug": "dedric-taylor"
+        },
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        },
+        {
+          "name": "Tyler Ford",
+          "slug": "tyler-ford"
+        }
+      ]
+    },
+    {
+      "pts": 40,
       "reb": 12,
       "ast": 3,
       "team_abbr": "UTA",
@@ -1353,75 +1376,6 @@
         {
           "name": "David Guthrie",
           "slug": "david-guthrie"
-        }
-      ]
-    },
-    {
-      "pts": 40,
-      "reb": 7,
-      "ast": 2,
-      "team_abbr": "UTA",
-      "opp_abbr": "ATL",
-      "game_date": "2025-11-14",
-      "game_id": "401810082",
-      "crew": [
-        {
-          "name": "Dedric Taylor",
-          "slug": "dedric-taylor"
-        },
-        {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
-        },
-        {
-          "name": "Tyler Ford",
-          "slug": "tyler-ford"
-        }
-      ]
-    },
-    {
-      "pts": 38,
-      "reb": 5,
-      "ast": 1,
-      "team_abbr": "UTA",
-      "opp_abbr": "DET",
-      "game_date": "2022-12-20",
-      "game_id": "0022200461",
-      "crew": [
-        {
-          "name": "Leon Wood",
-          "slug": "leon-wood"
-        },
-        {
-          "name": "Eric Lewis",
-          "slug": "eric-lewis"
-        },
-        {
-          "name": "Suyash Mehta",
-          "slug": "suyash-mehta"
-        }
-      ]
-    },
-    {
-      "pts": 38,
-      "reb": 8,
-      "ast": 1,
-      "team_abbr": "UTA",
-      "opp_abbr": "MIA",
-      "game_date": "2023-03-13",
-      "game_id": "0022201022",
-      "crew": [
-        {
-          "name": "Eric Lewis",
-          "slug": "eric-lewis"
-        },
-        {
-          "name": "Nick Buchert",
-          "slug": "nick-buchert"
-        },
-        {
-          "name": "Dedric Taylor",
-          "slug": "dedric-taylor"
         }
       ]
     },
@@ -1454,7 +1408,7 @@
       "ast": 0,
       "team_abbr": "UTA",
       "opp_abbr": "PHX",
-      "game_date": "2023-11-20",
+      "game_date": "2023-11-19",
       "game_id": "401584842",
       "crew": [
         {
@@ -1468,6 +1422,52 @@
         {
           "name": "Ashley Moyer-Gleich",
           "slug": "ashley-moyer-gleich"
+        }
+      ]
+    },
+    {
+      "pts": 38,
+      "reb": 8,
+      "ast": 1,
+      "team_abbr": "UTA",
+      "opp_abbr": "MIA",
+      "game_date": "2023-03-13",
+      "game_id": "0022201022",
+      "crew": [
+        {
+          "name": "Eric Lewis",
+          "slug": "eric-lewis"
+        },
+        {
+          "name": "Nick Buchert",
+          "slug": "nick-buchert"
+        },
+        {
+          "name": "Dedric Taylor",
+          "slug": "dedric-taylor"
+        }
+      ]
+    },
+    {
+      "pts": 38,
+      "reb": 5,
+      "ast": 1,
+      "team_abbr": "UTA",
+      "opp_abbr": "DET",
+      "game_date": "2022-12-20",
+      "game_id": "0022200461",
+      "crew": [
+        {
+          "name": "Leon Wood",
+          "slug": "leon-wood"
+        },
+        {
+          "name": "Eric Lewis",
+          "slug": "eric-lewis"
+        },
+        {
+          "name": "Suyash Mehta",
+          "slug": "suyash-mehta"
         }
       ]
     }
