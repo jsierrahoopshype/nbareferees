@@ -59,8 +59,30 @@ daylight saving. This avoids all of it.
 |---|---|
 | `scripts/local/probe_game_date_timezone.py` | read-only diagnosis, writes `_probe_game_date_timezone.txt` |
 | `scripts/local/fix_game_dates_espn.py` | corrects 2023-26 from cached `cdnnba` `timeActual` via the bridge |
-| `scripts/local/fetch_espn_seasons.py` | root cause fixed: converts to `US/Eastern`, and emits `date_is_local=1` |
+| `scripts/local/eastern_time.py` | UTC instant → Eastern game date, no timezone database, self-tested |
+| `scripts/local/fetch_espn_seasons.py` | root cause fixed, and `--dates-only` recovers dates without re-fetching anything else |
 | `scripts/build.py` | hard QA gate: no local-dated game may fall on December 24 |
+
+### Eastern time without a timezone database
+
+`scripts/local/eastern_time.py` implements the conversion from the rule rather
+than through `zoneinfo` or `tz_convert`, because both fail on the machine these
+scripts run on. `ZoneInfo("America/New_York")` needs the IANA database, which
+Windows does not ship. pandas 3 resolves zone names through zoneinfo rather
+than the pytz it used to bundle, so `tz_convert` inherits that — **and
+`"US/Eastern"` is a legacy pytz alias zoneinfo does not carry at all**, so it
+raises `ZoneInfoNotFoundError` even where the database is present.
+
+That exact combination shipped once here, inside a `try/except` whose fallback
+was the UTC date, so the fix silently reinstated the defect it was written to
+fix. It was caught by a test, not by reading. The module now raises instead of
+guessing, and the fetcher records the failure and marks the row
+`date_is_local=0` rather than claiming a date it could not compute.
+
+It also implements **both** US daylight-saving rules — first Sunday in April to
+last Sunday in October for 1987-2006, second Sunday in March to first Sunday in
+November from 2007 — because this repo starts at 1993-94 and the wrong rule
+moves a date whenever a tip lands within an hour of midnight Eastern.
 
 ### The `date_is_local` column
 
@@ -98,53 +120,67 @@ Tip-off is the **minimum** `timeActual` in a game, not the first row seen and
 not the maximum: the maximum is the final buzzer, which for a 10:30pm ET start
 is after midnight Eastern and would reintroduce the off-by-one.
 
-## Option (1): the remaining 13,376 rows
+## `--dates-only`: the remaining 13,433 rows
 
-`1993-94..2002-03` and `2012-13`. No timestamp for these games exists anywhere
-in the repo, so they cannot be corrected from cached data. They need
-`fetch_espn_seasons.py` re-run — now that its date handling is fixed.
-
-**This is much cheaper than a full re-fetch, because the date comes from the
-scoreboard, not the per-game summary.** `parse_game_row(ev, label)` is called
-with the scoreboard event, before any summary call. The summary call exists
-only for officials and player box scores.
+`1993-94..2002-03`, `2012-13`, and 57 games in 2023-26 the bridge could not
+reach. No timestamp for them exists in the repo, so their dates can only come
+back from ESPN — but they do **not** need a full re-fetch. `parse_game_row()`
+reads the date off the **scoreboard** event, before any summary call; the
+summary call exists only for officials and player box scores.
 
 | | calls | at the 1s delay |
 |---|---|---|
-| Scoreboard walk only (dates) | ~2,602 days | **~43 min** |
+| `--dates-only` (scoreboard only) | ~2,602 days | **~43 min** |
 | Full re-fetch (+1 summary per game) | ~15,500 | ~4.3 h |
 
-### What it actually involves
+```
+python scripts\local\fetch_espn_seasons.py --dates-only            # dry run
+python scripts\local\fetch_espn_seasons.py --dates-only --apply
+python scripts\local\fetch_espn_seasons.py --dates-only --seasons 2023-24,2024-25,2025-26 --apply
+python scripts\build.py
+python scripts\render_pages.py
+```
 
-1. **Clear the resume state.** `source-data/_espn_progress.json` records all
-   2,602 of those dates as `dates_done`, so a plain re-run skips every one of
-   them. Those keys must be removed first. This is the step most likely to be
-   missed — without it the re-run appears to succeed and changes nothing.
-2. **Decide date-only or full.** A date-only pass needs a flag that skips the
-   summary call and merges only `game_date` and `date_is_local` on `game_id`,
-   leaving officials and player logs untouched. That flag does not exist yet
-   and is the only new code option (1) needs. A full re-fetch needs no new
-   code but costs 4.3 hours and rewrites officials and player logs, which are
-   not broken.
-3. **Watch the 1998-99 window.** The lockout season runs Feb 1 – Jun 30 1999,
-   already special-cased in `SEASONS`.
-4. **Verify by the same signature.** After the run, Christmas Eve games in
-   those seasons must be 0 and the build's hard gate will enforce it, since
-   the rows now arrive marked `date_is_local=1`.
+### It cannot drop a row
+
+This is a **field update, not a row replacement**, and that is the whole safety
+argument. `merge_rows()` replaces whole rows and would lose a game if ESPN's
+archive came back thinner than what we hold — for the 1990s a real
+possibility. `--dates-only` instead walks the existing extract and overwrites
+two fields, `game_date` and `date_is_local`, on rows it matched by `game_id`.
+A game the walk misses keeps its row, keeps its old date, and keeps
+`date_is_local=0`, so it stays visibly unrepaired rather than vanishing. The
+row count cannot change.
+
+It also **refuses any recovered date that is not 0 or 1 day before the stored
+one**. The stored date is a UTC date, so the true local date can only be the
+same day or the day before; anything else is not a rollover and is reported
+rather than written.
+
+Before merging it prints a **per-season count comparison**, re-walk against
+what the extract holds, flagging every season that differs.
+
+### The progress-file trap, and why this sidesteps it
+
+`_espn_progress.json` records all 2,602 of those dates as `dates_done`, so a
+plain `main()` re-run skips every one, prints success and changes nothing.
+
+`--dates-only` keeps its own loop and **never reads that file**, so the trap
+cannot fire. It also does not clear those keys, because clearing would tell a
+future full fetch that 2,602 completed days need doing again — 4.3 hours of
+summary calls to repair extracts that were never broken. `--reset-progress`
+does that explicitly if a full re-fetch is ever genuinely wanted.
 
 ### Risks
 
-- ESPN's archive depth for the 1990s was confirmed by
-  `_probe_rounds_reach.txt`, but a re-walk could return fewer games than the
-  current extract holds. Compare counts per season before merging; the
-  `game_id` key means a short return replaces nothing, but a silently
-  incomplete season is worth catching.
-- `game_id` values must come back identical, or the merge adds duplicates
-  instead of replacing. `drop_duplicates(["game_id"], keep="last")` covers the
-  replace case only if the ids match exactly.
+- ESPN's 1990s archive depth was confirmed by `_probe_rounds_reach.txt`, but a
+  re-walk could still return fewer games than we hold. The count comparison
+  reports it; those games keep their old dates and stay `date_is_local=0`.
+- `game_id` must come back identical or a game simply will not match. That
+  shows up as "not found in walk", never as a duplicate or a loss.
 - Everything downstream keyed on date shifts by a day for most of these rows:
   the on-this-date card, game logs, notable games and swings all move. That is
-  the point, but it is a visible change across 13,376 games.
+  the point, but it is a visible change across ~13,000 games.
 
 ## What reads game_date
 

@@ -73,6 +73,7 @@ import json
 import time
 import argparse
 import datetime
+import collections
 import urllib.parse
 import urllib.request
 
@@ -92,6 +93,7 @@ PROGRESS_PATH = os.path.join(SOURCE_DIR, "_espn_progress.json")
 # Shared tricode normalization (single source of truth across the local scripts).
 sys.path.insert(0, SCRIPT_DIR)
 from nba_tricodes import ESPN_TO_NBA_ABBR, VALID_TRICODES, HISTORICAL_TRICODES  # noqa: E402
+import eastern_time  # noqa: E402  (UTC -> local game date; see its docstring)
 
 # --------------------------------------------------------------------------- #
 # Config
@@ -419,23 +421,30 @@ def parse_game_row(event, season_label):
     # dated the large majority of every ESPN-sourced season one day late. See
     # scripts/local/probe_game_date_timezone.py for the finding.
     #
-    # Eastern is the right target and needs no per-arena timezone table: no NBA
-    # game tips after midnight ET (the latest start is about 10:30pm ET, which
-    # is 7:30pm on the west coast), so the Eastern calendar date and the home
-    # arena's calendar date are the same day for every game in the league. It
-    # is also what stats.nba.com's GAME_DATE holds, so the two eras in
-    # games.csv.gz end up on one convention.
+    # The conversion lives in eastern_time.py, which implements the rule
+    # directly rather than going through a timezone database. The first attempt
+    # at this fix used pandas' .tz_convert("US/Eastern"), which raises
+    # ZoneInfoNotFoundError on pandas 3 -- it resolves zone names through
+    # zoneinfo now, and "US/Eastern" is a legacy pytz alias zoneinfo does not
+    # carry -- and the except below then quietly wrote the UTC date, putting the
+    # defect straight back. Hence a conversion with no database behind it, and
+    # hence a failure that is recorded rather than swallowed.
     #
-    # tz_convert("US/Eastern") goes through pandas' own bundled tz data rather
-    # than the OS, so this works on Windows without the tzdata package.
+    # ON FAILURE THE ROW IS STILL WRITTEN, with the raw UTC date and
+    # date_is_local=0. Dropping the game would lose it from the extract
+    # entirely; writing it unmarked keeps it, keeps it visible to build.py's
+    # Christmas Eve gate, and leaves it for a later pass to repair.
     raw_date = event.get("date") or comp.get("date") or ""
     game_date = ""
+    date_is_local = "0"
     if raw_date:
         try:
-            game_date = (pd.to_datetime(raw_date, utc=True, errors="coerce")
-                         .tz_convert("US/Eastern").strftime("%Y-%m-%d"))
-        except Exception:  # noqa: BLE001
+            game_date = eastern_time.game_date(raw_date)
+            date_is_local = "1"
+        except eastern_time.EasternTimeError as exc:
             game_date = str(raw_date)[:10]
+            print("    WARNING: %s -- keeping the UTC date %s and marking it "
+                  "date_is_local=0" % (exc, game_date))
 
     home = away = None
     for c in comp.get("competitors", []):
@@ -471,7 +480,7 @@ def parse_game_row(event, season_label):
         "home_team_abbr": team_abbr(home),
         "away_team_id": team_id(away),
         "away_team_abbr": team_abbr(away),
-        "date_is_local": "1",
+        "date_is_local": date_is_local,
         "home_pts": hp,
         "away_pts": ap,
         "home_win": home_win,
@@ -870,6 +879,247 @@ def discover_floor():
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------
+# --dates-only : recover local game dates without re-fetching anything else
+# ---------------------------------------------------------------------------
+# WHAT THIS IS FOR. The UTC-vs-local game_date defect (see
+# docs/GAME_DATE_TIMEZONE.md) left every ESPN-sourced row dated a day late
+# wherever the tip crossed midnight UTC. fix_game_dates_espn.py repaired
+# 2023-26 from cached cdn timestamps, but the 1993-2003 and 2012-13 blocks
+# have no cached timestamp anywhere, so their dates can only come back from
+# ESPN. They do NOT need a full re-fetch: parse_game_row() reads the date off
+# the SCOREBOARD event, before any summary call, and the summary call exists
+# only for officials and player box scores, which are not broken.
+#
+#   scoreboard only : ~2,602 days   ~43 min at the 1s delay
+#   full re-fetch   : ~15,500 calls ~4.3 h, and rewrites two healthy extracts
+#
+# IT IS A FIELD UPDATE, NOT A ROW REPLACEMENT, and that is the whole safety
+# argument. merge_rows() replaces whole rows and would drop a game if ESPN's
+# archive came back thinner than what we hold -- for the 1990s that is a real
+# possibility, and silently losing games would be far worse than the wrong
+# dates we are fixing. This instead walks the EXISTING extract and overwrites
+# two fields, game_date and date_is_local, on rows whose game_id the re-walk
+# found. A game the re-walk misses keeps its row, keeps its old date, and
+# keeps date_is_local=0, so it stays visibly unrepaired rather than vanishing.
+# Nothing is ever added or removed; the row count cannot change.
+#
+# IT IGNORES _espn_progress.json ON PURPOSE. That file records all 2,602 of
+# these dates as already done, so a plain main() re-run skips every one of
+# them, prints success and changes nothing -- the trap that would waste the
+# run. This walk keeps its own loop and never consults that file, so the trap
+# cannot fire. It also does not CLEAR those keys, because clearing would tell
+# a future full fetch that 2,602 completed days need doing again, buying 4.3
+# hours of summary calls to repair extracts that were never broken. If a full
+# re-fetch is genuinely wanted later, --reset-progress does that explicitly.
+DATES_ONLY_DEFAULT_SEASONS = [
+    "1993-94", "1994-95", "1995-96", "1996-97", "1997-98", "1998-99",
+    "1999-00", "2000-01", "2001-02", "2002-03", "2012-13",
+]
+
+
+def _dates_only_targets(existing, seasons):
+    """Rows that still need a local date, split into in-scope and out-of-scope."""
+    in_scope, out_of_scope = {}, {}
+    for _, row in existing.iterrows():
+        if str(row.get("date_is_local", "")).strip() == "1":
+            continue
+        bucket = in_scope if row["season"] in seasons else out_of_scope
+        bucket[str(row["game_id"])] = {"season": row["season"],
+                                       "stored": str(row["game_date"])}
+    return in_scope, out_of_scope
+
+
+def dates_only(seasons=None, apply_changes=False, reset_progress=False):
+    seasons = list(seasons or DATES_ONLY_DEFAULT_SEASONS)
+    today = datetime.date.today()
+    print("=" * 78)
+    print("DATES-ONLY WALK  (no summary calls; officials and player logs untouched)")
+    print("=" * 78)
+    print("mode    : %s" % ("APPLY" if apply_changes else "DRY RUN -- nothing written"))
+    print("seasons : %s" % ", ".join(seasons))
+
+    existing = read_existing(GAMES_PATH, GAMES_COLUMNS)
+    in_scope, out_of_scope = _dates_only_targets(existing, set(seasons))
+    print("extract : %d row(s); %d still need a local date, %d of them in scope"
+          % (len(existing), len(in_scope) + len(out_of_scope), len(in_scope)))
+    if out_of_scope:
+        oos = collections.Counter(v["season"] for v in out_of_scope.values())
+        print("          OUT OF SCOPE and left alone: %d row(s) in %s"
+              % (len(out_of_scope), dict(sorted(oos.items()))))
+        print("          re-run with --seasons to sweep those too")
+    if not in_scope:
+        print("\nNothing in scope needs a date. Stopping.")
+        return 0
+
+    # ---- walk -------------------------------------------------------------
+    found = {}                      # game_id -> local date (YYYY-MM-DD)
+    walked_season = {}              # game_id -> season label the walk saw
+    seen_by_season = collections.Counter()
+    days = failures = 0
+    for season in SEASONS:
+        if season["label"] not in seasons:
+            continue
+        start = datetime.date.fromisoformat(season["start"])
+        end = min(datetime.date.fromisoformat(season["end"]), today)
+        print("\n-- %s  %s -> %s" % (season["label"], start, end))
+        for d in daterange(start, end):
+            days += 1
+            try:
+                sb = get_json(SCOREBOARD_URL, {"dates": d.strftime("%Y%m%d")})
+            except RuntimeError as e:
+                failures += 1
+                print("   %s scoreboard FAILED: %s" % (d.isoformat(), e))
+                continue
+            time.sleep(DELAY_SECONDS)
+            for ev in sb.get("events", []) or []:
+                stype = int((ev.get("season") or {}).get("type", 0))
+                if stype not in season["types"] and not is_play_in(ev):
+                    continue
+                row, _suffix = parse_game_row(ev, season["label"])
+                if row is None:
+                    continue
+                if (row["home_team_abbr"] not in ALLOWED_TRICODES
+                        or row["away_team_abbr"] not in ALLOWED_TRICODES):
+                    continue                      # exhibition, as in main()
+                gid = str(row["game_id"])
+                found[gid] = row["game_date"]
+                walked_season[gid] = season["label"]
+                seen_by_season[season["label"]] += 1
+            if days % 100 == 0:
+                print("   ... %d day(s) walked, %d game(s) seen" % (days, len(found)))
+    print("\nwalked %d day(s), %d scoreboard failure(s), %d game(s) seen"
+          % (days, failures, len(found)))
+
+    # ---- per-season count comparison, BEFORE anything is merged -----------
+    print()
+    print("=" * 78)
+    print("COUNT COMPARISON  (re-walk vs the extract we already hold)")
+    print("=" * 78)
+    held = collections.Counter(r["season"] for _, r in existing.iterrows()
+                               if r["season"] in set(seasons))
+    print("%-9s %8s %8s %8s   %s" % ("season", "held", "re-walk", "diff", ""))
+    differing = []
+    for label in seasons:
+        h, w = held.get(label, 0), seen_by_season.get(label, 0)
+        note = ""
+        if w != h:
+            note = "<-- DIFFERS"
+            differing.append((label, h, w))
+        print("%-9s %8d %8d %+8d   %s" % (label, h, w, w - h, note))
+    if differing:
+        print()
+        print("%d season(s) differ. No row is added or removed either way -- this" % len(differing))
+        print("walk only overwrites two fields on rows it matched by game_id -- but a")
+        print("re-walk returning fewer games than we hold can mean ESPN's archive has")
+        print("thinned, and those games simply keep their old date and stay")
+        print("date_is_local=0. Check before trusting the result.")
+    else:
+        print("\nEvery in-scope season matches.")
+
+    # ---- apply to the two fields only -------------------------------------
+    print()
+    print("=" * 78)
+    print("MATCHING")
+    print("=" * 78)
+    updated = unchanged = unmatched = suspicious = 0
+    by_shift = collections.Counter()
+    odd = []
+    for gid, info in in_scope.items():
+        new = found.get(gid)
+        if new is None:
+            unmatched += 1
+            continue
+        stored = info["stored"]
+        # The stored date is a UTC date, so the true local date is either the
+        # same day or exactly one day earlier. Anything else is not a timezone
+        # rollover and must not be written silently.
+        try:
+            shift = (datetime.date.fromisoformat(stored)
+                     - datetime.date.fromisoformat(new)).days
+        except ValueError:
+            shift = None
+        by_shift[shift] += 1
+        if shift not in (0, 1):
+            suspicious += 1
+            if len(odd) < 15:
+                odd.append((gid, info["season"], stored, new, shift))
+            continue
+        if new == stored:
+            unchanged += 1
+        else:
+            updated += 1
+    print("in-scope rows        : %d" % len(in_scope))
+    print("  date corrected     : %d" % updated)
+    print("  already correct    : %d" % unchanged)
+    print("  not found in walk  : %d  (kept as-is, still date_is_local=0)" % unmatched)
+    print("  implausible shift  : %d  (refused)" % suspicious)
+    print("  shift histogram    : %s" % dict(sorted(by_shift.items(), key=lambda kv: (kv[0] is None, kv[0]))))
+    if odd:
+        print("\n  refused rows (stored minus recovered is not 0 or 1 day):")
+        for gid, season, stored, new, shift in odd:
+            print("    %s %s stored=%s walk=%s shift=%s" % (gid, season, stored, new, shift))
+
+    if apply_changes and not updated:
+        print("\nNothing was corrected, so games.csv.gz is left exactly as it was.")
+        print("A walk that matched nothing usually means the scoreboard returned")
+        print("no events -- check the season windows and the network before")
+        print("concluding the dates are already right.")
+    elif apply_changes:
+        gid_to_new = {}
+        for gid, info in in_scope.items():
+            new = found.get(gid)
+            if new is None:
+                continue
+            try:
+                shift = (datetime.date.fromisoformat(info["stored"])
+                         - datetime.date.fromisoformat(new)).days
+            except ValueError:
+                continue
+            if shift in (0, 1):
+                gid_to_new[gid] = new
+        mask = existing["game_id"].astype(str).isin(gid_to_new)
+        n_before = len(existing)
+        existing.loc[mask, "game_date"] = (existing.loc[mask, "game_id"].astype(str)
+                                           .map(gid_to_new))
+        existing.loc[mask, "date_is_local"] = "1"
+        assert len(existing) == n_before, "row count changed -- refusing to write"
+        # Christmas Eve is the signature the defect left behind; it must be gone
+        # from every row this walk just marked local.
+        now_local = existing[existing["date_is_local"].astype(str) == "1"]
+        dec24 = now_local[now_local["game_date"].astype(str).str.slice(5, 10) == "12-24"]
+        if len(dec24):
+            print("\nREFUSING TO WRITE: %d local-dated game(s) still on December 24"
+                  % len(dec24))
+            for _, r in dec24.head(10).iterrows():
+                print("   %s %s %s @ %s" % (r["season"], r["game_date"],
+                                            r["away_team_abbr"], r["home_team_abbr"]))
+            return 1
+        write_gz(existing, GAMES_PATH, GAMES_COLUMNS)
+        print("\nwrote %s (%d rows, unchanged row count)" % (GAMES_PATH, len(existing)))
+        print("Christmas Eve games among local-dated rows: 0")
+        print("\nNEXT: python scripts/build.py  then  python scripts/render_pages.py")
+    else:
+        print("\nDry run: games.csv.gz untouched. Re-run with --apply to write.")
+
+    if reset_progress:
+        done = load_progress()
+        drop = set()
+        for season in SEASONS:
+            if season["label"] not in seasons:
+                continue
+            start = datetime.date.fromisoformat(season["start"])
+            end = min(datetime.date.fromisoformat(season["end"]), today)
+            for d in daterange(start, end):
+                drop.add(d.strftime("%Y-%m-%d"))
+        removed = done & drop
+        save_progress(done - drop)
+        print("\n--reset-progress: cleared %d date(s) from %s"
+              % (len(removed), PROGRESS_PATH))
+        print("A future full fetch will now re-walk those days, summary calls and all.")
+    return 0
+
+
 def main():
     os.makedirs(PLAYER_LOGS_DIR, exist_ok=True)
     today = datetime.date.today()
@@ -1026,10 +1276,30 @@ if __name__ == "__main__":
     ap.add_argument("--discover-floor", action="store_true",
                     help="Probe one November date per year, 1992 -> 1985, to find where "
                          "ESPN's archive ends. Writes nothing; prints only.")
+    ap.add_argument("--dates-only", action="store_true",
+                    help="Re-walk the scoreboard to recover local game dates ONLY. Makes "
+                         "no summary calls, so officials and player logs are untouched, "
+                         "and updates only game_date and date_is_local on rows matched by "
+                         "game_id -- it can never add or drop a row. ~43 min vs ~4.3 h.")
+    ap.add_argument("--seasons", default="",
+                    help="Comma-separated season labels for --dates-only. Defaults to the "
+                         "seasons with no cached timestamp (1993-94..2002-03, 2012-13).")
+    ap.add_argument("--apply", action="store_true",
+                    help="With --dates-only: actually write games.csv.gz. Dry run without it.")
+    ap.add_argument("--reset-progress", action="store_true",
+                    help="With --dates-only: also clear those dates from "
+                         "_espn_progress.json. NOT needed for --dates-only itself, which "
+                         "never reads that file -- this only makes a future FULL re-fetch "
+                         "redo those days.")
     cli = ap.parse_args()
     if cli.clean:
         clean_exhibitions()
     elif cli.discover_floor:
         discover_floor()
+    elif cli.dates_only:
+        picked = [x.strip() for x in cli.seasons.split(",") if x.strip()]
+        raise SystemExit(dates_only(seasons=picked or None,
+                                    apply_changes=cli.apply,
+                                    reset_progress=cli.reset_progress))
     else:
         main()

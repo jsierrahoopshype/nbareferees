@@ -39,13 +39,13 @@ convention, no table to keep in sync with relocations.
     2023-12-25 22:30 ET  (DAL@PHX, 10:30pm tip)  ->  UTC 2023-12-26 03:30
     back to Eastern                              ->  2023-12-25, correct
 
-NO tzdata DEPENDENCY. zoneinfo needs the IANA database, which Windows does not
-ship, so a plain `ZoneInfo("America/New_York")` fails on exactly the machine
-this script is meant to run on. The US daylight-saving rule has been fixed
-since 2007 -- second Sunday in March to first Sunday in November -- and this
-window is 2023-26, so the offset is computed from that rule directly. The
-script refuses any timestamp before 2007 rather than apply the rule where it
-does not hold.
+NO tzdata DEPENDENCY. The conversion lives in eastern_time.py, which implements
+the daylight-saving rule directly. zoneinfo needs the IANA database Windows does
+not ship, and pandas' tz_convert resolves through zoneinfo too -- with
+"US/Eastern" a legacy alias zoneinfo does not carry at all, so it raises even
+where the database is present. That module raises rather than falling back to a
+UTC date, which is the failure mode that quietly reinstated this very defect
+once already.
 
 TIP-OFF IS THE MINIMUM timeActual, NOT THE FIRST ROW ENCOUNTERED AND NOT THE
 MAXIMUM. cdn.nba.com play-by-play stamps every action with a real UTC
@@ -69,6 +69,7 @@ import collections
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import nba_data_source as nds  # noqa: E402
+import eastern_time  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SOURCE_DIR = os.path.join(REPO_ROOT, "source-data")
@@ -82,10 +83,6 @@ CDN_KEYS = [
     "cdnnba_2024", "cdnnba_po_2024",
     "cdnnba_2025", "cdnnba_po_2025",
 ]
-
-# The US daylight-saving rule this script relies on took its current form in
-# 2007. Refuse rather than silently misapply it to older timestamps.
-DST_RULE_FROM_YEAR = 2007
 
 _out = []
 
@@ -103,70 +100,17 @@ def section(title):
 
 
 # --------------------------------------------------------------------------- #
-# Eastern time, from the rule rather than from a timezone database
+# Eastern time
+#
+# Shared with fetch_espn_seasons.py via eastern_time.py, which implements the
+# rule directly instead of going through zoneinfo or pandas' tz_convert --
+# both need a timezone database Windows does not ship, and "US/Eastern" is a
+# legacy alias zoneinfo does not carry at all. See that module's docstring.
 # --------------------------------------------------------------------------- #
-def _nth_sunday(year, month, n):
-    """The nth Sunday of a month, n starting at 1."""
-    first = datetime.date(year, month, 1)
-    # date.weekday(): Monday 0 ... Sunday 6
-    offset = (6 - first.weekday()) % 7
-    return first + datetime.timedelta(days=offset + 7 * (n - 1))
-
-
-def eastern_offset_hours(utc_dt):
-    """-4 during Eastern daylight time, -5 during Eastern standard time.
-
-    Boundaries are expressed in UTC: DST begins 2:00am local standard, which
-    is 07:00 UTC, and ends 2:00am local daylight, which is 06:00 UTC.
-    """
-    if utc_dt.year < DST_RULE_FROM_YEAR:
-        raise ValueError(
-            "timestamp %s predates the %d US daylight-saving rule this script "
-            "implements; it must not be converted here" % (utc_dt, DST_RULE_FROM_YEAR))
-    y = utc_dt.year
-    dst_start = datetime.datetime.combine(_nth_sunday(y, 3, 2), datetime.time(7, 0))
-    dst_end = datetime.datetime.combine(_nth_sunday(y, 11, 1), datetime.time(6, 0))
-    return -4 if dst_start <= utc_dt < dst_end else -5
-
-
-def parse_utc(ts):
-    """A naive UTC datetime from an ISO-8601 timestamp, or None.
-
-    Handles the shapes cdn.nba.com actually emits -- a trailing Z, fractional
-    seconds of any length, and an explicit +/-HH:MM offset -- without relying
-    on fromisoformat, whose tolerance for 'Z' and for odd fraction widths
-    varies by Python version.
-    """
-    s = (ts or "").strip()
-    if len(s) < 19:
-        return None
-    try:
-        base = datetime.datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]),
-                                 int(s[11:13]), int(s[14:16]), int(s[17:19]))
-    except (ValueError, IndexError):
-        return None
-    tail = s[19:]
-    # Drop fractional seconds, whatever their width.
-    if tail.startswith("."):
-        i = 1
-        while i < len(tail) and tail[i].isdigit():
-            i += 1
-        tail = tail[i:]
-    if tail in ("", "Z", "z"):
-        return base
-    if len(tail) >= 6 and tail[0] in "+-" and tail[3] == ":":
-        try:
-            sign = 1 if tail[0] == "+" else -1
-            delta = datetime.timedelta(hours=int(tail[1:3]), minutes=int(tail[4:6]))
-        except ValueError:
-            return None
-        return base - sign * delta          # to UTC
-    return None
-
-
-def local_date_from_utc(utc_dt):
-    """The calendar date the game was played on, Eastern."""
-    return (utc_dt + datetime.timedelta(hours=eastern_offset_hours(utc_dt))).date()
+parse_utc = eastern_time.parse_utc
+local_date_from_utc = eastern_time.local_date_from_utc
+eastern_offset_hours = eastern_time.eastern_offset_hours
+DST_RULE_FROM_YEAR = eastern_time.DST_RULE_FLOOR_YEAR
 
 
 # --------------------------------------------------------------------------- #
@@ -203,11 +147,18 @@ def self_test():
         emit("  %-28s -> %-12s %-8s %s" % (ts, got, "ok" if ok else "FAIL", why))
     emit("")
     try:
-        eastern_offset_hours(datetime.datetime(2006, 6, 1))
-        emit("  FAIL: a pre-2007 timestamp was accepted")
+        eastern_offset_hours(datetime.datetime(1986, 6, 1))
+        emit("  FAIL: a pre-1987 timestamp was accepted")
         bad += 1
     except ValueError:
-        emit("  pre-2007 timestamp correctly refused")
+        emit("  pre-1987 timestamp correctly refused")
+    emit("")
+    emit("  (the shared module's own, wider self-test:)")
+    if not eastern_time.self_test(verbose=False):
+        emit("  FAIL: eastern_time.self_test() did not pass")
+        bad += 1
+    else:
+        emit("  eastern_time.self_test() passed")
     emit("")
     emit("%d case(s) failed." % bad)
     return bad == 0
