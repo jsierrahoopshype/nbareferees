@@ -76,6 +76,7 @@ import datetime
 import collections
 import urllib.parse
 import urllib.request
+import urllib.error
 
 import pandas as pd
 
@@ -103,10 +104,25 @@ DELAY_SECONDS = 1.0
 SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary"
 
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-)
+# Headers for every ESPN call. Deliberately NOT a browser User-Agent.
+#
+# This file shipped with a Chrome 120 User-Agent string and made thousands of
+# successful calls with it. ESPN's CDN has since started fingerprinting: a
+# request that CLAIMS to be Chrome but has none of a real Chrome's TLS and
+# header fingerprint is now rejected with 403, on every call. Verified from the
+# machine these scripts run on, same endpoint, same minute:
+#
+#     urllib with its default User-Agent (Python-urllib/3.x)  -> 200
+#     the same request with the Chrome User-Agent above       -> 403
+#
+# So we send no User-Agent header at all and let urllib add its own honest
+# default. Do not "fix" a future 403 by pasting a browser User-Agent back in;
+# that is the thing that causes it.
+REQUEST_HEADERS = {"Accept": "application/json"}
+
+# Statuses that will not change on a retry. Retrying a 403 sixteen times per
+# call turns a 43-minute walk into a ten-hour one that recovers nothing.
+NO_RETRY_STATUSES = (401, 403, 404, 451)
 
 # Seasons to pull. Dates are generous outer bounds (empty dates just return no
 # games); the walk is also capped at today so we never scan the future.
@@ -264,11 +280,19 @@ def get_json(url, params=None, retries=4):
     last_err = None
     for attempt in range(retries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT,
-                                                       "Accept": "application/json"})
+            req = urllib.request.Request(url, headers=dict(REQUEST_HEADERS))
             with urllib.request.urlopen(req, timeout=60) as resp:
                 raw = resp.read()
             return json.loads(raw.decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            # Report the status. The old message said only "GET failed", which
+            # is why a blanket 403 read like a network problem for a whole run.
+            last_err = "HTTP %s %s" % (e.code, e.reason)
+            if e.code in NO_RETRY_STATUSES:
+                raise RuntimeError("GET refused: {} ({})".format(url, last_err))
+            if attempt < retries - 1:
+                time.sleep(delay)
+                delay *= 2
         except Exception as e:  # noqa: BLE001 - retry transient failures
             last_err = e
             if attempt < retries - 1:
@@ -957,6 +981,12 @@ def dates_only(seasons=None, apply_changes=False, reset_progress=False):
     walked_season = {}              # game_id -> season label the walk saw
     seen_by_season = collections.Counter()
     days = failures = 0
+    # If the API is refusing us outright there is no point walking 2,602 days
+    # to discover it one day at a time. Bail after this many consecutive
+    # failures with nothing recovered, and say what the status actually was.
+    ABORT_AFTER = 5
+    consecutive_failures = 0
+    first_error = None
     for season in SEASONS:
         if season["label"] not in seasons:
             continue
@@ -969,8 +999,21 @@ def dates_only(seasons=None, apply_changes=False, reset_progress=False):
                 sb = get_json(SCOREBOARD_URL, {"dates": d.strftime("%Y%m%d")})
             except RuntimeError as e:
                 failures += 1
+                consecutive_failures += 1
+                if first_error is None:
+                    first_error = str(e)
                 print("   %s scoreboard FAILED: %s" % (d.isoformat(), e))
+                if consecutive_failures >= ABORT_AFTER and not found:
+                    print("\n%s" % ("=" * 78))
+                    print("ABORTED: the first %d call(s) all failed and nothing "
+                          "has been recovered." % consecutive_failures)
+                    print("First error: %s" % first_error)
+                    print("Nothing was written. games.csv.gz is untouched.")
+                    print("=" * 78)
+                    return 1
+                time.sleep(DELAY_SECONDS)
                 continue
+            consecutive_failures = 0
             time.sleep(DELAY_SECONDS)
             for ev in sb.get("events", []) or []:
                 stype = int((ev.get("season") or {}).get("type", 0))
