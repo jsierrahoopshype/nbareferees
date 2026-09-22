@@ -171,6 +171,53 @@ future full fetch that 2,602 completed days need doing again — 4.3 hours of
 summary calls to repair extracts that were never broken. `--reset-progress`
 does that explicitly if a full re-fetch is ever genuinely wanted.
 
+### ESPN's 1990s timestamps have no seconds
+
+The first real `--dates-only` run parsed nothing. ESPN's 1990s archive emits
+
+```
+1993-11-06T00:30Z        17 characters, no seconds
+```
+
+where the modern feed emits `2023-10-25T02:00:00Z`. `parse_utc()` opened with
+`if len(s) < 19: return None`, so every 1990s timestamp was rejected before it
+was read. The module behaved exactly as designed — refused rather than guessed,
+kept the UTC date, marked the row `date_is_local=0` — and recovered nothing
+across all 13,376 rows.
+
+The parser is now one regex covering every shape these feeds emit: seconds
+optional, `T` or space separator either case, fractional seconds of any width
+with `.` or `,`, and a zone that may be `Z`, `z`, `+HH:MM`, `-HHMM`, `+HH` or
+absent. Each variant has its own self-test case.
+
+Two values are still refused, deliberately:
+
+- **Date-only** (`1993-11-06`). No time of day means no instant, so there is no
+  way to know which local date it belongs to. Defaulting to midnight would
+  produce a date that is sometimes right and sometimes a day out — the exact
+  class of bug this module exists to prevent. `game_date()` now says *why* it
+  refused, because a date-only value and a malformed one need different answers.
+- **Anything malformed**: month 13, November 31, hour 25, an unknown zone letter.
+
+A timestamp with **no zone at all** is read as UTC. The field is UTC by
+contract and every observed sample carries `Z`; refusing it would risk another
+43-minute walk that recovers nothing over a shape almost certainly UTC anyway.
+
+### The shape census
+
+Rather than assume which shapes exist across 30 seasons, `--dates-only` counts
+them and prints them before merging anything:
+
+```
+TIMESTAMP SHAPES SEEN  (digits blanked; refused shapes recover nothing)
+  9999-99-99T99:99Z         1314 seen  all parsed
+                                 e.g. 2012-10-31T00:30Z
+```
+
+A shape that will not parse is printed as `*** n REFUSED ***`, with a real
+example. That turns "the walk recovered nothing" from a mystery costing a run
+into a line naming the variant to add.
+
 ### ESPN's 403, and the User-Agent
 
 `get_json()` sends **no User-Agent header**, so urllib adds its own

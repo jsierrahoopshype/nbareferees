@@ -47,6 +47,7 @@ Both are implemented. Anything before 1987 raises rather than being converted
 under a rule that did not apply to it.
 """
 
+import re
 import datetime
 
 DST_RULE_FLOOR_YEAR = 1987
@@ -104,37 +105,79 @@ def eastern_offset_hours(utc_dt):
     return -4 if start <= utc_dt < end else -5
 
 
+# One regex for every shape these feeds actually emit. Written out rather than
+# leaning on fromisoformat, whose tolerance for "Z" and for odd fraction widths
+# varies by Python version.
+#
+#   date       1993-11-06                  (refused -- see below)
+#   separator  T or a space, either case
+#   time       00:30      SECONDS OPTIONAL -- the 1990s feed omits them
+#              00:30:00
+#   fraction   .9 .999 .999999             any width
+#   zone       Z  z  +00:00  -05:00  -0500  +00   or absent
+_TS_RE = re.compile(
+    r"^\s*(\d{4})-(\d{2})-(\d{2})"                 # 1 y   2 m   3 d
+    r"(?:[Tt ]"
+    r"(\d{2}):(\d{2})(?::(\d{2}))?"                 # 4 H   5 M   6 S (optional)
+    r"(?:[.,]\d+)?"                                  # fractional seconds, discarded
+    r"\s*([Zz]|[+-]\d{2}:?(?:\d{2})?)?"             # 7 zone (optional)
+    r")?\s*$"
+)
+
+
 def parse_utc(ts):
     """A naive UTC datetime from an ISO-8601 timestamp, or None if unparseable.
 
-    Handles what these feeds actually emit -- a trailing Z, fractional seconds
-    of any width, and an explicit +/-HH:MM offset -- without fromisoformat,
-    whose tolerance for 'Z' and for odd fraction widths varies by version.
+    Accepts every shape ESPN has been seen to emit across 1993 to today. The
+    seconds-less form is the one that matters: ESPN's 1990s archive emits
+    `1993-11-06T00:30Z`, and an earlier version of this function rejected it
+    outright on a length check, so a whole re-walk recovered nothing.
+
+    A DATE-ONLY value is refused, not defaulted. `1993-11-06` carries no time
+    of day, so there is no instant to convert and no way to know which local
+    date it belongs to. Returning midnight would silently produce a date that
+    might be right and might be a day out, which is the class of bug this
+    module exists to prevent.
+
+    A timestamp with NO zone is read as UTC. This field is UTC by contract and
+    every sample carries Z; refusing it would mean recovering nothing from a
+    43-minute walk over a shape that is almost certainly UTC anyway. `--dates-
+    only` prints a census of the shapes it actually saw, so if a bare form ever
+    does turn up it is visible rather than assumed away.
     """
-    s = (ts or "").strip()
-    if len(s) < 19:
+    m = _TS_RE.match(ts or "")
+    if not m:
         return None
+    year, month, day, hh, mm, ss, zone = m.groups()
+    if hh is None:
+        return None                         # date-only: no instant to convert
     try:
-        base = datetime.datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]),
-                                 int(s[11:13]), int(s[14:16]), int(s[17:19]))
-    except (ValueError, IndexError):
+        base = datetime.datetime(int(year), int(month), int(day),
+                                 int(hh), int(mm), int(ss or 0))
+    except ValueError:                      # e.g. month 13, day 32, hour 25
         return None
-    tail = s[19:]
-    if tail.startswith("."):
-        i = 1
-        while i < len(tail) and tail[i].isdigit():
-            i += 1
-        tail = tail[i:]
-    if tail in ("", "Z", "z"):
+    if zone is None or zone in ("Z", "z"):
         return base
-    if len(tail) >= 6 and tail[0] in "+-" and tail[3] == ":":
-        try:
-            sign = 1 if tail[0] == "+" else -1
-            delta = datetime.timedelta(hours=int(tail[1:3]), minutes=int(tail[4:6]))
-        except ValueError:
-            return None
-        return base - sign * delta          # to UTC
-    return None
+    sign = 1 if zone[0] == "+" else -1
+    digits = zone[1:].replace(":", "")
+    try:
+        off_h = int(digits[0:2])
+        off_m = int(digits[2:4]) if len(digits) >= 4 else 0
+    except ValueError:
+        return None
+    return base - sign * datetime.timedelta(hours=off_h, minutes=off_m)
+
+
+def is_date_only(ts):
+    """True for a well-formed date with no time of day, e.g. '1993-11-06'."""
+    m = _TS_RE.match(ts or "")
+    return bool(m) and m.group(4) is None
+
+
+def shape_of(ts):
+    """A timestamp's SHAPE, digits blanked to 9: '1993-11-06T00:30Z' ->
+    '9999-99-99T99:99Z'. Used to census what a feed actually emits."""
+    return re.sub(r"\d", "9", (ts or "").strip()) or "<empty>"
 
 
 def local_date_from_utc(utc_dt):
@@ -146,6 +189,10 @@ def game_date(ts):
     """ISO game date from an ISO-8601 UTC timestamp. Raises, never guesses."""
     dt = parse_utc(ts)
     if dt is None:
+        if is_date_only(ts):
+            raise EasternTimeError(
+                "date-only value with no time of day, so the local date cannot "
+                "be derived: %r" % (ts,))
         raise EasternTimeError("unparseable timestamp: %r" % (ts,))
     return local_date_from_utc(dt).isoformat()
 
@@ -175,9 +222,42 @@ SELF_TEST = [
     # midnight ET either side
     ("2024-01-01T04:59:00Z", "2023-12-31", "11:59pm ET New Year's Eve"),
     ("2024-01-01T05:00:00Z", "2024-01-01", "midnight ET New Year"),
-    # shapes
+    # ---- shape variants -------------------------------------------------- #
+    # The 1990s ESPN archive omits seconds. An earlier parser rejected this
+    # form on a length check, so a full re-walk recovered nothing at all.
+    ("1993-11-06T00:30Z", "1993-11-05", "NO SECONDS: 7:30pm ET tip, rolled over"),
+    ("1993-11-06T00:30:00Z", "1993-11-05", "same instant with seconds, must agree"),
+    ("1996-01-20T18:00Z", "1996-01-20", "NO SECONDS: 1pm ET afternoon, no rollover"),
+    ("1999-02-05T01:00Z", "1999-02-04", "NO SECONDS: 8pm ET tip, rolled over"),
+    ("2002-04-14T23:00Z", "2002-04-14", "NO SECONDS: 7pm EDT, no rollover"),
     ("2023-10-25T00:10:41.9Z", "2023-10-24", "fractional seconds, one digit"),
+    ("2023-10-25T00:10:41.123456Z", "2023-10-24", "fractional seconds, six digits"),
+    ("2023-10-25T00:10:41,5Z", "2023-10-24", "comma as the decimal separator"),
+    ("2023-10-25T00:10.5Z", "2023-10-24", "fractional MINUTES, no seconds field"),
     ("2023-10-24T20:10:41-04:00", "2023-10-24", "explicit offset instead of Z"),
+    ("2023-10-24T20:10-04:00", "2023-10-24", "explicit offset AND no seconds"),
+    ("1993-11-05T19:30-05:00", "1993-11-05", "1990s shape with an EST offset"),
+    ("1993-11-05T19:30-0500", "1993-11-05", "offset without the colon"),
+    ("2023-10-25T00:10:41+00:00", "2023-10-24", "+00:00 rather than Z"),
+    ("2023-10-25T00:10:41+00", "2023-10-24", "hours-only offset"),
+    ("2023-10-25t00:10:41z", "2023-10-24", "lowercase t and z"),
+    ("2023-10-25 00:10:41Z", "2023-10-24", "space instead of T"),
+    ("  2023-10-25T00:10:41Z  ", "2023-10-24", "surrounding whitespace"),
+    ("1993-11-06T00:30", "1993-11-05", "no zone at all, read as UTC"),
+]
+
+# Values that MUST be refused. Every one of these would otherwise produce a
+# date that could silently be a day out.
+SELF_TEST_REFUSE = [
+    ("1993-11-06", "date-only: no time of day, so no local date exists"),
+    ("1993-11", "a month is not a date"),
+    ("", "empty"),
+    (None, "missing"),
+    ("not a timestamp", "garbage"),
+    ("1993-13-06T00:30Z", "month 13"),
+    ("1993-11-31T00:30Z", "November has 30 days"),
+    ("1993-11-06T25:30Z", "hour 25"),
+    ("1993-11-06T00:30Q", "unknown zone letter"),
 ]
 
 
@@ -215,14 +295,15 @@ def self_test(verbose=True):
     except EasternTimeError:
         if verbose:
             print("  pre-1987 correctly refused")
-    try:
-        game_date("not a timestamp")
-        bad += 1
-        if verbose:
-            print("  FAIL: garbage was accepted")
-    except EasternTimeError:
-        if verbose:
-            print("  unparseable timestamp correctly raises rather than guessing")
+    for ts, why in SELF_TEST_REFUSE:
+        try:
+            got = game_date(ts)
+            bad += 1
+            if verbose:
+                print("  REFUSE %-22r -> FAIL, returned %s (%s)" % (ts, got, why))
+        except EasternTimeError:
+            if verbose:
+                print("  REFUSE %-22r -> ok, raises (%s)" % (ts, why))
     if verbose:
         print("\n%d case(s) failed." % bad)
     return bad == 0

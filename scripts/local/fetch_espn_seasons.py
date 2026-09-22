@@ -980,6 +980,14 @@ def dates_only(seasons=None, apply_changes=False, reset_progress=False):
     found = {}                      # game_id -> local date (YYYY-MM-DD)
     walked_season = {}              # game_id -> season label the walk saw
     seen_by_season = collections.Counter()
+    # Census of the timestamp SHAPES the feed actually emits, digits blanked.
+    # ESPN's 1990s archive emits 9999-99-99T99:99Z (no seconds) where the
+    # modern feed emits 9999-99-99T99:99:99Z, and a parser that handled only
+    # the modern form recovered nothing from 13,376 rows. Rather than assume
+    # which shapes exist across 30 years, count them and print them.
+    shapes = collections.Counter()          # shape -> times seen
+    shape_failed = collections.Counter()    # shape -> times it would not parse
+    shape_example = {}                      # shape -> one real value
     days = failures = 0
     # If the API is refusing us outright there is no point walking 2,602 days
     # to discover it one day at a time. Bail after this many consecutive
@@ -1025,6 +1033,14 @@ def dates_only(seasons=None, apply_changes=False, reset_progress=False):
                 if (row["home_team_abbr"] not in ALLOWED_TRICODES
                         or row["away_team_abbr"] not in ALLOWED_TRICODES):
                     continue                      # exhibition, as in main()
+                raw_ts = (ev.get("date")
+                          or ((ev.get("competitions") or [{}])[0] or {}).get("date")
+                          or "")
+                shape = eastern_time.shape_of(raw_ts)
+                shapes[shape] += 1
+                shape_example.setdefault(shape, raw_ts)
+                if row["date_is_local"] != "1":
+                    shape_failed[shape] += 1
                 gid = str(row["game_id"])
                 found[gid] = row["game_date"]
                 walked_season[gid] = season["label"]
@@ -1033,6 +1049,26 @@ def dates_only(seasons=None, apply_changes=False, reset_progress=False):
                 print("   ... %d day(s) walked, %d game(s) seen" % (days, len(found)))
     print("\nwalked %d day(s), %d scoreboard failure(s), %d game(s) seen"
           % (days, failures, len(found)))
+
+    # ---- timestamp shape census ------------------------------------------ #
+    print()
+    print("=" * 78)
+    print("TIMESTAMP SHAPES SEEN  (digits blanked; refused shapes recover nothing)")
+    print("=" * 78)
+    if not shapes:
+        print("no events seen, so nothing to census")
+    for shape, n in sorted(shapes.items(), key=lambda kv: -kv[1]):
+        nf = shape_failed[shape]
+        print("  %-30s %7d seen  %s" % (
+            shape, n,
+            "all parsed" if not nf else "*** %d REFUSED ***" % nf))
+        print("  %-30s         e.g. %s" % ("", shape_example[shape]))
+    refused = sum(shape_failed.values())
+    if refused:
+        print("\n  %d event(s) carried a timestamp this parser will not accept."
+              % refused)
+        print("  Those rows keep their old date and stay date_is_local=0.")
+        print("  Report the shapes above -- each one is a variant to add.")
 
     # ---- per-season count comparison, BEFORE anything is merged -----------
     print()
