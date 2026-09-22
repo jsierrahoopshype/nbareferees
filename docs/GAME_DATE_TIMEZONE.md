@@ -171,6 +171,31 @@ future full fetch that 2,602 completed days need doing again — 4.3 hours of
 summary calls to repair extracts that were never broken. `--reset-progress`
 does that explicitly if a full re-fetch is ever genuinely wanted.
 
+### ESPN's 403, and the User-Agent
+
+`get_json()` sends **no User-Agent header**, so urllib adds its own
+`Python-urllib/3.x`. That is not an oversight to tidy up later.
+
+This file originally carried a Chrome 120 User-Agent string and made thousands
+of successful calls with it. ESPN's CDN has since started fingerprinting: a
+request that claims to be Chrome without a real Chrome's TLS and header
+fingerprint now gets **403 on every call**. Tested from the machine these
+scripts run on, same endpoint, same minute:
+
+| request | result |
+|---|---|
+| urllib default User-Agent | 200 |
+| same request, Chrome User-Agent | 403 |
+
+Pasting a browser User-Agent back in is what causes the 403, not what fixes it.
+
+Two things also changed so this diagnoses itself next time: `get_json()` puts
+the **HTTP status in the error** (the old message said only "GET failed", which
+read like a network problem for a whole run), and it does **not retry** 401,
+403, 404 or 451, which cannot change on a retry. `--dates-only` aborts after 5
+consecutive failures with nothing recovered, rather than walking all 2,602 days
+to discover the same 403 one day at a time.
+
 ### Risks
 
 - ESPN's 1990s archive depth was confirmed by `_probe_rounds_reach.txt`, but a
