@@ -9,23 +9,33 @@ name: Update tonight's crews
 #   * It commits EXACTLY ONE PATH: data/tonights-crews.json. The commit step
 #     stages that file by name (`git add data/tonights-crews.json`) and nothing
 #     else, so no other change can ride along.
-#   * If the file is byte-identical to what is already committed, it makes NO
-#     COMMIT AT ALL and pushes nothing. A dark night in-season, or a re-run of
-#     the same day, is a clean no-op.
+#   * If the file's content matches what is already committed (ignoring the
+#     generated_at timestamp, which changes on every run), it makes NO COMMIT
+#     AT ALL and pushes nothing. A dark night in-season, or a re-run of the
+#     same day with the same crews, is a clean no-op.
+#   * It never replaces a file for a date with one that has FEWER games for
+#     the same date. A later run that fetches games: [] or a partial list for a
+#     date that already has crews committed (a feed blip, the NBA pulling the
+#     page, or a half-posted list) keeps the committed file. Same or more games
+#     for the same date (e.g. a corrected crew) is committed as normal.
 #   * If the fetch fails, the script writes nothing and exits non-zero. The
 #     previously committed file stays as it is; a blip never blanks the module.
 #   * Off-season and no-game days write a valid file with games: [], which
 #     app.js treats as "keep the server-rendered fallback".
 #
-# Schedule: 11:00 UTC daily, October through June (in-season). That is 7am ET
-# during EDT and 6am ET during EST -- GitHub cron has no timezone, so the ET
-# clock time shifts by an hour across the DST boundary; both are morning ET,
-# which is what this needs. July through September the schedule is off; use the
-# manual dispatch below if a summer date is ever needed.
+# Schedule: three runs daily at 14:30, 16:30 and 18:30 UTC, October through
+# June (in-season). The NBA usually posts referee assignments around 9am ET, so
+# an earlier run captures an empty or partial list. GitHub cron has no timezone:
+# during EDT these are 10:30am / 12:30pm / 2:30pm ET, during EST 9:30am /
+# 11:30am / 1:30pm ET. Every run is after the usual posting time in both, and
+# the later runs pick up late or corrected assignments. All three resolve to
+# the same ET date (well past midnight ET), so they update one day's file.
+# July through September the schedule is off; use the manual dispatch below if
+# a summer date is ever needed.
 
 on:
   schedule:
-    - cron: '0 11 * 10,11,12,1,2,3,4,5,6 *'
+    - cron: '30 14,16,18 * 10,11,12,1,2,3,4,5,6 *'
   workflow_dispatch:
     inputs:
       date:
@@ -53,6 +63,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Keep a copy of the committed file
+        # The guard below compares the fresh fetch against this copy.
+        run: |
+          if [ -f data/tonights-crews.json ]; then
+            cp data/tonights-crews.json "$RUNNER_TEMP/tonights-crews.prev.json"
+          fi
+
       - name: Build data/tonights-crews.json
         # The date comes in through the environment, never interpolated into
         # the command line, so a dispatch input cannot become shell syntax.
@@ -64,6 +81,42 @@ jobs:
           else
             python3 scripts/fetch_tonights_crews.py
           fi
+
+      - name: Keep committed file if the fetch adds nothing
+        # Restores the committed file (so the next step sees no change) when:
+        #   * the content is identical apart from generated_at, or
+        #   * the fetch came back with FEWER games (including none) for the
+        #     SAME date that is already committed -- never shrink or blank a
+        #     populated day with a partial or empty fetch later that day.
+        # A different date, or a same-date list with at least as many games
+        # (new games, or a changed crew), passes through.
+        run: |
+          python3 - <<'PY'
+          import json, os, shutil, sys
+          prev_path = os.path.join(os.environ["RUNNER_TEMP"], "tonights-crews.prev.json")
+          new_path = "data/tonights-crews.json"
+          if not os.path.exists(prev_path) or not os.path.exists(new_path):
+              sys.exit(0)
+          try:
+              prev = json.load(open(prev_path, encoding="utf-8"))
+          except ValueError:
+              sys.exit(0)  # unreadable committed file: let the fresh one replace it
+          new = json.load(open(new_path, encoding="utf-8"))
+          strip = lambda d: {k: v for k, v in d.items() if k != "generated_at"}
+          keep, why = False, ""
+          if strip(prev) == strip(new):
+              keep, why = True, "content unchanged apart from generated_at"
+          elif (prev.get("date") == new.get("date")
+                and len(new.get("games") or []) < len(prev.get("games") or [])):
+              keep, why = True, ("fetch for %s returned %d games but %d are already "
+                                 "committed" % (new.get("date"), len(new.get("games") or []),
+                                                len(prev["games"])))
+          if keep:
+              shutil.copyfile(prev_path, new_path)
+              print("Keeping committed file: " + why)
+          else:
+              print("Fresh fetch differs from committed file; it will be committed.")
+          PY
 
       - name: Show what changed
         id: diff
