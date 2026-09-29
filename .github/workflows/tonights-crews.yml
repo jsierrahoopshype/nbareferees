@@ -13,10 +13,11 @@ name: Update tonight's crews
 #     generated_at timestamp, which changes on every run), it makes NO COMMIT
 #     AT ALL and pushes nothing. A dark night in-season, or a re-run of the
 #     same day with the same crews, is a clean no-op.
-#   * It never replaces a populated file for a date with an EMPTY one for the
-#     same date. A later run that fetches games: [] for a date that already has
-#     crews committed (a feed blip, or the NBA pulling the page) keeps the
-#     committed file.
+#   * It never replaces a file for a date with one that has FEWER games for
+#     the same date. A later run that fetches games: [] or a partial list for a
+#     date that already has crews committed (a feed blip, the NBA pulling the
+#     page, or a half-posted list) keeps the committed file. Same or more games
+#     for the same date (e.g. a corrected crew) is committed as normal.
 #   * If the fetch fails, the script writes nothing and exits non-zero. The
 #     previously committed file stays as it is; a blip never blanks the module.
 #   * Off-season and no-game days write a valid file with games: [], which
@@ -84,10 +85,11 @@ jobs:
       - name: Keep committed file if the fetch adds nothing
         # Restores the committed file (so the next step sees no change) when:
         #   * the content is identical apart from generated_at, or
-        #   * the fetch came back with no games for the SAME date that already
-        #     has crews committed -- never blank a populated day with an empty
-        #     fetch later that day.
-        # A different date, or a new/changed crew list, passes through.
+        #   * the fetch came back with FEWER games (including none) for the
+        #     SAME date that is already committed -- never shrink or blank a
+        #     populated day with a partial or empty fetch later that day.
+        # A different date, or a same-date list with at least as many games
+        # (new games, or a changed crew), passes through.
         run: |
           python3 - <<'PY'
           import json, os, shutil, sys
@@ -105,9 +107,10 @@ jobs:
           if strip(prev) == strip(new):
               keep, why = True, "content unchanged apart from generated_at"
           elif (prev.get("date") == new.get("date")
-                and prev.get("games") and not new.get("games")):
-              keep, why = True, ("fetch for %s returned no games but %d are already "
-                                 "committed" % (new.get("date"), len(prev["games"])))
+                and len(new.get("games") or []) < len(prev.get("games") or [])):
+              keep, why = True, ("fetch for %s returned %d games but %d are already "
+                                 "committed" % (new.get("date"), len(new.get("games") or []),
+                                                len(prev["games"])))
           if keep:
               shutil.copyfile(prev_path, new_path)
               print("Keeping committed file: " + why)
