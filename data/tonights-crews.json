@@ -1,10 +1,38 @@
 {
-  "date": "2026-10-02",
-  "generated_at": "2026-10-02T19:25:39Z",
-  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-02",
-  "game_count": 0,
-  "games": [],
-  "official_code_index": {},
-  "unmatched": [],
-  "note": "No games on this date (off-season or a dark night). app.js keeps the server-rendered fallback."
+  "date": "2026-10-03",
+  "generated_at": "2026-10-03T18:04:14Z",
+  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-03",
+  "game_count": 1,
+  "games": [
+    {
+      "away": "MIA",
+      "home": "TOR",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "James Capers",
+          "slug": "james-capers",
+          "official_code": "1148"
+        },
+        {
+          "name": "Brent Barnaky",
+          "slug": "brent-barnaky",
+          "official_code": "201638"
+        }
+      ],
+      "game_id": "0012600009",
+      "game_code": "20261003/MIATOR"
+    }
+  ],
+  "official_code_index": {
+    "1148": {
+      "name": "James Capers",
+      "slug": "james-capers"
+    },
+    "201638": {
+      "name": "Brent Barnaky",
+      "slug": "brent-barnaky"
+    }
+  },
+  "unmatched": []
 }
