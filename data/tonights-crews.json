@@ -1,6 +1,6 @@
 {
   "date": "2026-10-03",
-  "generated_at": "2026-10-03T18:04:14Z",
+  "generated_at": "2026-10-03T21:33:50Z",
   "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-03",
   "game_count": 1,
   "games": [
@@ -18,6 +18,11 @@
           "name": "Brent Barnaky",
           "slug": "brent-barnaky",
           "official_code": "201638"
+        },
+        {
+          "name": "Kastine Evans",
+          "slug": null,
+          "official_code": "1642139"
         }
       ],
       "game_id": "0012600009",
@@ -32,7 +37,21 @@
     "201638": {
       "name": "Brent Barnaky",
       "slug": "brent-barnaky"
+    },
+    "1642139": {
+      "name": "Kastine Evans",
+      "slug": null
     }
   },
-  "unmatched": []
+  "unmatched": [
+    {
+      "name": "Kastine Evans",
+      "official_code": "1642139",
+      "normalized_key": "kastine-evans",
+      "game_id": "0012600009",
+      "candidates": [
+        "hugh-evans"
+      ]
+    }
+  ]
 }
