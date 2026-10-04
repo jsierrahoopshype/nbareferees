@@ -1,56 +1,92 @@
 {
-  "date": "2026-10-03",
-  "generated_at": "2026-10-03T21:33:50Z",
-  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-03",
-  "game_count": 1,
+  "date": "2026-10-04",
+  "generated_at": "2026-10-04T18:15:04Z",
+  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-04",
+  "game_count": 2,
   "games": [
     {
-      "away": "MIA",
-      "home": "TOR",
+      "away": "GSW",
+      "home": "LAC",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "James Capers",
-          "slug": "james-capers",
-          "official_code": "1148"
+          "name": "Nick Buchert",
+          "slug": "nick-buchert",
+          "official_code": "202007"
         },
         {
-          "name": "Brent Barnaky",
-          "slug": "brent-barnaky",
-          "official_code": "201638"
-        },
-        {
-          "name": "Kastine Evans",
+          "name": "JT Orr",
           "slug": null,
-          "official_code": "1642139"
+          "official_code": "202037"
+        },
+        {
+          "name": "Phenizee Ransom",
+          "slug": "phenizee-ransom",
+          "official_code": "1627963"
         }
       ],
-      "game_id": "0012600009",
-      "game_code": "20261003/MIATOR"
+      "game_id": "0012600066",
+      "game_code": "20261004/GSWLAC"
+    },
+    {
+      "away": "UTA",
+      "home": "DEN",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Mitchell Ervin",
+          "slug": "mitchell-ervin",
+          "official_code": "203591"
+        },
+        {
+          "name": "Che Flores",
+          "slug": "che-flores",
+          "official_code": "203054"
+        },
+        {
+          "name": "Rodney Mott",
+          "slug": "rodney-mott",
+          "official_code": "1179"
+        }
+      ],
+      "game_id": "0012600067",
+      "game_code": "20261004/UTADEN"
     }
   ],
   "official_code_index": {
-    "1148": {
-      "name": "James Capers",
-      "slug": "james-capers"
+    "202007": {
+      "name": "Nick Buchert",
+      "slug": "nick-buchert"
     },
-    "201638": {
-      "name": "Brent Barnaky",
-      "slug": "brent-barnaky"
-    },
-    "1642139": {
-      "name": "Kastine Evans",
+    "202037": {
+      "name": "JT Orr",
       "slug": null
+    },
+    "1627963": {
+      "name": "Phenizee Ransom",
+      "slug": "phenizee-ransom"
+    },
+    "203591": {
+      "name": "Mitchell Ervin",
+      "slug": "mitchell-ervin"
+    },
+    "203054": {
+      "name": "Che Flores",
+      "slug": "che-flores"
+    },
+    "1179": {
+      "name": "Rodney Mott",
+      "slug": "rodney-mott"
     }
   },
   "unmatched": [
     {
-      "name": "Kastine Evans",
-      "official_code": "1642139",
-      "normalized_key": "kastine-evans",
-      "game_id": "0012600009",
+      "name": "JT Orr",
+      "official_code": "202037",
+      "normalized_key": "jt-orr",
+      "game_id": "0012600066",
       "candidates": [
-        "hugh-evans"
+        "j-t-orr"
       ]
     }
   ]
