@@ -1,154 +1,190 @@
 {
-  "date": "2026-10-06",
-  "generated_at": "2026-10-06T19:37:06Z",
-  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-06",
-  "game_count": 4,
+  "date": "2026-10-07",
+  "generated_at": "2026-10-07T20:02:30Z",
+  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-07",
+  "game_count": 5,
   "games": [
     {
-      "away": "LAL",
-      "home": "GSW",
+      "away": "MIN",
+      "home": "IND",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "James Capers",
-          "slug": "james-capers",
-          "official_code": "1148"
+          "name": "Bill Kennedy",
+          "slug": "bill-kennedy",
+          "official_code": "1662"
         },
         {
-          "name": "John Butler",
-          "slug": "john-butler",
-          "official_code": "1628951"
+          "name": "Brandon Schwab",
+          "slug": "brandon-schwab",
+          "official_code": "1628171"
         },
         {
-          "name": "Brett Nansel",
-          "slug": "brett-nansel",
-          "official_code": "202035"
+          "name": "Brent Haskill",
+          "slug": "brent-haskill",
+          "official_code": "1629175"
         }
       ],
-      "game_id": "0012600010",
-      "game_code": "20261006/LALGSW"
+      "game_id": "0012600029",
+      "game_code": "20261007/MININD"
     },
     {
-      "away": "BKN",
-      "home": "CHA",
+      "away": "PHX",
+      "home": "CHI",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "Mitchell Ervin",
-          "slug": "mitchell-ervin",
-          "official_code": "203591"
+          "name": "Scott Foster",
+          "slug": "scott-foster",
+          "official_code": "1162"
         },
         {
-          "name": "Brandon Adair",
-          "slug": "brandon-adair",
-          "official_code": "1627961"
+          "name": "Ashley Moyer-Gleich",
+          "slug": "ashley-moyer-gleich",
+          "official_code": "1628953"
         },
         {
-          "name": "Klajdi Mulla",
-          "slug": "klajdi-mulla",
-          "official_code": "1630887"
+          "name": "Jenna Schroeder",
+          "slug": "jenna-schroeder",
+          "official_code": "1628954"
         }
       ],
-      "game_id": "0012600025",
-      "game_code": "20261006/BKNCHA"
+      "game_id": "0012600030",
+      "game_code": "20261007/PHXCHI"
     },
     {
-      "away": "NOP",
+      "away": "ORL",
+      "home": "MEM",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Zach Zarba",
+          "slug": "zach-zarba",
+          "official_code": "2534"
+        },
+        {
+          "name": "Natalie Sago",
+          "slug": "natalie-sago",
+          "official_code": "1627541"
+        },
+        {
+          "name": "John Conley",
+          "slug": "john-conley",
+          "official_code": "1627519"
+        }
+      ],
+      "game_id": "0012600031",
+      "game_code": "20261007/ORLMEM"
+    },
+    {
+      "away": "MIL",
       "home": "OKC",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "Sean Wright",
-          "slug": "sean-wright",
-          "official_code": "2882"
+          "name": "Karl Lane",
+          "slug": "karl-lane",
+          "official_code": "202026"
         },
         {
-          "name": "Sean Corbin",
-          "slug": "sean-corbin",
-          "official_code": "1151"
+          "name": "CJ Washington",
+          "slug": "cj-washington",
+          "official_code": "202056"
         },
         {
-          "name": "Jenna Reneau",
-          "slug": "jenna-reneau",
-          "official_code": "1628168"
+          "name": "JD Ralls",
+          "slug": "jd-ralls",
+          "official_code": "1628485"
         }
       ],
-      "game_id": "0012600026",
-      "game_code": "20261006/NOPOKC"
+      "game_id": "0012600032",
+      "game_code": "20261007/MILOKC"
     },
     {
-      "away": "DEN",
-      "home": "UTA",
+      "away": "GSW",
+      "home": "POR",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "Gediminas Petraitis",
-          "slug": "gediminas-petraitis",
-          "official_code": "204058"
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland",
+          "official_code": "2004"
         },
         {
-          "name": "Mousa Dagher",
-          "slug": "mousa-dagher",
-          "official_code": "1628159"
+          "name": "Kevin Cutler",
+          "slug": "kevin-cutler",
+          "official_code": "201246"
         },
         {
-          "name": "Scott Twardoski",
-          "slug": "scott-twardoski",
-          "official_code": "202053"
+          "name": "Agon Abazi",
+          "slug": "agon-abazi",
+          "official_code": "1629171"
         }
       ],
-      "game_id": "0012600027",
-      "game_code": "20261006/DENUTA"
+      "game_id": "0012600033",
+      "game_code": "20261007/GSWPOR"
     }
   ],
   "official_code_index": {
-    "1148": {
-      "name": "James Capers",
-      "slug": "james-capers"
+    "1662": {
+      "name": "Bill Kennedy",
+      "slug": "bill-kennedy"
     },
-    "1628951": {
-      "name": "John Butler",
-      "slug": "john-butler"
+    "1628171": {
+      "name": "Brandon Schwab",
+      "slug": "brandon-schwab"
     },
-    "202035": {
-      "name": "Brett Nansel",
-      "slug": "brett-nansel"
+    "1629175": {
+      "name": "Brent Haskill",
+      "slug": "brent-haskill"
     },
-    "203591": {
-      "name": "Mitchell Ervin",
-      "slug": "mitchell-ervin"
+    "1162": {
+      "name": "Scott Foster",
+      "slug": "scott-foster"
     },
-    "1627961": {
-      "name": "Brandon Adair",
-      "slug": "brandon-adair"
+    "1628953": {
+      "name": "Ashley Moyer-Gleich",
+      "slug": "ashley-moyer-gleich"
     },
-    "1630887": {
-      "name": "Klajdi Mulla",
-      "slug": "klajdi-mulla"
+    "1628954": {
+      "name": "Jenna Schroeder",
+      "slug": "jenna-schroeder"
     },
-    "2882": {
-      "name": "Sean Wright",
-      "slug": "sean-wright"
+    "2534": {
+      "name": "Zach Zarba",
+      "slug": "zach-zarba"
     },
-    "1151": {
-      "name": "Sean Corbin",
-      "slug": "sean-corbin"
+    "1627541": {
+      "name": "Natalie Sago",
+      "slug": "natalie-sago"
     },
-    "1628168": {
-      "name": "Jenna Reneau",
-      "slug": "jenna-reneau"
+    "1627519": {
+      "name": "John Conley",
+      "slug": "john-conley"
     },
-    "204058": {
-      "name": "Gediminas Petraitis",
-      "slug": "gediminas-petraitis"
+    "202026": {
+      "name": "Karl Lane",
+      "slug": "karl-lane"
     },
-    "1628159": {
-      "name": "Mousa Dagher",
-      "slug": "mousa-dagher"
+    "202056": {
+      "name": "CJ Washington",
+      "slug": "cj-washington"
     },
-    "202053": {
-      "name": "Scott Twardoski",
-      "slug": "scott-twardoski"
+    "1628485": {
+      "name": "JD Ralls",
+      "slug": "jd-ralls"
+    },
+    "2004": {
+      "name": "Courtney Kirkland",
+      "slug": "courtney-kirkland"
+    },
+    "201246": {
+      "name": "Kevin Cutler",
+      "slug": "kevin-cutler"
+    },
+    "1629171": {
+      "name": "Agon Abazi",
+      "slug": "agon-abazi"
     }
   },
   "unmatched": []
