@@ -1,83 +1,271 @@
 {
-  "date": "2026-10-09",
-  "generated_at": "2026-10-09T19:35:57Z",
-  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-09",
-  "game_count": 2,
+  "date": "2026-10-10",
+  "generated_at": "2026-10-10T18:44:14Z",
+  "source": "https://official.nba.com/wp-json/api/v1/get-game-officials?date=2026-10-10",
+  "game_count": 7,
   "games": [
     {
-      "away": "HOU",
-      "home": "DAL",
+      "away": "MIN",
+      "home": "MIA",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "Jacyn Goble",
-          "slug": "jacyn-goble",
-          "official_code": "1627962"
+          "name": "Zach Zarba",
+          "slug": "zach-zarba",
+          "official_code": "2534"
         },
         {
-          "name": "Andy Nagy",
-          "slug": "andy-nagy",
-          "official_code": "1627534"
+          "name": "Sean Corbin",
+          "slug": "sean-corbin",
+          "official_code": "1151"
         },
         {
-          "name": "Matt Myers",
-          "slug": "matt-myers",
-          "official_code": "202901"
+          "name": "Jenna Schroeder",
+          "slug": "jenna-schroeder",
+          "official_code": "1628954"
         }
       ],
-      "game_id": "0012600012",
-      "game_code": "20261009/HOUDAL"
+      "game_id": "0012600002",
+      "game_code": "20261010/MINMIA"
     },
     {
-      "away": "MEM",
-      "home": "CHI",
+      "away": "ATL",
+      "home": "IND",
       "tipoff_et": "",
       "crew": [
         {
-          "name": "James Williams",
-          "slug": "james-williams",
-          "official_code": "202058"
+          "name": "Tyler Ford",
+          "slug": "tyler-ford",
+          "official_code": "204059"
         },
         {
-          "name": "Eric Lewis",
-          "slug": "eric-lewis",
-          "official_code": "2715"
+          "name": "Robert Hussey",
+          "slug": "robert-hussey",
+          "official_code": "1628480"
         },
         {
-          "name": "Gina Catanzariti",
-          "slug": "gina-catanzariti",
-          "official_code": "1641518"
+          "name": "Agon Abazi",
+          "slug": "agon-abazi",
+          "official_code": "1629171"
         }
       ],
-      "game_id": "0012600037",
-      "game_code": "20261009/MEMCHI"
+      "game_id": "0012600006",
+      "game_code": "20261010/ATLIND"
+    },
+    {
+      "away": "PHI",
+      "home": "BOS",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Courtney Kirkland",
+          "slug": "courtney-kirkland",
+          "official_code": "2004"
+        },
+        {
+          "name": "Bill Kennedy",
+          "slug": "bill-kennedy",
+          "official_code": "1662"
+        },
+        {
+          "name": "Klajdi Mulla",
+          "slug": "klajdi-mulla",
+          "official_code": "1630887"
+        }
+      ],
+      "game_id": "0012600013",
+      "game_code": "20261010/PHIBOS"
+    },
+    {
+      "away": "SAC",
+      "home": "GSW",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Kevin Scott",
+          "slug": "kevin-scott",
+          "official_code": "202041"
+        },
+        {
+          "name": "Mousa Dagher",
+          "slug": "mousa-dagher",
+          "official_code": "1628159"
+        },
+        {
+          "name": "Chelisa Painter",
+          "slug": "chelisa-painter",
+          "official_code": "1630888"
+        }
+      ],
+      "game_id": "0012600014",
+      "game_code": "20261010/SACGSW"
+    },
+    {
+      "away": "LAC",
+      "home": "TOR",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Ed Malloy",
+          "slug": "ed-malloy",
+          "official_code": "2530"
+        },
+        {
+          "name": "Brandon Schwab",
+          "slug": "brandon-schwab",
+          "official_code": "1628171"
+        },
+        {
+          "name": "Rodney Mott",
+          "slug": "rodney-mott",
+          "official_code": "1179"
+        }
+      ],
+      "game_id": "0012600015",
+      "game_code": "20261010/LACTOR"
+    },
+    {
+      "away": "DET",
+      "home": "WAS",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Ben Taylor",
+          "slug": "ben-taylor",
+          "official_code": "202049"
+        },
+        {
+          "name": "Matt Kallio",
+          "slug": "matt-kallio",
+          "official_code": "1627526"
+        },
+        {
+          "name": "JP Primm",
+          "slug": null,
+          "official_code": "203270"
+        }
+      ],
+      "game_id": "0012600038",
+      "game_code": "20261010/DETWAS"
+    },
+    {
+      "away": "SAS",
+      "home": "PHX",
+      "tipoff_et": "",
+      "crew": [
+        {
+          "name": "Justin Van Duyne",
+          "slug": "justin-van-duyne",
+          "official_code": "203593"
+        },
+        {
+          "name": "John Butler",
+          "slug": "john-butler",
+          "official_code": "1628951"
+        },
+        {
+          "name": "Tyler Ricks",
+          "slug": "tyler-ricks",
+          "official_code": "1627539"
+        }
+      ],
+      "game_id": "0012600039",
+      "game_code": "20261010/SASPHX"
     }
   ],
   "official_code_index": {
-    "1627962": {
-      "name": "Jacyn Goble",
-      "slug": "jacyn-goble"
+    "2534": {
+      "name": "Zach Zarba",
+      "slug": "zach-zarba"
     },
-    "1627534": {
-      "name": "Andy Nagy",
-      "slug": "andy-nagy"
+    "1151": {
+      "name": "Sean Corbin",
+      "slug": "sean-corbin"
     },
-    "202901": {
-      "name": "Matt Myers",
-      "slug": "matt-myers"
+    "1628954": {
+      "name": "Jenna Schroeder",
+      "slug": "jenna-schroeder"
     },
-    "202058": {
-      "name": "James Williams",
-      "slug": "james-williams"
+    "204059": {
+      "name": "Tyler Ford",
+      "slug": "tyler-ford"
     },
-    "2715": {
-      "name": "Eric Lewis",
-      "slug": "eric-lewis"
+    "1628480": {
+      "name": "Robert Hussey",
+      "slug": "robert-hussey"
     },
-    "1641518": {
-      "name": "Gina Catanzariti",
-      "slug": "gina-catanzariti"
+    "1629171": {
+      "name": "Agon Abazi",
+      "slug": "agon-abazi"
+    },
+    "2004": {
+      "name": "Courtney Kirkland",
+      "slug": "courtney-kirkland"
+    },
+    "1662": {
+      "name": "Bill Kennedy",
+      "slug": "bill-kennedy"
+    },
+    "1630887": {
+      "name": "Klajdi Mulla",
+      "slug": "klajdi-mulla"
+    },
+    "202041": {
+      "name": "Kevin Scott",
+      "slug": "kevin-scott"
+    },
+    "1628159": {
+      "name": "Mousa Dagher",
+      "slug": "mousa-dagher"
+    },
+    "1630888": {
+      "name": "Chelisa Painter",
+      "slug": "chelisa-painter"
+    },
+    "2530": {
+      "name": "Ed Malloy",
+      "slug": "ed-malloy"
+    },
+    "1628171": {
+      "name": "Brandon Schwab",
+      "slug": "brandon-schwab"
+    },
+    "1179": {
+      "name": "Rodney Mott",
+      "slug": "rodney-mott"
+    },
+    "202049": {
+      "name": "Ben Taylor",
+      "slug": "ben-taylor"
+    },
+    "1627526": {
+      "name": "Matt Kallio",
+      "slug": "matt-kallio"
+    },
+    "203270": {
+      "name": "JP Primm",
+      "slug": null
+    },
+    "203593": {
+      "name": "Justin Van Duyne",
+      "slug": "justin-van-duyne"
+    },
+    "1628951": {
+      "name": "John Butler",
+      "slug": "john-butler"
+    },
+    "1627539": {
+      "name": "Tyler Ricks",
+      "slug": "tyler-ricks"
     }
   },
-  "unmatched": []
+  "unmatched": [
+    {
+      "name": "JP Primm",
+      "official_code": "203270",
+      "normalized_key": "jp-primm",
+      "game_id": "0012600038",
+      "candidates": []
+    }
+  ]
 }
