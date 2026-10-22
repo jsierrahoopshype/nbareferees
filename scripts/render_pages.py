@@ -423,8 +423,8 @@ def footer(depth):
   as they were officiated. Nothing on this site implies a referee causes a
   result or favors a team.</p>
   <p class="foot-links"><a href="{root}sources/index.html">Data sources</a></p>
-  <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopshype@hoopshype.com">hoopshype@hoopshype.com</a>.
-  For business inquiries, contact us at <a href="mailto:ads@hoopshype.com">ads@hoopshype.com</a>.</p>
+  <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopsmatic@hoopsmatic.com">hoopsmatic@hoopsmatic.com</a>.
+  For business inquiries, contact us at <a href="mailto:ads@hoopsmatic.com">ads@hoopsmatic.com</a>.</p>
 </footer>
 <script src="{root}assets/{js_asset}"></script>
 </body>
