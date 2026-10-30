@@ -424,7 +424,7 @@ def footer(depth):
   result or favors a team.</p>
   <p class="foot-links"><a href="{root}sources/index.html">Data sources</a></p>
   <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopsmatic@hoopsmatic.com">hoopsmatic@hoopsmatic.com</a>.
-  For business inquiries, contact us at <a href="mailto:ads@hoopsmatic.com">ads@hoopsmatic.com</a>.</p>
+  For any other inquiry, contact us at <a href="mailto:ads@hoopsmatic.com">ads@hoopsmatic.com</a>.</p>
 </footer>
 <script src="{root}assets/{js_asset}"></script>
 </body>
