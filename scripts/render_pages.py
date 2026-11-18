@@ -1248,7 +1248,7 @@ def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None,
     s = doc["summary"]
     name = s["name"]
     seasons = career_span(s["first_season"], s["last_season"])
-    title = "%s NBA referee stats: career games, team records, player splits" % name
+    title = "%s: NBA Referee Stats and Games Officiated | HoopsMatic" % name
     desc = ("%s NBA referee profile — %s career games across %s (regular season "
             "%s, playoffs %s). Team records, whistle profile, notable games." % (
                 name, i(s["games_total"]), seasons, i(s["games_rs"]), i(s["games_po"])))
@@ -1512,7 +1512,9 @@ def render_ref_games(doc, crew_cov=None, l2m=None):
     # "on record", not "every game officiated" -- the sources do not carry a
     # crew for every game, so the log is what they carry. Matches the wording
     # already used for the matchup game log and the quality-score explainer.
-    title = "%s — every game on record, full game log" % name
+    # Title per Search Console (Nov 2026). The page itself still says "on
+    # record" wherever it counts games.
+    title = "%s Games Officiated: Full Log by Season | HoopsMatic" % name
     desc = ("Game-by-game officiating log for %s: %s games on record across %d seasons, "
             "with matchup, final score, playoff round and co-officials." % (
                 name, i(doc["games_total"]), n_seasons))
@@ -1520,7 +1522,12 @@ def render_ref_games(doc, crew_cov=None, l2m=None):
     chips = [stat_chip("Games on record", i(doc["games_total"]), accent=True),
             stat_chip("Seasons logged", i(n_seasons))]
     hero = hero_block("Full game log", name, "", chips)
-    blocks = [back, hero]
+    # A plain link to the profile with the referee's name as its text, so the
+    # profile is what this page points at for the name (the backlinks above and
+    # below read "Back to <name>").
+    profile = ('<section class="block"><div class="block-head">Career stats, team records '
+               'and player splits: <a href="../index.html">%s</a></div></section>' % esc(name))
+    blocks = [back, hero, profile]
     note = crew_coverage_note(crew_cov)
     if note:
         blocks.append('<section class="block"><div class="block-head">%s</div></section>' % note)
