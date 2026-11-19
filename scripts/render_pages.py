@@ -4294,9 +4294,13 @@ JS = r"""(function(){
     }
     // A chosen pair (?a=&b=) is shareable but is not its own page for search:
     // noindex, follow; the canonical in <head> stays /referees/compare/.
+    // Its own tag (data-pair), never the page's other robots meta: the
+    // hoopsmatic.com Worker adds one of its own (max-image-preview:large), and
+    // search engines apply every robots tag on the page together.
     function setNoindex(on){
-      var m=document.querySelector('meta[name="robots"]');
-      if(on&&!m){m=document.createElement("meta");m.name="robots";m.content="noindex, follow";document.head.appendChild(m);}
+      var m=document.querySelector('meta[name="robots"][data-pair]');
+      if(on&&!m){m=document.createElement("meta");m.name="robots";m.content="noindex, follow";
+        m.setAttribute("data-pair","");document.head.appendChild(m);}
       if(!on&&m)m.remove();
     }
     function showPair(a,b,featuredReason){
