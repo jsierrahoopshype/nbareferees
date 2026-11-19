@@ -23,19 +23,21 @@ name: Update tonight's crews
 #   * Off-season and no-game days write a valid file with games: [], which
 #     app.js treats as "keep the server-rendered fallback".
 #
-# Schedule: three runs daily at 14:30, 16:30 and 18:30 UTC, October through
-# June (in-season). The NBA usually posts referee assignments around 9am ET, so
-# an earlier run captures an empty or partial list. GitHub cron has no timezone:
-# during EDT these are 10:30am / 12:30pm / 2:30pm ET, during EST 9:30am /
-# 11:30am / 1:30pm ET. Every run is after the usual posting time in both, and
-# the later runs pick up late or corrected assignments. All three resolve to
-# the same ET date (well past midnight ET), so they update one day's file.
-# July through September the schedule is off; use the manual dispatch below if
-# a summer date is ever needed.
+# Schedule: every hour from 14:00 to 23:00 UTC (at :07 past, since GitHub
+# delays or drops many runs queued exactly on the hour), October through June
+# (in-season). Ten chances a day, because GitHub runs scheduled workflows late
+# or skips them under load: with only three a day the file was going 4-9 hours
+# late. The NBA usually posts referee assignments around 9am ET; GitHub cron
+# has no timezone, so during EDT these are 10:07am to 7:07pm ET and during EST
+# 9:07am to 6:07pm ET. All ten resolve to the same ET date, so they update one
+# day's file. A run with nothing new is a no-op: the guard below restores the
+# committed file and the commit step is skipped, so no empty commits. July
+# through September the schedule is off; use the manual dispatch below if a
+# summer date is ever needed.
 
 on:
   schedule:
-    - cron: '30 14,16,18 * 10,11,12,1,2,3,4,5,6 *'
+    - cron: '7 14-23 * 10,11,12,1,2,3,4,5,6 *'
   workflow_dispatch:
     inputs:
       date:

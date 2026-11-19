@@ -330,6 +330,9 @@ SITEMAP_PATHS = set()
 SITEMAP_HASHES = os.path.join(REPO, "data", "sitemap-hashes.json")
 
 
+ASSET_REF_RE = re.compile(rb"assets/(style|app)\.[0-9a-f]{10}\.(css|js)")
+
+
 def write_sitemap(path, today=None):
     """sitemap.xml at the site root, covering exactly the canonical URLs.
 
@@ -354,8 +357,14 @@ def write_sitemap(path, today=None):
     new_store, rows = {}, []
     for u in sorted(SITE_URL + p for p in SITEMAP_PATHS):
         rel = u[len(SITE_URL):] or "index.html"
+        if rel.endswith("/"):            # folder canonical (compare/) -> its index.html
+            rel += "index.html"
         with open(os.path.join(REPO, rel), "rb") as f:
-            h = hashlib.sha256(f.read().replace(b"\r\n", b"\n")).hexdigest()
+            # The hashed CSS/JS file names (assets/app.<hash>.js) are left out
+            # of the page hash: a styling-only release changes them in every
+            # page, and that is not a change to the page's content.
+            body = ASSET_REF_RE.sub(rb"assets/\1.\2", f.read().replace(b"\r\n", b"\n"))
+            h = hashlib.sha256(body).hexdigest()
         old = store.get(u)
         lm = old["lastmod"] if old and old.get("hash") == h else today
         new_store[u] = {"hash": h, "lastmod": lm}
@@ -1157,7 +1166,7 @@ def partners_card(partners):
         '<span class="partner-n">%s g</span></li>'
         % (ROOT2, esc(p["slug"]), esc(p["name"]), i(p["games"])) for p in partners)
     return ('<section class="block"><div class="block-head">'
-            '<span class="eyebrow">Crew</span><h2>Most frequent crewmates</h2></div>'
+            '<h2>Most frequent crewmates</h2></div>'
             '<ul class="partners">%s</ul>'
             '<p class="caption">Officials this referee has shared a three-person '
             'crew with most often.</p></section>' % items)
@@ -1273,10 +1282,10 @@ def notable_table(games):
 
 
 def section(num, title, inner, extra_head=""):
-    """num=None/"" omits the small eyebrow label entirely (ref pages don't use
-    section numbers); team/player pages still pass one."""
-    eyebrow = ('<span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>'
-               '{num}</span>'.format(num=esc(num))) if num else ""
+    """num is accepted for the existing call sites but no longer rendered:
+    the small label line above section titles (an "eyebrow") was removed
+    site-wide on November 19, 2026. The <h2> is the section's only heading."""
+    eyebrow = ""
     return ('<section class="block"><div class="block-head">{eyebrow}'
             '<h2>{title}</h2>{extra}</div>{inner}</section>').format(
         eyebrow=eyebrow, title=esc(title), extra=extra_head, inner=inner)
@@ -1320,7 +1329,6 @@ def render_ref(doc, rf_doc=None, nbra_bio=None, calls_rec=None, calls_meta=None,
   <div class="ref-hero-stripe" aria-hidden="true"></div>
   <div class="ref-hero-body{photo_cls}">{photo}
     <div class="ref-hero-main">
-    <p class="ref-kicker">NBA on-court official</p>
     <h1 class="ref-name">{name}{jersey}</h1>
     <div class="ref-badges">{active} <a class="compare-btn" href="{root}compare/index.html?a={slug}">Compare</a>
     <a class="compare-btn" href="{root}referee/{slug}/games/index.html">Full game log</a>
@@ -1594,8 +1602,9 @@ def render_ref_games(doc, crew_cov=None, l2m=None):
 # team & player pages (TEAMS_PLAYERS_SPEC §2)
 # ---------------------------------------------------------------------------
 def hero_block(kicker, name, badges, chips):
+    # kicker is no longer rendered (no eyebrow lines above titles, November
+    # 19, 2026); the parameter stays so the call sites are unchanged.
     return """<section class="ref-hero"><div class="ref-hero-body">
-    <p class="ref-kicker">{kicker}</p>
     <h1 class="ref-name">{name}</h1>
     <div class="ref-badges">{badges}</div>
     <div class="chip-row">{chips}</div>
@@ -2157,53 +2166,116 @@ def index_masthead(total):
 </section>""").format(total=total, search=ref_search(0, "top"))
 
 
-def latest_game_day_body(games):
-    """One .crew-game row per game -- same markup the live Tonight's Officials
-    JS builds, so the fallback and live states are visually identical apart
-    from the crew-tip slot (final score here, tipoff time when live)."""
-    rows = []
-    for g in games:
-        hp, ap = g.get("home_pts"), g.get("away_pts")
-        final = ("Final %s–%s" % (i(ap), i(hp))) if hp is not None and ap is not None else ""
-        # Each official is a stacked photo-above-name cell, not a run of inline
-        # text. Joined on a SPACE rather than a "&middot;" separator: the cells
-        # are laid out with a flex gap that already separates them, and flex
-        # discards whitespace-only text between items, so the space costs
-        # nothing here while still keeping the names apart if the stylesheet
-        # never arrives.
-        crew = " ".join(
-            '<span class="crew-ref">%s%s</span>' % (
-                ref_avatar_img(c["slug"], "", "crew"),
-                ref_link(c["name"], c["slug"], root=""))
-            for c in g.get("crew") or []) or "—"
-        rows.append(
-            '<div class="crew-game"><span class="crew-matchup">{away} @ {home}</span>'
-            '<span class="crew-tip">{final}</span>'
-            '<span class="crew-names">{crew}</span></div>'.format(
-                away=esc(g["away_team_abbr"]), home=esc(g["home_team_abbr"]),
-                final=esc(final), crew=crew))
-    return "".join(rows)
+# ---------------------------------------------------------------------------
+# Tonight's officials (index). One compact row per game: both team logos and
+# tricodes on the left, the three officials (small round headshot + name) on
+# the right; two columns of games on desktop, one on a phone (CSS container
+# query). The browser code in JS (tgRow) builds the SAME markup from
+# data/tonights-crews.json, so the server copy and the live copy look alike.
+# ---------------------------------------------------------------------------
+# Team logos: the current-franchise SVGs from jsierrahoopshype/nba-headshots,
+# served by the hoopsmatic.com Worker at /img/nba-headshots/ (same files the
+# rest of HoopsMatic uses). Absolute, so the logos also load on the github.io
+# build copy. Only the 30 current tricodes have a file there, and this module
+# only ever shows current games; anything else gets the tricode with no logo.
+LOGO_BASE = "https://hoopsmatic.com/img/nba-headshots/teams/logos/current/svg/"
+CURRENT_TRICODES = ("ATL BKN BOS CHA CHI CLE DAL DEN DET GSW HOU IND LAC LAL MEM MIA "
+                    "MIL MIN NOP NYK OKC ORL PHI PHX POR SAC SAS TOR UTA WAS").split()
+TG_AVATAR_PX = 34
+
+
+def tg_team(abbr, root=""):
+    """One team in a Tonight's officials row: logo + tricode, linked to the
+    team's referees page when it exists."""
+    abbr = (abbr or "").upper()
+    logo = ('<img class="tg-logo" src="%s%s.svg" alt="" width="24" height="24" '
+            'loading="lazy" decoding="async">' % (LOGO_BASE, esc(abbr.lower()))
+            if abbr in CURRENT_TRICODES else "")
+    inner = '%s<span class="tg-abbr">%s</span>' % (logo, esc(abbr))
+    if abbr in TEAM_EXISTS:
+        return '<a class="tg-team" href="%steam/%s/index.html">%s</a>' % (root, esc(abbr.lower()), inner)
+    return '<span class="tg-team">%s</span>' % inner
+
+
+def tg_row(away, home, tip, crew, root=""):
+    """crew: [{"name", "slug"}]; slug may be None (unmatched official: plain
+    name, no photo, no link -- never a link to referee/None/)."""
+    refs = []
+    for c in crew or []:
+        slug = c.get("slug")
+        rel = headshot_rel(slug) if slug else None
+        img = ('<img class="tg-avatar" src="%s%s" alt="" width="%d" height="%d" '
+               'loading="lazy" decoding="async">' % (root, rel, TG_AVATAR_PX, TG_AVATAR_PX)
+               if rel else "")
+        nm = '<span class="tg-name">%s</span>' % esc(c.get("name") or "")
+        if slug:
+            refs.append('<a class="tg-ref" href="%sreferee/%s/index.html">%s%s</a>'
+                        % (root, esc(slug), img, nm))
+        else:
+            refs.append('<span class="tg-ref">%s</span>' % nm)
+    tip_html = '<span class="tg-tip">%s</span>' % esc(tip) if tip else ""
+    return ('<li class="tg"><div class="tg-matchup"><span class="tg-teams">{a}'
+            '<span class="tg-at">@</span>{h}</span>{tip}</div>'
+            '<div class="tg-crew">{refs}</div></li>').format(
+                a=tg_team(away, root), h=tg_team(home, root), tip=tip_html,
+                refs="".join(refs) or '<span class="tg-name">&mdash;</span>')
+
+
+def short_date(iso, weekday=True):
+    """'2026-11-18' -> 'Wed, Nov 18' (or 'Nov 18'). Same output as the JS
+    fmtDay() below, so the server copy and the live copy agree."""
+    import datetime
+    d = datetime.date.fromisoformat(iso)
+    out = "%s %d" % (d.strftime("%b"), d.day)
+    return ("%s, %s" % (d.strftime("%a"), out)) if weekday else out
+
+
+def tonight_games(dashboard):
+    """(date, [row dicts]) for the module: data/tonights-crews.json when it has
+    games and is at least as recent as the last completed game day, else the
+    last completed game day from data/dashboard.json (with final scores)."""
+    ld = dashboard.get("latest_game_day") or {}
+    best = None
+    if ld.get("games"):
+        rows = []
+        for g in ld["games"]:
+            hp, ap = g.get("home_pts"), g.get("away_pts")
+            final = ("Final %s–%s" % (i(ap), i(hp))) if hp is not None and ap is not None else ""
+            rows.append({"away": g["away_team_abbr"], "home": g["home_team_abbr"],
+                         "tip": final, "crew": g.get("crew") or []})
+        best = (ld["date"], rows)
+    try:
+        with open(os.path.join(DATA, "tonights-crews.json"), encoding="utf-8") as f:
+            tc = json.load(f)
+    except (OSError, ValueError):
+        tc = {}
+    if tc.get("date") and tc.get("games") and (best is None or tc["date"] >= best[0]):
+        best = (tc["date"], [{"away": g.get("away"), "home": g.get("home"),
+                              "tip": g.get("tipoff_et") or "", "crew": g.get("crew") or []}
+                             for g in tc["games"]])
+    return best
 
 
 def tonight_officials_section(dashboard):
-    """The page's promoted anchor module. Server-renders the most recent real
-    game day on record (data/dashboard.json's latest_game_day, computed in
-    build.py) as a non-empty fallback so the module is never a hole -- the
-    live "tonight's assignments" pipeline doesn't exist yet, and even once it
-    does, it will only ever cover in-season days. app.js swaps the heading and
-    body to live content automatically when data/tonights-crews.json is
-    present and fresh; otherwise this fallback is what ships, no JS required."""
-    ld = dashboard.get("latest_game_day")
-    if not ld or not ld.get("games"):
+    """The page's promoted anchor module. The server renders the most recent
+    crews on record (tonights-crews.json or, failing that, the last completed
+    game day); app.js swaps in a newer data/tonights-crews.json if one has
+    landed since this page was built, and says plainly whether the crews shown
+    are today's (US Eastern) or an earlier day's. Without JS, the heading is
+    the neutral "Most recent officiating crews" with the date beside it."""
+    best = tonight_games(dashboard)
+    if not best:
         return ""
-    body = latest_game_day_body(ld["games"])
-    return ("""<section class="tonight-anchor" id="tonight">
+    date, rows = best
+    body = "".join(tg_row(r["away"], r["home"], r["tip"], r["crew"]) for r in rows)
+    return ("""<section class="tonight-anchor" id="tonight" data-date="{iso}">
   <div class="tonight-head">
     <h2 id="tonight-heading">Most recent officiating crews</h2>
-    <span class="tonight-sub" id="tonight-sub">{date} &middot; the most recent game day on record &mdash; not tonight's assignments</span>
+    <time class="tonight-sub" id="tonight-sub" datetime="{iso}">{date}</time>
   </div>
-  <div id="tonight-officials-body">{body}</div>
-</section>""").format(date=esc(ld["date"]), body=body)
+  <p class="tonight-note" id="tonight-note" hidden></p>
+  <ul class="tg-list" id="tonight-officials-body">{body}</ul>
+</section>""").format(iso=esc(date), date=esc(short_date(date)), body=body)
 
 
 def dashboard_recent_form_slot():
@@ -2297,8 +2369,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
     # big-table-not-many-boxes read.
     today_inner = dashboard_rotation_slots(dashboard) + dashboard_recent_form_slot()
     tier_fresh = """<section class="tier">
-  <div class="tier-head"><span class="tier-eyebrow">Fresh</span>
-  <h2>Today</h2>
+  <div class="tier-head"><h2>Today</h2>
   <p class="tier-desc">What's new — refreshed daily where the data allows.</p></div>
   <div class="tier-surface">
     <div class="submod-anchor" id="today">{today}</div>
@@ -2315,8 +2386,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
                      % dashboard_records_strip(dashboard["records"])
                      + dashboard_history_strip(dashboard["history"]))
     tier_records = """<section class="tier">
-  <div class="tier-head"><span class="tier-eyebrow">More</span>
-  <h2>Records &amp; history</h2>
+  <div class="tier-head"><h2>Records &amp; history</h2>
   <p class="tier-desc">Notable facts and single-game highs from the full dataset.</p></div>
   <div class="tier-surface">
     <div class="submod-anchor" id="records">{records}</div>
@@ -2415,8 +2485,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
         debuts_block=debuts_block, era_tabs=era_tabs, era_panels=era_panels)
 
     tier_stats = """<section class="tier">
-  <div class="tier-head"><span class="tier-eyebrow">Statistics</span>
-  <h2>Leaders, crews &amp; teams</h2>
+  <div class="tier-head"><h2>Leaders, crews &amp; teams</h2>
   <p class="tier-desc">Career leaderboards and cross-official patterns across the full
   1993-94–2025-26 dataset.</p></div>
   <div class="tier-surface">
@@ -2465,8 +2534,7 @@ def render_index(refs, lb, dashboard, nbra_bios):
                 po=r["games_po"], poi=i(r["games_po"])))
 
     tier_reference = """<section class="tier">
-  <div class="tier-head"><span class="tier-eyebrow">Reference</span>
-  <h2>Look up an official</h2>
+  <div class="tier-head"><h2>Look up an official</h2>
   <p class="tier-desc">Search or sort all {total} referees, or jump straight to a deeper
   per-stat page.</p></div>
   <div class="submod-anchor" id="directory">
@@ -2501,8 +2569,11 @@ def render_index(refs, lb, dashboard, nbra_bios):
                    % json.dumps(headshot_map(refs), ensure_ascii=False,
                                 separators=(",", ":")).replace("</", "<\\/"))
 
+    teams_data = ('<script type="application/json" id="team-pages-data">%s</script>'
+                  % json.dumps(sorted(t.lower() for t in TEAM_EXISTS), separators=(",", ":")))
+
     body = (masthead + tonight_section + subnav + tier_fresh + tier_stats
-           + tier_reference + tier_records + ref_search(0, "bottom") + photos_data)
+           + tier_reference + tier_records + ref_search(0, "bottom") + photos_data + teams_data)
     title = "NBA Referee Database — career stats for every on-court official since 1993-94"
     desc = ("Searchable career profiles for %d NBA referees since 1993-94: games worked, "
             "team records, whistle tendencies, playoff appearances, and leaderboards." % total)
@@ -2591,13 +2662,11 @@ def render_sources(curiosities=None, curiosities_l2m=None):
     notes_section = ""
     if notes_items:
         notes_section = ("""<section class="block" id="notes">
-  <div class="block-head"><span class="eyebrow">Methodology</span>
-  <h2>Notes on this data</h2></div>
+  <div class="block-head"><h2>Notes on this data</h2></div>
   <ul class="curiosity-list">{items}</ul>
 </section>""").format(items=notes_items)
     body = """<section class="block">
-  <div class="block-head"><span class="eyebrow">Attribution</span>
-  <h2>Data sources</h2></div>
+  <div class="block-head"><h1>Data sources</h1></div>
   <p class="caption">The NBA Referee Database is built from three public datasets,
   combined across eras. Credit and licensing for each:</p>
   <ul class="src-list">{items}</ul>
@@ -2619,6 +2688,116 @@ def render_sources(curiosities=None, curiosities_l2m=None):
 # pre-render), reading the same data/referees/{slug}.json every other page
 # already uses. Shareable via ?a=slug&b=slug.
 # ---------------------------------------------------------------------------
+# Suggested matchups for /compare/ (November 19, 2026). Written to
+# data/compare-suggestions.json on every render. Each suggestion is one
+# category's pair plus a reason line filled from a FIXED template with the
+# same numbers, rounded the same way, that the two referees' profile pages
+# show. Neutral wording only: nothing here says a referee favors anyone.
+# The "Both work tonight" pair and the daily Featured matchup are picked in
+# the browser (JS), from data/tonights-crews.json (committed hourly by the
+# crews workflow) and today's US Eastern date, so they change every day
+# without a re-render.
+COMPARE_MIN_RS = 200          # both referees need 200+ career regular-season games
+COMPARE_NEWCOMER_SEASONS = 3  # "first three seasons" for the veteran/newcomer pair
+
+
+def compare_suggestions(refs, docs_by_slug, ref_calls):
+    by = {r["slug"]: r for r in refs}
+    floor = [r for r in refs if (r.get("games_rs") or 0) >= COMPARE_MIN_RS]
+    active = [r for r in refs if r.get("active")]
+    out = []
+
+    def add(cat, a, b, reason):
+        if a and b and a != b:
+            out.append({"cat": cat, "a": a, "b": b, "reason": reason})
+
+    def rs(slug):
+        return ((docs_by_slug.get(slug) or {}).get("whistle_profile") or {}).get("rs") or {}
+
+    # b. longest partnership among active referees (profile: "Most frequent crewmates")
+    best = None
+    act_floor = {r["slug"] for r in active if (r.get("games_rs") or 0) >= COMPARE_MIN_RS}
+    for slug in sorted(act_floor):
+        for pt in (docs_by_slug.get(slug) or {}).get("top_partners") or []:
+            if pt["slug"] in act_floor and pt["slug"] != slug:
+                if best is None or pt["games"] > best[0]:
+                    best = (pt["games"], slug, pt["slug"])
+    if best:
+        add("partners", best[1], best[2], "%s games on the same crew" % i(best[0]))
+
+    # c. most career games ever vs. the busiest active referee this season
+    if floor:
+        most = max(floor, key=lambda r: (r["games_total"], r["slug"]))
+        def season_games(r):
+            ps = ((docs_by_slug.get(r["slug"]) or {}).get("summary") or {}).get("per_season") or {}
+            return (ps.get(CURRENT_SEASON) or {}).get("total") or 0
+        busy = [r for r in active if r["slug"] != most["slug"]
+                and (r.get("games_rs") or 0) >= COMPARE_MIN_RS and season_games(r)]
+        if busy:
+            b = max(busy, key=lambda r: (season_games(r), r["slug"]))
+            add("workload", most["slug"], b["slug"],
+                "Most career games (%s) vs. most games in %s (%s)"
+                % (i(most["games_total"]), CURRENT_SEASON, i(season_games(b))))
+
+    # d./e. whistle-profile extremes, regular season (profile: Whistle profile cards)
+    for cat, key, ncol, fmt, tmpl in (
+            ("fouls", "avg_total_pf", "n_boxscore", dec,
+             "Most fouls per game (%s) vs. fewest (%s), regular season"),
+            ("homewin", "home_win_pct", "n", pct,
+             "Highest home-team win rate in their games (%s) vs. lowest (%s), regular season")):
+        pool = [(rs(r["slug"]).get(key), r["slug"]) for r in floor
+                if rs(r["slug"]).get(key) is not None and (rs(r["slug"]).get(ncol) or 0) >= COMPARE_MIN_RS]
+        if len(pool) >= 2:
+            hi, lo = max(pool), min(pool)
+            add(cat, hi[1], lo[1], tmpl % (fmt(hi[0]), fmt(lo[0])))
+
+    # f. technicals per game, play-by-play window (profile: "Technicals since ..."
+    #    chip over "Games in window"); only when the data has technicals
+    meta = ref_calls.get("_meta") or {}
+    calls = ref_calls.get("referees") or {}
+    pool = []
+    for r in floor:
+        c = calls.get(r["slug"]) or {}
+        if c.get("games", 0) >= COMPARE_MIN_RS and c.get("technicals") is not None:
+            pool.append((c["technicals"] / c["games"], r["slug"], c["technicals"], c["games"]))
+    if meta.get("available") and len(pool) >= 2 and max(pool)[0] > 0:
+        hi, lo = max(pool), min(pool)
+        # The rate itself is not printed on the profiles; its two parts are
+        # ("Technicals since ..." and "Games in window"), so those are shown.
+        add("technicals", hi[1], lo[1],
+            "Most technicals per game (%s in %s games) vs. fewest (%s in %s games), since %s"
+            % (i(hi[2]), i(hi[3]), i(lo[2]), i(lo[3]), meta.get("first_season", "")))
+
+    # g. most playoff games: the top two
+    po = sorted(floor, key=lambda r: (-(r.get("games_po") or 0), r["slug"]))[:2]
+    if len(po) == 2 and po[1].get("games_po"):
+        add("playoffs", po[0]["slug"], po[1]["slug"],
+            "Most playoff games: %s and %s" % (i(po[0]["games_po"]), i(po[1]["games_po"])))
+
+    # h. veteran vs. newcomer (newcomers are exempt from the 200-game floor)
+    start = int(CURRENT_SEASON[:4]) - (COMPARE_NEWCOMER_SEASONS - 1)
+    vets = [r for r in active if (r.get("games_rs") or 0) >= COMPARE_MIN_RS]
+    news = [r for r in active if int(r["first_season"][:4]) >= start]
+    if vets and news:
+        v = max(vets, key=lambda r: (r["games_total"], r["slug"]))
+        n = max(news, key=lambda r: (r["games_total"], r["slug"]))
+        add("newcomer", v["slug"], n["slug"],
+            "Most games among active referees (%s) vs. most among those in their first "
+            "three seasons (%s)" % (i(v["games_total"]), i(n["games_total"])))
+
+    used = {x for sgg in out for x in (sgg["a"], sgg["b"])}
+    people = {}
+    for r in refs:
+        if r["slug"] in used or r.get("active"):
+            people[r["slug"]] = {"n": r["name"], "g": r["games_total"], "rs": r.get("games_rs") or 0}
+            rel = headshot_rel(r["slug"])
+            if rel:
+                people[r["slug"]]["p"] = rel
+    return {"_about": "Suggested matchups for /compare/, written by scripts/render_pages.py "
+                      "from the committed data. Reason lines are fixed templates.",
+            "min_rs_games": COMPARE_MIN_RS, "suggestions": out, "people": people}
+
+
 def render_compare():
     title = "Compare two NBA referees side by side"
     desc = ("Head-to-head comparison of any two NBA referees: whistle profiles, career "
@@ -2626,22 +2805,34 @@ def render_compare():
             "Share a comparison by its URL.")
     box_a = ref_search(1, "top", type_filter="ref", compare_slot="a")
     box_b = ref_search(1, "top", type_filter="ref", compare_slot="b")
+    teams_data = ('<script type="application/json" id="team-pages-data">%s</script>'
+                  % json.dumps(sorted(t.lower() for t in TEAM_EXISTS), separators=(",", ":")))
     body = """<section class="block">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Compare</span><h1>Compare two referees</h1></div>
+  <div class="block-head"><h1>Compare two referees</h1></div>
   <div class="compare-pickers">
     <div class="compare-picker">{box_a}</div>
     <div class="compare-picker">{box_b}</div>
   </div>
   <p class="empty-note" id="compare-prompt">Select two referees above to compare their
   career numbers side by side.</p>
+  <div class="compare-featured" id="compare-featured" hidden>
+    <h2>Featured matchup</h2>
+    <p class="compare-reason" id="compare-featured-reason"></p>
+  </div>
   <div class="compare-cols">
     <div class="compare-col" id="compare-col-a"></div>
     <div class="compare-col" id="compare-col-b"></div>
   </div>
-</section>""".format(box_a=box_a, box_b=box_b)
-    ld = breadcrumb_ld(("Home", ""), ("Compare", "compare/index.html"))
-    return page(title, desc, 1, body, ld_json=ld)
+</section>
+<section class="block compare-suggest" id="compare-suggest" hidden>
+  <div class="block-head"><h2>Suggested matchups</h2></div>
+  <ul class="sugg-list" id="compare-suggest-list"></ul>
+</section>{teams}""".format(box_a=box_a, box_b=box_b, teams=teams_data)
+    # Canonical is the folder URL, https://hoopsmatic.com/referees/compare/,
+    # which every ?a=&b= pair URL also points at (pairs get noindex, follow
+    # from app.js). The sitemap takes the same URL from here.
+    ld = breadcrumb_ld(("Home", ""), ("Compare", "compare/"))
+    return page(title, desc, 1, body, ld_json=ld, canonical="compare/")
 
 
 # ---------------------------------------------------------------------------
@@ -2669,8 +2860,7 @@ def render_matchup():
               'figure is that value measured against the era-adjusted league average for the '
               'seasons this official worked.</p></div>')
     body = """<section class="block">
-  <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Matchup</span><h2>Team &times; referee lookup</h2></div>
+  <div class="block-head"><h1>Team &times; referee lookup</h1></div>
   {notice}
   <div class="compare-pickers">
     <div class="compare-picker">{box_team}</div>
@@ -3010,8 +3200,41 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
   gap:1rem;flex-wrap:wrap;margin-bottom:.6rem}
 .tonight-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
 .tonight-sub{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
-#tonight-officials-body{background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:.2rem 1.1rem}
+/* Tonight's officials: a tight list, one row per game. The section is a size
+   container so the list goes to two columns when IT is wide enough (desktop),
+   not when the window is. Row: logos + tricodes left, crew right; on a narrow
+   column the crew drops under the matchup instead of squeezing sideways. */
+.tonight-anchor{container:tonight / inline-size}
+.tonight-note{font-size:.8rem;color:var(--text-secondary);margin:-.2rem 0 .6rem}
+.tg-list{list-style:none;display:grid;grid-template-columns:1fr;column-gap:1.4rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.15rem .9rem}
+@container tonight (inline-size > 52rem){
+  .tg-list{grid-template-columns:1fr 1fr}
+  .tg-list .tg:nth-last-child(2):nth-child(odd){border-bottom:0}
+}
+.tg{display:grid;grid-template-columns:8.6rem minmax(0,1fr);align-items:center;gap:.2rem .6rem;
+  padding:.2rem 0;border-bottom:1px solid var(--border);min-width:0}
+.tg:last-child{border-bottom:0}
+.tg-matchup{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.tg-teams{display:flex;align-items:center;gap:.25rem;font-weight:700;font-size:.8rem}
+.tg-team{display:inline-flex;align-items:center;gap:.3rem;min-height:44px;color:var(--text)}
+.tg-logo{width:24px;height:24px;flex:none;object-fit:contain}
+.tg-at{color:var(--text-secondary);font-weight:500;font-size:.72rem}
+.tg-tip{font-family:var(--mono);font-size:.62rem;color:var(--text-secondary);margin-top:-.45rem}
+.tg-crew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.4rem;min-width:0}
+.tg-ref{display:flex;align-items:center;gap:.4rem;min-height:44px;min-width:0;
+  font-size:.72rem;line-height:1.2;color:var(--text)}
+.tg-name{min-width:0;overflow-wrap:break-word}
+.tg-avatar{width:34px;height:34px;flex:none;border-radius:50%;object-fit:cover;
+  object-position:50% 22%;border:1px solid var(--border);background:var(--surface)}
+@container tonight (inline-size < 30rem){
+  /* Phone: crew under the matchup, each official photo-above-name so a long
+     surname gets the whole cell width and never breaks mid-word. */
+  .tg{grid-template-columns:1fr;padding:.3rem 0 .5rem}
+  .tg-tip{margin-top:-.6rem}
+  .tg-ref{flex-direction:column;justify-content:flex-end;gap:.25rem;text-align:center}
+  .tg-avatar{width:32px;height:32px}
+}
 
 /* Large cohesive white canvas per tier (not a card per module -- dividers
    between .submod-anchors still carry the internal structure) so the main
@@ -3426,40 +3649,35 @@ a.cl-row:hover .cl-val{color:var(--accent)}
 .curiosity-list{font-size:.8rem;color:var(--text-secondary);padding-left:1.1rem}
 .curiosity-list li{margin-bottom:.5rem}
 
-#tonight-officials-body{display:flex;flex-direction:column}
-.crew-game{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;
-  padding:.55rem .2rem;border-bottom:1px solid var(--border);font-size:.84rem}
-.crew-game:last-child{border-bottom:0}
-.crew-matchup{font-weight:700}
-.crew-tip{font-family:var(--mono);font-size:.72rem;color:var(--text-secondary)}
 .crew-names{font-size:.8rem}
-/* Tonight's Officials crews, the only .crew-names that carries avatars -- the
-   frontpage "most frequent crews" strip reuses the class with plain text and
-   is deliberately left alone, which is why every rule here is scoped.
-
-   Each official is a COLUMN: photo above name, not a face wedged into a line
-   of text. The row aligns on flex-end so all three names land on the same
-   line, and the matchup and final score align with them; a photo simply rises
-   above its name. That is what makes a crew with only one photographed
-   official read as deliberate instead of broken -- the names still form a
-   clean row, and the space above the other two is empty rather than holding a
-   placeholder. */
-#tonight-officials-body .crew-game{align-items:flex-end;gap:.75rem 1.1rem;padding:.75rem .2rem}
-#tonight-officials-body .crew-names{display:flex;flex-wrap:wrap;align-items:flex-end;
-  gap:.7rem 1.2rem;line-height:1.35}
-#tonight-officials-body .crew-ref{display:flex;flex-direction:column;align-items:center;
-  gap:.45rem;text-align:center}
-@media(max-width:520px){
-  /* Phone: the crew takes its own full-width line under the matchup, so three
-     48px columns are not competing with the team names for horizontal room. */
-  #tonight-officials-body .crew-names{flex:1 1 100%;gap:.6rem .9rem}
-}
 
 /* ---- comparator ---- */
 .compare-pickers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:.4rem}
 .compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;margin-top:1.1rem}
 .compare-col:empty{display:none}
 .compare-line{font-size:.84rem;margin:.3rem 0}
+.compare-featured{margin-top:1.1rem}
+.compare-featured h2{font-size:1.05rem}
+.compare-reason{font-size:.84rem;color:var(--text-secondary);margin-top:.2rem}
+/* Suggested matchups: a plain vertical list. The whole row is the tap target
+   (an empty link stretched over it); the two names sit above it as their own
+   links to the profiles. */
+.sugg-list{list-style:none;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:0 .9rem}
+.sugg{position:relative;display:flex;align-items:center;gap:.8rem;min-height:56px;
+  padding:.55rem 0;border-bottom:1px solid var(--border)}
+.sugg:last-child{border-bottom:0}
+.sugg:hover{background:var(--surface-hover)}
+.sugg-load{position:absolute;inset:0;z-index:0;border-radius:8px}
+.sugg-faces{display:flex;flex:none;gap:.25rem}
+.sugg-face{display:block;width:40px;height:40px;border-radius:50%;object-fit:cover;
+  object-position:50% 22%;border:1px solid var(--border);background:var(--surface)}
+.sugg-face-none{background:none;border:0}
+.sugg-text{display:flex;flex-direction:column;min-width:0}
+.sugg-names{font-weight:700;font-size:.86rem}
+.sugg-name{position:relative;z-index:1}
+.sugg-vs{color:var(--text-secondary);font-weight:500;font-size:.76rem}
+.sugg-reason{font-size:.76rem;color:var(--text-secondary)}
 
 /* ---- /matchup/ (docs/MATCHUP_SPEC.md) --------------------------------
    Reuses the whistle-profile card shell (.whistle-cols/.whistle-col/
@@ -3611,6 +3829,8 @@ JS = r"""(function(){
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // For values placed inside a quoted attribute (escHtml leaves quotes alone).
+  function escAttr(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   // --- referee avatars (index only) ------------------------------------
   // Mirrors ref_avatar_img() in render_pages.py, for the cards this file
   // builds rather than the server. Reads the inline #ref-photos-data map once;
@@ -3855,57 +4075,83 @@ JS = r"""(function(){
       }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
-  // --- Tonight's Officials -- the page's promoted anchor module. The server
-  // already rendered a non-empty fallback (the most recent real game day on
-  // record, from data/dashboard.json's latest_game_day). This only OVERWRITES
-  // that fallback when a live data/tonights-crews.json (September pipeline;
-  // doesn't exist yet, and only ever covers in-season days once it does) is
-  // present AND dated today/yesterday (US Eastern, the NBA's scheduling
-  // clock) -- so the module switches to live assignments automatically
-  // whenever they show up, with no further work, and otherwise the fallback
-  // just stands as rendered.
-  // Expected data/tonights-crews.json schema once the pipeline ships:
-  //   {date, games:[{away, home, tipoff_et, crew:[{name, slug}], crew_note}]}
+  // --- Tonight's officials (index) -- mirrors tg_row()/tonight_officials_
+  // section() in render_pages.py. The server already rendered the most recent
+  // crews on record. This (1) swaps in data/tonights-crews.json when it is
+  // NEWER than what the page was built with (the crews workflow commits that
+  // file hourly without re-rendering the page), and (2) labels the date
+  // honestly against today's date in US Eastern time, the NBA's clock.
   (function(){
+    var sec=document.getElementById("tonight");
     var body=document.getElementById("tonight-officials-body");
-    if(!body)return;
-    function usEasternISO(offsetDays){
-      var d=new Date(Date.now()+offsetDays*86400000);
+    if(!sec||!body)return;
+    var LOGO_BASE="https://hoopsmatic.com/img/nba-headshots/teams/logos/current/svg/";
+    var CURRENT=" ATL BKN BOS CHA CHI CLE DAL DEN DET GSW HOU IND LAC LAL MEM MIA MIL MIN NOP NYK OKC ORL PHI PHX POR SAC SAS TOR UTA WAS ";
+    var TEAMS=(function(){
+      var el=document.getElementById("team-pages-data");
+      try{return el?JSON.parse(el.textContent)||[]:[];}catch(e){return [];}
+    })();
+    function etToday(){
       var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
-        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
       var o={};parts.forEach(function(p){o[p.type]=p.value;});
       return o.year+"-"+o.month+"-"+o.day;
     }
+    // '2026-11-18' -> 'Wed, Nov 18' / 'Nov 18'. Noon UTC + timeZone UTC so the
+    // calendar date never shifts with the viewer's own time zone.
+    function fmtDay(iso,weekday){
+      var opts={month:"short",day:"numeric",timeZone:"UTC"};
+      if(weekday)opts.weekday="short";
+      return new Intl.DateTimeFormat("en-US",opts).format(new Date(iso+"T12:00:00Z"));
+    }
+    function team(abbr){
+      abbr=String(abbr||"").toUpperCase();
+      var lo=abbr.toLowerCase();
+      var logo=/^[A-Z]{3}$/.test(abbr)&&CURRENT.indexOf(" "+abbr+" ")!==-1?
+        '<img class="tg-logo" src="'+LOGO_BASE+lo+'.svg" alt="" width="24" height="24" loading="lazy" decoding="async">':"";
+      var inner=logo+'<span class="tg-abbr">'+escHtml(abbr)+'</span>';
+      return TEAMS.indexOf(lo)!==-1?'<a class="tg-team" href="team/'+lo+'/index.html">'+inner+'</a>':
+        '<span class="tg-team">'+inner+'</span>';
+    }
+    function row(g){
+      var refs=(g.crew||[]).map(function(c){
+        var nm='<span class="tg-name">'+escHtml(c.name||"")+'</span>';
+        // slug is null when the feed could not match an official to a page:
+        // plain name, no photo, never a link to referee/null/.
+        if(!c.slug||!/^[a-z0-9-]+$/.test(c.slug))return '<span class="tg-ref">'+nm+'</span>';
+        var rel=REF_PHOTOS[c.slug];
+        var img=rel?'<img class="tg-avatar" src="'+escAttr(rel)+'" alt="" width="34" height="34" loading="lazy" decoding="async">':"";
+        return '<a class="tg-ref" href="referee/'+c.slug+'/index.html">'+img+nm+'</a>';
+      }).join("")||'<span class="tg-name">&mdash;</span>';
+      var tip=g.tipoff_et?'<span class="tg-tip">'+escHtml(g.tipoff_et)+'</span>':"";
+      return '<li class="tg"><div class="tg-matchup"><span class="tg-teams">'+team(g.away)+
+        '<span class="tg-at">@</span>'+team(g.home)+'</span>'+tip+'</div>'+
+        '<div class="tg-crew">'+refs+'</div></li>';
+    }
+    function label(iso){
+      var heading=document.getElementById("tonight-heading");
+      var sub=document.getElementById("tonight-sub");
+      var note=document.getElementById("tonight-note");
+      var isToday=iso===etToday();
+      if(heading)heading.textContent=isToday?"Tonight's officials":"Most recent officiating crews";
+      if(sub){sub.textContent=fmtDay(iso,true);sub.setAttribute("datetime",iso);}
+      if(note){
+        note.textContent=isToday?"":"Last updated for "+fmtDay(iso,false)+". Today's crews usually post around 9am ET.";
+        note.hidden=isToday;
+      }
+    }
+    var shown=sec.getAttribute("data-date")||"";
+    if(/^\d{4}-\d{2}-\d{2}$/.test(shown))label(shown);
     fetch("data/tonights-crews.json").then(function(r){
       if(!r.ok)throw new Error("absent");
       return r.json();
     }).then(function(data){
-      var valid=data&&data.date&&(data.date===usEasternISO(0)||data.date===usEasternISO(-1));
-      if(!valid||!Array.isArray(data.games)||!data.games.length)return;  // keep the fallback
-      var heading=document.getElementById("tonight-heading");
-      var sub=document.getElementById("tonight-sub");
-      if(heading)heading.textContent="Tonight's officials";
-      if(sub)sub.textContent=data.date;
-      body.innerHTML=data.games.map(function(g){
-        var crew=(g.crew||[]).map(function(c){
-          // slug is null when the feed could not match an official to a
-          // canonical referee page (a new hire, a name spelling we have not
-          // mapped yet). Render the name as plain text rather than linking to
-          // referee/null/index.html -- and with no avatar either, since
-          // refAvatar returns "" for a null slug, the same "no photo" path a
-          // matched-but-unphotographed official takes.
-          var nm=escHtml(c.name);
-          var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-          return '<span class="crew-ref">'+refAvatar(c.slug,"crew")+named+'</span>';
-          // Space, not "&middot;": the cells are columns separated by a flex
-          // gap, and flex discards whitespace-only text between items.
-        }).join(" ");
-        var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
-        return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
-          '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
-          '<span class="crew-names">'+crew+'</span>'+note+'</div>';
-      }).join("");
-    }).catch(function(){/* absent, unparseable, or stale -- keep the fallback */});
+      if(!data||!/^\d{4}-\d{2}-\d{2}$/.test(data.date||"")||data.date<=shown)return;
+      if(!Array.isArray(data.games)||!data.games.length)return;  // keep what is shown
+      body.innerHTML=data.games.map(row).join("");
+      sec.setAttribute("data-date",data.date);
+      label(data.date);
+    }).catch(function(){/* absent or unparseable -- keep the server copy */});
   })();
   // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
   // same way Tonight's Crews is: absent, empty, off-season (in_season:false),
@@ -4001,13 +4247,23 @@ JS = r"""(function(){
       return '<div class="whistle-col"><h3 class="whistle-kind">'+kindLabel+
         ' <span class="whistle-n">'+(w.n||0)+' games</span></h3><div class="whistle-grid">'+cells+'</div></div>';
     }
+    // Team tricodes link to that team's referees page when one exists
+    // (team-pages-data, written by render_compare()).
+    var TEAM_PAGES=(function(){
+      var el=document.getElementById("team-pages-data");
+      try{return el?JSON.parse(el.textContent)||[]:[];}catch(e){return [];}
+    })();
+    function teamLink(abbr){
+      var lo=String(abbr||"").toLowerCase();
+      return TEAM_PAGES.indexOf(lo)!==-1?'<a href="../team/'+lo+'/index.html">'+escHtml(abbr)+'</a>':escHtml(abbr);
+    }
     function teamExtremes(records){
       if(!records||!records.length)return '<p class="empty-note">No team records on file.</p>';
       var byGames=records.slice().sort(function(a,b){return b.games-a.games;})[0];
       var qualifying=records.filter(function(r){return r.games>=10&&r.win_pct!=null;});
       var byWin=qualifying.length?qualifying.slice().sort(function(a,b){return b.win_pct-a.win_pct;})[0]:null;
-      var out='<p class="compare-line">Most games: '+escHtml(byGames.team_abbr)+' ('+byGames.games+' games)</p>';
-      if(byWin)out+='<p class="compare-line">Best record: '+escHtml(byWin.team_abbr)+' ('+
+      var out='<p class="compare-line">Most games: '+teamLink(byGames.team_abbr)+' ('+byGames.games+' games)</p>';
+      if(byWin)out+='<p class="compare-line">Best record: '+teamLink(byWin.team_abbr)+' ('+
         (byWin.win_pct*100).toFixed(1)+'%, '+byWin.games+' games)</p>';
       return out;
     }
@@ -4023,20 +4279,125 @@ JS = r"""(function(){
         whistleColHtml("Playoffs",doc.whistle_profile.po)+'</div>'+
         '<h3 class="lb-subhead">Team records</h3>'+teamExtremes(doc.team_records);
     }
-    var params=new URLSearchParams(window.location.search);
-    var aSlug=params.get("a"), bSlug=params.get("b");
+    var SLUG_RE=/^[a-z0-9-]+$/;
     var promptEl=document.getElementById("compare-prompt");
-    if(promptEl)promptEl.hidden=!!(aSlug||bSlug);
+    var featEl=document.getElementById("compare-featured");
+    var featReason=document.getElementById("compare-featured-reason");
     function loadCol(container,slug){
       if(!slug){container.innerHTML='<p class="empty-note">Select a referee above.</p>';return;}
+      if(!SLUG_RE.test(slug)){container.innerHTML='<p class="empty-note">Referee not found.</p>';return;}
       fetch("../data/referees/"+slug+".json").then(function(r){
         if(!r.ok)throw new Error("not found");
         return r.json();
       }).then(function(doc){renderCompareCol(container,doc);})
         .catch(function(){container.innerHTML='<p class="empty-note">Referee not found.</p>';});
     }
-    loadCol(colA,aSlug);
-    loadCol(colB,bSlug);
+    // A chosen pair (?a=&b=) is shareable but is not its own page for search:
+    // noindex, follow; the canonical in <head> stays /referees/compare/.
+    function setNoindex(on){
+      var m=document.querySelector('meta[name="robots"]');
+      if(on&&!m){m=document.createElement("meta");m.name="robots";m.content="noindex, follow";document.head.appendChild(m);}
+      if(!on&&m)m.remove();
+    }
+    function showPair(a,b,featuredReason){
+      if(promptEl)promptEl.hidden=!!(a||b||featuredReason);
+      if(featEl){featEl.hidden=!featuredReason;if(featReason)featReason.textContent=featuredReason||"";}
+      loadCol(colA,a);
+      loadCol(colB,b);
+    }
+    function fromUrl(){
+      var params=new URLSearchParams(window.location.search);
+      return {a:params.get("a"),b:params.get("b")};
+    }
+    var cur=fromUrl();
+    setNoindex(!!(cur.a||cur.b));
+    if(cur.a||cur.b)showPair(cur.a,cur.b,"");
+    window.addEventListener("popstate",function(){
+      var p=fromUrl();
+      setNoindex(!!(p.a||p.b));
+      if(p.a||p.b)showPair(p.a,p.b,"");else if(window.__featured)showPair(window.__featured.a,window.__featured.b,window.__featured.reason);
+      else showPair(null,null,"");
+    });
+
+    // --- suggested matchups (data/compare-suggestions.json, rebuilt with the
+    // site) + "Both work tonight" from data/tonights-crews.json. Featured
+    // matchup = one category per day, rotating by today's US Eastern date.
+    var listEl=document.getElementById("compare-suggest-list");
+    var suggestEl=document.getElementById("compare-suggest");
+    function etToday(){
+      var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
+        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+      var o={};parts.forEach(function(p){o[p.type]=p.value;});
+      return o.year+"-"+o.month+"-"+o.day;
+    }
+    function face(people,slug){
+      var p=people[slug];
+      return p&&p.p?'<img class="sugg-face" src="../'+escAttr(p.p)+'" alt="" width="40" height="40" loading="lazy" decoding="async">':
+        '<span class="sugg-face sugg-face-none" aria-hidden="true"></span>';
+    }
+    function nameLink(people,slug){
+      var p=people[slug];
+      return '<a class="sugg-name" href="../referee/'+slug+'/index.html">'+escHtml(p?p.n:slug)+'</a>';
+    }
+    function tonightPair(people,crews){
+      if(!crews||crews.date!==etToday()||!Array.isArray(crews.games))return null;
+      // The crew data names no crew chief, so each game is represented by its
+      // most experienced official (most career games), 200+ RS games.
+      var picks=[];
+      crews.games.forEach(function(g){
+        var best=null;
+        (g.crew||[]).forEach(function(c){
+          var p=c.slug&&people[c.slug];
+          if(p&&p.rs>=200&&(!best||p.g>best.g))best={slug:c.slug,g:p.g};
+        });
+        if(best)picks.push({slug:best.slug,g:best.g,label:String(g.away||"")+" @ "+String(g.home||"")});
+      });
+      picks.sort(function(x,y){return y.g-x.g;});
+      if(picks.length<2||picks[0].slug===picks[1].slug)return null;
+      return {cat:"tonight",a:picks[0].slug,b:picks[1].slug,
+        reason:"Both work tonight: "+picks[0].label+" and "+picks[1].label};
+    }
+    Promise.all([
+      fetch("../data/compare-suggestions.json").then(function(r){if(!r.ok)throw new Error("absent");return r.json();}),
+      fetch("../data/tonights-crews.json").then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      var data=res[0], people=data.people||{};
+      var list=(data.suggestions||[]).filter(function(x){return SLUG_RE.test(x.a)&&SLUG_RE.test(x.b);});
+      var tn=tonightPair(people,res[1]);
+      if(tn)list.unshift(tn);
+      if(!list.length)return;
+      // Featured: date-seeded, so it is the same all day for everyone and
+      // moves to the next category tomorrow.
+      var day=Math.floor(Date.parse(etToday()+"T00:00:00Z")/86400000);
+      var feat=list[day%list.length];
+      window.__featured=feat;
+      if(!cur.a&&!cur.b)showPair(feat.a,feat.b,feat.reason);
+      listEl.innerHTML=list.map(function(x){
+        var href="?a="+x.a+"&b="+x.b;
+        var label="Compare "+(people[x.a]?people[x.a].n:x.a)+" and "+(people[x.b]?people[x.b].n:x.b);
+        return '<li class="sugg"><a class="sugg-load" href="'+href+'" data-a="'+x.a+'" data-b="'+x.b+'" aria-label="'+escAttr(label)+'"></a>'+
+          '<span class="sugg-faces">'+face(people,x.a)+face(people,x.b)+'</span>'+
+          '<span class="sugg-text"><span class="sugg-names">'+nameLink(people,x.a)+' <span class="sugg-vs">vs.</span> '+nameLink(people,x.b)+'</span>'+
+          '<span class="sugg-reason">'+escHtml(x.reason)+'</span></span></li>';
+      }).join("");
+      suggestEl.hidden=false;
+    }).catch(function(){
+      if(!cur.a&&!cur.b&&promptEl)promptEl.hidden=false;
+    });
+    // Tapping a row loads that pair in place and puts it in the address.
+    document.addEventListener("click",function(e){
+      var t=e.target.closest?e.target.closest(".sugg-load"):null;
+      if(!t||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0)return;
+      var a=t.getAttribute("data-a"), b=t.getAttribute("data-b");
+      if(!SLUG_RE.test(a)||!SLUG_RE.test(b))return;
+      e.preventDefault();
+      history.pushState(null,"","?a="+a+"&b="+b);
+      cur={a:a,b:b};
+      setNoindex(true);
+      showPair(a,b,"");
+      var top=document.querySelector(".compare-cols");
+      if(top)top.scrollIntoView({block:"start"});
+    });
   })();
   // --- /matchup/ team x referee lookup (docs/MATCHUP_SPEC.md) -- reads
   // data/matchups/{official_id}.json (career + per-season, RS/PO) and
@@ -4376,6 +4737,11 @@ def main():
     docs = [json.load(open(p, encoding="utf-8"))
             for p in sorted(glob.glob(os.path.join(DATA, "referees", "*.json")))]
     current_slugs = {d["summary"]["slug"] for d in docs}
+    with open(os.path.join(DATA, "compare-suggestions.json"), "w", encoding="utf-8",
+              newline="\n") as f:
+        json.dump(compare_suggestions(refs, {d["summary"]["slug"]: d for d in docs}, ref_calls),
+                  f, indent=1, sort_keys=True, ensure_ascii=False)
+        f.write("\n")
 
     # Remove pages for referees that no longer exist (e.g. after an identity
     # merge dropped a slug) so stale pages don't linger, mirroring build.py's

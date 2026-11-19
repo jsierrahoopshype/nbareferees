@@ -1,0 +1,545 @@
+{
+ "_about": "Suggested matchups for /compare/, written by scripts/render_pages.py from the committed data. Reason lines are fixed templates.",
+ "min_rs_games": 200,
+ "people": {
+  "aaron-smith": {
+   "g": 462,
+   "n": "Aaron Smith",
+   "p": "assets/refs/aaron-smith.jpg",
+   "rs": 458
+  },
+  "agon-abazi": {
+   "g": 4,
+   "n": "Agon Abazi",
+   "rs": 4
+  },
+  "andy-nagy": {
+   "g": 330,
+   "n": "Andy Nagy",
+   "p": "assets/refs/andy-nagy.jpg",
+   "rs": 323
+  },
+  "ashley-moyer-gleich": {
+   "g": 264,
+   "n": "Ashley Moyer-Gleich",
+   "p": "assets/refs/ashley-moyer-gleich.jpg",
+   "rs": 264
+  },
+  "ben-taylor": {
+   "g": 698,
+   "n": "Ben Taylor",
+   "p": "assets/refs/ben-taylor.jpg",
+   "rs": 656
+  },
+  "bill-kennedy": {
+   "g": 1633,
+   "n": "Bill Kennedy",
+   "p": "assets/refs/bill-kennedy.jpg",
+   "rs": 1490
+  },
+  "biniam-maru": {
+   "g": 43,
+   "n": "Biniam Maru",
+   "rs": 43
+  },
+  "brandon-adair": {
+   "g": 339,
+   "n": "Brandon Adair",
+   "p": "assets/refs/brandon-adair.jpg",
+   "rs": 339
+  },
+  "brandon-schwab": {
+   "g": 227,
+   "n": "Brandon Schwab",
+   "p": "assets/refs/brandon-schwab.jpg",
+   "rs": 227
+  },
+  "brent-barnaky": {
+   "g": 908,
+   "n": "Brent Barnaky",
+   "p": "assets/refs/brent-barnaky.jpg",
+   "rs": 872
+  },
+  "brent-haskill": {
+   "g": 31,
+   "n": "Brent Haskill",
+   "rs": 31
+  },
+  "brett-nansel": {
+   "g": 424,
+   "n": "Brett Nansel",
+   "p": "assets/refs/brett-nansel.jpg",
+   "rs": 424
+  },
+  "brian-forte": {
+   "g": 1092,
+   "n": "Brian Forte",
+   "p": "assets/refs/brian-forte.jpg",
+   "rs": 1039
+  },
+  "che-flores": {
+   "g": 155,
+   "n": "Che Flores",
+   "p": "assets/refs/che-flores.jpg",
+   "rs": 155
+  },
+  "chelisa-painter": {
+   "g": 3,
+   "n": "Chelisa Painter",
+   "rs": 3
+  },
+  "cj-washington": {
+   "g": 426,
+   "n": "CJ Washington",
+   "p": "assets/refs/cj-washington.jpg",
+   "rs": 426
+  },
+  "courtney-kirkland": {
+   "g": 1527,
+   "n": "Courtney Kirkland",
+   "p": "assets/refs/courtney-kirkland.jpg",
+   "rs": 1441
+  },
+  "curtis-blair": {
+   "g": 1014,
+   "n": "Curtis Blair",
+   "p": "assets/refs/curtis-blair.jpg",
+   "rs": 955
+  },
+  "dan-crawford": {
+   "g": 1729,
+   "n": "Dan Crawford",
+   "rs": 1475
+  },
+  "danielle-scott": {
+   "g": 190,
+   "n": "Danielle Scott",
+   "p": "assets/refs/danielle-scott.jpg",
+   "rs": 190
+  },
+  "dannica-baroody": {
+   "g": 133,
+   "n": "Dannica Baroody",
+   "p": "assets/refs/dannica-baroody.jpg",
+   "rs": 133
+  },
+  "david-guthrie": {
+   "g": 1140,
+   "n": "David Guthrie",
+   "p": "assets/refs/david-guthrie.jpg",
+   "rs": 1034
+  },
+  "dedric-taylor": {
+   "g": 632,
+   "n": "Dedric Taylor",
+   "p": "assets/refs/dedric-taylor.jpg",
+   "rs": 609
+  },
+  "derrick-collins": {
+   "g": 1353,
+   "n": "Derrick Collins",
+   "p": "assets/refs/derrick-collins.jpg",
+   "rs": 1316
+  },
+  "ed-malloy": {
+   "g": 1455,
+   "n": "Ed Malloy",
+   "p": "assets/refs/ed-malloy.jpg",
+   "rs": 1308
+  },
+  "eric-dalen": {
+   "g": 889,
+   "n": "Eric Dalen",
+   "p": "assets/refs/eric-dalen.jpg",
+   "rs": 867
+  },
+  "eric-lewis": {
+   "g": 1164,
+   "n": "Eric Lewis",
+   "rs": 1083
+  },
+  "evan-scott": {
+   "g": 285,
+   "n": "Evan Scott",
+   "p": "assets/refs/evan-scott.jpg",
+   "rs": 285
+  },
+  "gediminas-petraitis": {
+   "g": 646,
+   "n": "Gediminas Petraitis",
+   "p": "assets/refs/gediminas-petraitis.jpg",
+   "rs": 618
+  },
+  "george-toliver": {
+   "g": 450,
+   "n": "George Toliver",
+   "rs": 450
+  },
+  "gina-catanzariti": {
+   "g": 3,
+   "n": "Gina Catanzariti",
+   "rs": 3
+  },
+  "intae-hwang": {
+   "g": 96,
+   "n": "Intae Hwang",
+   "p": "assets/refs/intae-hwang.webp",
+   "rs": 96
+  },
+  "j-t-orr": {
+   "g": 704,
+   "n": "J.T. Orr",
+   "p": "assets/refs/j-t-orr.jpg",
+   "rs": 698
+  },
+  "jacyn-goble": {
+   "g": 534,
+   "n": "Jacyn Goble",
+   "p": "assets/refs/jacyn-goble.jpg",
+   "rs": 513
+  },
+  "james-capers": {
+   "g": 1832,
+   "n": "James Capers",
+   "p": "assets/refs/james-capers.jpg",
+   "rs": 1643
+  },
+  "james-williams": {
+   "g": 997,
+   "n": "James Williams",
+   "p": "assets/refs/james-williams.jpg",
+   "rs": 901
+  },
+  "jason-goldenberg": {
+   "g": 389,
+   "n": "Jason Goldenberg",
+   "p": "assets/refs/jason-goldenberg.jpg",
+   "rs": 382
+  },
+  "jb-derosa": {
+   "g": 903,
+   "n": "JB DeRosa",
+   "p": "assets/refs/jb-derosa.jpg",
+   "rs": 835
+  },
+  "jd-ralls": {
+   "g": 104,
+   "n": "JD Ralls",
+   "p": "assets/refs/jd-ralls.jpg",
+   "rs": 104
+  },
+  "jenna-reneau": {
+   "g": 67,
+   "n": "Jenna Reneau",
+   "rs": 67
+  },
+  "jenna-schroeder": {
+   "g": 269,
+   "n": "Jenna Schroeder",
+   "p": "assets/refs/jenna-schroeder.jpg",
+   "rs": 269
+  },
+  "john-butler": {
+   "g": 336,
+   "n": "John Butler",
+   "p": "assets/refs/john-butler.jpg",
+   "rs": 335
+  },
+  "john-conley": {
+   "g": 208,
+   "n": "John Conley",
+   "p": "assets/refs/john-conley.jpg",
+   "rs": 208
+  },
+  "john-goble": {
+   "g": 1199,
+   "n": "John Goble",
+   "p": "assets/refs/john-goble.jpg",
+   "rs": 1057
+  },
+  "jonathan-sterling": {
+   "g": 366,
+   "n": "Jonathan Sterling",
+   "p": "assets/refs/jonathan-sterling.jpg",
+   "rs": 366
+  },
+  "josh-tiven": {
+   "g": 1013,
+   "n": "Josh Tiven",
+   "p": "assets/refs/josh-tiven.jpg",
+   "rs": 911
+  },
+  "justin-van-duyne": {
+   "g": 652,
+   "n": "Justin Van Duyne",
+   "p": "assets/refs/justin-van-duyne.jpg",
+   "rs": 645
+  },
+  "kane-fitzgerald": {
+   "g": 780,
+   "n": "Kane Fitzgerald",
+   "rs": 720
+  },
+  "karl-lane": {
+   "g": 839,
+   "n": "Karl Lane",
+   "p": "assets/refs/karl-lane.jpg",
+   "rs": 816
+  },
+  "kevin-cutler": {
+   "g": 862,
+   "n": "Kevin Cutler",
+   "p": "assets/refs/kevin-cutler.jpg",
+   "rs": 833
+  },
+  "kevin-scott": {
+   "g": 836,
+   "n": "Kevin Scott",
+   "p": "assets/refs/kevin-scott.jpg",
+   "rs": 786
+  },
+  "klajdi-mulla": {
+   "g": 3,
+   "n": "Klajdi Mulla",
+   "rs": 3
+  },
+  "leon-wood": {
+   "g": 1575,
+   "n": "Leon Wood",
+   "p": "assets/refs/leon-wood.jpg",
+   "rs": 1549
+  },
+  "marat-kogut": {
+   "g": 874,
+   "n": "Marat Kogut",
+   "p": "assets/refs/marat-kogut.jpg",
+   "rs": 860
+  },
+  "marc-davis": {
+   "g": 1806,
+   "n": "Marc Davis",
+   "p": "assets/refs/marc-davis.jpg",
+   "rs": 1596
+  },
+  "marcy-williams": {
+   "g": 2,
+   "n": "Marcy Williams",
+   "rs": 2
+  },
+  "mark-lindsay": {
+   "g": 1062,
+   "n": "Mark Lindsay",
+   "p": "assets/refs/mark-lindsay.jpg",
+   "rs": 1012
+  },
+  "matt-kallio": {
+   "g": 168,
+   "n": "Matt Kallio",
+   "p": "assets/refs/matt-kallio.jpg",
+   "rs": 168
+  },
+  "matt-myers": {
+   "g": 328,
+   "n": "Matt Myers",
+   "p": "assets/refs/matt-myers.jpg",
+   "rs": 328
+  },
+  "michael-smith": {
+   "g": 1453,
+   "n": "Michael Smith",
+   "p": "assets/refs/michael-smith.jpg",
+   "rs": 1403
+  },
+  "mitchell-ervin": {
+   "g": 630,
+   "n": "Mitchell Ervin",
+   "p": "assets/refs/mitchell-ervin.jpg",
+   "rs": 598
+  },
+  "mousa-dagher": {
+   "g": 343,
+   "n": "Mousa Dagher",
+   "p": "assets/refs/mousa-dagher.jpg",
+   "rs": 343
+  },
+  "natalie-sago": {
+   "g": 403,
+   "n": "Natalie Sago",
+   "p": "assets/refs/natalie-sago.jpg",
+   "rs": 401
+  },
+  "nate-cearley": {
+   "g": 8,
+   "n": "Nate Cearley",
+   "rs": 8
+  },
+  "nate-green": {
+   "g": 279,
+   "n": "Nate Green",
+   "p": "assets/refs/nate-green.jpg",
+   "rs": 278
+  },
+  "nick-buchert": {
+   "g": 909,
+   "n": "Nick Buchert",
+   "p": "assets/refs/nick-buchert.jpg",
+   "rs": 881
+  },
+  "nolan-fine": {
+   "g": 656,
+   "n": "Nolan Fine",
+   "rs": 638
+  },
+  "pat-fraher": {
+   "g": 1469,
+   "n": "Pat Fraher",
+   "p": "assets/refs/pat-fraher.jpg",
+   "rs": 1374
+  },
+  "pat-oconnell": {
+   "g": 64,
+   "n": "Pat O'Connell",
+   "rs": 64
+  },
+  "phenizee-ransom": {
+   "g": 359,
+   "n": "Phenizee Ransom",
+   "p": "assets/refs/phenizee-ransom.jpg",
+   "rs": 359
+  },
+  "ray-acosta": {
+   "g": 490,
+   "n": "Ray Acosta",
+   "p": "assets/refs/ray-acosta.jpg",
+   "rs": 483
+  },
+  "robert-hussey": {
+   "g": 185,
+   "n": "Robert Hussey",
+   "p": "assets/refs/robert-hussey.jpg",
+   "rs": 185
+  },
+  "rodney-mott": {
+   "g": 1575,
+   "n": "Rodney Mott",
+   "p": "assets/refs/rodney-mott.jpg",
+   "rs": 1506
+  },
+  "scott-foster": {
+   "g": 2063,
+   "n": "Scott Foster",
+   "p": "assets/refs/scott-foster.jpg",
+   "rs": 1814
+  },
+  "scott-twardoski": {
+   "g": 769,
+   "n": "Scott Twardoski",
+   "p": "assets/refs/scott-twardoski.jpg",
+   "rs": 762
+  },
+  "sean-corbin": {
+   "g": 1720,
+   "n": "Sean Corbin",
+   "p": "assets/refs/sean-corbin.jpg",
+   "rs": 1622
+  },
+  "sean-wright": {
+   "g": 1233,
+   "n": "Sean Wright",
+   "p": "assets/refs/sean-wright.jpg",
+   "rs": 1127
+  },
+  "sharae-mitchell": {
+   "g": 120,
+   "n": "Sha'Rae Mitchell",
+   "p": "assets/refs/sharae-mitchell.webp",
+   "rs": 120
+  },
+  "simone-jelks": {
+   "g": 142,
+   "n": "Simone Jelks",
+   "p": "assets/refs/simone-jelks.jpg",
+   "rs": 142
+  },
+  "suyash-mehta": {
+   "g": 249,
+   "n": "Suyash Mehta",
+   "p": "assets/refs/suyash-mehta.jpg",
+   "rs": 249
+  },
+  "tony-brothers": {
+   "g": 2009,
+   "n": "Tony Brothers",
+   "p": "assets/refs/tony-brothers.jpg",
+   "rs": 1804
+  },
+  "tre-maddox": {
+   "g": 758,
+   "n": "Tre Maddox",
+   "p": "assets/refs/tre-maddox.jpg",
+   "rs": 717
+  },
+  "tyler-ford": {
+   "g": 644,
+   "n": "Tyler Ford",
+   "p": "assets/refs/tyler-ford.jpg",
+   "rs": 603
+  },
+  "tyler-ricks": {
+   "g": 87,
+   "n": "Tyler Ricks",
+   "p": "assets/refs/tyler-ricks.jpg",
+   "rs": 87
+  },
+  "zach-zarba": {
+   "g": 1501,
+   "n": "Zach Zarba",
+   "p": "assets/refs/zach-zarba.jpg",
+   "rs": 1332
+  }
+ },
+ "suggestions": [
+  {
+   "a": "pat-fraher",
+   "b": "scott-foster",
+   "cat": "partners",
+   "reason": "80 games on the same crew"
+  },
+  {
+   "a": "scott-foster",
+   "b": "josh-tiven",
+   "cat": "workload",
+   "reason": "Most career games (2,063) vs. most games in 2025-26 (78)"
+  },
+  {
+   "a": "nolan-fine",
+   "b": "brandon-schwab",
+   "cat": "fouls",
+   "reason": "Most fouls per game (47.2) vs. fewest (38.0), regular season"
+  },
+  {
+   "a": "george-toliver",
+   "b": "andy-nagy",
+   "cat": "homewin",
+   "reason": "Highest home-team win rate in their games (65.0%) vs. lowest (51.0%), regular season"
+  },
+  {
+   "a": "kane-fitzgerald",
+   "b": "brandon-adair",
+   "cat": "technicals",
+   "reason": "Most technicals per game (197 in 425 games) vs. fewest (23 in 340 games), since 2014-15"
+  },
+  {
+   "a": "dan-crawford",
+   "b": "scott-foster",
+   "cat": "playoffs",
+   "reason": "Most playoff games: 254 and 247"
+  },
+  {
+   "a": "scott-foster",
+   "b": "biniam-maru",
+   "cat": "newcomer",
+   "reason": "Most games among active referees (2,063) vs. most among those in their first three seasons (43)"
+  }
+ ]
+}
