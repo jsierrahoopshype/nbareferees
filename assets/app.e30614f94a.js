@@ -28,6 +28,8 @@
   var TYPE_DIR={ref:"referee",team:"team",player:"player"};
   var TYPE_LABEL={ref:"Ref",team:"Team",player:"Player"};
   function escHtml(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  // For values placed inside a quoted attribute (escHtml leaves quotes alone).
+  function escAttr(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   // --- referee avatars (index only) ------------------------------------
   // Mirrors ref_avatar_img() in render_pages.py, for the cards this file
   // builds rather than the server. Reads the inline #ref-photos-data map once;
@@ -272,57 +274,83 @@
       }
     }catch(e){/* dashboard rotation is decorative -- fail silently */}
   }
-  // --- Tonight's Officials -- the page's promoted anchor module. The server
-  // already rendered a non-empty fallback (the most recent real game day on
-  // record, from data/dashboard.json's latest_game_day). This only OVERWRITES
-  // that fallback when a live data/tonights-crews.json (September pipeline;
-  // doesn't exist yet, and only ever covers in-season days once it does) is
-  // present AND dated today/yesterday (US Eastern, the NBA's scheduling
-  // clock) -- so the module switches to live assignments automatically
-  // whenever they show up, with no further work, and otherwise the fallback
-  // just stands as rendered.
-  // Expected data/tonights-crews.json schema once the pipeline ships:
-  //   {date, games:[{away, home, tipoff_et, crew:[{name, slug}], crew_note}]}
+  // --- Tonight's officials (index) -- mirrors tg_row()/tonight_officials_
+  // section() in render_pages.py. The server already rendered the most recent
+  // crews on record. This (1) swaps in data/tonights-crews.json when it is
+  // NEWER than what the page was built with (the crews workflow commits that
+  // file hourly without re-rendering the page), and (2) labels the date
+  // honestly against today's date in US Eastern time, the NBA's clock.
   (function(){
+    var sec=document.getElementById("tonight");
     var body=document.getElementById("tonight-officials-body");
-    if(!body)return;
-    function usEasternISO(offsetDays){
-      var d=new Date(Date.now()+offsetDays*86400000);
+    if(!sec||!body)return;
+    var LOGO_BASE="https://hoopsmatic.com/img/nba-headshots/teams/logos/current/svg/";
+    var CURRENT=" ATL BKN BOS CHA CHI CLE DAL DEN DET GSW HOU IND LAC LAL MEM MIA MIL MIN NOP NYK OKC ORL PHI PHX POR SAC SAS TOR UTA WAS ";
+    var TEAMS=(function(){
+      var el=document.getElementById("team-pages-data");
+      try{return el?JSON.parse(el.textContent)||[]:[];}catch(e){return [];}
+    })();
+    function etToday(){
       var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
-        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
       var o={};parts.forEach(function(p){o[p.type]=p.value;});
       return o.year+"-"+o.month+"-"+o.day;
     }
+    // '2026-11-18' -> 'Wed, Nov 18' / 'Nov 18'. Noon UTC + timeZone UTC so the
+    // calendar date never shifts with the viewer's own time zone.
+    function fmtDay(iso,weekday){
+      var opts={month:"short",day:"numeric",timeZone:"UTC"};
+      if(weekday)opts.weekday="short";
+      return new Intl.DateTimeFormat("en-US",opts).format(new Date(iso+"T12:00:00Z"));
+    }
+    function team(abbr){
+      abbr=String(abbr||"").toUpperCase();
+      var lo=abbr.toLowerCase();
+      var logo=/^[A-Z]{3}$/.test(abbr)&&CURRENT.indexOf(" "+abbr+" ")!==-1?
+        '<img class="tg-logo" src="'+LOGO_BASE+lo+'.svg" alt="" width="24" height="24" loading="lazy" decoding="async">':"";
+      var inner=logo+'<span class="tg-abbr">'+escHtml(abbr)+'</span>';
+      return TEAMS.indexOf(lo)!==-1?'<a class="tg-team" href="team/'+lo+'/index.html">'+inner+'</a>':
+        '<span class="tg-team">'+inner+'</span>';
+    }
+    function row(g){
+      var refs=(g.crew||[]).map(function(c){
+        var nm='<span class="tg-name">'+escHtml(c.name||"")+'</span>';
+        // slug is null when the feed could not match an official to a page:
+        // plain name, no photo, never a link to referee/null/.
+        if(!c.slug||!/^[a-z0-9-]+$/.test(c.slug))return '<span class="tg-ref">'+nm+'</span>';
+        var rel=REF_PHOTOS[c.slug];
+        var img=rel?'<img class="tg-avatar" src="'+escAttr(rel)+'" alt="" width="34" height="34" loading="lazy" decoding="async">':"";
+        return '<a class="tg-ref" href="referee/'+c.slug+'/index.html">'+img+nm+'</a>';
+      }).join("")||'<span class="tg-name">&mdash;</span>';
+      var tip=g.tipoff_et?'<span class="tg-tip">'+escHtml(g.tipoff_et)+'</span>':"";
+      return '<li class="tg"><div class="tg-matchup"><span class="tg-teams">'+team(g.away)+
+        '<span class="tg-at">@</span>'+team(g.home)+'</span>'+tip+'</div>'+
+        '<div class="tg-crew">'+refs+'</div></li>';
+    }
+    function label(iso){
+      var heading=document.getElementById("tonight-heading");
+      var sub=document.getElementById("tonight-sub");
+      var note=document.getElementById("tonight-note");
+      var isToday=iso===etToday();
+      if(heading)heading.textContent=isToday?"Tonight's officials":"Most recent officiating crews";
+      if(sub){sub.textContent=fmtDay(iso,true);sub.setAttribute("datetime",iso);}
+      if(note){
+        note.textContent=isToday?"":"Last updated for "+fmtDay(iso,false)+". Today's crews usually post around 9am ET.";
+        note.hidden=isToday;
+      }
+    }
+    var shown=sec.getAttribute("data-date")||"";
+    if(/^\d{4}-\d{2}-\d{2}$/.test(shown))label(shown);
     fetch("data/tonights-crews.json").then(function(r){
       if(!r.ok)throw new Error("absent");
       return r.json();
     }).then(function(data){
-      var valid=data&&data.date&&(data.date===usEasternISO(0)||data.date===usEasternISO(-1));
-      if(!valid||!Array.isArray(data.games)||!data.games.length)return;  // keep the fallback
-      var heading=document.getElementById("tonight-heading");
-      var sub=document.getElementById("tonight-sub");
-      if(heading)heading.textContent="Tonight's officials";
-      if(sub)sub.textContent=data.date;
-      body.innerHTML=data.games.map(function(g){
-        var crew=(g.crew||[]).map(function(c){
-          // slug is null when the feed could not match an official to a
-          // canonical referee page (a new hire, a name spelling we have not
-          // mapped yet). Render the name as plain text rather than linking to
-          // referee/null/index.html -- and with no avatar either, since
-          // refAvatar returns "" for a null slug, the same "no photo" path a
-          // matched-but-unphotographed official takes.
-          var nm=escHtml(c.name);
-          var named=c.slug?'<a href="referee/'+c.slug+'/index.html">'+nm+'</a>':nm;
-          return '<span class="crew-ref">'+refAvatar(c.slug,"crew")+named+'</span>';
-          // Space, not "&middot;": the cells are columns separated by a flex
-          // gap, and flex discards whitespace-only text between items.
-        }).join(" ");
-        var note=g.crew_note?' <span class="caption">'+escHtml(g.crew_note)+'</span>':"";
-        return '<div class="crew-game"><span class="crew-matchup">'+escHtml(g.away)+' @ '+escHtml(g.home)+'</span>'+
-          '<span class="crew-tip">'+escHtml(g.tipoff_et||"")+'</span>'+
-          '<span class="crew-names">'+crew+'</span>'+note+'</div>';
-      }).join("");
-    }).catch(function(){/* absent, unparseable, or stale -- keep the fallback */});
+      if(!data||!/^\d{4}-\d{2}-\d{2}$/.test(data.date||"")||data.date<=shown)return;
+      if(!Array.isArray(data.games)||!data.games.length)return;  // keep what is shown
+      body.innerHTML=data.games.map(row).join("");
+      sec.setAttribute("data-date",data.date);
+      label(data.date);
+    }).catch(function(){/* absent or unparseable -- keep the server copy */});
   })();
   // --- Recent form spotlight (data/recent_form_dashboard.json) -- gated the
   // same way Tonight's Crews is: absent, empty, off-season (in_season:false),
@@ -418,13 +446,23 @@
       return '<div class="whistle-col"><h3 class="whistle-kind">'+kindLabel+
         ' <span class="whistle-n">'+(w.n||0)+' games</span></h3><div class="whistle-grid">'+cells+'</div></div>';
     }
+    // Team tricodes link to that team's referees page when one exists
+    // (team-pages-data, written by render_compare()).
+    var TEAM_PAGES=(function(){
+      var el=document.getElementById("team-pages-data");
+      try{return el?JSON.parse(el.textContent)||[]:[];}catch(e){return [];}
+    })();
+    function teamLink(abbr){
+      var lo=String(abbr||"").toLowerCase();
+      return TEAM_PAGES.indexOf(lo)!==-1?'<a href="../team/'+lo+'/index.html">'+escHtml(abbr)+'</a>':escHtml(abbr);
+    }
     function teamExtremes(records){
       if(!records||!records.length)return '<p class="empty-note">No team records on file.</p>';
       var byGames=records.slice().sort(function(a,b){return b.games-a.games;})[0];
       var qualifying=records.filter(function(r){return r.games>=10&&r.win_pct!=null;});
       var byWin=qualifying.length?qualifying.slice().sort(function(a,b){return b.win_pct-a.win_pct;})[0]:null;
-      var out='<p class="compare-line">Most games: '+escHtml(byGames.team_abbr)+' ('+byGames.games+' games)</p>';
-      if(byWin)out+='<p class="compare-line">Best record: '+escHtml(byWin.team_abbr)+' ('+
+      var out='<p class="compare-line">Most games: '+teamLink(byGames.team_abbr)+' ('+byGames.games+' games)</p>';
+      if(byWin)out+='<p class="compare-line">Best record: '+teamLink(byWin.team_abbr)+' ('+
         (byWin.win_pct*100).toFixed(1)+'%, '+byWin.games+' games)</p>';
       return out;
     }
@@ -440,20 +478,125 @@
         whistleColHtml("Playoffs",doc.whistle_profile.po)+'</div>'+
         '<h3 class="lb-subhead">Team records</h3>'+teamExtremes(doc.team_records);
     }
-    var params=new URLSearchParams(window.location.search);
-    var aSlug=params.get("a"), bSlug=params.get("b");
+    var SLUG_RE=/^[a-z0-9-]+$/;
     var promptEl=document.getElementById("compare-prompt");
-    if(promptEl)promptEl.hidden=!!(aSlug||bSlug);
+    var featEl=document.getElementById("compare-featured");
+    var featReason=document.getElementById("compare-featured-reason");
     function loadCol(container,slug){
       if(!slug){container.innerHTML='<p class="empty-note">Select a referee above.</p>';return;}
+      if(!SLUG_RE.test(slug)){container.innerHTML='<p class="empty-note">Referee not found.</p>';return;}
       fetch("../data/referees/"+slug+".json").then(function(r){
         if(!r.ok)throw new Error("not found");
         return r.json();
       }).then(function(doc){renderCompareCol(container,doc);})
         .catch(function(){container.innerHTML='<p class="empty-note">Referee not found.</p>';});
     }
-    loadCol(colA,aSlug);
-    loadCol(colB,bSlug);
+    // A chosen pair (?a=&b=) is shareable but is not its own page for search:
+    // noindex, follow; the canonical in <head> stays /referees/compare/.
+    function setNoindex(on){
+      var m=document.querySelector('meta[name="robots"]');
+      if(on&&!m){m=document.createElement("meta");m.name="robots";m.content="noindex, follow";document.head.appendChild(m);}
+      if(!on&&m)m.remove();
+    }
+    function showPair(a,b,featuredReason){
+      if(promptEl)promptEl.hidden=!!(a||b||featuredReason);
+      if(featEl){featEl.hidden=!featuredReason;if(featReason)featReason.textContent=featuredReason||"";}
+      loadCol(colA,a);
+      loadCol(colB,b);
+    }
+    function fromUrl(){
+      var params=new URLSearchParams(window.location.search);
+      return {a:params.get("a"),b:params.get("b")};
+    }
+    var cur=fromUrl();
+    setNoindex(!!(cur.a||cur.b));
+    if(cur.a||cur.b)showPair(cur.a,cur.b,"");
+    window.addEventListener("popstate",function(){
+      var p=fromUrl();
+      setNoindex(!!(p.a||p.b));
+      if(p.a||p.b)showPair(p.a,p.b,"");else if(window.__featured)showPair(window.__featured.a,window.__featured.b,window.__featured.reason);
+      else showPair(null,null,"");
+    });
+
+    // --- suggested matchups (data/compare-suggestions.json, rebuilt with the
+    // site) + "Both work tonight" from data/tonights-crews.json. Featured
+    // matchup = one category per day, rotating by today's US Eastern date.
+    var listEl=document.getElementById("compare-suggest-list");
+    var suggestEl=document.getElementById("compare-suggest");
+    function etToday(){
+      var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",
+        year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+      var o={};parts.forEach(function(p){o[p.type]=p.value;});
+      return o.year+"-"+o.month+"-"+o.day;
+    }
+    function face(people,slug){
+      var p=people[slug];
+      return p&&p.p?'<img class="sugg-face" src="../'+escAttr(p.p)+'" alt="" width="40" height="40" loading="lazy" decoding="async">':
+        '<span class="sugg-face sugg-face-none" aria-hidden="true"></span>';
+    }
+    function nameLink(people,slug){
+      var p=people[slug];
+      return '<a class="sugg-name" href="../referee/'+slug+'/index.html">'+escHtml(p?p.n:slug)+'</a>';
+    }
+    function tonightPair(people,crews){
+      if(!crews||crews.date!==etToday()||!Array.isArray(crews.games))return null;
+      // The crew data names no crew chief, so each game is represented by its
+      // most experienced official (most career games), 200+ RS games.
+      var picks=[];
+      crews.games.forEach(function(g){
+        var best=null;
+        (g.crew||[]).forEach(function(c){
+          var p=c.slug&&people[c.slug];
+          if(p&&p.rs>=200&&(!best||p.g>best.g))best={slug:c.slug,g:p.g};
+        });
+        if(best)picks.push({slug:best.slug,g:best.g,label:String(g.away||"")+" @ "+String(g.home||"")});
+      });
+      picks.sort(function(x,y){return y.g-x.g;});
+      if(picks.length<2||picks[0].slug===picks[1].slug)return null;
+      return {cat:"tonight",a:picks[0].slug,b:picks[1].slug,
+        reason:"Both work tonight: "+picks[0].label+" and "+picks[1].label};
+    }
+    Promise.all([
+      fetch("../data/compare-suggestions.json").then(function(r){if(!r.ok)throw new Error("absent");return r.json();}),
+      fetch("../data/tonights-crews.json").then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+    ]).then(function(res){
+      var data=res[0], people=data.people||{};
+      var list=(data.suggestions||[]).filter(function(x){return SLUG_RE.test(x.a)&&SLUG_RE.test(x.b);});
+      var tn=tonightPair(people,res[1]);
+      if(tn)list.unshift(tn);
+      if(!list.length)return;
+      // Featured: date-seeded, so it is the same all day for everyone and
+      // moves to the next category tomorrow.
+      var day=Math.floor(Date.parse(etToday()+"T00:00:00Z")/86400000);
+      var feat=list[day%list.length];
+      window.__featured=feat;
+      if(!cur.a&&!cur.b)showPair(feat.a,feat.b,feat.reason);
+      listEl.innerHTML=list.map(function(x){
+        var href="?a="+x.a+"&b="+x.b;
+        var label="Compare "+(people[x.a]?people[x.a].n:x.a)+" and "+(people[x.b]?people[x.b].n:x.b);
+        return '<li class="sugg"><a class="sugg-load" href="'+href+'" data-a="'+x.a+'" data-b="'+x.b+'" aria-label="'+escAttr(label)+'"></a>'+
+          '<span class="sugg-faces">'+face(people,x.a)+face(people,x.b)+'</span>'+
+          '<span class="sugg-text"><span class="sugg-names">'+nameLink(people,x.a)+' <span class="sugg-vs">vs.</span> '+nameLink(people,x.b)+'</span>'+
+          '<span class="sugg-reason">'+escHtml(x.reason)+'</span></span></li>';
+      }).join("");
+      suggestEl.hidden=false;
+    }).catch(function(){
+      if(!cur.a&&!cur.b&&promptEl)promptEl.hidden=false;
+    });
+    // Tapping a row loads that pair in place and puts it in the address.
+    document.addEventListener("click",function(e){
+      var t=e.target.closest?e.target.closest(".sugg-load"):null;
+      if(!t||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0)return;
+      var a=t.getAttribute("data-a"), b=t.getAttribute("data-b");
+      if(!SLUG_RE.test(a)||!SLUG_RE.test(b))return;
+      e.preventDefault();
+      history.pushState(null,"","?a="+a+"&b="+b);
+      cur={a:a,b:b};
+      setNoindex(true);
+      showPair(a,b,"");
+      var top=document.querySelector(".compare-cols");
+      if(top)top.scrollIntoView({block:"start"});
+    });
   })();
   // --- /matchup/ team x referee lookup (docs/MATCHUP_SPEC.md) -- reads
   // data/matchups/{official_id}.json (career + per-season, RS/PO) and
