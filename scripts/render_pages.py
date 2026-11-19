@@ -326,25 +326,50 @@ def js_asset():
 SITEMAP_PATHS = set()
 
 
-def write_sitemap(path):
+# Per-URL <lastmod> store: {url: {"hash": sha256 of the page file, "lastmod"}}.
+SITEMAP_HASHES = os.path.join(REPO, "data", "sitemap-hashes.json")
+
+
+def write_sitemap(path, today=None):
     """sitemap.xml at the site root, covering exactly the canonical URLs.
 
     Sorted, so the file is stable across rebuilds and a diff shows real page
     additions rather than dictionary ordering. The bare origin sorts first
     because it is a prefix of every other URL.
 
-    No lastmod, changefreq or priority. changefreq and priority are ignored by
-    Google outright, and a lastmod would have to be the build timestamp, which
-    would mark all 1,751 URLs as modified on every rebuild even though almost
-    none of them changed -- a lastmod that always lies is worse than none.
+    <lastmod> is the day that URL's page last changed, never the build date
+    (November 19, 2026): each page file is hashed and compared with the hash
+    stored for its URL in data/sitemap-hashes.json. Same hash: the stored date
+    is kept. New or changed: today's date (UTC) and the new hash. A rebuild
+    with no content change leaves every date as it was. Called after every
+    page is written. No changefreq or priority (Google ignores both).
     """
-    urls = sorted(SITE_URL + p for p in SITEMAP_PATHS)
-    body = "\n".join("  <url><loc>%s</loc></url>" % esc(u) for u in urls)
+    import datetime
+    today = today or datetime.datetime.utcnow().date().isoformat()
+    try:
+        with open(SITEMAP_HASHES, encoding="utf-8") as f:
+            store = json.load(f).get("urls", {})
+    except (OSError, ValueError):
+        store = {}
+    new_store, rows = {}, []
+    for u in sorted(SITE_URL + p for p in SITEMAP_PATHS):
+        rel = u[len(SITE_URL):] or "index.html"
+        with open(os.path.join(REPO, rel), "rb") as f:
+            h = hashlib.sha256(f.read().replace(b"\r\n", b"\n")).hexdigest()
+        old = store.get(u)
+        lm = old["lastmod"] if old and old.get("hash") == h else today
+        new_store[u] = {"hash": h, "lastmod": lm}
+        rows.append("  <url><loc>%s</loc><lastmod>%s</lastmod></url>" % (esc(u), lm))
     with open(path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n'
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                + body + "\n</urlset>\n")
-    return len(urls)
+                + "\n".join(rows) + "\n</urlset>\n")
+    with open(SITEMAP_HASHES, "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"_about": "Content hash and <lastmod> per sitemap URL. Written by "
+                             "scripts/render_pages.py; commit it with sitemap.xml.",
+                   "urls": new_store}, f, indent=1, sort_keys=True)
+        f.write("\n")
+    return len(rows)
 
 
 def canonical_path_from_ld(ld_json):
@@ -387,6 +412,21 @@ def head(title, description, depth, ld_json=None, canonical=None):
     # than by two implementations happening to agree.
     if canonical is not None:
         SITEMAP_PATHS.add(canonical)
+    # OPEN GRAPH (November 19, 2026): every page but the home page gets
+    # og:title and og:description from its own <title> and description, plus
+    # og:type, og:site_name and, where it has a canonical, og:url (the same
+    # hoopsmatic.com address). The home page gets nothing here: the
+    # hoopsmatic.com Worker writes its whole og block (OG_META.referees), so
+    # tags here would be duplicates. og:image comes from the Worker too.
+    og_tags = ""
+    if canonical != "":
+        og_tags = ('<meta property="og:type" content="website">\n'
+                   '<meta property="og:site_name" content="HoopsMatic">\n'
+                   '<meta property="og:title" content="%s">\n'
+                   '<meta property="og:description" content="%s">\n'
+                   % (esc(title), esc(description)))
+        if canonical is not None:
+            og_tags += '<meta property="og:url" content="%s">\n' % esc(SITE_URL + canonical)
     return """<!doctype html>
 <html lang="en">
 <head>
@@ -394,7 +434,7 @@ def head(title, description, depth, ld_json=None, canonical=None):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-{canonical_tag}<link rel="preconnect" href="https://fonts.googleapis.com">
+{canonical_tag}{og_tags}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{root}assets/{css_asset}">
@@ -412,7 +452,7 @@ def head(title, description, depth, ld_json=None, canonical=None):
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
                            cur=CURRENT_SEASON, ld=ld_json_scripts(ld_json),
-                           canonical_tag=canonical_tag, css_asset=css_asset())
+                           canonical_tag=canonical_tag, og_tags=og_tags, css_asset=css_asset())
 
 
 def footer(depth):
