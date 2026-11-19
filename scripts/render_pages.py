@@ -448,7 +448,6 @@ def head(title, description, depth, ld_json=None, canonical=None):
   </a>
   <nav class="masthead-nav"><a href="{root}compare/index.html">Compare</a>
   <a href="{root}matchup/index.html">Matchup</a></nav>
-  <span class="brand-sub">NBA officiating record &middot; 1993-94 to {cur}</span>
 </header>
 <main id="main">""".format(title=esc(title), desc=esc(description), root=root,
                            cur=CURRENT_SEASON, ld=ld_json_scripts(ld_json),
@@ -463,7 +462,7 @@ def footer(depth):
   as they were officiated. Nothing on this site implies a referee causes a
   result or favors a team.</p>
   <p class="foot-links"><a href="{root}sources/index.html">Data sources</a></p>
-  <p class="foot-contact">Spot an error? Email us at <a href="mailto:hoopsmatic@hoopsmatic.com">hoopsmatic@hoopsmatic.com</a>.
+  <p class="foot-contact">Anything wrong? Email us at <a href="mailto:hoopsmatic@hoopsmatic.com">hoopsmatic@hoopsmatic.com</a>.
   For any other inquiry, contact us at <a href="mailto:ads@hoopsmatic.com">ads@hoopsmatic.com</a>.</p>
 </footer>
 <script src="{root}assets/{js_asset}"></script>
@@ -2629,7 +2628,7 @@ def render_compare():
     box_b = ref_search(1, "top", type_filter="ref", compare_slot="b")
     body = """<section class="block">
   <div class="block-head"><span class="eyebrow"><span class="eyebrow-stripe" aria-hidden="true"></span>
-  Compare</span><h2>Compare two referees</h2></div>
+  Compare</span><h1>Compare two referees</h1></div>
   <div class="compare-pickers">
     <div class="compare-picker">{box_a}</div>
     <div class="compare-picker">{box_b}</div>
@@ -3031,7 +3030,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);
   text-transform:uppercase;letter-spacing:.06em;font-size:.64rem;font-weight:600;
   color:var(--text-secondary);margin-bottom:.4rem}
-.block-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
+.block-head h1,.block-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
 .caption{color:var(--text-secondary);font-size:.78rem;max-width:70ch;margin:.7rem 0 0}
 
 /* ---- index page: three-tier information hierarchy ----------------------

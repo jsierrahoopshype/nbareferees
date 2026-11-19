@@ -90,7 +90,7 @@ main{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem}
 .eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);
   text-transform:uppercase;letter-spacing:.06em;font-size:.64rem;font-weight:600;
   color:var(--text-secondary);margin-bottom:.4rem}
-.block-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
+.block-head h1,.block-head h2{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
 .caption{color:var(--text-secondary);font-size:.78rem;max-width:70ch;margin:.7rem 0 0}
 
 /* ---- index page: three-tier information hierarchy ----------------------
